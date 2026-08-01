@@ -422,7 +422,7 @@ export default function AdminDashboard() {
       const res = await api.post(`/orders/${order.id}/cancel`);
       if (res && res.success) {
         useFeedbackStore.getState().showToast(
-          `✔ Shipment Cancelled Successfully — Shiprocket has confirmed the cancellation. ${res.refundStatus === 'REFUND_PENDING' ? 'Refund is being processed.' : ''}`,
+          `✔ Shipment Cancelled Successfully — Shiprocket has confirmed the cancellation. ${res.refundStatus === 'PROCESSING' || res.refundStatus === 'INITIATED' ? 'Refund is being processed.' : ''}`,
           'success'
         );
         setCancelOrderTarget(null);
@@ -5993,13 +5993,15 @@ Ensure confidence scores are numbers between 0 and 100. Always reply ONLY with r
                             </span>
 
                             {/* Refund Status Badge */}
-                            {(o.paymentStatus === 'REFUND_PENDING' || o.paymentStatus === 'REFUND_COMPLETED' || isCancelled) && (
+                            {(o.refundStatus && o.refundStatus !== 'NONE' || isCancelled) && (
                               <span className={`text-[8px] font-extrabold uppercase tracking-widest px-2.5 py-0.5 rounded-full border select-none ${
-                                o.paymentStatus === 'REFUND_COMPLETED'
+                                o.refundStatus === 'COMPLETED' || o.paymentStatus === 'REFUNDED'
                                   ? 'bg-green-100 text-green-800 border-green-300'
-                                  : 'bg-amber-100 text-amber-900 border-amber-300'
+                                  : o.refundStatus === 'FAILED'
+                                    ? 'bg-red-100 text-red-800 border-red-300'
+                                    : 'bg-amber-100 text-amber-900 border-amber-300'
                               }`}>
-                                Refund: {o.paymentStatus === 'REFUND_COMPLETED' ? 'Completed ✔' : 'Pending...'}
+                                Refund: {o.refundStatus === 'COMPLETED' || o.paymentStatus === 'REFUNDED' ? 'Completed ✔' : o.refundStatus === 'FAILED' ? 'Failed ✕' : 'Processing...'}
                               </span>
                             )}
                           </div>
@@ -6459,7 +6461,7 @@ Ensure confidence scores are numbers between 0 and 100. Always reply ONLY with r
                                     const daysRemaining = Math.max(0, Math.ceil((expectedCreditDate - now) / (1000 * 60 * 60 * 24)));
 
                                     const isRefundCompleted = refundStatus === 'COMPLETED';
-                                    const isRefundProcessing = refundStatus === 'PROCESSING' || refundStatus === 'INITIATED' || (refundStatus !== 'COMPLETED' && refundStatus !== 'FAILED' && o.paymentStatus === 'REFUND_PENDING');
+                                    const isRefundProcessing = refundStatus === 'PROCESSING' || refundStatus === 'INITIATED' || (refundStatus !== 'COMPLETED' && refundStatus !== 'FAILED');
                                     const isRefundFailed = refundStatus === 'FAILED';
 
                                     const fmtDate = (d) => new Date(d).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', weekday: 'short' });

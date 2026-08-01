@@ -443,7 +443,7 @@ export default function ShipmentDetails() {
               const daysRemaining = Math.max(0, Math.ceil(msRemaining / (1000 * 60 * 60 * 24)));
 
               const isRefundCompleted = refundStatus === 'COMPLETED';
-              const isRefundProcessing = refundStatus === 'PROCESSING' || refundStatus === 'INITIATED' || (refundStatus !== 'COMPLETED' && refundStatus !== 'FAILED' && order.paymentStatus === 'REFUND_PENDING');
+              const isRefundProcessing = refundStatus === 'PROCESSING' || refundStatus === 'INITIATED' || (refundStatus !== 'COMPLETED' && refundStatus !== 'FAILED' && order.status === 'CANCELLED');
               const isRefundFailed = refundStatus === 'FAILED';
 
               const formatDate = (d) => d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', weekday: 'long' });

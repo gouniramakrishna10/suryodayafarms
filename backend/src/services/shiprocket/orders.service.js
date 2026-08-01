@@ -297,8 +297,7 @@ export const ordersService = {
       data: {
         status: 'CANCELLED',
         shiprocketStatus: 'CANCELLED',
-        paymentStatus: isPrepaid ? 'PENDING' : 'CANCELLED',
-        refundStatus: isPrepaid ? 'PENDING' : 'NONE',
+        refundStatus: isPrepaid ? 'INITIATED' : 'NONE',
         trackingHistory: [...existingHistory, cancelLog],
         updatedAt: new Date()
       }
@@ -335,7 +334,6 @@ export const ordersService = {
         orderAfterCancel = await prisma.order.update({
           where: { id: orderId },
           data: {
-            paymentStatus: 'REFUND_PENDING',
             refundStatus: 'PROCESSING',
             refundId: refundResult.id,
             refundAmount: dbOrder.totalAmount,
@@ -344,6 +342,7 @@ export const ordersService = {
             refundExpectedDate: expectedCreditDate,
             lastRefundSync: initiatedAt,
             refundResponse: JSON.stringify(refundResult),
+            refundError: null,
             trackingHistory: [...finalHistory, refundLog],
             updatedAt: new Date()
           }
@@ -367,7 +366,6 @@ export const ordersService = {
         orderAfterCancel = await prisma.order.update({
           where: { id: orderId },
           data: {
-            paymentStatus: 'FAILED',
             refundStatus: 'FAILED',
             refundError: refundError,
             trackingHistory: [...finalHistory, failLog],
@@ -435,7 +433,6 @@ export const ordersService = {
     const updatedOrder = await prisma.order.update({
       where: { id: orderId },
       data: {
-        paymentStatus: 'REFUND_PENDING',
         refundStatus: 'PROCESSING',
         refundId: refundResult.id,
         refundAmount: dbOrder.totalAmount,
