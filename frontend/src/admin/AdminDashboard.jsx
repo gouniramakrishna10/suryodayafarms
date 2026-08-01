@@ -470,22 +470,37 @@ export default function AdminDashboard() {
         throw new Error(createRes?.message || 'Order creation failed.');
       }
 
-      // Step 2: Auto Assign Courier & Generate AWB
-      useFeedbackStore.getState().showToast(`🏷️ Assigning Courier & AWB for #${order.orderNumber}...`, 'info');
-      const assignRes = await api.post('/shiprocket/assign-courier', { orderId: order.id, autoAssign: true, preferredMode: 'CHEAPEST' });
+      let awb = createRes.awb || order.awbCode;
+      let courier = createRes.courier || order.courierName;
+      const isAlreadyAssigned = createRes.courierAlreadyAssigned || !!(awb || courier);
 
-      // Step 3: Generate Label in background
-      try {
-        await api.get(`/shiprocket/label?shipmentId=${createRes.shipmentId}&orderId=${order.id}`);
-      } catch (labelErr) {
-        console.warn('[SHIPROCKET ADMIN] Label notice:', labelErr.message);
+      // Step 2: Auto Assign Courier & Generate AWB (ONLY IF NOT ALREADY ASSIGNED)
+      if (!isAlreadyAssigned) {
+        useFeedbackStore.getState().showToast(`🏷️ Assigning Courier & AWB for #${order.orderNumber}...`, 'info');
+        try {
+          const assignRes = await api.post('/shiprocket/assign-courier', { orderId: order.id, autoAssign: true, preferredMode: 'CHEAPEST' });
+          if (assignRes && assignRes.success) {
+            awb = assignRes.awbCode || awb;
+            courier = assignRes.courierName || courier;
+          }
+        } catch (assignErr) {
+          console.warn('[SHIPROCKET ADMIN] Courier auto-assign skipped/failed:', assignErr.message);
+        }
+      } else {
+        console.log('[SHIPROCKET ADMIN] Courier already assigned during order creation. Skipping assign-courier API call.');
       }
 
-      useFeedbackStore.getState().showToast(`✅ Shipment Created! Courier: ${assignRes.courierName || 'Assigned'} (AWB: ${assignRes.awbCode || 'Generated'})`, 'success');
+      // Step 3: Background label generation (non-blocking)
+      const finalShipmentId = createRes.shipmentId || order.shipmentId;
+      if (finalShipmentId) {
+        api.get(`/shiprocket/label?shipmentId=${finalShipmentId}&orderId=${order.id}`).catch(() => null);
+      }
+
+      useFeedbackStore.getState().showToast(`Shipment Created Successfully! ${courier ? `Courier: ${courier}` : ''} ${awb ? `(AWB: ${awb})` : ''}`.trim(), 'success');
       await fetchOrders();
       await fetchAnalytics();
     } catch (err) {
-      useFeedbackStore.getState().showToast(`❌ Shipment Error: ${err.message}`, 'error');
+      useFeedbackStore.getState().showToast(`Shipment Error: ${err.message}`, 'error');
     } finally {
       setIsGeneratingShipment(prev => ({ ...prev, [order.id]: false }));
     }

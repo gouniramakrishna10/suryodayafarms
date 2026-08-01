@@ -180,7 +180,7 @@ export default function LogisticsDashboardPage({ orders = [], fetchOrders }) {
       const res = await api.post('/shiprocket/orders', { orderId });
       useFeedbackStore.getState().hideLoader();
       if (res.success) {
-        useFeedbackStore.getState().showToast(`✅ Created Shiprocket Order #${res.shiprocketOrderId}`, 'success');
+        useFeedbackStore.getState().showToast(`Shipment Created Successfully! Order #${res.orderId || res.shiprocketOrderId} ${res.courier ? `(${res.courier}` : ''}${res.awb ? ` - AWB: ${res.awb})` : res.courier ? ')' : ''}`, 'success');
         if (fetchOrders) fetchOrders();
       }
     } catch (err) {
