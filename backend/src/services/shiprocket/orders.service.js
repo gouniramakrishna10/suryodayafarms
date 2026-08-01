@@ -131,72 +131,103 @@ export const ordersService = {
       weight: (weight || 0.5).toString()
     };
 
-    shiprocketLogger.info('ORDERS_SERVICE', `Creating Shiprocket Order for ${dbOrder.orderNumber}...`, payload);
+    console.log('[SHIPROCKET] Creating Shiprocket Order...');
+    shiprocketLogger.info('ORDERS_SERVICE', `[SHIPROCKET] Creating Shiprocket Order for ${dbOrder.orderNumber}...`, payload);
 
+    let resData;
     try {
       const response = await shiprocketClient.post('/v1/external/orders/create/adhoc', payload);
-      const resData = response.data;
-
-      // Handle custom Shiprocket response formats (e.g. wrong pickup location error returned as 200)
-      if (resData && resData.message && resData.message.toLowerCase().includes('wrong pickup location')) {
-        const availableList = resData.data?.data || resData.data || [];
-        if (availableList.length > 0 && availableList[0].pickup_location) {
-          const fallbackLoc = availableList[0].pickup_location;
-          shiprocketLogger.info('ORDERS_SERVICE', `Retrying with corrected Shiprocket Pickup Location: "${fallbackLoc}"`);
-          payload.pickup_location = fallbackLoc;
-          const retryRes = await shiprocketClient.post('/v1/external/orders/create/adhoc', payload);
-          return await this._processShiprocketSuccess(orderId, retryRes.data);
-        }
-      }
-
-      if (!resData || (resData.status_code && resData.status_code !== 1 && resData.status !== 200)) {
-        const errMsg = resData?.message || JSON.stringify(resData?.errors || resData);
-        throw new Error(errMsg);
-      }
-
-      return await this._processShiprocketSuccess(orderId, resData);
+      resData = response.data;
     } catch (err) {
-      const errorData = err.response?.data;
-      const errorMessage = errorData?.message || err.message;
-      const detailedErrors = errorData?.errors ? JSON.stringify(errorData.errors) : '';
-      const fullMsg = `Shiprocket Order Creation Error: ${errorMessage} ${detailedErrors}`.trim();
+      resData = err.response?.data;
+      // Task 4: Check if error payload contains order_id or shipment_id (e.g. order already created in Shiprocket)
+      if (!resData || (!resData.order_id && !resData.shipment_id && !resData.data?.order_id)) {
+        const errorData = err.response?.data;
+        const errorMessage = errorData?.message || err.message;
+        const detailedErrors = errorData?.errors ? JSON.stringify(errorData.errors) : '';
+        const fullMsg = `Shiprocket Order Creation Error: ${errorMessage} ${detailedErrors}`.trim();
 
-      shiprocketLogger.error('ORDERS_SERVICE', fullMsg, errorData || err);
-
-      const customErr = new Error(fullMsg);
-      customErr.statusCode = err.response?.status || 422;
-      customErr.response = err.response;
-      throw customErr;
+        shiprocketLogger.error('ORDERS_SERVICE', fullMsg, errorData || err);
+        const customErr = new Error(fullMsg);
+        customErr.statusCode = err.response?.status || 422;
+        customErr.response = err.response;
+        throw customErr;
+      }
     }
+
+    // Handle custom Shiprocket response formats (e.g. wrong pickup location error returned as 200)
+    if (resData && resData.message && resData.message.toLowerCase().includes('wrong pickup location')) {
+      const availableList = resData.data?.data || resData.data || [];
+      if (availableList.length > 0 && availableList[0].pickup_location) {
+        const fallbackLoc = availableList[0].pickup_location;
+        shiprocketLogger.info('ORDERS_SERVICE', `Retrying with corrected Shiprocket Pickup Location: "${fallbackLoc}"`);
+        payload.pickup_location = fallbackLoc;
+        const retryRes = await shiprocketClient.post('/v1/external/orders/create/adhoc', payload);
+        resData = retryRes.data;
+      }
+    }
+
+    return await this._processShiprocketSuccess(orderId, resData);
   },
 
   /**
    * Internal Helper to Process Successful Shiprocket Order Response
    */
   async _processShiprocketSuccess(orderId, resData) {
-    const shiprocketOrderId = resData.order_id;
-    const shipmentId = resData.shipment_id;
-    const status = resData.status || 'NEW';
+    console.log('[SHIPROCKET] Shiprocket Response:', JSON.stringify(resData, null, 2));
+    shiprocketLogger.info('ORDERS_SERVICE', '[SHIPROCKET] Shiprocket Response:', resData);
 
-    // Update database Order record with flat fields
+    const payloadData = (resData.data && typeof resData.data === 'object') ? { ...resData, ...resData.data } : resData;
+
+    const shiprocketOrderId = payloadData.order_id || payloadData.id;
+    const shipmentId = payloadData.shipment_id;
+    const status = payloadData.status || 'READY TO SHIP';
+
+    const awbCode = payloadData.awb_code || payloadData.awb_code_status || null;
+    const courierId = payloadData.courier_company_id || payloadData.courier_id || null;
+    const courierName = payloadData.courier_name || payloadData.courier || null;
+
+    const courierAlreadyAssigned = !!(awbCode || courierId || courierName);
+    console.log(`[SHIPROCKET] Courier Already Assigned: ${courierAlreadyAssigned}`);
+    shiprocketLogger.info('ORDERS_SERVICE', `[SHIPROCKET] Courier Already Assigned: ${courierAlreadyAssigned}`);
+
+    if (courierAlreadyAssigned) {
+      console.log('[SHIPROCKET] Skipping Assign Courier...');
+      shiprocketLogger.info('ORDERS_SERVICE', '[SHIPROCKET] Skipping Assign Courier...');
+    }
+
+    // Task 3: Build update object for Database
+    const updateData = {
+      shiprocketOrderId: parseInt(shiprocketOrderId),
+      shipmentId: parseInt(shipmentId),
+      shiprocketStatus: status,
+      shiprocketData: resData,
+      status: 'PROCESSING'
+    };
+
+    if (awbCode) updateData.awbCode = awbCode.toString();
+    if (courierName) updateData.courierName = courierName.toString();
+    if (courierId) updateData.courierId = parseInt(courierId);
+
+    // Update database Order record
     const updatedOrder = await prisma.order.update({
       where: { id: orderId },
-      data: {
-        shiprocketOrderId: parseInt(shiprocketOrderId),
-        shipmentId: parseInt(shipmentId),
-        shiprocketStatus: status,
-        shiprocketData: resData,
-        status: 'PROCESSING'
-      }
+      data: updateData
     });
 
-    shiprocketLogger.info('ORDERS_SERVICE', `Successfully created Shiprocket Order! ID: ${shiprocketOrderId}, Shipment ID: ${shipmentId}`);
+    console.log('[SHIPROCKET] Shipment Saved Successfully');
+    shiprocketLogger.info('ORDERS_SERVICE', '[SHIPROCKET] Shipment Saved Successfully', updatedOrder);
 
+    // Task 5: Return clean success response structure
     return {
       success: true,
-      shiprocketOrderId,
-      shipmentId,
-      status,
+      orderId: parseInt(shiprocketOrderId),
+      shiprocketOrderId: parseInt(shiprocketOrderId),
+      shipmentId: parseInt(shipmentId),
+      awb: awbCode ? awbCode.toString() : (updatedOrder.awbCode || null),
+      courier: courierName ? courierName.toString() : (updatedOrder.courierName || null),
+      status: status,
+      courierAlreadyAssigned,
       rawResponse: resData,
       order: updatedOrder
     };
