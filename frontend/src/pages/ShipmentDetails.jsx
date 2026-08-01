@@ -20,6 +20,7 @@ import { GiSun } from 'react-icons/gi';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../utils/api';
 import { useCartStore } from '../store/useCartStore';
+import { useFeedbackStore } from '../store/useFeedbackStore';
 
 export default function ShipmentDetails() {
   const { orderId } = useParams();
@@ -31,6 +32,29 @@ export default function ShipmentDetails() {
   const [error, setError] = useState(null);
   const [activeInvoice, setActiveInvoice] = useState(false);
   const [isReordering, setIsReordering] = useState(false);
+
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [isCancelling, setIsCancelling] = useState(false);
+  const [cancelError, setCancelError] = useState(null);
+
+  const handleCancelOrder = async () => {
+    try {
+      setIsCancelling(true);
+      setCancelError(null);
+      const res = await api.post(`/orders/${order.id}/cancel`);
+      if (res && res.success) {
+        setOrder(res.order);
+        setShowCancelModal(false);
+        useFeedbackStore.getState().showToast('✔ Order cancelled successfully.', 'success');
+      } else {
+        throw new Error(res?.message || 'Failed to cancel order.');
+      }
+    } catch (err) {
+      setCancelError(err.message || 'Unable to cancel order.');
+    } finally {
+      setIsCancelling(false);
+    }
+  };
 
   const [showSupportModal, setShowSupportModal] = useState(false);
   const [supportSubject, setSupportSubject] = useState('');
@@ -243,9 +267,19 @@ export default function ShipmentDetails() {
     );
   }
 
-  const logisticsStatus = order.logistics?.status || order.status || 'PENDING';
+  const currentShiprocketStatus = (order?.shiprocketStatus || order?.status || 'PENDING').toUpperCase().trim();
+  const isCancelled = currentShiprocketStatus === 'CANCELLED' || currentShiprocketStatus === 'CANCELED';
+  const isDelivered = currentShiprocketStatus === 'DELIVERED';
+  const isRto = currentShiprocketStatus.includes('RTO') || currentShiprocketStatus.includes('RETURN');
+  const logisticsStatus = isCancelled 
+    ? 'CANCELLED' 
+    : isDelivered 
+      ? 'DELIVERED' 
+      : isRto 
+        ? 'RTO' 
+        : currentShiprocketStatus;
+
   const currentStep = getCurrentStepIndex(logisticsStatus);
-  const isCancelled = logisticsStatus === 'CANCELLED';
   const isShipped = ['SHIPPED', 'IN_TRANSIT', 'IN TRANSIT', 'OUT_FOR_DELIVERY', 'DELIVERED'].includes(logisticsStatus);
 
   return (
@@ -293,7 +327,32 @@ export default function ShipmentDetails() {
             Back to Profile
           </button>
           
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2 items-center">
+            {(() => {
+              const normStatus = (order?.shiprocketStatus || order?.status || '').toUpperCase().trim();
+              const isPickedUpOrInTransit = ['PICKED UP', 'PICKED_UP', 'IN_TRANSIT', 'OUT_FOR_DELIVERY', 'DELIVERED'].includes(normStatus);
+              const isCancelled = normStatus === 'CANCELLED' || normStatus === 'CANCELED' || normStatus.includes('CANCEL');
+
+              if (isCancelled) return null;
+
+              if (isPickedUpOrInTransit) {
+                return (
+                  <span className="text-[10px] font-bold text-amber-800 bg-amber-50 border border-amber-200 px-3 py-2 rounded-xl">
+                    Shipment already picked up. Cancellation unavailable.
+                  </span>
+                );
+              }
+
+              return (
+                <button
+                  onClick={() => setShowCancelModal(true)}
+                  className="px-4 py-2 bg-red-50 hover:bg-red-100 border border-red-200 text-red-700 text-xs font-bold uppercase tracking-wider rounded-xl transition cursor-pointer flex items-center gap-1.5"
+                >
+                  <span>✕</span> Cancel Order
+                </button>
+              );
+            })()}
+
             <button 
               onClick={() => setActiveInvoice(true)} 
               className="px-4 py-2 border border-[#EAE4D8] text-stone-700 text-xs font-bold uppercase tracking-wider rounded-xl hover:bg-stone-50 transition cursor-pointer flex items-center gap-1.5"
@@ -362,23 +421,219 @@ export default function ShipmentDetails() {
           </div>
         </div>
 
-        {/* 2. Shipment Timeline Section */}
+        {/* 2. Shipment Journey Section */}
         <div className="bg-white border border-[#EAE4D8] rounded-[32px] p-6 md:p-8 shadow-sm space-y-8 text-left">
           <h2 className="font-serif text-lg font-bold text-[#2F3B0C] border-b pb-3 border-stone-100 flex items-center gap-2">
-            <FiTruck className="text-[#C68A2B]" /> Shipment Journey
+            <FiTruck className="text-[#C68A2B]" /> Order Journey
           </h2>
 
           {isCancelled ? (
-            <div className="py-6 text-center flex flex-col items-center gap-3">
-              <div className="w-14 h-14 rounded-full bg-red-50 border border-red-150 flex items-center justify-center text-red-550 text-xl font-bold shadow-sm">
-                ✕
-              </div>
-              <h3 className="font-serif text-base font-bold text-red-800">Shipment Cancelled</h3>
-              <p className="text-xs text-stone-500 max-w-sm leading-relaxed font-medium">
-                This shipment has been cancelled. If payment was processed online, a refund will be initiated to your source account automatically.
-              </p>
-            </div>
+            /* ─── CANCELLATION + REFUND BRANCH ─────────────────────────────── */
+            (() => {
+              const refundStatus = (order.refundStatus || 'NONE').toUpperCase().trim();
+              const refundId = order.refundId || null;
+              const refundAmount = order.refundAmount || order.totalAmount;
+              const refundGateway = order.refundGateway || 'Razorpay';
+              const refundCompletedAt = order.refundCompletedAt ? new Date(order.refundCompletedAt) : (order.refundDate ? new Date(order.refundDate) : null);
+              const cancelDate = order.updatedAt ? new Date(order.updatedAt) : new Date();
+              const initiatedDate = order.refundInitiatedAt ? new Date(order.refundInitiatedAt) : cancelDate;
+              const expectedCreditDate = order.refundExpectedDate ? new Date(order.refundExpectedDate) : new Date(initiatedDate.getTime() + 7 * 24 * 60 * 60 * 1000);
+              const now = new Date();
+              const msRemaining = expectedCreditDate - now;
+              const daysRemaining = Math.max(0, Math.ceil(msRemaining / (1000 * 60 * 60 * 24)));
+
+              const isRefundCompleted = refundStatus === 'COMPLETED';
+              const isRefundProcessing = refundStatus === 'PROCESSING' || refundStatus === 'INITIATED' || (refundStatus !== 'COMPLETED' && refundStatus !== 'FAILED' && order.paymentStatus === 'REFUND_PENDING');
+              const isRefundFailed = refundStatus === 'FAILED';
+
+              const formatDate = (d) => d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', weekday: 'long' });
+              const formatDateTime = (d) => d.toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+              // Cancelled timeline steps
+              const cancelledSteps = [
+                { label: 'Order Placed', done: true, date: new Date(order.createdAt) },
+                { label: 'Payment Verified', done: true, date: new Date(order.createdAt) },
+                { label: 'Shipment Created', done: !!order.shiprocketOrderId, date: order.shiprocketOrderId ? new Date(order.updatedAt || order.createdAt) : null },
+                { label: 'AWB Assigned', done: !!order.awbCode, date: order.awbCode ? new Date(order.updatedAt || order.createdAt) : null },
+                { label: 'Shipment Cancelled', done: true, isCancelNode: true, date: cancelDate },
+                { label: 'Refund Initiated', done: isRefundProcessing || isRefundCompleted || isRefundFailed, isRefundNode: true, date: initiatedDate },
+                { label: 'Refund Processing', done: isRefundProcessing || isRefundCompleted, isRefundNode: true, date: isRefundProcessing ? initiatedDate : refundCompletedAt },
+                { label: 'Refund Credited', done: isRefundCompleted, isCreditNode: true, date: isRefundCompleted ? refundCompletedAt : null },
+              ];
+
+              return (
+                <div className="space-y-8">
+                  {/* Vertical Cancelled Journey Timeline */}
+                  <div className="relative pl-8 space-y-5">
+                    {/* Connector line */}
+                    <div className="absolute left-[13px] top-4 bottom-4 w-0.5 bg-stone-200 rounded-full" />
+
+                    {cancelledSteps.map((step, idx) => {
+                      const isDone = step.done;
+                      const isCancelNode = step.isCancelNode;
+                      const isRefundNode = step.isRefundNode;
+                      const isCreditNode = step.isCreditNode;
+
+                      return (
+                        <div key={idx} className="flex items-start gap-4 relative">
+                          {/* Node */}
+                          <div className={`w-7 h-7 rounded-full border-2 flex items-center justify-center z-10 shrink-0 shadow-sm transition-all duration-300 ${
+                            isCancelNode
+                              ? 'bg-red-600 border-red-600 text-white'
+                              : isCreditNode && isDone
+                                ? 'bg-emerald-600 border-emerald-600 text-white'
+                                : isRefundNode && isDone
+                                  ? 'bg-blue-500 border-blue-500 text-white'
+                                  : isDone
+                                    ? 'bg-[#4E641A] border-[#4E641A] text-white'
+                                    : 'bg-white border-stone-300 text-stone-400'
+                          }`}>
+                            {isCancelNode ? (
+                              <span className="text-[9px] font-bold">✕</span>
+                            ) : isDone ? (
+                              <span className="text-[9px] font-bold">✓</span>
+                            ) : (
+                              <span className="text-[8px] text-stone-400">○</span>
+                            )}
+                          </div>
+
+                          {/* Content */}
+                          <div className="space-y-0.5 text-left pt-0.5 min-w-0">
+                            <h4 className={`text-xs font-bold uppercase tracking-wider ${
+                              isCancelNode
+                                ? 'text-red-700'
+                                : isCreditNode && isDone
+                                  ? 'text-emerald-700'
+                                  : isRefundNode && isDone
+                                    ? 'text-blue-700'
+                                    : isDone
+                                      ? 'text-[#2F3B0C]'
+                                      : 'text-stone-400'
+                            }`}>
+                              {step.label}
+                            </h4>
+                            {step.date && (
+                              <p className="text-[9px] text-stone-400 font-medium">
+                                {formatDateTime(step.date)}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* ── Refund Details Card ─────────────────────────────────── */}
+                  {isRefundCompleted ? (
+                    /* SUCCESS CARD */
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="bg-emerald-50 border border-emerald-200 rounded-2xl p-5 space-y-4"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-emerald-600 text-white flex items-center justify-center text-base font-bold shadow-md">✓</div>
+                        <div>
+                          <h3 className="font-serif text-sm font-bold text-emerald-800">Refund Successfully Credited</h3>
+                          <p className="text-[10px] text-emerald-700 font-medium">Your money has been returned to your original payment method.</p>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-2 gap-3 pt-2 border-t border-emerald-200/60 text-xs">
+                        <div>
+                          <span className="text-[9px] font-extrabold uppercase tracking-wider text-emerald-600 block">Refund Amount</span>
+                          <strong className="text-emerald-900 font-serif text-sm">₹{refundAmount}</strong>
+                        </div>
+                        <div>
+                          <span className="text-[9px] font-extrabold uppercase tracking-wider text-emerald-600 block">Gateway</span>
+                          <strong className="text-emerald-900">Razorpay</strong>
+                        </div>
+                        {refundId && (
+                          <div className="col-span-2">
+                            <span className="text-[9px] font-extrabold uppercase tracking-wider text-emerald-600 block">Refund ID</span>
+                            <strong className="font-mono text-emerald-900 text-[11px] break-all">{refundId}</strong>
+                          </div>
+                        )}
+                        {refundCompletedAt && (
+                          <div className="col-span-2">
+                            <span className="text-[9px] font-extrabold uppercase tracking-wider text-emerald-600 block">Credited On</span>
+                            <strong className="text-emerald-900">{formatDateTime(refundCompletedAt)}</strong>
+                          </div>
+                        )}
+                      </div>
+                    </motion.div>
+                  ) : isRefundFailed ? (
+                    /* FAILED CARD */
+                    <div className="bg-red-50 border border-red-200 rounded-2xl p-5 space-y-3">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-full bg-red-600 text-white flex items-center justify-center text-sm font-bold shadow-sm">✕</div>
+                        <div>
+                          <h3 className="font-serif text-sm font-bold text-red-800">Refund Attempt Failed</h3>
+                          <p className="text-[10px] text-red-700 font-medium">Our system will retry automatically. Contact support if this persists.</p>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-2 gap-3 pt-2 border-t border-red-200/60 text-xs">
+                        <div>
+                          <span className="text-[9px] font-extrabold uppercase tracking-wider text-red-600 block">Refund Amount</span>
+                          <strong className="text-red-900 font-serif">₹{refundAmount}</strong>
+                        </div>
+                        <div>
+                          <span className="text-[9px] font-extrabold uppercase tracking-wider text-red-600 block">Gateway</span>
+                          <strong className="text-red-900">Razorpay</strong>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    /* PENDING CARD */
+                    <div className="bg-blue-50 border border-blue-200 rounded-2xl p-5 space-y-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-blue-100 border-2 border-blue-300 flex items-center justify-center text-blue-700 text-base">
+                          <span className="animate-spin text-sm">↻</span>
+                        </div>
+                        <div>
+                          <h3 className="font-serif text-sm font-bold text-blue-900">Refund In Progress</h3>
+                          <p className="text-[10px] text-blue-700 font-medium leading-relaxed max-w-xs">
+                            Your refund has been initiated successfully through Razorpay and is expected to be credited to your original payment method within 5–7 working days.
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3 border-t border-blue-200/60 pt-3 text-xs">
+                        <div>
+                          <span className="text-[9px] font-extrabold uppercase tracking-wider text-blue-600 block">Refund Amount</span>
+                          <strong className="text-blue-900 font-serif text-sm">₹{refundAmount}</strong>
+                        </div>
+                        <div>
+                          <span className="text-[9px] font-extrabold uppercase tracking-wider text-blue-600 block">Gateway</span>
+                          <strong className="text-blue-900">Razorpay</strong>
+                        </div>
+                        <div>
+                          <span className="text-[9px] font-extrabold uppercase tracking-wider text-blue-600 block">Refund Initiated</span>
+                          <strong className="text-blue-900 text-[11px]">{formatDateTime(initiatedDate)}</strong>
+                        </div>
+                        <div>
+                          <span className="text-[9px] font-extrabold uppercase tracking-wider text-blue-600 block">Expected Credit</span>
+                          <strong className="text-blue-900 text-[11px]">{formatDate(expectedCreditDate)}</strong>
+                        </div>
+                        {daysRemaining > 0 && (
+                          <div className="col-span-2 bg-blue-100 rounded-xl px-3 py-2 border border-blue-200">
+                            <span className="text-[9px] font-extrabold uppercase tracking-wider text-blue-600 block">Time Remaining</span>
+                            <strong className="text-blue-900 text-xs">{daysRemaining} {daysRemaining === 1 ? 'day' : 'days'} until expected credit</strong>
+                          </div>
+                        )}
+                        {refundId && (
+                          <div className="col-span-2">
+                            <span className="text-[9px] font-extrabold uppercase tracking-wider text-blue-600 block">Refund ID</span>
+                            <strong className="font-mono text-blue-900 text-[11px] break-all">{refundId}</strong>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })()
           ) : (
+            /* ─── DELIVERY BRANCH (unchanged) ──────────────────────────────── */
             <>
               {/* Desktop Horizontal Timeline */}
               <div className="hidden md:block relative py-8 px-4">
@@ -949,6 +1204,61 @@ export default function ShipmentDetails() {
         )}
       </AnimatePresence>
 
+      {/* Cancellation Confirmation Modal */}
+      <AnimatePresence>
+        {showCancelModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-900/60 backdrop-blur-xs">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-white border border-[#EAE4D8] rounded-[28px] p-6 max-w-md w-full shadow-2xl space-y-4 text-left relative"
+            >
+              <div className="flex items-center justify-between border-b pb-3 border-stone-100">
+                <h3 className="font-serif text-lg font-bold text-[#2F3B0C] flex items-center gap-2">
+                  <span>⚠️</span> Cancel Order #{order.orderNumber}?
+                </h3>
+                <button
+                  onClick={() => setShowCancelModal(false)}
+                  className="text-stone-400 hover:text-stone-600 border-none bg-transparent cursor-pointer text-sm"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <p className="text-xs text-stone-600 leading-relaxed font-medium">
+                Are you sure you want to cancel this order? Once confirmed, your order will be aborted.
+                {order.paymentStatus === 'COMPLETED' || order.paymentStatus === 'PAID' ? ' Since your payment was prepaid, a refund will be marked as PENDING for source account processing.' : ''}
+              </p>
+
+              {cancelError && (
+                <div className="p-3 bg-red-50 text-red-700 border border-red-200 rounded-xl text-xs font-semibold">
+                  {cancelError}
+                </div>
+              )}
+
+              <div className="flex gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowCancelModal(false)}
+                  disabled={isCancelling}
+                  className="flex-1 py-3 bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-bold uppercase tracking-wider rounded-xl transition cursor-pointer border-none"
+                >
+                  Keep Order
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCancelOrder}
+                  disabled={isCancelling}
+                  className="flex-1 py-3 bg-red-700 hover:bg-red-800 text-white text-xs font-bold uppercase tracking-wider rounded-xl transition cursor-pointer border-none flex items-center justify-center gap-1.5 disabled:opacity-50"
+                >
+                  {isCancelling ? 'Cancelling...' : 'Confirm Cancellation'}
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

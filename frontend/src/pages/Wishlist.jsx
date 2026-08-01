@@ -92,7 +92,8 @@ export default function Wishlist() {
             {wishlistItems.map((item) => {
               const product = item.product;
               const productPrice = product.price;
-              const productImg = product.images?.length > 0 ? product.images[0].url : product.image;
+              const rawImgUrl = typeof product.images?.[0] === 'string' ? product.images[0] : (product.images?.[0]?.url || product.image);
+              const productImg = getOptimizedImageUrl(rawImgUrl, { width: 800, cropMode: 'limit' });
               
               return (
                 <div 
@@ -106,11 +107,15 @@ export default function Wishlist() {
                       </div>
                     )}
                     <img
-                      src={getOptimizedImageUrl(productImg, { width: 800, cropMode: 'limit' })}
-                      srcSet={getImageSrcSet(productImg, { widths: [400, 800], cropMode: 'limit' })}
+                      src={productImg}
+                      srcSet={getImageSrcSet(rawImgUrl, { widths: [400, 800], cropMode: 'limit' })}
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                       alt={product.name}
                       onLoad={() => handleImageLoad(item.id)}
+                      onError={(e) => {
+                        handleImageLoad(item.id);
+                        handleImageError(e, DEFAULT_FALLBACK_IMAGE);
+                      }}
                       className={`w-full h-full object-contain p-3.5 filter drop-shadow-[0_8px_16px_rgba(0,0,0,0.12)] group-hover:scale-105 transition-all duration-500 ${
                         loadedImages[item.id] ? 'opacity-100' : 'opacity-0'
                       }`}

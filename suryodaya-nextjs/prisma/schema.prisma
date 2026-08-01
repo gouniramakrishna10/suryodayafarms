@@ -135,6 +135,7 @@ model Product {
   seoTitle       String?
   seoDescription String?
   seoKeywords    String?
+  productContent Json?
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
 

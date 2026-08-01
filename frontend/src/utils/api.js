@@ -1,10 +1,15 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.PROD
-  ? "https://suryodayafarms.onrender.com"
-  : (import.meta.env.VITE_API_URL || "http://localhost:5000");
+const getApiBaseUrl = () => {
+  if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+    return 'http://localhost:5000/api';
+  }
+  const envUrl = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? "https://suryodayafarms.onrender.com" : "http://localhost:5000");
+  return envUrl.endsWith('/api') ? envUrl : `${envUrl}/api`;
+};
 
-const baseURL = API_BASE_URL.endsWith('/api') ? API_BASE_URL : `${API_BASE_URL}/api`;
+const baseURL = getApiBaseUrl();
+console.log(`[API Client Config]: Base URL set to ${baseURL}`);
 
 // Initialize configured Axios instance
 const api = axios.create({

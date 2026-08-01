@@ -8,8 +8,29 @@ export default defineConfig(({ mode }) => ({
     react(),
     tailwindcss(),
   ],
-  esbuild: {
-    drop: mode === 'production' ? ['console', 'debugger'] : [],
+  build: {
+    target: 'es2020',
+    cssCodeSplit: true,
+    minify: 'esbuild',
+    chunkSizeWarningLimit: 1000,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router-dom')) {
+              return 'vendor-react';
+            }
+            if (id.includes('framer-motion')) {
+              return 'vendor-framer';
+            }
+            if (id.includes('react-icons')) {
+              return 'vendor-icons';
+            }
+            return 'vendor-utils';
+          }
+        }
+      }
+    }
   },
   server: {
     host: '127.0.0.1',

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiStar, FiHeart, FiSearch } from 'react-icons/fi';
@@ -54,7 +54,7 @@ const getDynamicBadge = (prod) => {
   return 'Single Origin';
 };
 
-export default function ProductCard({ product, onQuickView }) {
+const ProductCard = memo(function ProductCard({ product, onQuickView }) {
   const navigate = useNavigate();
   const { addItem, cartItems, updateQuantity, removeItem } = useCartStore();
   const wishlistItems = useWishlistStore(state => state.wishlistItems);
@@ -150,13 +150,12 @@ export default function ProductCard({ product, onQuickView }) {
     }
   }, [product]);
 
-  // Parse and optimize all unique product images (declared before early return to obey React hooks order rules)
   const getProductImageUrls = () => {
-    let urls = [];
-    if (Array.isArray(product.images)) {
+    const urls = [];
+    if (product.images && product.images.length > 0) {
       product.images.forEach(img => {
         if (typeof img === 'string') {
-          if (img) urls.push(img);
+          urls.push(img);
         } else if (img && typeof img === 'object' && img.url) {
           urls.push(img.url);
         }
@@ -166,6 +165,9 @@ export default function ProductCard({ product, onQuickView }) {
     if (urls.length === 0) {
       if (product.image) urls.push(product.image);
       if (product.hoverImage) urls.push(product.hoverImage);
+    }
+    if (urls.length === 0) {
+      urls.push(DEFAULT_FALLBACK_IMAGE);
     }
     return [...new Set(urls)].filter(Boolean);
   };
@@ -287,9 +289,10 @@ export default function ProductCard({ product, onQuickView }) {
             height={800}
             loading={index === 0 ? "lazy" : "eager"}
             onLoad={() => handleImageLoad(index)}
+            onError={(e) => handleImageError(e)}
             className="absolute inset-0 w-full h-full object-contain p-3.5 filter drop-shadow-[0_8px_16px_rgba(0,0,0,0.12)] group-hover:scale-105 transition-opacity duration-600 ease-in-out product-card-image"
             style={{
-              opacity: (index === currentImageIndex && loadedImages[index]) ? 1 : 0,
+              opacity: index === currentImageIndex ? 1 : 0,
               zIndex: index === currentImageIndex ? 10 : 0,
               pointerEvents: index === currentImageIndex ? 'auto' : 'none'
             }}
@@ -492,5 +495,7 @@ export default function ProductCard({ product, onQuickView }) {
       </div>
     </motion.div>
   );
-}
+});
+
+export default ProductCard;
 

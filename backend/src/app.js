@@ -4,10 +4,27 @@ import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import rateLimit from 'express-rate-limit';
+import compression from 'compression';
 
 dotenv.config();
 
 const app = express();
+
+// 0. HTTP Compression (Brotli + Gzip)
+app.use(compression({
+  threshold: 512,
+  level: 6
+}));
+
+// Caching headers middleware for public read routes
+app.use((req, res, next) => {
+  if (req.method === 'GET') {
+    if (req.path.startsWith('/api/public') || req.path.startsWith('/api/products') || req.path.startsWith('/api/categories')) {
+      res.setHeader('Cache-Control', 'public, max-age=60, s-maxage=300, stale-while-revalidate=600');
+    }
+  }
+  next();
+});
 
 app.get("/", (req, res) => {
   res.send("API WORKING");
@@ -81,6 +98,7 @@ import orderRoutes from './routes/orderRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import publicRoutes from './routes/publicRoutes.js';
 import supportRoutes from './routes/supportRoutes.js';
+import shiprocketRoutes from './routes/shiprocketRoutes.js';
 
 app.use('/api/auth', authRoutes);         // Sign-in, Register, Profile, Saved Addresses
 app.use('/api/products', productRoutes);     // Products catalog, reviews, category lists
@@ -92,6 +110,7 @@ app.use('/api/orders', orderRoutes);         // Order checkouts, payments, and h
 app.use('/api/admin', adminRoutes);          // Dashboard metrics and administrative edits
 app.use('/api/public', publicRoutes);        // Blog chronicle lists, testimonials, contact submit
 app.use('/api/support', supportRoutes);      // Order support and customer help tickets
+app.use('/api/shiprocket', shiprocketRoutes); // Shiprocket Logistics APIs & Webhooks
 
 // 6. Global Error Handling Middleware
 app.use((err, req, res, next) => {

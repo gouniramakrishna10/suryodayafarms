@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAdminAuthStore } from '../store/useAdminAuthStore';
 import { useSettingsStore } from '../store/useSettingsStore';
@@ -39,12 +40,19 @@ import {
   FiChevronDown,
   FiChevronUp,
   FiMoreVertical,
-  FiArrowLeft
+  FiArrowLeft,
+  FiRefreshCw
 } from 'react-icons/fi';
 import { GiSun } from 'react-icons/gi';
 import api from '../utils/api';
 import ImageCropper from './components/ImageCropper';
 import UnifiedUploader from '../components/UnifiedUploader';
+import RichTextEditor from './components/RichTextEditor';
+import ProductsListPage from './products/ProductsListPage';
+import CreateProductPage from './products/CreateProductPage';
+import EditProductPage from './products/EditProductPage';
+import ShiprocketSettings from './components/ShiprocketSettings';
+import LogisticsDashboardPage from './logistics/LogisticsDashboardPage';
 
 const getCloudinaryCroppedUrl = (url, crop) => {
   if (!url || !crop || crop.cropX === undefined || crop.cropX === null || !crop.cropWidth) return url;
@@ -57,6 +65,136 @@ const getCloudinaryCroppedUrl = (url, crop) => {
     }
   }
   return url;
+};
+
+// Robust document content parser for CMS imports
+const parseImportedFileContent = (rawText, fileName) => {
+  const result = {
+    title: '',
+    about: '',
+    highlights: [],
+    customSpecs: [],
+    faqs: []
+  };
+
+  const extension = fileName.split('.').pop().toLowerCase();
+
+  if (extension === 'html') {
+    // Basic HTML parser
+    const doc = new DOMParser().parseFromString(rawText, 'text/html');
+    
+    // Title
+    const titleEl = doc.querySelector('h1');
+    if (titleEl) result.title = titleEl.textContent.trim();
+
+    // Description/About
+    const pElements = Array.from(doc.querySelectorAll('p'));
+    result.about = pElements.map(p => p.innerHTML.trim()).join('<br/><br/>');
+
+    // Highlights
+    doc.querySelectorAll('ul li').forEach(li => {
+      result.highlights.push(li.textContent.trim());
+    });
+
+    // Custom Specs Table
+    doc.querySelectorAll('table tr').forEach(tr => {
+      const tds = tr.querySelectorAll('td');
+      if (tds.length >= 2) {
+        result.customSpecs.push({
+          key: tds[0].textContent.trim(),
+          value: tds[1].textContent.trim()
+        });
+      }
+    });
+
+    // FAQs
+    const faqDl = doc.querySelectorAll('dl dt');
+    if (faqDl.length > 0) {
+      faqDl.forEach(dt => {
+        const dd = dt.nextElementSibling;
+        if (dd && dd.tagName.toLowerCase() === 'dd') {
+          result.faqs.push({
+            question: dt.textContent.trim(),
+            answer: dd.textContent.trim()
+          });
+        }
+      });
+    }
+  } else {
+    // Markdown & plain text parsing
+    const lines = rawText.split('\n');
+    let currentSection = '';
+    let inTable = false;
+
+    lines.forEach(line => {
+      const trimmed = line.trim();
+      if (!trimmed) return;
+
+      // H1 title matching
+      if (trimmed.startsWith('# ')) {
+        result.title = trimmed.replace('# ', '').trim();
+        return;
+      }
+
+      // Check section headers
+      if (trimmed.toLowerCase().includes('highlights') || trimmed.toLowerCase().includes('key features')) {
+        currentSection = 'highlights';
+        return;
+      }
+      if (trimmed.toLowerCase().includes('specifications') || trimmed.toLowerCase().includes('technical specs')) {
+        currentSection = 'specs';
+        return;
+      }
+      if (trimmed.toLowerCase().includes('faqs') || trimmed.toLowerCase().includes('questions')) {
+        currentSection = 'faqs';
+        return;
+      }
+      if (trimmed.toLowerCase().includes('about') || trimmed.toLowerCase().includes('description')) {
+        currentSection = 'about';
+        return;
+      }
+
+      // Markdown line parsing based on section
+      if (currentSection === 'highlights' && (trimmed.startsWith('-') || trimmed.startsWith('*'))) {
+        result.highlights.push(trimmed.substring(1).trim());
+      } else if (currentSection === 'specs') {
+        if (trimmed.startsWith('|')) {
+          inTable = true;
+          // Skip header separator line
+          if (trimmed.includes('---')) return;
+          const cells = trimmed.split('|').map(c => c.trim()).filter(Boolean);
+          if (cells.length >= 2) {
+            result.customSpecs.push({ key: cells[0], value: cells[1] });
+          }
+        } else if (trimmed.includes(':')) {
+          const parts = trimmed.split(':');
+          result.customSpecs.push({
+            key: parts[0].trim(),
+            value: parts.slice(1).join(':').trim()
+          });
+        }
+      } else if (currentSection === 'faqs') {
+        if (trimmed.toLowerCase().startsWith('q:') || trimmed.startsWith('?')) {
+          result.faqs.push({
+            question: trimmed.replace(/^[qQ]:|\?/, '').trim(),
+            answer: ''
+          });
+        } else if (trimmed.toLowerCase().startsWith('a:') && result.faqs.length > 0) {
+          result.faqs[result.faqs.length - 1].answer = trimmed.replace(/^[aA]:/, '').trim();
+        } else if (result.faqs.length > 0) {
+          const currentFaq = result.faqs[result.faqs.length - 1];
+          currentFaq.answer = currentFaq.answer ? `${currentFaq.answer} ${trimmed}` : trimmed;
+        }
+      } else {
+        // Fallback: collect paragraphs for description/about
+        if (!trimmed.startsWith('|') && !trimmed.startsWith('-') && !trimmed.startsWith('*')) {
+          result.about = result.about ? `${result.about}<br/><br/>${trimmed}` : trimmed;
+        }
+      }
+    });
+  }
+
+  return result;
 };
 
 export default function AdminDashboard() {
@@ -133,6 +271,35 @@ export default function AdminDashboard() {
   // Tab mapping state dynamically mapped to location path
   const [activeTab, setActiveTab] = useState('overview');
 
+  useEffect(() => {
+    const path = location.pathname;
+    if (path.startsWith('/admin/products')) {
+      setActiveTab('products');
+    } else if (path.startsWith('/admin/orders')) {
+      setActiveTab('orders');
+    } else if (path.startsWith('/admin/customers')) {
+      setActiveTab('customers');
+    } else if (path.startsWith('/admin/categories')) {
+      setActiveTab('categories');
+    } else if (path.startsWith('/admin/analytics')) {
+      setActiveTab('analytics');
+    } else if (path.startsWith('/admin/settings')) {
+      setActiveTab('settings');
+    } else if (path.startsWith('/admin/shipping') || path.startsWith('/admin/logistics')) {
+      setActiveTab('logistics');
+    } else if (path.startsWith('/admin/homepage')) {
+      setActiveTab('homepage');
+    } else if (path.startsWith('/admin/coupons')) {
+      setActiveTab('coupons');
+    } else if (path.startsWith('/admin/reviews')) {
+      setActiveTab('reviews');
+    } else if (path.startsWith('/admin/support-tickets')) {
+      setActiveTab('support');
+    } else {
+      setActiveTab('overview');
+    }
+  }, [location.pathname]);
+
   // Interactive Sidebar states for premium collapsible groups & mobile responsiveness
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [collapsedGroups, setCollapsedGroups] = useState({
@@ -158,6 +325,264 @@ export default function AdminDashboard() {
   const [orderSearchQuery, setOrderSearchQuery] = useState('');
   const [orderLogisticsFilter, setOrderLogisticsFilter] = useState('ALL');
   const [orderPaymentFilter, setOrderPaymentFilter] = useState('ALL');
+  const [isGeneratingShipment, setIsGeneratingShipment] = useState({});
+  const [isSyncingAll, setIsSyncingAll] = useState(false);
+  const [isSyncingOrder, setIsSyncingOrder] = useState({});
+
+  const getRelativeTimeString = (dateInput) => {
+    if (!dateInput) return 'Never';
+    const date = new Date(dateInput);
+    if (isNaN(date.getTime())) return 'Never';
+    const seconds = Math.floor((new Date() - date) / 1000);
+    if (seconds < 30) return 'Just now';
+    if (seconds < 60) return `${seconds}s ago`;
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return `${minutes} ${minutes === 1 ? 'minute' : 'minutes'} ago`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours} ${hours === 1 ? 'hour' : 'hours'} ago`;
+    const days = Math.floor(hours / 24);
+    return `${days} ${days === 1 ? 'day' : 'days'} ago`;
+  };
+
+  const handleSyncAllShipments = async () => {
+    try {
+      setIsSyncingAll(true);
+      useFeedbackStore.getState().showToast('↻ Syncing active shipments from Shiprocket...', 'info');
+
+      const res = await api.post('/shiprocket/sync-all');
+      if (res && res.success) {
+        useFeedbackStore.getState().showToast(
+          `✔ ${res.updatedCount || 0} shipments updated from Shiprocket (${res.failedCount || 0} failed).`,
+          res.failedCount > 0 ? 'warning' : 'success'
+        );
+        await fetchOrders();
+        await fetchAnalytics();
+      } else {
+        throw new Error(res?.message || 'Sync failed.');
+      }
+    } catch (err) {
+      useFeedbackStore.getState().showToast(`Sync error: ${err.message}`, 'error');
+    } finally {
+      setIsSyncingAll(false);
+    }
+  };
+
+  const handleSyncSingleOrder = async (order) => {
+    try {
+      setIsSyncingOrder(prev => ({ ...prev, [order.id]: true }));
+      useFeedbackStore.getState().showToast(`↻ Refreshing #${order.orderNumber} from Shiprocket...`, 'info');
+
+      const res = await api.post(`/shiprocket/sync/${order.id}`);
+      if (res && res.success) {
+        useFeedbackStore.getState().showToast(res.message || '✔ Shipment updated from Shiprocket.', 'success');
+        await fetchOrders();
+      } else {
+        throw new Error(res?.message || 'Unable to sync shipment.');
+      }
+    } catch (err) {
+      useFeedbackStore.getState().showToast(`Unable to sync shipment: ${err.message}`, 'error');
+    } finally {
+      setIsSyncingOrder(prev => ({ ...prev, [order.id]: false }));
+    }
+  };
+
+  const [isCancellingShipment, setIsCancellingShipment] = useState({});
+  const [cancelOrderTarget, setCancelOrderTarget] = useState(null);
+  const [showDeleteAllOrdersModal, setShowDeleteAllOrdersModal] = useState(false);
+  const [isDeletingAllOrders, setIsDeletingAllOrders] = useState(false);
+
+  const handleDeleteAllOrders = async () => {
+    try {
+      setIsDeletingAllOrders(true);
+      const res = await api.post('/admin/orders/delete-all');
+      if (res && res.success) {
+        useFeedbackStore.getState().showToast('All test orders have been deleted successfully.', 'success');
+        setOrderSearchQuery('');
+        setOrderLogisticsFilter('ALL');
+        setOrderPaymentFilter('ALL');
+        setShowDeleteAllOrdersModal(false);
+        await fetchOrders();
+        await fetchAnalytics();
+      } else {
+        throw new Error(res?.message || 'Failed to delete test orders.');
+      }
+    } catch (err) {
+      useFeedbackStore.getState().showToast(`Delete All Orders Error: ${err.message}`, 'error');
+    } finally {
+      setIsDeletingAllOrders(false);
+    }
+  };
+
+  const executeAdminCancelShipment = async (order) => {
+    if (!order) return;
+    try {
+      setIsCancellingShipment(prev => ({ ...prev, [order.id]: true }));
+      useFeedbackStore.getState().showToast(`Cancelling shipment for #${order.orderNumber}...`, 'info');
+
+      const res = await api.post(`/orders/${order.id}/cancel`);
+      if (res && res.success) {
+        useFeedbackStore.getState().showToast(
+          `✔ Shipment Cancelled Successfully — Shiprocket has confirmed the cancellation. ${res.refundStatus === 'REFUND_PENDING' ? 'Refund is being processed.' : ''}`,
+          'success'
+        );
+        setCancelOrderTarget(null);
+        await fetchOrders();
+        await fetchAnalytics();
+      } else {
+        throw new Error(res?.message || 'Failed to cancel shipment.');
+      }
+    } catch (err) {
+      useFeedbackStore.getState().showToast(`Cancellation error: ${err.message}`, 'error');
+    } finally {
+      setIsCancellingShipment(prev => ({ ...prev, [order.id]: false }));
+    }
+  };
+
+  const [isRetryingRefund, setIsRetryingRefund] = useState({});
+
+  const handleRetryRazorpayRefund = async (order) => {
+    try {
+      setIsRetryingRefund(prev => ({ ...prev, [order.id]: true }));
+      useFeedbackStore.getState().showToast(`Retrying Razorpay refund for #${order.orderNumber}...`, 'info');
+
+      const res = await api.post(`/orders/${order.id}/retry-refund`);
+      if (res && res.success) {
+        useFeedbackStore.getState().showToast(`✔ Razorpay refund completed successfully (ID: ${res.order?.refundId || 'COMPLETED'}).`, 'success');
+        await fetchOrders();
+      } else {
+        throw new Error(res?.message || 'Failed to retry refund.');
+      }
+    } catch (err) {
+      useFeedbackStore.getState().showToast(`Refund error: ${err.message}`, 'error');
+    } finally {
+      setIsRetryingRefund(prev => ({ ...prev, [order.id]: false }));
+    }
+  };
+
+  const handleGenerateShiprocketShipment = async (order) => {
+    try {
+      setIsGeneratingShipment(prev => ({ ...prev, [order.id]: true }));
+      useFeedbackStore.getState().showToast(`⚡ Initializing Shiprocket Order for #${order.orderNumber}...`, 'info');
+
+      // Step 1: Create Order
+      const createRes = await api.post('/shiprocket/orders', { orderId: order.id });
+      if (!createRes || !createRes.success) {
+        throw new Error(createRes?.message || 'Order creation failed.');
+      }
+
+      // Step 2: Auto Assign Courier & Generate AWB
+      useFeedbackStore.getState().showToast(`🏷️ Assigning Courier & AWB for #${order.orderNumber}...`, 'info');
+      const assignRes = await api.post('/shiprocket/assign-courier', { orderId: order.id, autoAssign: true, preferredMode: 'CHEAPEST' });
+
+      // Step 3: Generate Label in background
+      try {
+        await api.get(`/shiprocket/label?shipmentId=${createRes.shipmentId}&orderId=${order.id}`);
+      } catch (labelErr) {
+        console.warn('[SHIPROCKET ADMIN] Label notice:', labelErr.message);
+      }
+
+      useFeedbackStore.getState().showToast(`✅ Shipment Created! Courier: ${assignRes.courierName || 'Assigned'} (AWB: ${assignRes.awbCode || 'Generated'})`, 'success');
+      await fetchOrders();
+      await fetchAnalytics();
+    } catch (err) {
+      useFeedbackStore.getState().showToast(`❌ Shipment Error: ${err.message}`, 'error');
+    } finally {
+      setIsGeneratingShipment(prev => ({ ...prev, [order.id]: false }));
+    }
+  };
+
+  const handleSchedulePickup = async (shipmentId, orderId) => {
+    try {
+      useFeedbackStore.getState().showToast('Scheduling Pickup with Shiprocket...', 'info');
+      const res = await api.post('/shiprocket/schedule-pickup', { shipmentId, orderId });
+      
+      if (res && res.success) {
+        useFeedbackStore.getState().showToast(`✅ Pickup scheduled! Date: ${res.pickupDate} (Token: ${res.pickupToken})`, 'success');
+        await fetchOrders(); // refresh order
+        await fetchAnalytics();
+      } else {
+        throw new Error(res?.message || 'Failed to schedule pickup.');
+      }
+    } catch (err) {
+      useFeedbackStore.getState().showToast(`Pickup Error: ${err.message}`, 'error');
+    }
+  };
+
+  const handlePrintLabel = async (order) => {
+    const sId = order.shipmentId || order.shiprocketOrderId;
+    if (!sId) {
+      useFeedbackStore.getState().showToast('Please click "Generate Shipment" first before printing label.', 'warning');
+      return;
+    }
+    try {
+      useFeedbackStore.getState().showToast('Generating Shipping Label PDF...', 'info');
+      const res = await api.get(`/shiprocket/label?shipmentId=${sId}&orderId=${order.id}`);
+      if (res && res.labelUrl) {
+        window.open(res.labelUrl, '_blank');
+        useFeedbackStore.getState().showToast('Shipping Label PDF opened in new tab.', 'success');
+      } else {
+        throw new Error(res?.message || 'Label URL not returned.');
+      }
+    } catch (err) {
+      useFeedbackStore.getState().showToast(`Label error: ${err.message}`, 'error');
+    }
+  };
+
+  const handlePrintInvoice = async (order) => {
+    const sOrderId = order.shiprocketOrderId || order.shipmentId;
+    if (!sOrderId) {
+      useFeedbackStore.getState().showToast('Please click "Generate Shipment" first before printing invoice.', 'warning');
+      return;
+    }
+    try {
+      useFeedbackStore.getState().showToast('Generating Tax Invoice PDF...', 'info');
+      const res = await api.get(`/shiprocket/invoice?shiprocketOrderIds=${sOrderId}&orderId=${order.id}`);
+      if (res && res.invoiceUrl) {
+        window.open(res.invoiceUrl, '_blank');
+        useFeedbackStore.getState().showToast('Tax Invoice PDF opened in new tab.', 'success');
+      } else {
+        throw new Error(res?.message || 'Invoice URL not returned.');
+      }
+    } catch (err) {
+      useFeedbackStore.getState().showToast(`Invoice error: ${err.message}`, 'error');
+    }
+  };
+
+  const handleDownloadManifest = async (order) => {
+    const sId = order.shipmentId || order.shiprocketOrderId;
+    if (!sId) {
+      useFeedbackStore.getState().showToast('Please click "Generate Shipment" first before downloading manifest.', 'warning');
+      return;
+    }
+    try {
+      useFeedbackStore.getState().showToast('Generating Manifest PDF...', 'info');
+      const res = await api.get(`/shiprocket/manifest?shipmentId=${sId}&orderId=${order.id}`);
+      if (res && res.manifestUrl) {
+        window.open(res.manifestUrl, '_blank');
+        useFeedbackStore.getState().showToast('Manifest PDF opened in new tab.', 'success');
+      } else {
+        throw new Error(res?.message || 'Manifest URL not returned.');
+      }
+    } catch (err) {
+      useFeedbackStore.getState().showToast(`Manifest error: ${err.message}`, 'error');
+    }
+  };
+
+  const handleTrackShipment = async (order) => {
+    const sId = order.shipmentId || order.shiprocketOrderId;
+    if (!sId) {
+      useFeedbackStore.getState().showToast('Shipment not created yet.', 'warning');
+      return;
+    }
+    try {
+      useFeedbackStore.getState().showToast('Fetching Live Shiprocket Tracking...', 'info');
+      const res = await api.get(`/shiprocket/tracking/${sId}`);
+      const trackUrl = res?.tracking_data?.track_url || `https://shiprocket.co/tracking/${order.awbCode || sId}`;
+      window.open(trackUrl, '_blank');
+    } catch (err) {
+      window.open(`https://shiprocket.co/tracking/${order.awbCode || sId}`, '_blank');
+    }
+  };
 
   // Reviews Moderation & Testimonials CMS States
   const [reviewsList, setReviewsList] = useState([]);
@@ -201,7 +626,7 @@ export default function AdminDashboard() {
   });
 
   const [productSpecificReviews, setProductSpecificReviews] = useState([]);
-  const [productModalTab, setProductModalTab] = useState('general');
+  const [productModalTab, setProductModalTab] = useState('basic');
 
   // New states for independent review management
   const [selectedReviewProductId, setSelectedReviewProductId] = useState(null);
@@ -812,6 +1237,51 @@ export default function AdminDashboard() {
 
   // Search and Filter parameters
   const [searchQuery, setSearchQuery] = useState('');
+  const [categorySearchQuery, setCategorySearchQuery] = useState('');
+  const [productCatalogSearch, setProductCatalogSearch] = useState('');
+  const [productCategoryFilter, setProductCategoryFilter] = useState('ALL');
+  const [productStockFilter, setProductStockFilter] = useState('ALL');
+  const [productStatusFilter, setProductStatusFilter] = useState('ALL');
+
+  // Dedicated AI Modal & Generator States (Shopify / Stripe Quality)
+  const [showAiModal, setShowAiModal] = useState(false);
+  const [aiSelectedFile, setAiSelectedFile] = useState(null);
+  const [aiFileType, setAiFileType] = useState('image'); // 'image' | 'pdf' | 'docx'
+  const [aiFilePreview, setAiFilePreview] = useState('');
+  const [aiFilePdfText, setAiFilePdfText] = useState('');
+  const [isAiGenerating, setIsAiGenerating] = useState(false);
+  const [aiProgressStep, setAiProgressStep] = useState(0);
+
+  const AI_IMAGE_STEPS = [
+    'Uploading image',
+    'Reading packaging',
+    'OCR & Label Analysis',
+    'Understanding product',
+    'Generating title & descriptions',
+    'Creating SEO parameters',
+    'Ready'
+  ];
+
+  const AI_PDF_STEPS = [
+    'Uploading PDF',
+    'Reading document pages',
+    'Extracting text content',
+    'OCR on scanned pages',
+    'Understanding document',
+    'Generating product catalog',
+    'Creating SEO parameters',
+    'Ready'
+  ];
+
+  const AI_DOCX_STEPS = [
+    'Uploading Word Document',
+    'Parsing DOCX structure',
+    'Extracting text & spec tables',
+    'Understanding product specs',
+    'Generating product catalog',
+    'Creating SEO parameters',
+    'Ready'
+  ];
 
   // Modals for Products and Categories CRUD
   const [showProductModal, setShowProductModal] = useState(false);
@@ -852,8 +1322,1051 @@ export default function AdminDashboard() {
     seoKeywords: '',
     image: '',
     images: ['', '', '', ''],
-    variants: []
+    variants: [],
+    productContent: {
+      about: '',
+      highlights: [],
+      faqs: [],
+      ourPromise: '',
+      suryodayaDifference: '',
+      customSpecs: [],
+      whyChoose: { title: 'Why Choose Suryodaya Farms', features: [] },
+      waysToEnjoy: { title: 'Ways To Enjoy', items: [] },
+      ingredients: '',
+      storageInstructions: [],
+      qualityCommitment: []
+    }
   });
+
+  const resetProductForm = () => {
+    setProductForm({
+      id: '',
+      name: '',
+      categoryId: '',
+      categoryIds: [],
+      description: '',
+      shortDescription: '',
+      brand: 'Suryodaya Farms',
+      productType: '',
+      price: '',
+      compareAtPrice: '',
+      mrp: '',
+      discountPercent: 0,
+      taxPercent: 0,
+      stockStatus: 'IN_STOCK',
+      sku: '',
+      inventory: '',
+      hoverImage: '',
+      mobileBanner: '',
+      isFeatured: false,
+      isTrending: false,
+      isBestseller: false,
+      isNewLaunch: false,
+      isVisible: true,
+      isComingSoon: false,
+      nutrients: '',
+      origin: '',
+      shelfLife: '',
+      deliveryEta: '2-3 Days',
+      codAvailable: true,
+      returnEligible: false,
+      weight: '',
+      seoTitle: '',
+      seoDescription: '',
+      seoKeywords: '',
+      image: '',
+      images: ['', '', '', ''],
+      variants: [],
+      productContent: {
+        about: '',
+        highlights: [],
+        faqs: [],
+        ourPromise: '',
+        suryodayaDifference: '',
+        customSpecs: [],
+        whyChoose: { title: 'Why Choose Suryodaya Farms', features: [] },
+        waysToEnjoy: { title: 'Ways To Enjoy', items: [] },
+        ingredients: '',
+        storageInstructions: [],
+        qualityCommitment: []
+      }
+    });
+    setProductModalTab('basic');
+    setCategorySearchQuery('');
+  };
+
+  const handleAddVariant = () => {
+    setProductForm(prev => {
+      const currentVariants = prev.variants || [];
+      const nextNum = currentVariants.length + 1;
+      const cleanName = (prev.name || 'PRODUCT').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8);
+      const defaultWeight = nextNum === 1 ? '250' : (nextNum === 2 ? '500' : '1000');
+      const defaultUnit = nextNum >= 3 ? 'kg' : 'g';
+      const autoSku = `SURY-${cleanName}-${defaultWeight}${defaultUnit.toUpperCase()}`;
+
+      const newVariant = {
+        id: '',
+        weight: defaultWeight,
+        unit: defaultUnit,
+        mrp: prev.mrp || '',
+        price: prev.price || '',
+        inventory: '50',
+        sku: autoSku,
+        isExpanded: true
+      };
+
+      return {
+        ...prev,
+        variants: [...currentVariants.map(v => ({ ...v, isExpanded: false })), newVariant]
+      };
+    });
+  };
+
+  const handleUpdateVariant = (index, key, value) => {
+    setProductForm(prev => {
+      const updated = [...(prev.variants || [])];
+      if (!updated[index]) return prev;
+      updated[index] = { ...updated[index], [key]: value };
+
+      if (key === 'weight' || key === 'unit') {
+        const w = key === 'weight' ? value : updated[index].weight;
+        const u = key === 'unit' ? value : updated[index].unit;
+        const cleanName = (prev.name || 'PROD').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8);
+        updated[index].sku = `SURY-${cleanName}-${w}${u.toUpperCase()}`;
+      }
+
+      const primary = updated[0] || {};
+      return {
+        ...prev,
+        variants: updated,
+        price: primary.price || prev.price,
+        mrp: primary.mrp || prev.mrp,
+        inventory: primary.inventory || prev.inventory,
+        weight: primary.weight ? `${primary.weight}${primary.unit || 'g'}` : prev.weight,
+        sku: primary.sku || prev.sku
+      };
+    });
+  };
+
+  const handleDuplicateVariant = (index) => {
+    setProductForm(prev => {
+      const current = [...(prev.variants || [])];
+      const source = current[index];
+      if (!source) return prev;
+      const numWeight = parseFloat(source.weight) || 250;
+      const newWeight = (numWeight >= 1000 && source.unit === 'g') ? '1' : `${numWeight * 2}`;
+      const newUnit = (numWeight >= 1000 && source.unit === 'g') ? 'kg' : source.unit;
+      const cleanName = (prev.name || 'PROD').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8);
+
+      const duplicated = {
+        ...source,
+        id: '',
+        weight: newWeight,
+        unit: newUnit,
+        sku: `SURY-${cleanName}-${newWeight}${newUnit.toUpperCase()}`,
+        isExpanded: true
+      };
+      current.splice(index + 1, 0, duplicated);
+      return { ...prev, variants: current };
+    });
+  };
+
+  const handleDeleteVariant = (index) => {
+    setProductForm(prev => {
+      const current = [...(prev.variants || [])];
+      if (current.length <= 1) {
+        useFeedbackStore.getState().showToast('A product must have at least 1 variant.', 'warning');
+        return prev;
+      }
+      current.splice(index, 1);
+      return { ...prev, variants: current };
+    });
+  };
+
+  const handleReorderVariant = (index, direction) => {
+    setProductForm(prev => {
+      const current = [...(prev.variants || [])];
+      const targetIndex = direction === 'up' ? index - 1 : index + 1;
+      if (targetIndex < 0 || targetIndex >= current.length) return prev;
+      const temp = current[index];
+      current[index] = current[targetIndex];
+      current[targetIndex] = temp;
+      return { ...prev, variants: current };
+    });
+  };
+
+  const toggleExpandVariant = (index) => {
+    setProductForm(prev => {
+      const current = [...(prev.variants || [])];
+      if (current[index]) {
+        current[index] = { ...current[index], isExpanded: !current[index].isExpanded };
+      }
+      return { ...prev, variants: current };
+    });
+  };
+
+  const [editorFullScreen, setEditorFullScreen] = useState(false);
+
+  // AI Product Content Assistant States
+  const [aiInputMode, setAiInputMode] = useState('upload'); // 'upload' | 'paste'
+  const [aiPastedContent, setAiPastedContent] = useState('');
+  const [aiFile, setAiFile] = useState(null);
+  const [aiAnalysisProgressStep, setAiAnalysisProgressStep] = useState(null);
+  const [aiIsAnalyzing, setAiIsAnalyzing] = useState(false);
+  const [aiPreviewData, setAiPreviewData] = useState(null);
+  const [aiSelectedSectionToEdit, setAiSelectedSectionToEdit] = useState(null);
+  const [aiEditedSectionContent, setAiEditedSectionContent] = useState('');
+  const [aiIsDragActive, setAiIsDragActive] = useState(false);
+
+  const moveHighlight = (index, direction) => {
+    const list = [...(productForm.productContent?.highlights || [])];
+    const targetIndex = index + direction;
+    if (targetIndex < 0 || targetIndex >= list.length) return;
+    const [movedItem] = list.splice(index, 1);
+    list.splice(targetIndex, 0, movedItem);
+    setProductForm(prev => ({
+      ...prev,
+      productContent: {
+        ...(prev.productContent || {}),
+        highlights: list
+      }
+    }));
+  };
+
+  const moveCustomSpec = (index, direction) => {
+    const list = [...(productForm.productContent?.customSpecs || [])];
+    const targetIndex = index + direction;
+    if (targetIndex < 0 || targetIndex >= list.length) return;
+    const [movedItem] = list.splice(index, 1);
+    list.splice(targetIndex, 0, movedItem);
+    setProductForm(prev => ({
+      ...prev,
+      productContent: {
+        ...(prev.productContent || {}),
+        customSpecs: list
+      }
+    }));
+  };
+
+  const moveFaq = (index, direction) => {
+    const list = [...(productForm.productContent?.faqs || [])];
+    const targetIndex = index + direction;
+    if (targetIndex < 0 || targetIndex >= list.length) return;
+    const [movedItem] = list.splice(index, 1);
+    list.splice(targetIndex, 0, movedItem);
+    setProductForm(prev => ({
+      ...prev,
+      productContent: {
+        ...(prev.productContent || {}),
+        faqs: list
+      }
+    }));
+  };
+
+  const moveWhyChooseFeature = (index, direction) => {
+    const list = [...(productForm.productContent?.whyChoose?.features || [])];
+    const targetIndex = index + direction;
+    if (targetIndex < 0 || targetIndex >= list.length) return;
+    const [movedItem] = list.splice(index, 1);
+    list.splice(targetIndex, 0, movedItem);
+    setProductForm(prev => ({
+      ...prev,
+      productContent: {
+        ...(prev.productContent || {}),
+        whyChoose: { ...(prev.productContent?.whyChoose || {}), features: list }
+      }
+    }));
+  };
+
+  const moveWaysToEnjoyItem = (index, direction) => {
+    const list = [...(productForm.productContent?.waysToEnjoy?.items || [])];
+    const targetIndex = index + direction;
+    if (targetIndex < 0 || targetIndex >= list.length) return;
+    const [movedItem] = list.splice(index, 1);
+    list.splice(targetIndex, 0, movedItem);
+    setProductForm(prev => ({
+      ...prev,
+      productContent: {
+        ...(prev.productContent || {}),
+        waysToEnjoy: { ...(prev.productContent?.waysToEnjoy || {}), items: list }
+      }
+    }));
+  };
+
+  const readUploadedFileAsText = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      const extension = file.name.split('.').pop().toLowerCase();
+      
+      if (extension === 'txt' || extension === 'md' || extension === 'html' || extension === 'csv' || extension === 'json') {
+        reader.onload = (e) => resolve(e.target.result);
+        reader.onerror = (e) => reject(e);
+        reader.readAsText(file);
+      } else {
+        // PDF, DOCX or other binary files - read as ArrayBuffer and extract ASCII readable characters
+        reader.onload = (e) => {
+          try {
+            const buffer = e.target.result;
+            const arr = new Uint8Array(buffer);
+            let out = '';
+            for (let i = 0; i < arr.length; i++) {
+              if ((arr[i] >= 32 && arr[i] <= 126) || arr[i] === 10 || arr[i] === 13 || arr[i] === 9) {
+                out += String.fromCharCode(arr[i]);
+              }
+            }
+
+            // Strip XML tags and ZIP file metadata headers for docx / doc / xlsx
+            if (extension === 'docx' || extension === 'doc' || extension === 'xlsx') {
+              out = out.replace(/<[^>]+>/g, ' ');
+              out = out.replace(/PK[\s\S]*?xml/gi, ' ');
+              out = out.replace(/\[Content_Types\]\.xml|_rels\/\.rels|docProps\/|word\//gi, ' ');
+            }
+
+            // Clean-up printable characters
+            const cleaned = out.replace(/[^a-zA-Z0-9\s.,?!:;@#%&*()_+-=\[\]{}'"]/g, ' ')
+                               .replace(/\s+/g, ' ')
+                               .trim();
+
+            if (!cleaned || cleaned.length < 10) {
+              reject(new Error('Document content is unreadable or empty. Please copy and paste plain text directly.'));
+              return;
+            }
+
+            resolve(cleaned);
+          } catch (err) {
+            reject(err);
+          }
+        };
+        reader.onerror = (e) => reject(e);
+        reader.readAsArrayBuffer(file);
+      }
+    });
+  };
+
+  const formatFileSize = (bytes) => {
+    if (!bytes) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+  };
+
+  const handleSelectAiFile = (file) => {
+    if (!file) return;
+
+    const isImage = file.type?.startsWith('image/') || /\.(png|jpe?g|webp)$/i.test(file.name);
+    const isPdf = file.type === 'application/pdf' || file.name.endsWith('.pdf');
+    const isDocx = file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
+                  file.type === 'application/msword' ||
+                  /\.(docx?)$/i.test(file.name);
+
+    if (!isImage && !isPdf && !isDocx) {
+      useFeedbackStore.getState().showToast('Please select a valid image (PNG, JPG, JPEG, WEBP), PDF, or DOCX file.', 'warning');
+      return;
+    }
+
+    if (file.size > 20 * 1024 * 1024) {
+      useFeedbackStore.getState().showToast('File size exceeds 20 MB maximum limit.', 'warning');
+      return;
+    }
+
+    setAiSelectedFile(file);
+    const fileType = isPdf ? 'pdf' : (isDocx ? 'docx' : 'image');
+    setAiFileType(fileType);
+
+    if (isImage) {
+      const reader = new FileReader();
+      reader.onload = (e) => setAiFilePreview(e.target.result);
+      reader.readAsDataURL(file);
+      setAiFilePdfText('');
+    } else {
+      setAiFilePreview(file.name);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const text = e.target.result || '';
+        const cleanText = typeof text === 'string'
+          ? text.replace(/[^\x20-\x7E\n\r\t]/g, ' ').replace(/\s+/g, ' ')
+          : '';
+        setAiFilePdfText(cleanText.slice(0, 15000));
+      };
+      reader.readAsText(file);
+    }
+  };
+
+  useEffect(() => {
+    if (!showAiModal) return;
+
+    // Clipboard paste listener
+    const handlePaste = (e) => {
+      const items = e.clipboardData?.items;
+      if (!items) return;
+      for (let item of items) {
+        if (item.type && (item.type.startsWith('image/') || item.type === 'application/pdf' || item.type.includes('word') || item.type.includes('document'))) {
+          const file = item.getAsFile();
+          if (file) {
+            handleSelectAiFile(file);
+            break;
+          }
+        }
+      }
+    };
+
+    // Keyboard listener (ESC to close, Enter to generate)
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && !isAiGenerating) {
+        setShowAiModal(false);
+      }
+      if (e.key === 'Enter' && aiSelectedFile && !isAiGenerating) {
+        e.preventDefault();
+        handleRunAiProductGeneration();
+      }
+    };
+
+    window.addEventListener('paste', handlePaste);
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('paste', handlePaste);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [showAiModal, aiSelectedFile, isAiGenerating]);
+
+  const handleRunAiProductGeneration = async () => {
+    if (!aiSelectedFile) return;
+
+    setIsAiGenerating(true);
+    setAiProgressStep(0);
+
+    const activeSteps = aiFileType === 'pdf' ? AI_PDF_STEPS : (aiFileType === 'docx' ? AI_DOCX_STEPS : AI_IMAGE_STEPS);
+    const maxSteps = activeSteps.length - 1;
+
+    const stepInterval = setInterval(() => {
+      setAiProgressStep((prev) => (prev < maxSteps ? prev + 1 : prev));
+    }, 1000);
+
+    try {
+      let userContentPayload = [];
+
+      if (aiFileType === 'pdf' || aiFileType === 'docx') {
+        userContentPayload = [
+          {
+            type: "text",
+            text: `Extract and generate complete e-commerce product listing details from this product document / catalogue text:
+
+DOCUMENT FILENAME: ${aiSelectedFile.name}
+DOCUMENT TYPE: ${aiFileType.toUpperCase()}
+EXTRACTED TEXT CONTENT:
+${aiFilePdfText || aiSelectedFile.name}`
+          }
+        ];
+      } else {
+        userContentPayload = [
+          {
+            type: "text",
+            text: "Extract and generate complete e-commerce product catalog details from this product packaging label / photo."
+          },
+          {
+            type: "image_url",
+            image_url: {
+              url: aiFilePreview
+            }
+          }
+        ];
+      }
+
+      const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${import.meta.env.VITE_OPENROUTER_API_KEY || ''}`,
+          "HTTP-Referer": window.location.origin || "http://localhost:5173",
+          "X-Title": "Suryodaya Farms Product AI Generator",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          model: "google/gemini-2.5-flash",
+          messages: [
+            {
+              role: "system",
+              content: `You are an expert D2C product copywriter and SEO content generator for Suryodaya Farms (a premium organic food and farming brand).
+Analyze the provided product document / packaging photo and generate complete e-commerce product catalog details.
+
+Return ONLY a raw, unadorned JSON object matching this exact schema:
+{
+  "name": "Product Name",
+  "categoryName": "Category Name (e.g. Ghee, Honey, Wood Pressed Oils, Leaf Powders, Fruit Powders, Spices, Grains)",
+  "shortDescription": "Compelling 1-2 sentence tagline",
+  "description": "Rich detailed product description (2-3 engaging paragraphs)",
+  "ingredients": "100% Pure Organic Ingredients list",
+  "highlights": ["Benefit or feature 1", "Benefit or feature 2", "Benefit or feature 3", "Benefit or feature 4"],
+  "waysToEnjoy": [
+    { "title": "Usage 1", "description": "How to consume or use..." },
+    { "title": "Usage 2", "description": "How to consume or use..." }
+  ],
+  "storageInstructions": ["Store in a cool dry place", "Keep away from direct sunlight"],
+  "weight": "250g",
+  "price": 299,
+  "mrp": 399,
+  "variants": [
+    { "weight": "250", "unit": "g", "mrp": 299, "price": 199, "inventory": 50 },
+    { "weight": "500", "unit": "g", "mrp": 549, "price": 349, "inventory": 50 }
+  ],
+  "seoTitle": "SEO Page Title | Suryodaya Farms",
+  "seoDescription": "Meta description under 160 characters",
+  "nutrients": "Key nutrient composition",
+  "origin": "Rajasthan, India",
+  "shelfLife": "12 Months",
+  "fssaiNumber": "FSSAI License No.",
+  "tags": "organics, natural, traditional, ghee"
+}
+Ensure the output is strictly valid JSON without markdown formatting, code blocks, or surrounding backticks.`
+            },
+            {
+              role: "user",
+              content: userContentPayload
+            }
+          ]
+        })
+      });
+
+      const responseData = await response.json();
+      if (!responseData.choices || responseData.choices.length === 0) {
+        throw new Error(responseData.error?.message || "Invalid response from AI model.");
+      }
+
+      const rawContent = responseData.choices[0].message.content.trim();
+      let cleanJsonStr = rawContent.replace(/```(?:json)?\s*([\s\S]*?)\s*```/i, '$1').trim();
+      const firstBrace = cleanJsonStr.indexOf('{');
+      const lastBrace = cleanJsonStr.lastIndexOf('}');
+      if (firstBrace !== -1 && lastBrace !== -1) {
+        cleanJsonStr = cleanJsonStr.substring(firstBrace, lastBrace + 1);
+      }
+
+      const parsed = JSON.parse(cleanJsonStr);
+
+      setProductForm(prev => {
+        let matchedCatIds = prev.categoryIds || [];
+        let matchedCatId = prev.categoryId || '';
+        if (parsed.categoryName && categories && categories.length > 0) {
+          const catMatch = categories.find(c =>
+            c.name.toLowerCase().includes(parsed.categoryName.toLowerCase()) ||
+            parsed.categoryName.toLowerCase().includes(c.name.toLowerCase())
+          );
+          if (catMatch) {
+            matchedCatIds = [catMatch.id];
+            matchedCatId = catMatch.id;
+          }
+        }
+
+        const generatedName = parsed.name || prev.name || 'Organic Product';
+        const autoSku = prev.sku || `SURY-${generatedName.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8)}-${Math.floor(1000 + Math.random() * 9000)}`;
+
+        let generatedVariants = [];
+        if (parsed.variants && Array.isArray(parsed.variants) && parsed.variants.length > 0) {
+          generatedVariants = parsed.variants.map((v, i) => {
+            const w = v.weight ? String(v.weight).replace(/[^0-9.]/g, '') : '250';
+            const u = v.unit || 'g';
+            const cleanName = generatedName.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8);
+            return {
+              id: '',
+              weight: w,
+              unit: u,
+              price: v.price ? v.price.toString() : (parsed.price ? parsed.price.toString() : '199'),
+              mrp: v.mrp ? v.mrp.toString() : (parsed.mrp ? parsed.mrp.toString() : ''),
+              inventory: v.inventory ? v.inventory.toString() : '50',
+              sku: `SURY-${cleanName}-${w}${u.toUpperCase()}`,
+              isExpanded: i === 0
+            };
+          });
+        } else {
+          const rawWeight = parsed.weight || '250g';
+          const numWeight = rawWeight.replace(/[^0-9.]/g, '') || '250';
+          const unitWeight = rawWeight.match(/(g|kg|ml|l|pcs)/i)?.[0] || 'g';
+          const cleanName = generatedName.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8);
+          generatedVariants = [
+            {
+              id: '',
+              weight: numWeight,
+              unit: unitWeight,
+              price: parsed.price ? parsed.price.toString() : '199',
+              mrp: parsed.mrp ? parsed.mrp.toString() : '',
+              inventory: '50',
+              sku: `SURY-${cleanName}-${numWeight}${unitWeight.toUpperCase()}`,
+              isExpanded: true
+            }
+          ];
+        }
+
+        const primaryVariant = generatedVariants[0] || {};
+
+        return {
+          ...prev,
+          name: generatedName,
+          sku: primaryVariant.sku || autoSku,
+          categoryId: matchedCatId,
+          categoryIds: matchedCatIds,
+          shortDescription: parsed.shortDescription || prev.shortDescription,
+          description: parsed.description || prev.description,
+          price: primaryVariant.price || (parsed.price ? parsed.price.toString() : prev.price),
+          mrp: primaryVariant.mrp || (parsed.mrp ? parsed.mrp.toString() : prev.mrp),
+          weight: `${primaryVariant.weight || '250'}${primaryVariant.unit || 'g'}`,
+          variants: generatedVariants,
+          seoTitle: parsed.seoTitle || prev.seoTitle,
+          seoDescription: parsed.seoDescription || prev.seoDescription,
+          seoKeywords: parsed.tags || prev.seoKeywords,
+          origin: parsed.origin || prev.origin,
+          shelfLife: parsed.shelfLife || prev.shelfLife,
+          nutrients: parsed.nutrients || prev.nutrients,
+          productContent: {
+            ...(prev.productContent || {}),
+            about: parsed.description || prev.productContent?.about,
+            ingredients: parsed.ingredients || prev.productContent?.ingredients,
+            highlights: parsed.highlights && parsed.highlights.length > 0 ? parsed.highlights : (prev.productContent?.highlights || []),
+            waysToEnjoy: {
+              title: 'Ways To Enjoy',
+              items: parsed.waysToEnjoy && parsed.waysToEnjoy.length > 0 ? parsed.waysToEnjoy : (prev.productContent?.waysToEnjoy?.items || [])
+            },
+            storageInstructions: parsed.storageInstructions && parsed.storageInstructions.length > 0 ? parsed.storageInstructions : (prev.productContent?.storageInstructions || [])
+          }
+        };
+      });
+
+      setAiProgressStep(maxSteps);
+      setTimeout(() => {
+        clearInterval(stepInterval);
+        setIsAiGenerating(false);
+        setShowAiModal(false);
+        useFeedbackStore.getState().showToast('✨ Product details generated successfully! Review the populated fields below.', 'success');
+      }, 400);
+
+    } catch (err) {
+      console.error('AI Generation error:', err);
+      clearInterval(stepInterval);
+      setIsAiGenerating(false);
+      useFeedbackStore.getState().showToast(`❌ AI Analysis failed: ${err.message || 'Could not parse document.'}`, 'error');
+    }
+  };
+
+  const handleAiAnalyze = async () => {
+    let contentToAnalyze = '';
+    
+    if (aiInputMode === 'paste') {
+      if (!aiPastedContent.trim()) {
+        useFeedbackStore.getState().showToast('⚠️ Please paste some product content first!', 'warning');
+        return;
+      }
+      contentToAnalyze = aiPastedContent;
+    } else {
+      if (!aiFile) {
+        useFeedbackStore.getState().showToast('⚠️ Please select or drop a document first!', 'warning');
+        return;
+      }
+      setAiIsAnalyzing(true);
+      setAiAnalysisProgressStep('Reading document');
+      try {
+        contentToAnalyze = await readUploadedFileAsText(aiFile);
+      } catch (err) {
+        console.error(err);
+        useFeedbackStore.getState().showToast('❌ Failed to read document file.', 'error');
+        setAiIsAnalyzing(false);
+        setAiAnalysisProgressStep(null);
+        return;
+      }
+    }
+
+    setAiIsAnalyzing(true);
+    setAiAnalysisProgressStep('Reading document');
+    
+    // Simulate step-by-step progress timings for realistic feedback
+    const steps = [
+      { step: 'Identifying headings', delay: 1000 },
+      { step: 'Extracting highlights', delay: 2000 },
+      { step: 'Detecting FAQs', delay: 3000 },
+      { step: 'Organizing specifications', delay: 4000 },
+      { step: 'Generating SEO suggestions', delay: 5000 }
+    ];
+
+    steps.forEach(({ step, delay }) => {
+      setTimeout(() => {
+        setAiAnalysisProgressStep(prev => {
+          if (prev !== null) return step;
+          return null;
+        });
+      }, delay);
+    });
+
+    try {
+      const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${import.meta.env.VITE_OPENROUTER_API_KEY || ''}`,
+          "HTTP-Referer": window.location.origin || "http://localhost:5173",
+          "X-Title": "Suryodaya Farms CMS Assistant",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          model: "google/gemini-2.5-flash",
+          messages: [
+            {
+              role: "system",
+              content: `You are an expert product copywriter and SEO content optimizer for Suryodaya Farms (a premium, organic dryland farming brand that delivers items like traditional ghee, natural honey, cold-pressed wood-ghani oils, organic staples).
+Analyze the input product copy and organize it into the following structured sections:
+- Hero Section
+- Product Description
+- About Product
+- Key Features
+- Product Highlights
+- Why Choose Suryodaya Farms
+- Specifications (Brand, Weight, Origin, Shelf Life, Delivery ETA, etc.)
+- Nutrition Information
+- Ways to Enjoy
+- Suggested Serving
+- Storage Instructions
+- Ingredients
+- Packaging
+- Quality Commitment
+- FAQs
+- Our Promise
+- Brand Story
+- SEO Title
+- SEO Description
+- Meta Keywords
+
+Also:
+1. Suggest clean search keywords for tags.
+2. Check for duplicate or repeated content.
+3. Flag any missing sections and provide recommendations.
+4. Output EXACTLY a valid JSON object matching this schema. If a section is not found or not relevant, keep its content empty but include it in the JSON object:
+{
+  "Hero Section": { "content": "...", "confidence": 95 },
+  "Product Description": { "content": "...", "confidence": 98 },
+  "About Product": { "content": "...", "confidence": 90 },
+  "Key Features": { "content": "...", "confidence": 95 },
+  "Product Highlights": { "content": "...", "confidence": 92 },
+  "Why Choose Suryodaya Farms": { "content": "...", "confidence": 90 },
+  "Specifications": { "content": "...", "confidence": 96 },
+  "Nutrition Information": { "content": "...", "confidence": 94 },
+  "Ways to Enjoy": { "content": "...", "confidence": 88 },
+  "Suggested Serving": { "content": "...", "confidence": 85 },
+  "Storage Instructions": { "content": "...", "confidence": 90 },
+  "Ingredients": { "content": "...", "confidence": 95 },
+  "Packaging": { "content": "...", "confidence": 87 },
+  "Quality Commitment": { "content": "...", "confidence": 91 },
+  "FAQs": { "content": "...", "confidence": 93 },
+  "Our Promise": { "content": "...", "confidence": 89 },
+  "Brand Story": { "content": "...", "confidence": 86 },
+  "SEO Title": { "content": "...", "confidence": 92 },
+  "SEO Description": { "content": "...", "confidence": 94 },
+  "Meta Keywords": { "content": "...", "confidence": 90 },
+  "suggestions": [
+    "A suggestions list of improvements, duplicates, or missing sections recommendation."
+  ]
+}
+Ensure confidence scores are numbers between 0 and 100. Always reply ONLY with raw, unadorned JSON. No markdown code blocks, no backticks.`
+            },
+            {
+              role: "user",
+              content: contentToAnalyze
+            }
+          ]
+        })
+      });
+
+      const responseData = await response.json();
+      if (!responseData.choices || responseData.choices.length === 0) {
+        throw new Error(responseData.error?.message || "Invalid OpenRouter response");
+      }
+      const rawText = responseData.choices[0].message.content.trim();
+      
+      // Robust JSON extraction and sanitization helper for LLM outputs
+      const extractAndParseJson = (str) => {
+        if (!str || typeof str !== 'string') {
+          throw new Error('Empty AI response.');
+        }
+
+        let text = str.trim();
+
+        // 1. Handle double-quoted stringified JSON (e.g. "\"{\\\"Hero Section\\\":...}\"")
+        if (text.startsWith('"') && text.endsWith('"')) {
+          try {
+            const unquoted = JSON.parse(text);
+            if (typeof unquoted === 'string') {
+              text = unquoted.trim();
+            }
+          } catch (e) {
+            // Not a quoted JSON string
+          }
+        }
+
+        // 2. Remove markdown backtick blocks (```json ... ``` or ``` ... ```)
+        const jsonMatch = text.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
+        if (jsonMatch && jsonMatch[1]) {
+          text = jsonMatch[1].trim();
+        } else {
+          // Extract text between first { or [ and last } or ]
+          const firstBrace = text.search(/[\{\[]/);
+          const lastBrace = Math.max(text.lastIndexOf('}'), text.lastIndexOf(']'));
+          if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+            text = text.substring(firstBrace, lastBrace + 1).trim();
+          }
+        }
+
+        // 3. Fix common LLM JSON syntax errors: trailing commas before } or ]
+        let clean = text.replace(/,\s*([\}\]])/g, '$1');
+
+        // 4. Remove invalid control characters (except \n, \r, \t)
+        clean = clean.replace(/[\u0000-\u001F]+/g, (c) => (c === '\n' || c === '\r' || c === '\t' ? c : ''));
+
+        let parsed;
+        try {
+          parsed = JSON.parse(clean);
+        } catch (e1) {
+          // Fallback: Fix unescaped line breaks inside double-quoted string values
+          const repaired = clean.replace(/("(?:[^"\\]|\\.)*")/g, (match) => {
+            return match.replace(/\r?\n/g, '\\n').replace(/\t/g, '\\t');
+          }).replace(/,\s*([\}\]])/g, '$1');
+
+          try {
+            parsed = JSON.parse(repaired);
+          } catch (e2) {
+            // Check if AI output is a conversational response explaining why input was unreadable
+            if (str.includes("cannot extract") || str.includes("corrupted") || str.includes("unreadable") || str.includes("not valid") || str.includes("Content_Types")) {
+              return {
+                isErrorResponse: true,
+                message: str
+              };
+            }
+            console.error('[AI Output Parse Failed] Raw Text:', str);
+            throw new Error(`AI generated conversational or invalid JSON response.`);
+          }
+        }
+
+        // If JSON.parse returned a string (double encoded), parse once more
+        if (typeof parsed === 'string') {
+          try {
+            parsed = JSON.parse(parsed);
+          } catch (e) {
+            // Keep parsed
+          }
+        }
+
+        return parsed;
+      };
+
+      const parsedData = extractAndParseJson(rawText);
+
+      if (parsedData && parsedData.isErrorResponse) {
+        useFeedbackStore.getState().showToast(
+          '⚠️ The AI could not extract product details from this document. Please paste plain text copy or upload a .txt / .md document.',
+          'warning'
+        );
+        setAiPreviewData({
+          "suggestions": [
+            "Input Document Notice: " + (parsedData.message || "File could not be parsed into product sections. Please paste product text copy directly.")
+          ]
+        });
+        return;
+      }
+
+      setAiPreviewData(parsedData);
+      useFeedbackStore.getState().showToast('✨ AI Content analysis completed!', 'success');
+    } catch (err) {
+      console.error(err);
+      useFeedbackStore.getState().showToast('❌ AI analysis failed. Please try again.', 'error');
+    } finally {
+      setAiIsAnalyzing(false);
+      setAiAnalysisProgressStep(null);
+    }
+  };
+
+  const applyAiContentToCms = (overwrite = false) => {
+    if (!aiPreviewData) return;
+
+    setProductForm(prev => {
+      // Highlights mapping: extract highlights or bullet points
+      let newHighlights = prev.productContent?.highlights || [];
+      const extractedHl = aiPreviewData["Product Highlights"]?.content || aiPreviewData["Key Features"]?.content || "";
+      if (extractedHl) {
+        const parsedHl = extractedHl.split('\n')
+          .map(l => l.replace(/^[-\*\s•★]+/, '').trim())
+          .filter(Boolean);
+        if (parsedHl.length > 0) {
+          newHighlights = overwrite ? parsedHl : [...new Set([...newHighlights, ...parsedHl])];
+        }
+      }
+
+      // FAQs mapping: extract Q&As
+      let newFaqs = prev.productContent?.faqs || [];
+      const extractedFaqs = aiPreviewData["FAQs"]?.content || "";
+      if (extractedFaqs) {
+        // Try parsing FAQs as Q&As line-by-line
+        const faqLines = extractedFaqs.split('\n').filter(Boolean);
+        const parsedFaqs = [];
+        let currentFaq = null;
+        faqLines.forEach(line => {
+          const trimmed = line.trim();
+          if (trimmed.toLowerCase().startsWith('q:') || trimmed.startsWith('?')) {
+            if (currentFaq && currentFaq.question && currentFaq.answer) {
+              parsedFaqs.push(currentFaq);
+            }
+            currentFaq = { question: trimmed.replace(/^[qQ]:|\?/, '').trim(), answer: '' };
+          } else if (trimmed.toLowerCase().startsWith('a:') && currentFaq) {
+            currentFaq.answer = trimmed.replace(/^[aA]:/, '').trim();
+          } else if (currentFaq) {
+            currentFaq.answer = currentFaq.answer ? `${currentFaq.answer} ${trimmed}` : trimmed;
+          }
+        });
+        if (currentFaq && currentFaq.question && currentFaq.answer) {
+          parsedFaqs.push(currentFaq);
+        }
+        if (parsedFaqs.length > 0) {
+          newFaqs = overwrite ? parsedFaqs : [...newFaqs, ...parsedFaqs];
+        }
+      }
+
+      // Custom specs mapping: Specifications only (key:value technical lines)
+      let newSpecs = prev.productContent?.customSpecs || [];
+      const parsedCustomSpecs = [];
+      const specsText = aiPreviewData["Specifications"]?.content || "";
+      if (specsText) {
+        specsText.split('\n').forEach(line => {
+          if (line.includes(':')) {
+            const parts = line.split(':');
+            parsedCustomSpecs.push({
+              key: parts[0].trim(),
+              value: parts.slice(1).join(':').trim()
+            });
+          }
+        });
+      }
+      if (parsedCustomSpecs.length > 0) {
+        newSpecs = overwrite ? parsedCustomSpecs : [...newSpecs, ...parsedCustomSpecs];
+      }
+
+      // Why Choose mapping: split lines into feature cards
+      const prevWhyChoose = prev.productContent?.whyChoose || { title: 'Why Choose Suryodaya Farms', features: [] };
+      const whyChooseText = aiPreviewData["Why Choose Suryodaya Farms"]?.content || "";
+      let newWhyChooseFeatures = overwrite ? [] : [...(prevWhyChoose.features || [])];
+      if (whyChooseText) {
+        const lines = whyChooseText.split('\n').map(l => l.replace(/^[-\*✔✓•★\s]+/, '').trim()).filter(Boolean);
+        lines.forEach(line => {
+          newWhyChooseFeatures.push({ icon: '✔', heading: line, description: '' });
+        });
+      }
+
+      // Ways To Enjoy mapping: split lines into usage cards
+      const prevWaysToEnjoy = prev.productContent?.waysToEnjoy || { title: 'Ways To Enjoy', items: [] };
+      const waysText = aiPreviewData["Ways to Enjoy"]?.content || aiPreviewData["Ways to Use"]?.content || "";
+      let newWaysItems = overwrite ? [] : [...(prevWaysToEnjoy.items || [])];
+      if (waysText) {
+        const lines = waysText.split('\n').map(l => l.replace(/^[-\*✔✓•★\s]+/, '').trim()).filter(Boolean);
+        lines.forEach(line => {
+          newWaysItems.push({ icon: '🥤', title: line, description: '' });
+        });
+      }
+
+      // Ingredients mapping: single text block
+      const prevIngredients = prev.productContent?.ingredients || '';
+      const newIngredients = aiPreviewData["Ingredients"]?.content || '';
+      const finalIngredients = (overwrite || !prevIngredients) ? newIngredients : prevIngredients;
+
+      // Storage Instructions mapping: split lines into checklist
+      const prevStorage = prev.productContent?.storageInstructions || [];
+      const storageText = aiPreviewData["Storage Instructions"]?.content || '';
+      let newStorage = overwrite ? [] : [...prevStorage];
+      if (storageText) {
+        const lines = storageText.split('\n').map(l => l.replace(/^[-\*✔✓•★\s]+/, '').trim()).filter(Boolean);
+        newStorage = overwrite ? lines : [...new Set([...newStorage, ...lines])];
+      }
+
+      // Quality Commitment mapping: split lines into checklist
+      const prevQuality = prev.productContent?.qualityCommitment || [];
+      const qualityText = aiPreviewData["Quality Commitment"]?.content || '';
+      let newQuality = overwrite ? [] : [...prevQuality];
+      if (qualityText) {
+        const lines = qualityText.split('\n').map(l => l.replace(/^[-\*✔✓•★\s]+/, '').trim()).filter(Boolean);
+        newQuality = overwrite ? lines : [...new Set([...newQuality, ...lines])];
+      }
+
+      // Main descriptions
+      const aboutText = aiPreviewData["About Product"]?.content || aiPreviewData["Product Description"]?.content || aiPreviewData["Hero Section"]?.content || "";
+      
+      const updatedContent = {
+        ...(prev.productContent || {}),
+        about: (overwrite || !prev.productContent?.about) ? aboutText : prev.productContent.about,
+        highlights: newHighlights,
+        faqs: newFaqs,
+        customSpecs: newSpecs,
+        whyChoose: { title: prevWhyChoose.title || 'Why Choose Suryodaya Farms', features: newWhyChooseFeatures },
+        waysToEnjoy: { title: prevWaysToEnjoy.title || 'Ways To Enjoy', items: newWaysItems },
+        ingredients: finalIngredients,
+        storageInstructions: newStorage,
+        qualityCommitment: newQuality
+      };
+
+      // SEO suggestions optionally applied
+      const updatedSeoTitle = (overwrite || !prev.seoTitle) ? (aiPreviewData["SEO Title"]?.content || prev.seoTitle) : prev.seoTitle;
+      const updatedSeoDesc = (overwrite || !prev.seoDescription) ? (aiPreviewData["SEO Description"]?.content || prev.seoDescription) : prev.seoDescription;
+      const updatedSeoKeywords = (overwrite || !prev.seoKeywords) ? (aiPreviewData["Meta Keywords"]?.content || prev.seoKeywords) : prev.seoKeywords;
+
+      return {
+        ...prev,
+        description: updatedContent.about,
+        seoTitle: updatedSeoTitle,
+        seoDescription: updatedSeoDesc,
+        seoKeywords: updatedSeoKeywords,
+        productContent: updatedContent
+      };
+    });
+
+    setAiPreviewData(null);
+    setAiFile(null);
+    setAiPastedContent('');
+    useFeedbackStore.getState().showToast('✨ AI Content applied to CMS successfully!', 'success');
+  };
+
+  const handleAiDrag = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === 'dragenter' || e.type === 'dragover') {
+      setAiIsDragActive(true);
+    } else if (e.type === 'dragleave') {
+      setAiIsDragActive(false);
+    }
+  };
+
+  const handleAiDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setAiIsDragActive(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      const file = e.dataTransfer.files[0];
+      const ext = file.name.split('.').pop().toLowerCase();
+      if (['txt', 'md', 'html', 'pdf', 'docx'].includes(ext)) {
+        setAiFile(file);
+        setAiInputMode('upload');
+      } else {
+        useFeedbackStore.getState().showToast('⚠️ Unsupported file type! Please upload .pdf, .docx, .txt, or .md', 'warning');
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (productForm.name || productForm.price || productForm.description) {
+      localStorage.setItem('suryodaya_product_draft', JSON.stringify(productForm));
+    }
+  }, [productForm]);
+
+  const loadProductDraft = () => {
+    try {
+      const draft = localStorage.getItem('suryodaya_product_draft');
+      if (draft) {
+        setProductForm(JSON.parse(draft));
+        useFeedbackStore.getState().showToast('✅ Restored draft successfully!', 'success');
+      }
+    } catch (e) {
+      console.error("Failed to load draft:", e);
+    }
+  };
 
   const calculateDiscount = (orig, sale) => {
     const origPrice = parseFloat(orig);
@@ -984,11 +2497,16 @@ export default function AdminDashboard() {
   const loadDashboardData = async () => {
     setIsLoadingData(true);
     try {
+      // Phase 1: Core operational data
       await Promise.all([
         fetchAnalytics(),
-        fetchProducts(),
-        fetchCategories(),
         fetchOrders(),
+        fetchProducts()
+      ]);
+
+      // Phase 2: Secondary background management data
+      await Promise.all([
+        fetchCategories(),
         fetchCustomers(),
         fetchCoupons(),
         fetchHomepageCMSData(),
@@ -1760,6 +3278,24 @@ export default function AdminDashboard() {
     }
   };
 
+  // Auto-refresh active Shiprocket shipments every 5 minutes
+  useEffect(() => {
+    let intervalId;
+    if (activeTab === 'orders') {
+      intervalId = setInterval(() => {
+        // Poll Shiprocket API silently in the background
+        api.post('/shiprocket/sync-all').then(res => {
+          if (res && res.success) {
+            fetchOrders();
+          }
+        }).catch(err => console.warn('Background sync failed:', err));
+      }, 5 * 60 * 1000); // 5 minutes
+    }
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [activeTab, fetchOrders]);
+
   const fetchCustomers = async () => {
     try {
       const response = await api.get('/admin/customers');
@@ -2163,50 +3699,6 @@ export default function AdminDashboard() {
     }
   };
 
-  const resetProductForm = () => {
-    setProductModalTab('general');
-    setProductSpecificReviews([]);
-    setProductForm({
-      id: '',
-      name: '',
-      categoryId: '',
-      categoryIds: [],
-      description: '',
-      shortDescription: '',
-      brand: 'Suryodaya Farms',
-      productType: '',
-      price: '',
-      compareAtPrice: '',
-      mrp: '',
-      discountPercent: 0,
-      taxPercent: 0,
-      stockStatus: 'IN_STOCK',
-      sku: '',
-      inventory: '',
-      hoverImage: '',
-      mobileBanner: '',
-      isFeatured: false,
-      isTrending: false,
-      isBestseller: false,
-      isNewLaunch: false,
-      isVisible: true,
-      isComingSoon: false,
-      nutrients: '',
-      origin: '',
-      shelfLife: '',
-      deliveryEta: '2-3 Days',
-      codAvailable: true,
-      returnEligible: false,
-      weight: '',
-      seoTitle: '',
-      seoDescription: '',
-      seoKeywords: '',
-      image: '',
-      images: ['', '', '', ''],
-      variants: []
-    });
-  };
-
   const resetCouponForm = () => {
     setCouponForm({
       code: '',
@@ -2290,6 +3782,8 @@ export default function AdminDashboard() {
       homepage: 'homepage',
       analytics: 'analytics',
       settings: 'settings',
+      shipping: 'logistics',
+      logistics: 'logistics',
       coupons: 'coupons',
       reviews: 'reviews',
       testimonials: 'testimonials',
@@ -2627,7 +4121,7 @@ export default function AdminDashboard() {
     printWindow.document.close();
   };
 
-  const handlePrintLabel = (o) => {
+  const handlePrintLegacyLabel = (o) => {
     const printWindow = window.open('', '_blank', 'width=500,height=700');
     if (!printWindow) {
       alert('Pop-up blocker is preventing label print preview. Please allow popups.');
@@ -3202,6 +4696,7 @@ export default function AdminDashboard() {
               {!collapsedGroups.config && (
                 <nav className="space-y-1 animate-fade-in">
                   {[
+                    { id: 'logistics', label: 'Shiprocket Logistics', icon: FiTruck },
                     { id: 'settings', label: 'Settings', icon: FiSettings },
                   ].map((tab) => {
                     const isTabActive = activeTab === tab.id;
@@ -4071,660 +5566,39 @@ export default function AdminDashboard() {
           );
         })()}
 
-        {/* TAB 2: PRODUCTS */}
+        {/* TAB 2: PRODUCTS CATALOG & SUB-ROUTES */}
         {activeTab === 'products' && (
-          <div className="space-y-8 animate-fade-in w-full text-left">
-            
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[#EDE7D9]">
-              <div className="space-y-1">
-                <span className="text-[9px] font-extrabold tracking-widest uppercase text-[#B8833E]">CMS CATALOG</span>
-                <h1 className="font-serif text-2xl md:text-3xl font-bold text-[#37411A]">Storefront Products</h1>
-              </div>
-              
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={() => { resetProductForm(); setShowProductModal(true); }}
-                  className="px-5 py-3 bg-[#4E641A] hover:bg-[#37411A] text-white text-xs font-bold uppercase tracking-widest rounded-xl transition flex items-center space-x-1.5 shadow border-none cursor-pointer"
-                >
-                  <FiPlus />
-                  <span>Publish Item</span>
-                </button>
-              </div>
-            </div>
-
-            {showProductModal && (
-              <div className="bg-white border border-[#EDE7D9] rounded-[28px] p-6 shadow-md animate-scale-up space-y-6">
-                <div className="flex justify-between items-center pb-3 border-b border-[#EDE7D9]">
-                  <h3 className="font-serif text-lg font-bold text-[#B8833E]">
-                    {productForm.id ? 'Modify Staple Details' : 'Publish New Staple'}
-                  </h3>
-                  <button 
-                    type="button" 
-                    onClick={() => { setShowProductModal(false); resetProductForm(); }}
-                    className="text-stone-400 hover:text-stone-600 border-none bg-transparent text-sm font-bold cursor-pointer"
-                  >
-                    ✕
-                  </button>
-                </div>
-
-                {productForm.id && (
-                  <div className="flex border-b border-[#EDE7D9] gap-4 mb-4 select-none">
-                    <button
-                      type="button"
-                      onClick={() => setProductModalTab('general')}
-                      className={`pb-2 px-1 text-xs font-bold uppercase tracking-wider border-b-2 transition ${
-                        productModalTab === 'general'
-                          ? 'border-[#4E641A] text-[#4E641A]'
-                          : 'border-transparent text-stone-400 hover:text-stone-600'
-                      } bg-transparent cursor-pointer`}
-                    >
-                      General Info
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setProductModalTab('reviews')}
-                      className={`pb-2 px-1 text-xs font-bold uppercase tracking-wider border-b-2 transition ${
-                        productModalTab === 'reviews'
-                          ? 'border-[#4E641A] text-[#4E641A]'
-                          : 'border-transparent text-stone-400 hover:text-stone-600'
-                      } bg-transparent cursor-pointer`}
-                    >
-                      Reviews ({productSpecificReviews.length})
-                    </button>
-                  </div>
-                )}
-
-                {productModalTab === 'general' ? (
-                  <form noValidate onSubmit={handleSaveProduct} className="space-y-6 text-xs text-stone-600 max-h-[70vh] overflow-y-auto custom-scroll pr-2">
-                  
-                  {/* SECTION 1: BASIC INFO */}
-                  <div className="bg-white border border-stone-200 rounded-xl p-5 md:p-6 shadow-xs space-y-5 text-left">
-                    <h4 className="text-sm font-semibold text-stone-900 border-b border-stone-100 pb-2">1. Basic Info</h4>
-                    <div className="grid grid-cols-1 gap-5">
-                      <div className="flex flex-col gap-1 text-left">
-                        <label className="text-xs font-semibold text-stone-700 tracking-wide mb-1">Product Name *</label>
-                        <input 
-                          type="text" 
-                          placeholder="e.g. A2 Bilona Churned Ghee" 
-                          value={productForm.name}
-                          onChange={(e) => {
-                            const newName = e.target.value;
-                            const newSku = newName.toUpperCase().replace(/\s+/g, '-').replace(/[^A-Z0-9-]/g, '') + '-' + Math.floor(100 + Math.random() * 900);
-                            setProductForm({ ...productForm, name: newName, sku: productForm.id ? productForm.sku : newSku });
-                          }}
-                          className="bg-white border border-stone-300 rounded-xl py-3 px-4 focus:outline-none focus:border-[#4E641A] focus:ring-4 focus:ring-[#4E641A]/10 text-stone-900 placeholder-stone-400 text-sm transition-all"
-                          required
-                        />
-                        {productFormErrors.name && (
-                          <span className="text-[10px] text-red-650 font-bold block mt-1 select-none">
-                            ⚠️ {productFormErrors.name}
-                          </span>
-                        )}
-                      </div>
-                      <div className="flex flex-col gap-1.5 text-left">
-                        <label className="text-xs font-semibold text-stone-700 tracking-wide mb-1">Categories (Select one or multiple) *</label>
-                        <div className="grid grid-cols-2 gap-3 bg-stone-50 border border-stone-200 rounded-xl p-4 max-h-40 overflow-y-auto">
-                          {categories.map(cat => {
-                            const isChecked = (productForm.categoryIds || []).includes(cat.id);
-                            return (
-                              <label key={cat.id} className="flex items-center gap-2 font-sans text-xs text-stone-700 cursor-pointer hover:text-[#4E641A] transition">
-                                <input
-                                  type="checkbox"
-                                  checked={isChecked}
-                                  onChange={(e) => {
-                                    const currentIds = productForm.categoryIds || [];
-                                    let newIds;
-                                    if (e.target.checked) {
-                                      newIds = [...currentIds, cat.id];
-                                    } else {
-                                      newIds = currentIds.filter(id => id !== cat.id);
-                                    }
-                                    setProductForm({ 
-                                      ...productForm, 
-                                      categoryIds: newIds,
-                                      categoryId: newIds[0] || '' // Fallback for legacy compatibility
-                                    });
-                                  }}
-                                  className="accent-[#4E641A]"
-                                />
-                                <span className="select-none">{cat.name}</span>
-                              </label>
-                            );
-                          })}
-                        </div>
-                        {productFormErrors.categoryIds && (
-                          <span className="text-[10px] text-red-650 font-bold block mt-1 select-none">
-                            ⚠️ {productFormErrors.categoryIds}
-                          </span>
-                        )}
-                      </div>
-                      <div className="flex flex-col gap-1 text-left">
-                        <label className="text-xs font-semibold text-stone-700 tracking-wide mb-1">Short Description</label>
-                        <textarea 
-                          placeholder="A brief punchy summary of the staple's unique features..." 
-                          value={productForm.shortDescription}
-                          onChange={(e) => setProductForm({ ...productForm, shortDescription: e.target.value })}
-                          className="bg-white border border-stone-300 rounded-xl py-3 px-4 focus:outline-none focus:border-[#4E641A] focus:ring-4 focus:ring-[#4E641A]/10 h-24 resize-none font-sans text-stone-900 placeholder-stone-400 text-sm transition-all"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* SECTION 2: PRICING & INVENTORY */}
-                  <div className="bg-white border border-stone-200 rounded-xl p-5 md:p-6 shadow-xs space-y-5 text-left">
-                    <h4 className="text-sm font-semibold text-stone-900 border-b border-stone-100 pb-2">2. Pricing & Inventory</h4>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                      <div className="flex flex-col gap-1 text-left">
-                        <label className="text-xs font-semibold text-stone-700 tracking-wide mb-1">Original Price (₹)</label>
-                        <input 
-                          type="number" 
-                          placeholder="1100" 
-                          value={productForm.compareAtPrice}
-                          onChange={(e) => {
-                            const val = e.target.value;
-                            setProductForm(prev => ({
-                              ...prev,
-                              compareAtPrice: val,
-                              discountPercent: calculateDiscount(val, prev.price)
-                            }));
-                          }}
-                          className="bg-white border border-stone-300 rounded-xl py-3 px-4 focus:outline-none focus:border-[#4E641A] focus:ring-4 focus:ring-[#4E641A]/10 text-stone-900 placeholder-stone-400 text-sm transition-all"
-                        />
-                      </div>
-                      <div className="flex flex-col gap-1 text-left">
-                        <label className="text-xs font-semibold text-stone-700 tracking-wide mb-1">Sale Price (₹) *</label>
-                        <input 
-                          type="number" 
-                          placeholder="950" 
-                          value={productForm.price}
-                          onChange={(e) => {
-                            const val = e.target.value;
-                            setProductForm(prev => ({
-                              ...prev,
-                              price: val,
-                              discountPercent: calculateDiscount(prev.compareAtPrice, val)
-                            }));
-                          }}
-                          className="bg-white border border-stone-300 rounded-xl py-3 px-4 focus:outline-none focus:border-[#4E641A] focus:ring-4 focus:ring-[#4E641A]/10 text-stone-900 placeholder-stone-400 text-sm transition-all"
-                          required
-                        />
-                        {productFormErrors.price && (
-                          <span className="text-[10px] text-red-650 font-bold block mt-1 select-none">
-                            ⚠️ {productFormErrors.price}
-                          </span>
-                        )}
-                      </div>
-                      <div className="flex flex-col gap-1 text-left">
-                        <label className="text-xs font-semibold text-stone-700 tracking-wide mb-1">Stock Quantity *</label>
-                        <input 
-                          type="number" 
-                          placeholder="40" 
-                          value={productForm.inventory}
-                          onChange={(e) => setProductForm({ ...productForm, inventory: e.target.value })}
-                          className="bg-white border border-stone-300 rounded-xl py-3 px-4 focus:outline-none focus:border-[#4E641A] focus:ring-4 focus:ring-[#4E641A]/10 text-stone-900 placeholder-stone-400 text-sm transition-all"
-                          required
-                        />
-                        {productFormErrors.inventory && (
-                          <span className="text-[10px] text-red-650 font-bold block mt-1 select-none">
-                            ⚠️ {productFormErrors.inventory}
-                          </span>
-                        )}
-                      </div>
-                      <div className="flex flex-col gap-1 text-left">
-                        <label className="text-xs font-semibold text-stone-700 tracking-wide mb-1">Stock Status</label>
-                        <select
-                          value={productForm.stockStatus}
-                          onChange={(e) => setProductForm({ ...productForm, stockStatus: e.target.value })}
-                          className="bg-white border border-stone-300 rounded-xl py-3 px-4 focus:outline-none focus:border-[#4E641A] focus:ring-4 focus:ring-[#4E641A]/10 text-stone-900 cursor-pointer text-sm transition-all"
-                        >
-                          <option value="IN_STOCK">IN STOCK</option>
-                          <option value="OUT_OF_STOCK">OUT OF STOCK</option>
-                        </select>
-                      </div>
-                      <div className="flex flex-col gap-1 text-left">
-                        <label className="text-xs font-semibold text-stone-700 tracking-wide mb-1">Weight / Size</label>
-                        <input 
-                          type="text" 
-                          placeholder="e.g. 500 g / 1 Litre" 
-                          value={productForm.weight}
-                          onChange={(e) => setProductForm({ ...productForm, weight: e.target.value })}
-                          className="bg-white border border-stone-300 rounded-xl py-3 px-4 focus:outline-none focus:border-[#4E641A] focus:ring-4 focus:ring-[#4E641A]/10 text-stone-900 placeholder-stone-400 text-sm transition-all"
-                        />
-                      </div>
-                      <div className="flex flex-col gap-1 text-left">
-                        <label className="text-xs font-semibold text-stone-700 tracking-wide mb-1">Discount Badge (%)</label>
-                        <input 
-                          type="number" 
-                          placeholder="15" 
-                          value={productForm.discountPercent}
-                          onChange={(e) => setProductForm({ ...productForm, discountPercent: e.target.value })}
-                          className="bg-white border border-stone-300 rounded-xl py-3 px-4 focus:outline-none focus:border-[#4E641A] focus:ring-4 focus:ring-[#4E641A]/10 text-stone-900 placeholder-stone-400 text-sm transition-all"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* SECTION 2.5: PRODUCT VARIANTS */}
-                  <div className="bg-white border border-stone-200 rounded-xl p-5 md:p-6 shadow-xs space-y-5 text-left">
-                    <div className="flex justify-between items-center border-b border-stone-100 pb-2">
-                      <h4 className="text-sm font-semibold text-stone-900">2.5 Product Variants</h4>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const currentVariants = productForm.variants || [];
-                          const sizeCount = currentVariants.length;
-                          const defaultSizes = ["250g", "500g", "1kg"];
-                          const defaultSizeName = defaultSizes[sizeCount] || `${(sizeCount + 1) * 250}g`;
-                          const parentName = productForm.name || "PRODUCT";
-                          const defaultSku = `${parentName.toUpperCase().replace(/\s+/g, '-').replace(/[^A-Z0-9-]/g, '')}-${defaultSizeName.toUpperCase()}-${Math.floor(100 + Math.random() * 900)}`;
-                          
-                          setProductForm({
-                            ...productForm,
-                            variants: [
-                              ...currentVariants,
-                              {
-                                id: '',
-                                name: defaultSizeName,
-                                price: productForm.price || '',
-                                mrp: productForm.mrp || '',
-                                sku: defaultSku,
-                                inventory: productForm.inventory || 0
-                              }
-                            ]
-                          });
-                        }}
-                        className="px-3.5 py-2 bg-[#4E641A] hover:bg-[#37411A] text-white text-[10px] font-bold uppercase tracking-wider rounded-lg transition border-none cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-95"
-                      >
-                        <FiPlus className="w-3 h-3 text-[#B8833E]" />
-                        <span>Add Variant</span>
-                      </button>
-                    </div>
-
-                    {(productForm.variants && productForm.variants.length > 0) ? (
-                      <div className="space-y-4 bg-stone-50 border border-stone-200 p-4 rounded-xl">
-                        {productForm.variants.map((variant, index) => (
-                          <div key={index} className="grid grid-cols-2 sm:grid-cols-5 gap-3 p-4 bg-white border border-stone-200 rounded-xl relative hover:border-stone-300 transition-colors shadow-xxs">
-                            <div className="flex flex-col gap-1 text-left">
-                              <label className="text-[10px] font-semibold text-stone-700 tracking-wide">Size *</label>
-                              <input
-                                type="text"
-                                value={variant.name}
-                                onChange={(e) => {
-                                  const updated = [...productForm.variants];
-                                  updated[index].name = e.target.value;
-                                  setProductForm({ ...productForm, variants: updated });
-                                }}
-                                placeholder="e.g. 500g"
-                                className="bg-white border border-stone-300 rounded-lg py-2 px-2.5 focus:outline-none focus:border-[#4E641A] focus:ring-4 focus:ring-[#4E641A]/10 text-stone-900 text-xs transition-all w-full"
-                                required
-                              />
-                            </div>
-                            <div className="flex flex-col gap-1 text-left">
-                              <label className="text-[10px] font-semibold text-stone-700 tracking-wide">Price (₹) *</label>
-                              <input
-                                type="number"
-                                value={variant.price}
-                                onChange={(e) => {
-                                  const updated = [...productForm.variants];
-                                  updated[index].price = e.target.value;
-                                  setProductForm({ ...productForm, variants: updated });
-                                }}
-                                placeholder="Price"
-                                className="bg-white border border-stone-300 rounded-lg py-2 px-2.5 focus:outline-none focus:border-[#4E641A] focus:ring-4 focus:ring-[#4E641A]/10 text-stone-900 text-xs transition-all w-full"
-                                required
-                              />
-                            </div>
-                            <div className="flex flex-col gap-1 text-left">
-                              <label className="text-[10px] font-semibold text-stone-700 tracking-wide">MRP (₹)</label>
-                              <input
-                                type="number"
-                                value={variant.mrp}
-                                onChange={(e) => {
-                                  const updated = [...productForm.variants];
-                                  updated[index].mrp = e.target.value;
-                                  setProductForm({ ...productForm, variants: updated });
-                                }}
-                                placeholder="MRP"
-                                className="bg-white border border-stone-300 rounded-lg py-2 px-2.5 focus:outline-none focus:border-[#4E641A] focus:ring-4 focus:ring-[#4E641A]/10 text-stone-900 text-xs transition-all w-full"
-                              />
-                            </div>
-                            <div className="flex flex-col gap-1 text-left">
-                              <label className="text-[10px] font-semibold text-stone-700 tracking-wide">Stock Qty *</label>
-                              <input
-                                type="number"
-                                value={variant.inventory}
-                                onChange={(e) => {
-                                  const updated = [...productForm.variants];
-                                  updated[index].inventory = e.target.value;
-                                  setProductForm({ ...productForm, variants: updated });
-                                }}
-                                placeholder="Stock"
-                                className="bg-white border border-stone-300 rounded-lg py-2 px-2.5 focus:outline-none focus:border-[#4E641A] focus:ring-4 focus:ring-[#4E641A]/10 text-stone-900 text-xs transition-all w-full"
-                                required
-                              />
-                            </div>
-                            <div className="flex flex-col gap-1 text-left pr-6">
-                              <label className="text-[10px] font-semibold text-stone-700 tracking-wide">SKU</label>
-                              <input
-                                type="text"
-                                value={variant.sku}
-                                onChange={(e) => {
-                                  const updated = [...productForm.variants];
-                                  updated[index].sku = e.target.value;
-                                  setProductForm({ ...productForm, variants: updated });
-                                }}
-                                placeholder="SKU"
-                                className="bg-white border border-stone-300 rounded-lg py-2 px-2.5 focus:outline-none focus:border-[#4E641A] focus:ring-4 focus:ring-[#4E641A]/10 text-stone-900 text-xs transition-all w-full"
-                              />
-                            </div>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const updated = (productForm.variants || []).filter((_, i) => i !== index);
-                                setProductForm({ ...productForm, variants: updated });
-                              }}
-                              className="absolute top-2.5 right-2.5 text-stone-400 hover:text-red-500 bg-transparent border-none cursor-pointer transition-colors"
-                              title="Delete Variant"
-                            >
-                              ✕
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <p className="text-xs text-stone-400 italic text-left bg-stone-50 border border-stone-200 p-4 rounded-xl">No variants added yet. Parent product details will be used by default if no variants are specified.</p>
-                    )}
-                  </div>
-
-                  {/* SECTION 3: MEDIA UPLOAD */}
-                  <div className="bg-white border border-stone-200 rounded-xl p-5 md:p-6 shadow-xs space-y-5 text-left">
-                    <h4 className="text-sm font-semibold text-stone-900 border-b border-stone-100 pb-2">3. Media Assets</h4>
-                    
-                    {productFormErrors.images && (
-                      <span className="text-[10px] text-red-650 font-bold block mb-2 select-none">
-                        ⚠️ {productFormErrors.images}
-                      </span>
-                    )}
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                      <UnifiedUploader
-                        value={productForm.images?.[0] || ''}
-                        onChange={(url) => {
-                          const newImages = [...(productForm.images || ['', '', '', ''])];
-                          newImages[0] = url;
-                          setProductForm({ ...productForm, images: newImages, image: url });
-                        }}
-                        label="Main Product Image *"
-                        aspectRatio={1}
-                        folder="products"
-                      />
-
-                      <UnifiedUploader
-                        value={productForm.images?.[1] || ''}
-                        onChange={(url) => {
-                          const newImages = [...(productForm.images || ['', '', '', ''])];
-                          newImages[1] = url;
-                          setProductForm({ ...productForm, images: newImages, hoverImage: url });
-                        }}
-                        label="Gallery Image 1"
-                        aspectRatio={1}
-                        folder="products"
-                      />
-
-                      <UnifiedUploader
-                        value={productForm.images?.[2] || ''}
-                        onChange={(url) => {
-                          const newImages = [...(productForm.images || ['', '', '', ''])];
-                          newImages[2] = url;
-                          setProductForm({ ...productForm, images: newImages });
-                        }}
-                        label="Gallery Image 2"
-                        aspectRatio={1}
-                        folder="products"
-                      />
-
-                      <UnifiedUploader
-                        value={productForm.images?.[3] || ''}
-                        onChange={(url) => {
-                          const newImages = [...(productForm.images || ['', '', '', ''])];
-                          newImages[3] = url;
-                          setProductForm({ ...productForm, images: newImages });
-                        }}
-                        label="Gallery Image 3"
-                        aspectRatio={1}
-                        folder="products"
-                      />
-                    </div>
-                  </div>
-
-                  {/* SECTION 4: STOREFRONT */}
-                  <div className="bg-white border border-stone-200 rounded-xl p-5 md:p-6 shadow-xs space-y-5 text-left">
-                    <h4 className="text-sm font-semibold text-stone-900 border-b border-stone-100 pb-2">4. Storefront Flags</h4>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-stone-50 border border-stone-200 p-5 rounded-xl">
-                      
-                      <label className="flex items-center space-x-3 cursor-pointer select-none hover:opacity-85 transition">
-                        <input 
-                          type="checkbox"
-                          checked={productForm.isFeatured}
-                          onChange={(e) => setProductForm({ ...productForm, isFeatured: e.target.checked })}
-                          className="w-5 h-5 rounded border-stone-300 text-[#4E641A] focus:ring-[#4E641A] cursor-pointer accent-[#4E641A]"
-                        />
-                        <div className="flex flex-col text-left">
-                          <span className="font-semibold text-xs text-stone-800">Featured</span>
-                        </div>
-                      </label>
-
-                      <label className="flex items-center space-x-3 cursor-pointer select-none hover:opacity-85 transition">
-                        <input 
-                          type="checkbox"
-                          checked={productForm.isBestseller}
-                          onChange={(e) => setProductForm({ ...productForm, isBestseller: e.target.checked })}
-                          className="w-5 h-5 rounded border-stone-300 text-[#4E641A] focus:ring-[#4E641A] cursor-pointer accent-[#4E641A]"
-                        />
-                        <div className="flex flex-col text-left">
-                          <span className="font-semibold text-xs text-stone-800">Bestseller</span>
-                        </div>
-                      </label>
-
-                      <label className="flex items-center space-x-3 cursor-pointer select-none hover:opacity-85 transition">
-                        <input 
-                          type="checkbox"
-                          checked={productForm.isNewLaunch}
-                          onChange={(e) => setProductForm({ ...productForm, isNewLaunch: e.target.checked })}
-                          className="w-5 h-5 rounded border-stone-300 text-[#4E641A] focus:ring-[#4E641A] cursor-pointer accent-[#4E641A]"
-                        />
-                        <div className="flex flex-col text-left">
-                          <span className="font-semibold text-xs text-stone-800">New Arrival</span>
-                        </div>
-                      </label>
-
-                    </div>
-                  </div>
-
-                  {/* Actions buttons */}
-                  <div className="border-t border-stone-200 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4 sticky bottom-0 bg-white pb-4">
-                    <span className="text-[10px] text-stone-400 font-semibold italic">Draft autosaves locally</span>
-                    <div className="flex gap-3 w-full sm:w-auto">
-                      <button
-                        type="button"
-                        onClick={() => { setShowProductModal(false); resetProductForm(); }}
-                        className="w-full sm:w-auto px-6 py-3.5 rounded-xl border border-stone-300 text-stone-600 hover:bg-stone-50 hover:text-stone-800 uppercase font-bold tracking-wider cursor-pointer transition active:scale-95"
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        type="submit"
-                        disabled={isGlobalLoading}
-                        className="w-full sm:w-auto px-8 py-3.5 bg-[#4E641A] hover:bg-[#37411A] disabled:bg-stone-300 text-white rounded-xl uppercase font-extrabold tracking-widest cursor-pointer border-none shadow-md transition transform active:scale-95"
-                      >
-                        {isGlobalLoading 
-                          ? (productForm.id ? 'Saving...' : 'Publishing...') 
-                          : (productForm.id ? 'Save Product' : 'Quick Publish ⚡')}
-                      </button>
-                    </div>
-                  </div>
-
-                </form>
-              ) : (
-                <div className="space-y-6 max-h-[70vh] overflow-y-auto custom-scroll pr-2 text-stone-600">
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                    <div className="bg-[#FDFBF7] border border-[#EDE7D9] rounded-2xl p-4 text-center">
-                      <span className="text-[8px] font-extrabold uppercase tracking-wider text-stone-400 font-sans">Average Rating</span>
-                      <div className="text-xl font-bold text-[#37411A] mt-1 font-serif">
-                        ⭐ {productSpecificReviews.length > 0 ? parseFloat(productSpecificReviews.reduce((acc, r) => acc + r.rating, 0) / productSpecificReviews.length).toFixed(1) : '0.0'} / 5
-                      </div>
-                    </div>
-                    <div className="bg-[#FDFBF7] border border-[#EDE7D9] rounded-2xl p-4 text-center">
-                      <span className="text-[8px] font-extrabold uppercase tracking-wider text-stone-400 font-sans font-sans">Total Reviews</span>
-                      <div className="text-xl font-bold text-[#37411A] mt-1 font-serif">{productSpecificReviews.length}</div>
-                    </div>
-                    <div className="bg-[#FDFBF7] border border-[#EDE7D9] rounded-2xl p-4 text-center">
-                      <span className="text-[8px] font-extrabold uppercase tracking-wider text-stone-400 font-sans font-sans">Approved Reviews</span>
-                      <div className="text-xl font-bold text-[#4E641A] mt-1 font-serif">
-                        {productSpecificReviews.filter(r => r.status === 'APPROVED').length}
-                      </div>
-                    </div>
-                    <div className="bg-[#FDFBF7] border border-[#EDE7D9] rounded-2xl p-4 text-center">
-                      <span className="text-[8px] font-extrabold uppercase tracking-wider text-stone-400 font-sans font-sans font-sans">Pending Reviews</span>
-                      <div className="text-xl font-bold text-amber-600 mt-1 font-serif">
-                        {productSpecificReviews.filter(r => r.status === 'PENDING').length}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="space-y-4 text-left">
-                    <h4 className="font-serif text-sm font-bold text-[#4E641A] border-b border-[#EDE7D9] pb-2 uppercase tracking-wider">Review Listings</h4>
-                    {productSpecificReviews.length === 0 ? (
-                      <div className="text-center py-8 text-stone-400 text-xs italic font-sans font-sans">
-                        No reviews submitted yet for this product.
-                      </div>
-                    ) : (
-                      <div className="space-y-3">
-                        {productSpecificReviews.map((rev) => (
-                          <div key={rev.id} className="bg-[#FDFBF7] border border-[#EDE7D9] rounded-2xl p-4 space-y-2 text-left">
-                            <div className="flex justify-between items-baseline gap-2">
-                              <div>
-                                <span className="font-bold text-xs text-[#37411A]">{rev.customerName || 'Anonymous'}</span>
-                                <span className="text-[9px] text-stone-400 ml-2 font-medium font-sans font-sans">({new Date(rev.createdAt).toLocaleDateString()})</span>
-                              </div>
-                              <span className={`text-[8px] font-bold px-2 py-0.5 rounded-full font-sans uppercase tracking-wider font-sans font-sans font-sans ${
-                                rev.status === 'APPROVED'
-                                  ? 'bg-green-50 text-[#4E641A] border border-green-200'
-                                  : rev.status === 'REJECTED'
-                                    ? 'bg-red-50 text-red-500 border border-red-200'
-                                    : 'bg-amber-50 text-amber-600 border border-amber-200'
-                              }`}>
-                                {rev.status}
-                              </span>
-                            </div>
-                            <div className="flex text-amber-500">
-                              {[...Array(5)].map((_, i) => (
-                                <FiStar key={i} className={`w-3 h-3 ${i < rev.rating ? 'fill-current' : 'text-stone-200'}`} />
-                              ))}
-                            </div>
-                            {rev.reviewTitle && (
-                              <h6 className="font-serif font-bold text-xs text-[#37411A] leading-tight font-sans font-sans">{rev.reviewTitle}</h6>
-                            )}
-                            <p className="text-[11px] text-stone-500 leading-relaxed font-light font-sans font-sans font-sans">{rev.reviewText || rev.comment}</p>
-                            
-                            {rev.reviewImages && rev.reviewImages.length > 0 && (
-                              <div className="flex gap-1.5 mt-1">
-                                {rev.reviewImages.map((img, idx) => (
-                                  <img key={idx} src={img} alt="review" className="w-10 h-10 object-cover rounded-lg border border-stone-200" />
-                                ))}
-                              </div>
-                            )}
-
-                            <div className="flex gap-2 justify-end pt-2 border-t border-stone-100">
-                              {rev.status !== 'APPROVED' && (
-                                <button
-                                  type="button"
-                                  onClick={() => handleApproveReview(rev.id)}
-                                  className="px-3 py-1 bg-[#4E641A] hover:bg-[#37411A] text-white text-[9px] font-bold uppercase rounded-lg border-none cursor-pointer tracking-wider transition shadow-sm font-sans font-sans font-sans"
-                                >
-                                  Approve
-                                </button>
-                              )}
-                              {rev.status !== 'REJECTED' && (
-                                <button
-                                  type="button"
-                                  onClick={() => handleRejectReview(rev.id)}
-                                  className="px-3 py-1 bg-amber-600 hover:bg-amber-700 text-white text-[9px] font-bold uppercase rounded-lg border-none cursor-pointer tracking-wider transition shadow-sm font-sans font-sans font-sans"
-                                >
-                                  Reject
-                                </button>
-                              )}
-                              <button
-                                type="button"
-                                onClick={() => handleDeleteReview(rev.id)}
-                                className="px-3 py-1 bg-red-500 hover:bg-red-650 text-white text-[9px] font-bold uppercase rounded-lg border-none cursor-pointer tracking-wider transition shadow-sm font-sans font-sans font-sans"
-                              >
-                                Delete
-                              </button>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-
-              </div>
-            )}
-
-            {/* Products grid lists */}
-            {products.length === 0 ? (
-              <EmptyState
-                title="📦 No Products Yet"
-                description="Your storefront is ready, but no products have been published yet. Start by creating your first product and showcase it on your website."
-                illustration="📦"
-                actionLabel="Publish First Product"
-                onAction={() => { resetProductForm(); setShowProductModal(true); }}
+          <div className="w-full font-sans">
+            {location.pathname === '/admin/products/new' ? (
+              <CreateProductPage
+                categories={categories}
+                handleCreateProduct={handleSaveProduct}
+                setShowAiModal={setShowAiModal}
+                setAiSelectedFile={setAiSelectedFile}
+                setAiFilePreview={setAiFilePreview}
+                setAiFilePdfText={setAiFilePdfText}
+                setIsAiGenerating={setIsAiGenerating}
+                setAiProgressStep={setAiProgressStep}
+              />
+            ) : location.pathname.includes('/edit') ? (
+              <EditProductPage
+                categories={categories}
+                handleUpdateProduct={handleSaveProduct}
+                setShowAiModal={setShowAiModal}
+                setAiSelectedFile={setAiSelectedFile}
+                setAiFilePreview={setAiFilePreview}
+                setAiFilePdfText={setAiFilePdfText}
+                setIsAiGenerating={setIsAiGenerating}
+                setAiProgressStep={setAiProgressStep}
               />
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full text-left">
-                {products.map((prod) => (
-                  <div key={prod.id} className="bg-white border border-[#EDE7D9] rounded-2xl p-5 flex items-center justify-between gap-4 shadow-sm hover:border-[#B8833E]/20 transition group text-left admin-product-card">
-                    <div className="flex gap-4 items-center min-w-0">
-                      <img 
-                        src={prod.images?.length > 0 ? prod.images[0].url : prod.image} 
-                        alt={prod.name} 
-                        className="w-14 h-14 object-cover rounded-xl border border-[#EDE7D9] bg-stone-50 shrink-0"
-                      />
-                      <div className="flex flex-col text-left min-w-0">
-                        <h4 className="font-serif text-sm font-bold truncate text-[#37411A] group-hover:text-[#B8833E] transition admin-product-name">{prod.name}</h4>
-                        <p className="text-[10px] text-stone-400 font-semibold mt-0.5">
-                          SKU: {prod.sku} • Stock: <span className={prod.inventory > 0 ? 'text-[#4E641A] font-bold' : 'text-red-500 font-bold'}>{prod.inventory} units</span>
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-4 shrink-0">
-                      <strong className="text-[#4E641A] font-serif text-sm font-bold admin-product-price">₹{prod.price}</strong>
-                      <div className="flex space-x-1">
-                        <button
-                          onClick={() => openEditProduct(prod)}
-                          className="p-2 text-[#4E641A] hover:bg-[#4E641A]/10 rounded-lg transition cursor-pointer bg-transparent border-none"
-                          title="Edit Details"
-                        >
-                          <FiEdit2 size={13} />
-                        </button>
-                        <button
-                          onClick={() => handleDeleteProduct(prod.id)}
-                          className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition cursor-pointer bg-transparent border-none"
-                          title="Delete Staple"
-                        >
-                          <FiTrash2 size={13} />
-                        </button>
-                      </div>
-                    </div>
-
-                  </div>
-                ))}
-              </div>
+              <ProductsListPage
+                products={products}
+                categories={categories}
+                handleDeleteProduct={handleDeleteProduct}
+                isLoading={isLoadingData}
+              />
             )}
-
           </div>
         )}
 
@@ -4743,19 +5617,20 @@ export default function AdminDashboard() {
             </div>
 
             {/* Admin Shipment KPI Summary Cards */}
-            <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-6 gap-3">
               {[
-                { label: 'Pending Shipments', value: orders.filter(o => o.status === 'PENDING').length, color: 'bg-amber-50 text-amber-700 border-amber-250', iconColor: 'text-amber-500' },
-                { label: 'In Transit Orders', value: orders.filter(o => ['SHIPPED', 'IN_TRANSIT', 'OUT_FOR_DELIVERY'].includes(o.status)).length, color: 'bg-cyan-50 text-cyan-700 border-cyan-250', iconColor: 'text-cyan-500' },
-                { label: 'Delivered Today', value: orders.filter(o => o.status === 'DELIVERED' && getISTDate(o.updatedAt || o.createdAt) >= getISTTodayStart()).length, color: 'bg-green-50 text-green-700 border-green-250', iconColor: 'text-green-500' },
-                { label: 'Cancelled Orders', value: orders.filter(o => o.status === 'CANCELLED').length, color: 'bg-red-50 text-red-700 border-red-250', iconColor: 'text-red-500' },
-                { label: 'COD Orders Base', value: orders.filter(o => o.paymentMethod === 'COD').length, color: 'bg-[#4E641A]/5 text-[#4E641A] border-[#4E641A]/20', iconColor: 'text-[#4E641A]' }
+                { label: 'Awaiting Shipment', value: orders.filter(o => !o.shiprocketOrderId && o.status !== 'CANCELLED').length, color: 'bg-amber-50 text-amber-800 border-amber-250', icon: '⏳' },
+                { label: 'Pickup Scheduled', value: orders.filter(o => o.shiprocketStatus === 'PICKUP SCHEDULED' || !!o.pickupId).length, color: 'bg-purple-50 text-purple-800 border-purple-250', icon: '📋' },
+                { label: 'In Transit', value: orders.filter(o => ['SHIPPED', 'IN_TRANSIT', 'OUT_FOR_DELIVERY'].includes(o.shiprocketStatus || o.status)).length, color: 'bg-cyan-50 text-cyan-800 border-cyan-250', icon: '🚚' },
+                { label: 'Delivered Today', value: orders.filter(o => (o.shiprocketStatus === 'DELIVERED' || o.status === 'DELIVERED') && getISTDate(o.updatedAt || o.createdAt) >= getISTTodayStart()).length, color: 'bg-emerald-50 text-emerald-800 border-emerald-250', icon: '🌿' },
+                { label: 'Returned (RTO)', value: orders.filter(o => ['RETURNED', 'RTO', 'RTO_DELIVERED'].includes(o.shiprocketStatus || o.status)).length, color: 'bg-orange-50 text-orange-800 border-orange-250', icon: '🔄' },
+                { label: 'Cancelled', value: orders.filter(o => o.status === 'CANCELLED' || o.shiprocketStatus === 'CANCELLED').length, color: 'bg-red-50 text-red-800 border-red-250', icon: '🚫' }
               ].map((kpi, idx) => (
-                <div key={idx} className={`p-4 border rounded-2xl flex flex-col justify-between shadow-xxs ${kpi.color}`}>
-                  <span className="text-[8px] font-extrabold uppercase tracking-widest block opacity-85 leading-tight">{kpi.label}</span>
-                  <div className="flex items-baseline justify-between mt-3">
-                    <span className="text-xl md:text-2xl font-bold font-serif">{kpi.value}</span>
-                    <span className="text-lg">📦</span>
+                <div key={idx} className={`p-3.5 border rounded-2xl flex flex-col justify-between shadow-2xs ${kpi.color}`}>
+                  <span className="text-[9px] font-extrabold uppercase tracking-wider block opacity-90 leading-tight">{kpi.label}</span>
+                  <div className="flex items-baseline justify-between mt-2.5">
+                    <span className="text-xl font-bold font-serif">{kpi.value}</span>
+                    <span className="text-base">{kpi.icon}</span>
                   </div>
                 </div>
               ))}
@@ -4785,19 +5660,40 @@ export default function AdminDashboard() {
                   )}
                 </div>
 
-                {/* Clear Filters Button */}
-                {(orderSearchQuery || orderLogisticsFilter !== 'ALL' || orderPaymentFilter !== 'ALL') && (
+                <div className="flex items-center gap-2">
                   <button
-                    onClick={() => {
-                      setOrderSearchQuery('');
-                      setOrderLogisticsFilter('ALL');
-                      setOrderPaymentFilter('ALL');
-                    }}
-                    className="text-[#4E641A] hover:underline bg-transparent border-none text-xs font-bold uppercase tracking-wider cursor-pointer"
+                    type="button"
+                    onClick={handleSyncAllShipments}
+                    disabled={isSyncingAll}
+                    className="bg-white hover:bg-stone-50 border border-stone-200 text-[#37411A] text-xs font-bold py-2 px-3.5 rounded-xl transition flex items-center gap-1.5 cursor-pointer shadow-2xs disabled:opacity-50"
                   >
-                    Reset Filters
+                    <FiRefreshCw className={`w-3.5 h-3.5 text-[#4E641A] ${isSyncingAll ? 'animate-spin' : ''}`} />
+                    <span>{isSyncingAll ? 'Syncing Active Shipments...' : '↻ Sync All Shipments'}</span>
                   </button>
-                )}
+
+                  <button
+                    type="button"
+                    onClick={() => setShowDeleteAllOrdersModal(true)}
+                    className="bg-red-50 hover:bg-red-100 border border-red-200 text-red-700 text-xs font-bold py-2 px-3.5 rounded-xl transition flex items-center gap-1.5 cursor-pointer shadow-2xs"
+                  >
+                    <span>🗑️</span>
+                    <span>Delete All Orders</span>
+                  </button>
+
+                  {/* Clear Filters Button */}
+                  {(orderSearchQuery || orderLogisticsFilter !== 'ALL' || orderPaymentFilter !== 'ALL') && (
+                    <button
+                      onClick={() => {
+                        setOrderSearchQuery('');
+                        setOrderLogisticsFilter('ALL');
+                        setOrderPaymentFilter('ALL');
+                      }}
+                      className="text-[#4E641A] hover:underline bg-transparent border-none text-xs font-bold uppercase tracking-wider cursor-pointer"
+                    >
+                      Reset Filters
+                    </button>
+                  )}
+                </div>
               </div>
 
               {/* Status Segment Filters */}
@@ -4805,47 +5701,25 @@ export default function AdminDashboard() {
                 
                 {/* Logistics filters */}
                 <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                  <span className="text-[9px] font-extrabold uppercase tracking-widest text-stone-400 w-24 shrink-0">Logistics:</span>
+                  <span className="text-[9px] font-extrabold uppercase tracking-widest text-stone-400 w-24 shrink-0">Shiprocket:</span>
                   <div className="flex flex-wrap gap-1.5">
                     {[
-                      { id: 'ALL', label: 'All Shipments' },
-                      { id: 'PENDING', label: 'Pending' },
-                      { id: 'CONFIRMED', label: 'Confirmed' },
-                      { id: 'PROCESSING', label: 'Processing' },
-                      { id: 'SHIPPED', label: 'Shipped' },
+                      { id: 'ALL', label: 'All Orders' },
+                      { id: 'AWAITING', label: 'Awaiting Shipment' },
+                      { id: 'CREATED', label: 'Shipment Created' },
+                      { id: 'PICKUP_SCHEDULED', label: 'Pickup Scheduled' },
+                      { id: 'PICKED_UP', label: 'Picked Up' },
+                      { id: 'IN_TRANSIT', label: 'In Transit' },
+                      { id: 'OUT_FOR_DELIVERY', label: 'Out for Delivery' },
                       { id: 'DELIVERED', label: 'Delivered' },
-                      { id: 'CANCELLED', label: 'Cancelled' }
+                      { id: 'CANCELLED', label: 'Cancelled' },
+                      { id: 'RETURNED', label: 'Returned (RTO)' }
                     ].map((btn) => (
                       <button
                         key={btn.id}
                         onClick={() => setOrderLogisticsFilter(btn.id)}
                         className={`px-3 py-1.5 rounded-lg border text-[10px] font-bold transition cursor-pointer select-none ${
                           orderLogisticsFilter === btn.id
-                            ? 'bg-[#4E641A] text-white border-[#4E641A] shadow-xxs'
-                            : 'bg-stone-50 text-stone-600 border-[#EDE7D9] hover:bg-stone-100'
-                        }`}
-                      >
-                        {btn.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Payment status filters */}
-                <div className="flex flex-col sm:flex-row sm:items-center gap-2 pt-1">
-                  <span className="text-[9px] font-extrabold uppercase tracking-widest text-stone-400 w-24 shrink-0">Payment:</span>
-                  <div className="flex flex-wrap gap-1.5">
-                    {[
-                      { id: 'ALL', label: 'All Payments' },
-                      { id: 'PENDING', label: 'Pending' },
-                      { id: 'COMPLETED', label: 'Completed' },
-                      { id: 'FAILED', label: 'Failed' }
-                    ].map((btn) => (
-                      <button
-                        key={btn.id}
-                        onClick={() => setOrderPaymentFilter(btn.id)}
-                        className={`px-3 py-1.5 rounded-lg border text-[10px] font-bold transition cursor-pointer select-none ${
-                          orderPaymentFilter === btn.id
                             ? 'bg-[#4E641A] text-white border-[#4E641A] shadow-xxs'
                             : 'bg-stone-50 text-stone-600 border-[#EDE7D9] hover:bg-stone-100'
                         }`}
@@ -4869,13 +5743,25 @@ export default function AdminDashboard() {
                     (o.user?.name || '').toLowerCase().includes(query) || 
                     (o.shippingAddress?.phone || '').toLowerCase().includes(query);
                     
-                  const logisticsStatus = o.logistics?.status || o.status || 'PENDING';
+                  const shipStatus = (o.shiprocketStatus || o.status || 'PENDING').toUpperCase();
                   let matchesLogistics = true;
                   if (orderLogisticsFilter !== 'ALL') {
-                    if (orderLogisticsFilter === 'TRANSIT') {
-                      matchesLogistics = ['SHIPPED', 'IN_TRANSIT', 'OUT_FOR_DELIVERY'].includes(logisticsStatus);
+                    if (orderLogisticsFilter === 'AWAITING') {
+                      matchesLogistics = !o.shiprocketOrderId && o.status !== 'CANCELLED';
+                    } else if (orderLogisticsFilter === 'CREATED') {
+                      matchesLogistics = !!o.shiprocketOrderId;
+                    } else if (orderLogisticsFilter === 'PICKUP_SCHEDULED') {
+                      matchesLogistics = shipStatus.includes('PICKUP') || !!o.pickupId;
+                    } else if (orderLogisticsFilter === 'PICKED_UP') {
+                      matchesLogistics = shipStatus.includes('PICKED');
+                    } else if (orderLogisticsFilter === 'IN_TRANSIT') {
+                      matchesLogistics = ['SHIPPED', 'IN_TRANSIT', 'TRANSIT'].includes(shipStatus);
+                    } else if (orderLogisticsFilter === 'OUT_FOR_DELIVERY') {
+                      matchesLogistics = shipStatus.includes('OUT');
+                    } else if (orderLogisticsFilter === 'RETURNED') {
+                      matchesLogistics = shipStatus.includes('RETURN') || shipStatus.includes('RTO');
                     } else {
-                      matchesLogistics = logisticsStatus === orderLogisticsFilter;
+                      matchesLogistics = shipStatus === orderLogisticsFilter;
                     }
                   }
                   
@@ -4890,87 +5776,131 @@ export default function AdminDashboard() {
                 if (filteredOrders.length === 0) {
                   return (
                     <EmptyState
-                      title="🛒 No Matching Orders"
-                      description="Try adjusting your filters or search terms to find other shipments."
-                      illustration="🔍"
+                      title={orders.length === 0 ? "🛒 No Orders Found" : "🛒 No Matching Orders"}
+                      description={orders.length === 0 ? "There are currently no order records in the system." : "Try adjusting your filters or search terms to find other shipments."}
+                      illustration="🛒"
                     />
                   );
                 }
 
                 return filteredOrders.map((o) => {
-                  const logisticsStatus = o.logistics?.status || o.status || 'PENDING';
-                  const isCancelled = logisticsStatus === 'CANCELLED';
+                  // SINGLE SOURCE OF TRUTH: Direct from Shiprocket status
+                  const currentShiprocketStatus = (o.shiprocketStatus || o.status || 'PENDING').toUpperCase().trim();
                   
+                  // Strict State Machine Normalization
+                  let normStatus = 'NEW';
+                  if (currentShiprocketStatus === 'CANCELLED' || currentShiprocketStatus === 'CANCELED') {
+                    normStatus = 'CANCELLED';
+                  } else if (currentShiprocketStatus === 'DELIVERED') {
+                    normStatus = 'DELIVERED';
+                  } else if (currentShiprocketStatus.includes('RTO') || currentShiprocketStatus.includes('RETURN')) {
+                    normStatus = 'RTO';
+                  } else if (currentShiprocketStatus.includes('OUT')) {
+                    normStatus = 'OUT_FOR_DELIVERY';
+                  } else if (currentShiprocketStatus.includes('TRANSIT') || currentShiprocketStatus === 'SHIPPED') {
+                    normStatus = 'IN_TRANSIT';
+                  } else if (currentShiprocketStatus.includes('PICKED')) {
+                    normStatus = 'PICKED_UP';
+                  } else if (currentShiprocketStatus.includes('PICKUP') || o.pickupId) {
+                    normStatus = 'PICKUP_SCHEDULED';
+                  } else if (o.awbCode || o.shiprocketOrderId) {
+                    normStatus = 'READY_TO_SHIP';
+                  }
+
+                  const isCancelled = normStatus === 'CANCELLED';
+                  const isDelivered = normStatus === 'DELIVERED';
+                  const isRto = normStatus === 'RTO';
+                  const isPickedUpOrInTransit = ['PICKED_UP', 'IN_TRANSIT', 'OUT_FOR_DELIVERY', 'DELIVERED'].includes(normStatus);
+
+                  const pickupDisplayStatus = isCancelled 
+                    ? 'Cancelled' 
+                    : o.pickupId 
+                      ? `Pickup Scheduled (#${o.pickupId})` 
+                      : 'Ready for Pickup';
+
+                  const expectedDeliveryDisplay = isCancelled
+                    ? 'Shipment Cancelled'
+                    : isDelivered
+                      ? 'Delivered'
+                      : o.logistics?.estimatedDeliveryDate 
+                        ? new Date(o.logistics.estimatedDeliveryDate).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' }) 
+                        : '3–5 Business Days';
+
                   // Helper function to color coordinate badges
                   const getStatusColorClasses = (status) => {
-                    const norm = (status || '').toUpperCase().trim();
-                    switch (norm) {
-                      case 'PENDING': return 'bg-amber-55 text-amber-800 border-amber-300';
-                      case 'CONFIRMED': return 'bg-blue-50 text-blue-705 border-blue-200';
-                      case 'PROCESSING': return 'bg-purple-50 text-purple-700 border-purple-250';
-                      case 'SHIPPED': return 'bg-teal-50 text-teal-705 border-teal-250';
-                      case 'IN_TRANSIT':
-                      case 'IN TRANSIT':
-                        return 'bg-cyan-50 text-cyan-705 border-cyan-250';
-                      case 'OUT_FOR_DELIVERY': return 'bg-orange-50 text-orange-705 border-orange-250';
-                      case 'DELIVERED': return 'bg-green-50 text-green-705 border-green-250';
-                      case 'CANCELLED': return 'bg-red-55 text-red-800 border-red-300';
-                      default: return 'bg-stone-50 text-stone-705 border-stone-250';
+                    switch (status) {
+                      case 'NEW': return 'bg-slate-50 text-slate-700 border-slate-300';
+                      case 'READY_TO_SHIP': return 'bg-indigo-50 text-indigo-700 border-indigo-300';
+                      case 'PICKUP_SCHEDULED': return 'bg-fuchsia-50 text-fuchsia-700 border-fuchsia-300';
+                      case 'PICKED_UP': return 'bg-purple-50 text-purple-700 border-purple-300';
+                      case 'IN_TRANSIT': return 'bg-amber-50 text-amber-700 border-amber-300';
+                      case 'OUT_FOR_DELIVERY': return 'bg-orange-50 text-orange-700 border-orange-300';
+                      case 'DELIVERED': return 'bg-emerald-50 text-emerald-700 border-emerald-300';
+                      case 'CANCELLED': return 'bg-rose-50 text-rose-700 border-rose-300';
+                      case 'RTO': return 'bg-red-50 text-red-700 border-red-300';
+                      default: return 'bg-stone-50 text-stone-700 border-stone-300';
                     }
                   };
 
-                  const getAdminStepIndex = (status) => {
-                    const norm = (status || '').toUpperCase().trim();
-                    if (norm === 'PENDING' || norm === 'PLACED') return 0;
-                    if (norm === 'CONFIRMED') return 1;
-                    if (norm === 'PROCESSING' || norm === 'PREPARED') return 2;
-                    if (norm === 'SHIPPED') return 3;
-                    if (norm === 'TRANSIT' || norm === 'IN_TRANSIT' || norm === 'IN TRANSIT') return 4;
-                    if (norm === 'OUT_FOR_DELIVERY') return 5;
-                    if (norm === 'DELIVERED') return 6;
-                    if (norm === 'CANCELLED') return -1;
-                    return 0;
-                  };
-
                   const adminTimelineSteps = [
-                    { label: 'Placed', icon: () => <span className="text-[10px]">🛒</span>, desc: 'Placed' },
-                    { label: 'Confirmed', icon: () => <span className="text-[10px]">✓</span>, desc: 'Confirmed' },
-                    { label: 'Prepared', icon: () => <span className="text-[10px]">📦</span>, desc: 'Processing' },
-                    { label: 'Shipped', icon: () => <span className="text-[10px]">🚚</span>, desc: 'Shipped' },
-                    { label: 'Transit', icon: () => <span className="text-[10px]">🕒</span>, desc: 'In Transit' },
-                    { label: 'Out', icon: () => <span className="text-[10px]">🛵</span>, desc: 'Out For Delivery' },
-                    { label: 'Delivered', icon: () => <span className="text-[10px]">🌿</span>, desc: 'Delivered' }
+                    { label: 'Placed', icon: '🛒', desc: 'Order Placed' },
+                    { label: 'Verified', icon: '💳', desc: 'Payment Verified' },
+                    { label: 'Created', icon: '🚀', desc: 'Shipment Created' },
+                    { label: 'AWB', icon: '🏷️', desc: 'AWB Generated' },
+                    { label: 'Pickup', icon: '📋', desc: 'Pickup Scheduled' },
+                    { label: 'Picked Up', icon: '📦', desc: 'Picked Up' },
+                    { label: 'Transit', icon: '🚚', desc: 'In Transit' },
+                    { label: 'Out', icon: '🛵', desc: 'Out for Delivery' },
+                    { label: 'Delivered', icon: '🌿', desc: 'Delivered' }
                   ];
 
-                  const currentStep = getAdminStepIndex(logisticsStatus);
+                  const getAdminStepIndex = (status) => {
+                    switch(status) {
+                      case 'CANCELLED': return -1;
+                      case 'DELIVERED': return 8;
+                      case 'OUT_FOR_DELIVERY': return 7;
+                      case 'IN_TRANSIT': return 6;
+                      case 'PICKED_UP': return 5;
+                      case 'PICKUP_SCHEDULED': return 4;
+                      case 'READY_TO_SHIP': return 3;
+                      case 'NEW': return (o.paymentStatus === 'COMPLETED') ? 1 : 0;
+                      default: return 1;
+                    }
+                  };
+
+                  const currentStep = getAdminStepIndex(normStatus);
 
                   const getActivityLogs = () => {
                     const logs = [];
                     const createdDate = new Date(o.createdAt).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
-                    
-                    logs.push({ text: 'Order Placed & Shipment Log Created', time: createdDate, badge: 'Placed' });
-                    
-                    if (['CONFIRMED', 'PROCESSING', 'SHIPPED', 'IN_TRANSIT', 'OUT_FOR_DELIVERY', 'DELIVERED'].includes(logisticsStatus)) {
-                      logs.push({ text: 'Order Confirmed by Admin', time: new Date(new Date(o.createdAt).getTime() + 5 * 60 * 1000).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }), badge: 'Confirmed' });
+                    logs.push({ text: 'Order Placed & Payment Verified', time: createdDate, badge: 'Placed' });
+
+                    if (o.shiprocketOrderId) {
+                      logs.push({ text: `Shipment Created (ID: ${o.shiprocketOrderId})`, time: new Date(o.createdAt).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }), badge: 'Created' });
                     }
-                    if (['PROCESSING', 'SHIPPED', 'IN_TRANSIT', 'OUT_FOR_DELIVERY', 'DELIVERED'].includes(logisticsStatus)) {
-                      logs.push({ text: 'Harvest gathered & packed at farm coordinate', time: new Date(new Date(o.createdAt).getTime() + 15 * 60 * 1000).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }), badge: 'Prepared' });
+
+                    if (o.awbCode) {
+                      logs.push({ text: `AWB Assigned: ${o.awbCode} via ${o.courierName || 'Shiprocket'}`, time: new Date(o.updatedAt || o.createdAt).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }), badge: 'AWB' });
                     }
-                    if (['SHIPPED', 'IN_TRANSIT', 'OUT_FOR_DELIVERY', 'DELIVERED'].includes(logisticsStatus) && o.logistics?.dispatchDate) {
-                      logs.push({ text: `Tracking registered and shipped via ${o.logistics.courierName || 'Standard Partner'}`, time: new Date(o.logistics.dispatchDate).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }), badge: 'Shipped' });
+
+                    if (o.pickupId && !isCancelled) {
+                      logs.push({ text: `Pickup Scheduled (#${o.pickupId})`, time: new Date(o.updatedAt || o.createdAt).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }), badge: 'Pickup' });
                     }
-                    if (['IN_TRANSIT', 'OUT_FOR_DELIVERY', 'DELIVERED'].includes(logisticsStatus)) {
-                      logs.push({ text: 'Carrier departed, shipment in transit', time: new Date(o.updatedAt || Date.now()).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }), badge: 'Transit' });
+
+                    const scans = Array.isArray(o.trackingHistory) ? o.trackingHistory : [];
+                    scans.forEach((scan) => {
+                      const scanTime = scan.timestamp ? new Date(scan.timestamp).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : '';
+                      logs.push({
+                        text: `✔ ${scan.activity || scan.status}${scan.location ? ` (${scan.location})` : ''}`,
+                        time: scanTime,
+                        badge: (scan.status || 'Scan').slice(0, 10)
+                      });
+                    });
+
+                    if (isCancelled) {
+                      logs.push({ text: '✔ Shipment Cancelled in Shiprocket', time: new Date(o.updatedAt || Date.now()).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }), badge: 'Cancelled' });
                     }
-                    if (['OUT_FOR_DELIVERY', 'DELIVERED'].includes(logisticsStatus)) {
-                      logs.push({ text: 'Out for delivery with courier partner', time: new Date(o.updatedAt || Date.now()).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }), badge: 'Out for Delivery' });
-                    }
-                    if (logisticsStatus === 'DELIVERED') {
-                      logs.push({ text: 'Delivered successfully & customer notified', time: new Date(o.updatedAt || Date.now()).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }), badge: 'Delivered' });
-                    }
-                    if (logisticsStatus === 'CANCELLED') {
-                      logs.push({ text: 'Order cancelled, delivery aborted', time: new Date(o.updatedAt || Date.now()).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }), badge: 'Cancelled' });
-                    }
+
                     return logs.reverse();
                   };
 
@@ -5030,19 +5960,33 @@ export default function AdminDashboard() {
 
                         {/* CENTER COLUMN: Status Badges & Mini Progress Indicator */}
                         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 lg:justify-center">
-                          <div className="flex items-center gap-2">
-                            <span className={`text-[8px] font-extrabold uppercase tracking-widest px-2.5 py-0.5 rounded-full border select-none ${getStatusColorClasses(logisticsStatus)}`}>
-                              {logisticsStatus}
+                          <div className="flex flex-wrap items-center gap-1.5">
+                            {/* Shipment Status Badge */}
+                            <span className={`text-[8px] font-extrabold uppercase tracking-widest px-2.5 py-0.5 rounded-full border select-none ${getStatusColorClasses(normStatus)}`}>
+                              Shipment: {normStatus.replace(/_/g, ' ')}
                             </span>
+
+                            {/* Payment Status Badge */}
                             <span className={`text-[8px] font-extrabold uppercase tracking-widest px-2.5 py-0.5 rounded-full border select-none ${
-                              o.paymentStatus === 'COMPLETED'
-                                ? 'bg-green-55 text-green-800 border-green-300'
+                              o.paymentStatus === 'COMPLETED' || o.paymentStatus === 'PAID'
+                                ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
                                 : o.paymentStatus === 'FAILED'
-                                  ? 'bg-red-55 text-red-800 border-red-300'
-                                  : 'bg-amber-55 text-amber-800 border-amber-300'
+                                  ? 'bg-red-50 text-red-800 border-red-300'
+                                  : 'bg-amber-50 text-amber-800 border-amber-300'
                             }`}>
-                              Payment: {o.paymentStatus}
+                              Payment: {o.paymentStatus || 'PREPAID'}
                             </span>
+
+                            {/* Refund Status Badge */}
+                            {(o.paymentStatus === 'REFUND_PENDING' || o.paymentStatus === 'REFUND_COMPLETED' || isCancelled) && (
+                              <span className={`text-[8px] font-extrabold uppercase tracking-widest px-2.5 py-0.5 rounded-full border select-none ${
+                                o.paymentStatus === 'REFUND_COMPLETED'
+                                  ? 'bg-green-100 text-green-800 border-green-300'
+                                  : 'bg-amber-100 text-amber-900 border-amber-300'
+                              }`}>
+                                Refund: {o.paymentStatus === 'REFUND_COMPLETED' ? 'Completed ✔' : 'Pending...'}
+                              </span>
+                            )}
                           </div>
 
                           {/* Mini Shipment Progress Tracker (Hidden on Mobile) */}
@@ -5050,11 +5994,11 @@ export default function AdminDashboard() {
                             <div className="w-24 bg-stone-150 h-1.5 rounded-full overflow-hidden border border-stone-200">
                               <div 
                                 className={`h-full rounded-full transition-all duration-500 ${
-                                  logisticsStatus === 'CANCELLED' ? 'bg-red-500' : 'bg-[#4E641A]'
+                                  normStatus === 'CANCELLED' ? 'bg-red-500' : 'bg-[#4E641A]'
                                 }`} 
                                 style={{ 
                                   width: `${
-                                    logisticsStatus === 'CANCELLED' 
+                                    normStatus === 'CANCELLED' 
                                       ? 100 
                                       : ((currentStep) / (adminTimelineSteps.length - 1)) * 100
                                   }%` 
@@ -5062,7 +6006,7 @@ export default function AdminDashboard() {
                               />
                             </div>
                             <span className="text-[7.5px] font-extrabold text-stone-400 uppercase tracking-widest block pl-0.5">
-                              {logisticsStatus === 'CANCELLED' ? 'Cancelled' : `Stage ${currentStep + 1} of 7`}
+                              {normStatus === 'CANCELLED' ? 'Cancelled' : `Stage ${currentStep + 1} of ${adminTimelineSteps.length}`}
                             </span>
                           </div>
                         </div>
@@ -5076,7 +6020,7 @@ export default function AdminDashboard() {
 
                           <div className="flex items-center gap-2 select-none" onClick={(e) => e.stopPropagation()}>
                             {/* Quick Actions trigger based on current status */}
-                            {logisticsStatus === 'PENDING' && (
+                            {normStatus === 'NEW' && (
                               <button
                                 onClick={() => {
                                   setExpandedOrders(prev => ({ ...prev, [o.id]: true }));
@@ -5120,27 +6064,43 @@ export default function AdminDashboard() {
                                   <span>🌱</span> Order Information
                                 </h4>
                                 
-                                <div className="space-y-2 text-xs">
-                                  <div className="flex justify-between items-baseline">
-                                    <span className="text-stone-400 font-semibold">Buyer Name:</span>
-                                    <span className="font-bold text-[#37411A]">{o.user.name}</span>
+                                  <div className="space-y-2 text-xs">
+                                    <div className="flex justify-between items-baseline">
+                                      <span className="text-stone-400 font-semibold">Buyer Name:</span>
+                                      <span className="font-bold text-[#37411A]">{o.user?.name || 'Customer'}</span>
+                                    </div>
+                                    <div className="flex justify-between items-baseline">
+                                      <span className="text-stone-400 font-semibold">Contact Phone:</span>
+                                      <span className="font-bold text-[#37411A]">{o.shippingAddress?.phone || 'Not Provided'}</span>
+                                    </div>
+                                    <div className="flex justify-between items-baseline">
+                                      <span className="text-stone-400 font-semibold">Method:</span>
+                                      <span className="font-bold text-[#4E641A]">{o.paymentMethod || 'RAZORPAY'}</span>
+                                    </div>
+                                    <div className="flex justify-between items-baseline">
+                                      <span className="text-stone-400 font-semibold">Payment Status:</span>
+                                      <span className="font-bold text-emerald-700">{o.paymentStatus || 'PENDING'}</span>
+                                    </div>
+                                    {o.razorpayOrderId && (
+                                      <div className="flex justify-between items-baseline">
+                                        <span className="text-stone-400 font-semibold">Razorpay Order ID:</span>
+                                        <span className="font-mono text-[10px] font-bold text-stone-700">{o.razorpayOrderId}</span>
+                                      </div>
+                                    )}
+                                    {o.razorpayPaymentId && (
+                                      <div className="flex justify-between items-baseline">
+                                        <span className="text-stone-400 font-semibold">Razorpay Payment ID:</span>
+                                        <span className="font-mono text-[10px] font-bold text-[#4E641A]">{o.razorpayPaymentId}</span>
+                                      </div>
+                                    )}
+                                    <div className="flex flex-col gap-0.5 text-left pt-1 border-t border-stone-100">
+                                      <span className="text-stone-400 font-semibold">Delivery Address:</span>
+                                      <span className="font-medium text-stone-700 block leading-relaxed">
+                                        {o.shippingAddress?.recipientName && <strong>{o.shippingAddress.recipientName}<br /></strong>}
+                                        {o.shippingAddress?.street}, {o.shippingAddress?.city}, {o.shippingAddress?.state} – {o.shippingAddress?.postalCode}
+                                      </span>
+                                    </div>
                                   </div>
-                                  <div className="flex justify-between items-baseline">
-                                    <span className="text-stone-400 font-semibold">Contact Phone:</span>
-                                    <span className="font-bold text-[#37411A]">{o.shippingAddress?.phone || 'Not Provided'}</span>
-                                  </div>
-                                  <div className="flex justify-between items-baseline">
-                                    <span className="text-stone-400 font-semibold">Method:</span>
-                                    <span className="font-bold text-[#4E641A]">{o.paymentMethod}</span>
-                                  </div>
-                                  <div className="flex flex-col gap-0.5 text-left pt-1 border-t border-stone-100">
-                                    <span className="text-stone-400 font-semibold">Delivery Address:</span>
-                                    <span className="font-medium text-stone-700 block leading-relaxed">
-                                      {o.shippingAddress?.recipientName && <strong>{o.shippingAddress.recipientName}<br /></strong>}
-                                      {o.shippingAddress?.street}, {o.shippingAddress?.city}, {o.shippingAddress?.state} – {o.shippingAddress?.postalCode}
-                                    </span>
-                                  </div>
-                                </div>
 
                                 <div className="space-y-2.5 pt-2 border-t border-stone-100">
                                   <span className="text-[9px] font-extrabold uppercase tracking-widest text-stone-400 block">Ordered Products</span>
@@ -5187,180 +6147,279 @@ export default function AdminDashboard() {
                               </div>
                             </div>
 
-                            {/* SECTION B: LOGISTICS MANAGEMENT (Span 5) */}
-                            <div className="md:col-span-5 bg-white border border-[#EDE7D9] rounded-[20px] p-5 space-y-4 self-stretch">
-                              <h4 className="font-serif text-xs font-bold text-[#37411A] border-b pb-2 border-[#EDE7D9] uppercase tracking-wider flex items-center gap-1.5">
-                                <span>🚚</span> Logistics Management
-                              </h4>
-
-                              {/* Courier Partner Logos / Auto-suggest list */}
-                              <div className="space-y-1.5 text-left">
-                                <span className="text-[8px] font-extrabold uppercase tracking-widest text-stone-400 block">Quick Partner Select Autocomplete</span>
-                                <div className="flex flex-wrap gap-1">
-                                  {courierPresets.map((preset) => (
-                                    <button
-                                      key={preset.name}
-                                      type="button"
-                                      onClick={() => {
-                                        updateDraftField(o.id, 'courierName', preset.name);
-                                        const tNum = shipmentDrafts[o.id]?.trackingNumber !== undefined
-                                          ? shipmentDrafts[o.id].trackingNumber
-                                          : o.logistics?.trackingNumber || '';
-                                        if (tNum) {
-                                          updateDraftField(o.id, 'trackingUrl', preset.trackingUrl + tNum);
-                                        } else {
-                                          updateDraftField(o.id, 'trackingUrl', preset.trackingUrl);
-                                        }
-                                      }}
-                                      className="px-2 py-1 bg-stone-50 hover:bg-[#4E641A]/5 border border-[#EDE7D9] rounded-lg text-[9px] font-bold text-stone-600 hover:text-[#4E641A] transition cursor-pointer flex items-center gap-1 select-none"
-                                    >
-                                      <span>{preset.logo}</span>
-                                      <span>{preset.name}</span>
-                                    </button>
-                                  ))}
+                            {/* SECTION B: SHIPROCKET OPERATIONS HUB (Span 5) */}
+                            <div className="md:col-span-5 bg-white border border-[#EDE7D9] rounded-[20px] p-5 space-y-4 self-stretch text-left">
+                              <div className="flex items-center justify-between border-b pb-2 border-[#EDE7D9]">
+                                <h4 className="font-serif text-xs font-bold text-[#37411A] uppercase tracking-wider flex items-center gap-1.5">
+                                  <span>🚚</span> Shiprocket Operations Hub
+                                </h4>
+                                <div className="flex items-center gap-2">
+                                  <button
+                                    type="button"
+                                    onClick={() => handleSyncSingleOrder(o)}
+                                    disabled={isSyncingOrder[o.id]}
+                                    className="text-[10px] font-bold text-stone-700 hover:text-[#4E641A] bg-stone-50 border border-[#EDE7D9] hover:bg-stone-100 px-2.5 py-1 rounded-lg transition flex items-center gap-1 cursor-pointer disabled:opacity-50 select-none"
+                                  >
+                                    <FiRefreshCw className={`w-3 h-3 text-[#4E641A] ${isSyncingOrder[o.id] ? 'animate-spin' : ''}`} />
+                                    <span>{isSyncingOrder[o.id] ? 'Syncing...' : 'Refresh Status'}</span>
+                                  </button>
                                 </div>
                               </div>
 
-                              {/* Logistics Fields Responsive Grid Form */}
-                              <div className="grid grid-cols-2 gap-4 text-xs">
-                                
-                                <div className="flex flex-col gap-1 text-left">
-                                  <label className="text-[9px] font-extrabold uppercase tracking-wider text-stone-400">Courier Partner</label>
-                                  <input
-                                    type="text"
-                                    value={
-                                      shipmentDrafts[o.id]?.courierName !== undefined
-                                        ? shipmentDrafts[o.id].courierName
-                                        : o.logistics?.courierName || ''
-                                    }
-                                    onChange={(e) => updateDraftField(o.id, 'courierName', e.target.value)}
-                                    placeholder="e.g. Delhivery"
-                                    className="bg-[#FDFBF7] border border-[#EDE7D9] text-[#37411A] rounded-xl py-2 px-3 focus:outline-none focus:border-[#4E641A] font-medium"
-                                  />
-                                </div>
+                              {/* State: NEW (Awaiting Shipment Creation) */}
+                              {normStatus === 'NEW' && (
+                                <div className="bg-[#FAF7F2] border border-[#EAE4D8] rounded-2xl p-5 space-y-3.5 text-left font-sans shadow-2xs">
+                                  <div className="flex items-center justify-between">
+                                    <span className="font-serif text-xs font-bold text-[#37411A] flex items-center gap-1.5">
+                                      <span>🚀</span> Ready for Fulfillment
+                                    </span>
+                                    <span className="text-[10px] font-bold text-amber-800 bg-amber-50 border border-amber-200 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                                      Awaiting Shipment
+                                    </span>
+                                  </div>
 
-                                <div className="flex flex-col gap-1 text-left">
-                                  <label className="text-[9px] font-extrabold uppercase tracking-wider text-stone-400 flex items-center justify-between">
-                                    <span>Tracking Number / AWB</span>
-                                    {(shipmentDrafts[o.id]?.trackingNumber || o.logistics?.trackingNumber) && (
+                                  <p className="text-xs text-stone-600 leading-relaxed">
+                                    Order is ready for dispatch via Shiprocket. Generating shipment will auto-select courier partner, assign AWB tracking, and prepare shipping label & manifest.
+                                  </p>
+
+                                  <button
+                                    type="button"
+                                    onClick={() => handleGenerateShiprocketShipment(o)}
+                                    disabled={isGeneratingShipment[o.id]}
+                                    className="w-full bg-[#4E641A] hover:bg-[#37411A] text-white text-xs font-bold uppercase tracking-wider py-3.5 rounded-xl transition cursor-pointer flex items-center justify-center gap-2 shadow-xs border-none disabled:opacity-60"
+                                  >
+                                    {isGeneratingShipment[o.id] ? (
+                                      <>
+                                        <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                        <span>Creating Shiprocket Order & AWB...</span>
+                                      </>
+                                    ) : (
+                                      <>
+                                        <span>⚡</span>
+                                        <span>Generate Shipment</span>
+                                      </>
+                                    )}
+                                  </button>
+                                </div>
+                              )}
+
+                              {/* State: ACTIVE OPERATIONS (All states where shipment exists) */}
+                              {normStatus !== 'NEW' && (
+                                <div className="bg-[#FAF7F2] border border-[#EAE4D8] rounded-2xl p-4 space-y-3.5 text-left font-sans shadow-2xs">
+                                  {/* Courier & AWB Banner */}
+                                  <div className="flex items-center justify-between border-b border-[#EAE4D8]/80 pb-3">
+                                    <div className="flex items-center gap-2.5">
+                                      <span className="text-xl">🚚</span>
+                                      <div>
+                                        <h4 className="font-serif text-sm font-bold text-[#37411A] leading-tight">
+                                          {o.courierName || o.logistics?.courierName || 'Shiprocket Logistics'}
+                                        </h4>
+                                        <span className="text-[11px] font-mono font-semibold text-stone-600 block">
+                                          AWB: {o.awbCode || o.logistics?.trackingNumber || 'AWB Generated'}
+                                        </span>
+                                      </div>
+                                    </div>
+                                    <span className={`text-[9px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full ${getStatusColorClasses(normStatus)}`}>
+                                      {normStatus.replace(/_/g, ' ')}
+                                    </span>
+                                  </div>
+
+                                  {/* Shipment Details Grid */}
+                                  <div className="grid grid-cols-2 gap-3 text-xs">
+                                    <div>
+                                      <span className="text-[9px] uppercase tracking-wider font-extrabold text-stone-400 block">Shipment ID</span>
+                                      <strong className="font-mono text-stone-700 text-xs">{o.shipmentId || o.shiprocketOrderId}</strong>
+                                    </div>
+                                    <div>
+                                      <span className="text-[9px] uppercase tracking-wider font-extrabold text-stone-400 block">Pickup Status</span>
+                                      <strong className={`font-semibold ${isCancelled ? 'text-red-700' : 'text-stone-700'}`}>{pickupDisplayStatus}</strong>
+                                    </div>
+                                    <div>
+                                      <span className="text-[9px] uppercase tracking-wider font-extrabold text-stone-400 block">Expected Delivery</span>
+                                      <strong className={`font-bold ${isCancelled ? 'text-red-700' : 'text-[#4E641A]'}`}>{expectedDeliveryDisplay}</strong>
+                                    </div>
+                                    <div>
+                                      <span className="text-[9px] uppercase tracking-wider font-extrabold text-stone-400 block">Last Synced</span>
+                                      <strong className="text-emerald-800 font-semibold">{getRelativeTimeString(o.updatedAt)}</strong>
+                                    </div>
+                                  </div>
+
+                                  {/* Auto-Schedule Pickup Banner (For READY_TO_SHIP state) */}
+                                  {normStatus === 'READY_TO_SHIP' && (
+                                    <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-3 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mt-2">
+                                      <div className="text-[10px]">
+                                        <strong className="text-indigo-800 block uppercase tracking-wider">Pickup Action Required</strong>
+                                        <span className="text-indigo-700">Schedule dispatch with the courier partner.</span>
+                                      </div>
                                       <button
                                         type="button"
-                                        onClick={() => {
-                                          const num = shipmentDrafts[o.id]?.trackingNumber || o.logistics?.trackingNumber;
-                                          navigator.clipboard.writeText(num);
-                                          alert('Tracking number copied.');
-                                        }}
-                                        className="text-[#4E641A] hover:underline bg-transparent border-none text-[8px] font-extrabold uppercase tracking-widest cursor-pointer select-none"
+                                        onClick={() => handleSchedulePickup(o.shipmentId, o.id)}
+                                        className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg py-1.5 px-3 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer border-none shadow-sm whitespace-nowrap"
                                       >
-                                        Copy
+                                        <span>📅</span> Schedule Auto-Pickup
                                       </button>
-                                    )}
-                                  </label>
-                                  <input
-                                    type="text"
-                                    value={
-                                      shipmentDrafts[o.id]?.trackingNumber !== undefined
-                                        ? shipmentDrafts[o.id].trackingNumber
-                                        : o.logistics?.trackingNumber || ''
-                                    }
-                                    onChange={(e) => {
-                                      const num = e.target.value;
-                                      updateDraftField(o.id, 'trackingNumber', num);
-                                      // Auto-template the URL if courier is selected
-                                      const courier = shipmentDrafts[o.id]?.courierName || o.logistics?.courierName || '';
-                                      const matchingPreset = courierPresets.find(p => p.name.toLowerCase() === courier.toLowerCase());
-                                      if (matchingPreset) {
-                                        updateDraftField(o.id, 'trackingUrl', matchingPreset.trackingUrl + num);
-                                      }
-                                    }}
-                                    placeholder="e.g. AWB1829472"
-                                    className="bg-[#FDFBF7] border border-[#EDE7D9] text-[#37411A] rounded-xl py-2 px-3 focus:outline-none focus:border-[#4E641A] font-medium"
-                                  />
+                                    </div>
+                                  )}
+
+                                  {/* Quick Action Toolbar */}
+                                  <div className="pt-2 border-t border-[#EAE4D8]/80 space-y-2">
+                                    <span className="text-[9px] font-extrabold uppercase tracking-widest text-stone-400 block">Quick Operations Toolbar</span>
+                                    <div className="grid grid-cols-2 gap-2">
+                                      {/* Common Actions (Shown in most active states) */}
+                                      {!isCancelled && !isRto && (
+                                        <>
+                                          <button
+                                            type="button"
+                                            onClick={() => handlePrintLabel(o)}
+                                            className="bg-white hover:bg-stone-50 border border-stone-200 rounded-xl py-2 px-2.5 text-xs font-bold text-stone-700 transition flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs"
+                                          >
+                                            <span>🏷️</span> Print Label
+                                          </button>
+                                          <button
+                                            type="button"
+                                            onClick={() => handlePrintInvoice(o)}
+                                            className="bg-white hover:bg-stone-50 border border-stone-200 rounded-xl py-2 px-2.5 text-xs font-bold text-stone-700 transition flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs"
+                                          >
+                                            <span>📄</span> Print Invoice
+                                          </button>
+                                          {normStatus !== 'DELIVERED' && (
+                                            <button
+                                              type="button"
+                                              onClick={() => handleDownloadManifest(o)}
+                                              className="bg-white hover:bg-stone-50 border border-stone-200 rounded-xl py-2 px-2.5 text-xs font-bold text-stone-700 transition flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs"
+                                            >
+                                              <span>📋</span> Manifest
+                                            </button>
+                                          )}
+                                          <button
+                                            type="button"
+                                            onClick={() => handleTrackShipment(o)}
+                                            className="bg-[#4E641A] hover:bg-[#37411A] text-white rounded-xl py-2 px-2.5 text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer border-none shadow-2xs"
+                                          >
+                                            <span>🔍</span> Track Live
+                                          </button>
+                                        </>
+                                      )}
+
+                                      {/* State-Specific Blocks */}
+                                      {(() => {
+                                        if (isCancelled) {
+                                          const isRefundCompleted = o.refundStatus === 'COMPLETED' || o.paymentStatus === 'REFUNDED';
+                                          const isRefundFailed = o.refundStatus === 'FAILED' || o.paymentStatus === 'FAILED';
+
+                                          return (
+                                            <div className="col-span-2 bg-red-50 border border-red-200 rounded-xl p-3 text-left space-y-2 font-sans mt-2">
+                                              <div className="flex items-center justify-between border-b border-red-200/60 pb-2">
+                                                <span className="font-serif text-xs font-bold text-red-800 flex items-center gap-1.5">
+                                                  <span>✔</span> Shipment Cancelled
+                                                </span>
+                                                <span className={`text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md ${
+                                                  isRefundCompleted
+                                                    ? 'bg-green-100 text-green-800 border border-green-300'
+                                                    : isRefundFailed
+                                                      ? 'bg-red-100 text-red-800 border border-red-300'
+                                                      : 'bg-amber-100 text-amber-900 border border-amber-300'
+                                                }`}>
+                                                  Refund: {isRefundCompleted ? 'Completed ✔' : isRefundFailed ? 'Failed ❌' : 'Processing...'}
+                                                </span>
+                                              </div>
+
+                                              <div className="grid grid-cols-2 gap-2 text-[10px] text-stone-600 font-medium">
+                                                <div>
+                                                  <span className="text-stone-400 block text-[8px] font-extrabold uppercase">Gateway</span>
+                                                  <strong className="text-stone-800 font-semibold">Razorpay</strong>
+                                                </div>
+                                                <div>
+                                                  <span className="text-stone-400 block text-[8px] font-extrabold uppercase">Refund Amount</span>
+                                                  <strong className="text-emerald-800 font-bold">₹{o.refundAmount || o.totalAmount}</strong>
+                                                </div>
+                                                {o.refundId && (
+                                                  <div className="col-span-2">
+                                                    <span className="text-stone-400 block text-[8px] font-extrabold uppercase">Razorpay Refund ID</span>
+                                                    <strong className="font-mono text-stone-800 text-[10px]">{o.refundId}</strong>
+                                                  </div>
+                                                )}
+                                              </div>
+
+                                              {isRefundFailed && (
+                                                <button
+                                                  type="button"
+                                                  onClick={() => handleRetryRazorpayRefund(o)}
+                                                  disabled={isRetryingRefund[o.id]}
+                                                  className="w-full bg-amber-600 hover:bg-amber-700 text-white rounded-lg py-2 px-3 text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer border-none shadow-2xs mt-1 disabled:opacity-50"
+                                                >
+                                                  {isRetryingRefund[o.id] ? (
+                                                    <>
+                                                      <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                                      <span>Retrying Razorpay Refund...</span>
+                                                    </>
+                                                  ) : (
+                                                    <>
+                                                      <span>🔄</span>
+                                                      <span>Retry Razorpay Refund</span>
+                                                    </>
+                                                  )}
+                                                </button>
+                                              )}
+                                            </div>
+                                          );
+                                        }
+
+                                        if (isDelivered) {
+                                          return (
+                                            <div className="col-span-2 bg-emerald-50 border border-emerald-200 rounded-xl p-3 text-left space-y-1 mt-2">
+                                              <span className="font-serif text-xs font-bold text-emerald-800 flex items-center gap-1.5">
+                                                <span>🌿</span> Shipment Delivered
+                                              </span>
+                                              <p className="text-[10px] text-stone-600 font-medium leading-relaxed">
+                                                Harvest successfully delivered to customer.
+                                              </p>
+                                            </div>
+                                          );
+                                        }
+
+                                        if (isRto) {
+                                          return (
+                                            <div className="col-span-2 bg-amber-50 border border-amber-200 rounded-xl p-3 text-left space-y-1 mt-2">
+                                              <span className="font-serif text-xs font-bold text-amber-800 flex items-center gap-1.5">
+                                                <span>📦</span> Returned (RTO)
+                                              </span>
+                                              <p className="text-[10px] text-stone-600 font-medium leading-relaxed">
+                                                Shipment returned to farm origin by courier.
+                                              </p>
+                                            </div>
+                                          );
+                                        }
+
+                                        // If not picked up, allow cancellation
+                                        if (normStatus === 'READY_TO_SHIP' || normStatus === 'PICKUP_SCHEDULED') {
+                                          return (
+                                            <button
+                                              type="button"
+                                              onClick={() => setCancelOrderTarget(o)}
+                                              disabled={isCancellingShipment[o.id]}
+                                              className="col-span-2 bg-red-50 hover:bg-red-100 border border-red-200 text-red-700 rounded-xl py-2.5 px-3 text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs disabled:opacity-50 mt-1"
+                                            >
+                                              <span>✕</span> Cancel Shipment
+                                            </button>
+                                          );
+                                        }
+                                        
+                                        // Picked Up or In Transit 
+                                        if (isPickedUpOrInTransit) {
+                                          return (
+                                            <div className="col-span-2 text-center text-[9px] font-bold text-amber-800 bg-amber-50 border border-amber-200 py-2 px-3 rounded-xl mt-1">
+                                              Shipment in transit. Cancellation unavailable.
+                                            </div>
+                                          );
+                                        }
+
+                                        return null;
+                                      })()}
+                                    </div>
+                                  </div>
                                 </div>
-
-                                <div className="flex flex-col gap-1 text-left">
-                                  <label className="text-[9px] font-extrabold uppercase tracking-wider text-stone-400">Dispatch Date</label>
-                                  <input
-                                    type="date"
-                                    value={
-                                      shipmentDrafts[o.id]?.dispatchDate !== undefined
-                                        ? shipmentDrafts[o.id].dispatchDate
-                                        : o.logistics?.dispatchDate ? new Date(o.logistics.dispatchDate).toISOString().split('T')[0] : ''
-                                    }
-                                    onChange={(e) => updateDraftField(o.id, 'dispatchDate', e.target.value)}
-                                    className="bg-[#FDFBF7] border border-[#EDE7D9] text-[#37411A] rounded-xl py-2 px-3 focus:outline-none focus:border-[#4E641A] font-medium"
-                                  />
-                                </div>
-
-                                <div className="flex flex-col gap-1 text-left">
-                                  <label className="text-[9px] font-extrabold uppercase tracking-wider text-stone-400">Estimated Delivery (ETA)</label>
-                                  <input
-                                    type="date"
-                                    value={
-                                      shipmentDrafts[o.id]?.estimatedDelivery !== undefined
-                                        ? shipmentDrafts[o.id].estimatedDelivery
-                                        : o.logistics?.estimatedDeliveryDate ? new Date(o.logistics.estimatedDeliveryDate).toISOString().split('T')[0] : ''
-                                    }
-                                    onChange={(e) => updateDraftField(o.id, 'estimatedDelivery', e.target.value)}
-                                    className="bg-[#FDFBF7] border border-[#EDE7D9] text-[#37411A] rounded-xl py-2 px-3 focus:outline-none focus:border-[#4E641A] font-medium"
-                                  />
-                                </div>
-
-                                <div className="flex flex-col gap-1 text-left col-span-2">
-                                  <label className="text-[9px] font-extrabold uppercase tracking-wider text-stone-400 flex items-center justify-between">
-                                    <span>Tracking Web Link URL</span>
-                                    {(shipmentDrafts[o.id]?.trackingUrl || o.logistics?.trackingUrl) && (
-                                      <a
-                                        href={shipmentDrafts[o.id]?.trackingUrl || o.logistics?.trackingUrl}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="text-[#C68A2B] hover:underline text-[8px] font-extrabold uppercase tracking-widest flex items-center gap-0.5"
-                                      >
-                                        Test Link ↗
-                                      </a>
-                                    )}
-                                  </label>
-                                  <input
-                                    type="url"
-                                    value={
-                                      shipmentDrafts[o.id]?.trackingUrl !== undefined
-                                        ? shipmentDrafts[o.id].trackingUrl
-                                        : o.logistics?.trackingUrl || ''
-                                    }
-                                    onChange={(e) => updateDraftField(o.id, 'trackingUrl', e.target.value)}
-                                    placeholder="https://..."
-                                    className="bg-[#FDFBF7] border border-[#EDE7D9] text-[#37411A] rounded-xl py-2 px-3 focus:outline-none focus:border-[#4E641A] font-medium"
-                                  />
-                                </div>
-
-                                <div className="flex flex-col gap-1 text-left col-span-2">
-                                  <label className="text-[9px] font-extrabold uppercase tracking-wider text-stone-400">Current Logistics status</label>
-                                  <input
-                                    type="text"
-                                    value={
-                                      shipmentDrafts[o.id]?.shipmentStatus !== undefined
-                                        ? shipmentDrafts[o.id].shipmentStatus
-                                        : o.logistics?.status || ''
-                                    }
-                                    onChange={(e) => updateDraftField(o.id, 'shipmentStatus', e.target.value)}
-                                    placeholder="e.g. Dispatched, In Transit"
-                                    className="bg-[#FDFBF7] border border-[#EDE7D9] text-[#37411A] rounded-xl py-2 px-3 focus:outline-none focus:border-[#4E641A] font-medium"
-                                  />
-                                </div>
-
-                              </div>
-
-                              {/* Form submit/save */}
-                              <div className="flex justify-end pt-2">
-                                <button
-                                  type="button"
-                                  onClick={() => handleSaveShipmentDetails(o.id)}
-                                  disabled={isSavingShipment[o.id]}
-                                  className="w-full bg-[#4E641A] hover:bg-[#37411A] text-white text-[10px] font-bold uppercase tracking-widest py-3 rounded-xl transition disabled:opacity-50 flex items-center justify-center gap-1.5 cursor-pointer shadow-sm border-none"
-                                >
-                                  {isSavingShipment[o.id] ? 'Saving Logistics...' : 'Save Logistics Record'}
-                                </button>
-                              </div>
+                              )}
                             </div>
 
                             {/* SECTION C: VISUAL TIMELINE & LOGS (Span 3) */}
@@ -5371,10 +6430,104 @@ export default function AdminDashboard() {
                                 </h4>
 
                                 {isCancelled ? (
-                                  <div className="text-center py-4 bg-red-50 rounded-xl border border-red-100 space-y-1">
-                                    <span className="text-red-500 font-bold text-sm block">✕ Cancelled</span>
-                                    <p className="text-[10px] text-stone-500 font-medium">Order was cancelled and aborted.</p>
-                                  </div>
+                                  /* ─── CANCELLATION + REFUND BRANCH ─── */
+                                  (() => {
+                                    const refundStatus = (o.refundStatus || 'NONE').toUpperCase().trim();
+                                    const refundId = o.refundId || null;
+                                    const refundAmount = o.refundAmount || o.totalAmount;
+                                    const refundGateway = o.refundGateway || 'Razorpay';
+                                    const refundCompletedAt = o.refundCompletedAt ? new Date(o.refundCompletedAt) : (o.refundDate ? new Date(o.refundDate) : null);
+                                    const cancelDate = o.updatedAt ? new Date(o.updatedAt) : new Date();
+                                    const initiatedDate = o.refundInitiatedAt ? new Date(o.refundInitiatedAt) : cancelDate;
+                                    const expectedCreditDate = o.refundExpectedDate ? new Date(o.refundExpectedDate) : new Date(initiatedDate.getTime() + 7 * 24 * 60 * 60 * 1000);
+                                    const now = new Date();
+                                    const daysRemaining = Math.max(0, Math.ceil((expectedCreditDate - now) / (1000 * 60 * 60 * 24)));
+
+                                    const isRefundCompleted = refundStatus === 'COMPLETED';
+                                    const isRefundProcessing = refundStatus === 'PROCESSING' || refundStatus === 'INITIATED' || (refundStatus !== 'COMPLETED' && refundStatus !== 'FAILED' && o.paymentStatus === 'REFUND_PENDING');
+                                    const isRefundFailed = refundStatus === 'FAILED';
+
+                                    const fmtDate = (d) => new Date(d).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', weekday: 'short' });
+                                    const fmtShort = (d) => new Date(d).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' });
+
+                                    const cancelledSteps = [
+                                      { label: 'Placed', done: true },
+                                      { label: 'Verified', done: true },
+                                      { label: 'Created', done: !!o.shiprocketOrderId },
+                                      { label: 'AWB', done: !!o.awbCode },
+                                      { label: 'Cancelled', done: true, isCancel: true },
+                                      { label: 'Refund Initiated', done: isRefundProcessing || isRefundCompleted || isRefundFailed, isRefund: true },
+                                      { label: 'Refund Processing', done: isRefundProcessing || isRefundCompleted, isRefund: true },
+                                      { label: 'Refund Credited', done: isRefundCompleted, isCredit: true },
+                                    ];
+
+                                    return (
+                                      <div className="space-y-3">
+                                        {/* Compact vertical timeline */}
+                                        <div className="space-y-2.5 pl-4 relative border-l border-stone-200 text-xs text-left font-sans">
+                                          {cancelledSteps.map((step, sIdx) => (
+                                            <div key={sIdx} className="relative text-left">
+                                              <div className={`absolute -left-[21px] top-0.5 w-3 h-3 rounded-full border flex items-center justify-center text-[6px] font-bold ${
+                                                step.isCancel
+                                                  ? 'bg-red-600 border-red-600 text-white'
+                                                  : step.isCredit && step.done
+                                                    ? 'bg-emerald-600 border-emerald-600 text-white'
+                                                    : step.isRefund && step.done
+                                                      ? 'bg-blue-500 border-blue-500 text-white'
+                                                      : step.done
+                                                        ? 'bg-[#4E641A] border-[#4E641A] text-white'
+                                                        : 'bg-white border-stone-300'
+                                              }`}>
+                                                {step.isCancel ? '✕' : step.done ? '✓' : ''}
+                                              </div>
+                                              <span className={`text-[10px] font-bold uppercase tracking-wider block ${
+                                                step.isCancel ? 'text-red-700 font-extrabold'
+                                                  : step.isCredit && step.done ? 'text-emerald-700'
+                                                  : step.isRefund && step.done ? 'text-blue-700'
+                                                  : step.done ? 'text-[#2F3B0C]' : 'text-stone-400'
+                                              }`}>
+                                                {step.label}
+                                              </span>
+                                            </div>
+                                          ))}
+                                        </div>
+
+                                        {/* Compact Refund Details Card */}
+                                        {isRefundCompleted ? (
+                                          <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3 space-y-2 text-left">
+                                            <span className="text-[9px] font-extrabold uppercase tracking-wider text-emerald-700 flex items-center gap-1">✓ Refund Credited</span>
+                                            <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-[9px]">
+                                              <div><span className="text-emerald-600 font-bold block">Amount</span><strong className="text-emerald-900">₹{refundAmount}</strong></div>
+                                              <div><span className="text-emerald-600 font-bold block">Gateway</span><strong className="text-emerald-900">Razorpay</strong></div>
+                                              {refundId && <div className="col-span-2"><span className="text-emerald-600 font-bold block">Refund ID</span><strong className="font-mono text-emerald-900 text-[9px] break-all">{refundId}</strong></div>}
+                                              {refundCompletedAt && <div className="col-span-2"><span className="text-emerald-600 font-bold block">Credited</span><strong className="text-emerald-900">{fmtDate(refundCompletedAt)}</strong></div>}
+                                            </div>
+                                          </div>
+                                        ) : isRefundFailed ? (
+                                          <div className="bg-red-50 border border-red-200 rounded-xl p-3 space-y-1 text-left">
+                                            <span className="text-[9px] font-extrabold uppercase tracking-wider text-red-700 flex items-center gap-1">✕ Refund Failed</span>
+                                            <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-[9px]">
+                                              <div><span className="text-red-600 font-bold block">Amount</span><strong className="text-red-900">₹{refundAmount}</strong></div>
+                                              <div><span className="text-red-600 font-bold block">Gateway</span><strong className="text-red-900">Razorpay</strong></div>
+                                            </div>
+                                            <p className="text-[9px] text-red-700 font-medium">System will retry. Contact support if needed.</p>
+                                          </div>
+                                        ) : isRefundProcessing ? (
+                                          <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 space-y-2 text-left">
+                                            <span className="text-[9px] font-extrabold uppercase tracking-wider text-blue-700 flex items-center gap-1">↻ Refund Processing</span>
+                                            <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-[9px]">
+                                              <div><span className="text-blue-600 font-bold block">Amount</span><strong className="text-blue-900">₹{refundAmount}</strong></div>
+                                              <div><span className="text-blue-600 font-bold block">Gateway</span><strong className="text-blue-900">Razorpay</strong></div>
+                                              <div><span className="text-blue-600 font-bold block">Initiated</span><strong className="text-blue-900">{fmtShort(initiatedDate)}</strong></div>
+                                              <div><span className="text-blue-600 font-bold block">Expected</span><strong className="text-blue-900">{fmtDate(expectedCreditDate)}</strong></div>
+                                              {daysRemaining > 0 && <div className="col-span-2"><span className="text-blue-600 font-bold block">Remaining</span><strong className="text-blue-900">{daysRemaining} {daysRemaining === 1 ? 'day' : 'days'}</strong></div>}
+                                              {refundId && <div className="col-span-2"><span className="text-blue-600 font-bold block">Refund ID</span><strong className="font-mono text-blue-900 text-[9px] break-all">{refundId}</strong></div>}
+                                            </div>
+                                          </div>
+                                        ) : null}
+                                      </div>
+                                    );
+                                  })()
                                 ) : (
                                   /* Mini Timeline track */
                                   <div className="space-y-3.5 pl-4 relative border-l border-stone-200 text-xs">
@@ -5520,7 +6673,7 @@ export default function AdminDashboard() {
                               >
                                 🔔 Notify Buyer
                               </button>
-                              {logisticsStatus !== 'DELIVERED' && !isCancelled && (
+                              {normStatus !== 'DELIVERED' && !isCancelled && (
                                 <button
                                   type="button"
                                   onClick={async () => {
@@ -5556,6 +6709,11 @@ export default function AdminDashboard() {
             </div>
 
           </div>
+        )}
+
+        {/* TAB: SHIPPING & LOGISTICS (SHIPROCKET COMMAND CENTER) */}
+        {(activeTab === 'shipping' || activeTab === 'logistics') && (
+          <LogisticsDashboardPage orders={orders} fetchOrders={fetchOrders} />
         )}
 
         {/* TAB 4: CUSTOMERS */}
@@ -11209,6 +12367,332 @@ export default function AdminDashboard() {
             onCancel={() => setCropTarget(null)}
           />
         )}
+
+        {/* Dedicated AI Product Generator Modal (Shopify / Notion / Stripe Quality) */}
+        {showAiModal && createPortal(
+          <div className="fixed inset-0 z-[99999] bg-stone-950/75 backdrop-blur-xl flex items-center justify-center p-4 sm:p-6 overflow-y-auto animate-fade-in text-left">
+            <div className="bg-white border border-stone-200/90 rounded-[28px] shadow-2xl max-w-lg w-full p-6 sm:p-8 space-y-6 text-left relative overflow-hidden my-auto transition-all duration-200 ease-out">
+              
+              {/* Modal Header */}
+              <div className="flex justify-between items-start gap-4 pb-4 border-b border-stone-150">
+                <div className="space-y-1">
+                  <h3 className="font-serif text-xl font-bold text-dark-olive flex items-center gap-2">
+                    <span>✨</span> <span>Generate Product Details with AI</span>
+                  </h3>
+                  <p className="text-xs text-stone-500 font-sans leading-relaxed">
+                    Upload your product packaging image, product photo, PDF, or Word DOCX document. Our AI will automatically generate product information.
+                  </p>
+                </div>
+                {!isAiGenerating && (
+                  <button
+                    type="button"
+                    onClick={() => setShowAiModal(false)}
+                    className="text-stone-400 hover:text-stone-700 text-lg font-bold border-none bg-transparent cursor-pointer shrink-0"
+                    title="Close (ESC)"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+
+              {/* Modal Body: Live Progress vs Upload & Preview */}
+              {isAiGenerating ? (
+                <div className="py-8 px-5 bg-stone-50 border border-stone-200 rounded-2xl space-y-5 text-center">
+                  <div className="w-12 h-12 border-3 border-[#4E641A] border-t-transparent rounded-full animate-spin mx-auto" />
+                  <div className="space-y-2 text-left max-w-xs mx-auto">
+                    {(aiFileType === 'pdf' ? AI_PDF_STEPS : (aiFileType === 'docx' ? AI_DOCX_STEPS : AI_IMAGE_STEPS)).map((stepText, idx) => {
+                      const isDone = idx < aiProgressStep;
+                      const isCurrent = idx === aiProgressStep;
+                      return (
+                        <div
+                          key={idx}
+                          className={`flex items-center gap-3 text-xs transition-all duration-300 ${
+                            isCurrent
+                              ? 'text-[#4E641A] font-bold scale-102'
+                              : isDone
+                              ? 'text-stone-400 opacity-75'
+                              : 'text-stone-300 opacity-40'
+                          }`}
+                        >
+                          <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] shrink-0 font-mono ${
+                            isDone
+                              ? 'bg-emerald-100 text-emerald-700 font-bold'
+                              : isCurrent
+                              ? 'bg-[#4E641A] text-white animate-pulse'
+                              : 'bg-stone-100 text-stone-300'
+                          }`}>
+                            {isDone ? '✓' : isCurrent ? '⏳' : idx + 1}
+                          </span>
+                          <span className="truncate">{stepText}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-5">
+                  {!aiSelectedFile ? (
+                    /* Rich Upload Zone */
+                    <div
+                      onDragOver={(e) => e.preventDefault()}
+                      onDrop={(e) => {
+                        e.preventDefault();
+                        if (e.dataTransfer.files?.[0]) {
+                          handleSelectAiFile(e.dataTransfer.files[0]);
+                        }
+                      }}
+                      onClick={() => document.getElementById('ai-modal-file-input')?.click()}
+                      className="border-2 border-dashed border-stone-300 hover:border-[#4E641A] bg-stone-50/70 hover:bg-stone-50 rounded-2xl p-8 text-center cursor-pointer transition-all space-y-4 group"
+                    >
+                      <input
+                        type="file"
+                        id="ai-modal-file-input"
+                        accept="image/png, image/jpeg, image/jpg, image/webp, application/pdf, .pdf, .docx, .doc, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/msword"
+                        className="hidden"
+                        onChange={(e) => {
+                          if (e.target.files?.[0]) {
+                            handleSelectAiFile(e.target.files[0]);
+                          }
+                        }}
+                      />
+                      <div className="w-16 h-16 bg-white border border-stone-200 rounded-2xl flex items-center justify-center text-3xl mx-auto shadow-xs group-hover:scale-105 transition-transform">
+                        📄📷
+                      </div>
+                      <div className="space-y-1.5">
+                        <h4 className="text-sm font-bold text-stone-800">Drop Product Image, PDF, or DOCX here</h4>
+                        <p className="text-xs text-stone-600 font-sans">
+                          or <span className="text-[#4E641A] underline font-semibold">Browse Files</span>
+                        </p>
+                        <p className="text-[10px] text-stone-400 font-mono tracking-tight pt-1">
+                          Supported: PNG • JPG • JPEG • WEBP • PDF • DOCX
+                        </p>
+                        <p className="text-[10px] text-stone-400 font-mono">
+                          20 MB Maximum
+                        </p>
+                      </div>
+                      <div className="flex justify-center items-center gap-2 pt-1">
+                        <span className="text-[9px] font-semibold text-stone-500 bg-stone-200/60 px-2.5 py-0.5 rounded-full font-mono">
+                          Drag & Drop
+                        </span>
+                        <span className="text-[9px] font-semibold text-stone-500 bg-stone-200/60 px-2.5 py-0.5 rounded-full font-mono">
+                          Paste (Ctrl+V)
+                        </span>
+                      </div>
+                    </div>
+                  ) : (
+                    /* Selected File Preview Cards */
+                    <div className="space-y-3">
+                      {aiFileType === 'image' ? (
+                        <div className="relative border border-stone-200 rounded-2xl overflow-hidden bg-stone-50 p-2 flex items-center justify-center">
+                          <img
+                            src={aiFilePreview}
+                            alt="Product Packaging Preview"
+                            className="w-full h-48 sm:h-56 object-contain rounded-xl"
+                          />
+                        </div>
+                      ) : (
+                        /* Document File Card (PDF / DOCX) */
+                        <div className="border border-stone-200 rounded-2xl bg-stone-50 p-5 flex items-center gap-4">
+                          <div className={`w-14 h-14 rounded-xl border flex items-center justify-center text-2xl shrink-0 ${
+                            aiFileType === 'docx' ? 'bg-blue-50 border-blue-200' : 'bg-red-50 border-red-200'
+                          }`}>
+                            {aiFileType === 'docx' ? '📝' : '📄'}
+                          </div>
+                          <div className="flex-1 min-w-0 text-left space-y-0.5">
+                            <span className="text-xs font-bold text-stone-800 truncate block">
+                              {aiSelectedFile.name}
+                            </span>
+                            <span className="text-[10px] text-stone-400 font-mono block">
+                              {aiFileType.toUpperCase()} Document • {formatFileSize(aiSelectedFile.size)}
+                            </span>
+                            <span className="text-[9px] text-emerald-600 font-semibold bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded inline-block">
+                              Ready for AI Extraction
+                            </span>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Control buttons */}
+                      <div className="flex justify-between items-center text-xs pt-1">
+                        <span className="text-stone-500 font-mono truncate max-w-[200px]">
+                          {aiSelectedFile.name} ({formatFileSize(aiSelectedFile.size)})
+                        </span>
+                        <div className="flex gap-2">
+                          <button
+                            type="button"
+                            onClick={() => document.getElementById('ai-modal-file-input')?.click()}
+                            className="px-3 py-1.5 bg-stone-100 hover:bg-stone-200 text-stone-700 font-semibold rounded-lg transition cursor-pointer border-none"
+                          >
+                            Replace
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setAiSelectedFile(null);
+                              setAiFilePreview('');
+                              setAiFilePdfText('');
+                            }}
+                            className="px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 font-semibold rounded-lg transition cursor-pointer border-none"
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Primary Generate Button & Better Empty State */}
+                  <div className="pt-4 border-t border-stone-100 space-y-2.5">
+                    <button
+                      type="button"
+                      disabled={!aiSelectedFile || isAiGenerating}
+                      onClick={handleRunAiProductGeneration}
+                      className={`w-full py-3.5 rounded-xl font-extrabold text-xs uppercase tracking-wider transition-all shadow-md cursor-pointer border-none ${
+                        aiSelectedFile && !isAiGenerating
+                          ? 'bg-[#4E641A] hover:bg-[#2F3B0C] text-white active:scale-98'
+                          : 'bg-stone-200 text-stone-400 cursor-not-allowed shadow-none'
+                      }`}
+                    >
+                      Generate Product Details
+                    </button>
+                    {!aiSelectedFile && (
+                      <p className="text-[11px] text-stone-500 text-center font-sans leading-relaxed px-2">
+                        Upload a product image, PDF, or Word DOCX document to let AI create your product listing automatically.
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )}
+
+            </div>
+          </div>,
+          document.body
+        )}
+      {/* Admin Cancellation Confirmation Modal */}
+      {cancelOrderTarget && createPortal(
+        <AnimatePresence>
+          <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-stone-900/65 backdrop-blur-md">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              className="bg-white border border-[#EDE7D9] rounded-[28px] p-6 max-w-md w-full shadow-2xl space-y-4 text-left relative font-sans"
+            >
+              <div className="flex items-center justify-between border-b pb-3 border-stone-100">
+                <h3 className="font-serif text-base font-bold text-[#37411A] flex items-center gap-2">
+                  <span className="text-amber-600">⚠️</span> Cancel Shipment — Order #{cancelOrderTarget.orderNumber}
+                </h3>
+                <button
+                  type="button"
+                  onClick={() => setCancelOrderTarget(null)}
+                  className="w-7 h-7 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-500 hover:text-stone-700 transition flex items-center justify-center border-none cursor-pointer text-xs font-bold"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <p className="text-xs text-stone-600 leading-relaxed font-medium">
+                This will cancel the shipment in Shiprocket and abort delivery.
+                {cancelOrderTarget.paymentStatus === 'COMPLETED' || cancelOrderTarget.paymentStatus === 'PAID'
+                  ? ' Since payment was completed prepaid, refund will be marked as PENDING for Razorpay processing.'
+                  : ''}
+              </p>
+
+              <div className="flex items-center gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setCancelOrderTarget(null)}
+                  disabled={isCancellingShipment[cancelOrderTarget.id]}
+                  className="flex-1 py-3 px-4 bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-bold uppercase tracking-wider rounded-xl transition cursor-pointer border-none text-center"
+                >
+                  Keep Shipment
+                </button>
+                <button
+                  type="button"
+                  onClick={() => executeAdminCancelShipment(cancelOrderTarget)}
+                  disabled={isCancellingShipment[cancelOrderTarget.id]}
+                  className="flex-1 py-3 px-4 bg-red-700 hover:bg-red-800 text-white text-xs font-bold uppercase tracking-wider rounded-xl transition cursor-pointer border-none flex items-center justify-center gap-2 disabled:opacity-50 shadow-sm text-center"
+                >
+                  {isCancellingShipment[cancelOrderTarget.id] ? (
+                    <>
+                      <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      <span>Cancelling...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>✕</span>
+                      <span>Confirm Cancellation</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        </AnimatePresence>,
+        document.body
+      )}
+
+      {/* Delete All Orders Confirmation Modal */}
+      {showDeleteAllOrdersModal && createPortal(
+        <AnimatePresence>
+          <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-stone-900/65 backdrop-blur-md">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              className="bg-white border border-[#EDE7D9] rounded-[28px] p-6 max-w-md w-full shadow-2xl space-y-4 text-left relative font-sans"
+            >
+              <div className="flex items-center justify-between border-b pb-3 border-stone-100">
+                <h3 className="font-serif text-base font-bold text-red-800 flex items-center gap-2">
+                  <span className="text-red-600">🗑️</span> Delete All Orders?
+                </h3>
+                <button
+                  type="button"
+                  onClick={() => setShowDeleteAllOrdersModal(false)}
+                  disabled={isDeletingAllOrders}
+                  className="w-7 h-7 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-500 hover:text-stone-700 transition flex items-center justify-center border-none cursor-pointer text-xs font-bold"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <p className="text-xs text-stone-600 leading-relaxed font-medium">
+                This will permanently delete every order and all associated shipment, tracking, refund, and logistics records. This action cannot be undone.
+              </p>
+
+              <div className="flex items-center gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowDeleteAllOrdersModal(false)}
+                  disabled={isDeletingAllOrders}
+                  className="flex-1 py-3 px-4 bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-bold uppercase tracking-wider rounded-xl transition cursor-pointer border-none text-center"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleDeleteAllOrders}
+                  disabled={isDeletingAllOrders}
+                  className="flex-1 py-3 px-4 bg-red-700 hover:bg-red-800 text-white text-xs font-bold uppercase tracking-wider rounded-xl transition cursor-pointer border-none flex items-center justify-center gap-2 disabled:opacity-50 shadow-sm text-center"
+                >
+                  {isDeletingAllOrders ? (
+                    <>
+                      <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      <span>Deleting...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>🗑️</span>
+                      <span>Delete All Orders</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        </AnimatePresence>,
+        document.body
+      )}
 
       </main>
 

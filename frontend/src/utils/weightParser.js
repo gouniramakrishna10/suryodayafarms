@@ -18,3 +18,24 @@ export const parseWeightToKG = (weightStr) => {
   // Fallback for cases like "500" or similar without units
   return value >= 10 ? value / 1000 : value;
 };
+
+/**
+ * Formats weight in KG into a clean human-readable display string.
+ * Examples:
+ * - 0.25 -> "250 g"
+ * - 0.75 -> "750 g"
+ * - 1.0  -> "1 KG"
+ * - 1.25 -> "1.25 KG"
+ * - 2.0  -> "2 KG"
+ * - 3.5  -> "3.5 KG"
+ */
+export const formatWeightDisplay = (weightInKg) => {
+  if (weightInKg === undefined || weightInKg === null || isNaN(weightInKg)) return '0 g';
+  const kg = Math.max(parseFloat(weightInKg), 0);
+  if (kg < 1) {
+    const grams = Math.round(kg * 1000);
+    return `${grams} g`;
+  }
+  const formatted = Number.isInteger(kg) ? kg.toString() : parseFloat(kg.toFixed(2)).toString();
+  return `${formatted} KG`;
+};

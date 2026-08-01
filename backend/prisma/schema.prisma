@@ -140,6 +140,7 @@ model Product {
   seoTitle       String?
   seoDescription String?
   seoKeywords    String?
+  productContent Json?
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
 
@@ -165,6 +166,8 @@ model ProductVariant {
   productId  String
   product    Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
   name       String      // e.g. "500ml", "1 Kg", "1 Liter"
+  weight     String?     // e.g. "500"
+  unit       String?     // e.g. "g", "kg", "ml", "l", "pcs"
   price      Float
   mrp        Float?
   sku        String?
@@ -224,11 +227,52 @@ model Order {
   shippingAddress   Json          // Save serialized address details
   createdAt         DateTime      @default(now())
   updatedAt         DateTime      @updatedAt
-  estimatedDelivery DateTime?
-  logistics         Json?
+  // Shiprocket Logistics Integration Fields
+  shiprocketOrderId Int?
+  shipmentId        Int?
+  awbCode           String?
+  courierName       String?
+  courierId         Int?
+  pickupId          String?
+  labelUrl          String?
+  manifestUrl       String?
+  invoiceUrl        String?
+  shiprocketStatus  String?
+  shiprocketData    Json?
+  trackingHistory   Json?
+
+  // Refund Audit Integration Fields
+  refundStatus      String?   // "NONE" | "INITIATED" | "PROCESSING" | "COMPLETED" | "FAILED"
+  refundId          String?
+  refundAmount      Float?
+  refundGateway     String?   @default("Razorpay")
+  refundDate        DateTime?
+  refundInitiatedAt DateTime?
+  refundExpectedDate DateTime?
+  refundCompletedAt DateTime?
+  lastRefundSync    DateTime?
+  refundResponse    Json?
+  refundError       String?
 
   orderItems        OrderItem[]
   supportTickets    SupportTicket[]
+}
+
+model ShippingSettings {
+  id                    String   @id @default("default")
+  defaultPickupLocation String   @default("Primary Warehouse")
+  pickupPincode         String   @default("302001")
+  autoAssignCourier     Boolean  @default(true)
+  preferredCourierMode  String   @default("CHEAPEST") // "CHEAPEST" | "FASTEST" | "CUSTOM"
+  preferredCourierId    Int?
+  freeShippingThreshold Float    @default(999)
+  codEnabled            Boolean  @default(true)
+  maxWeight             Float    @default(20) // in kg
+  defaultLength         Float    @default(15) // in cm
+  defaultWidth          Float    @default(15) // in cm
+  defaultHeight         Float    @default(10) // in cm
+  webhookUrl            String?
+  updatedAt             DateTime @updatedAt
 }
 
 model OrderItem {

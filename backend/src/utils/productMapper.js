@@ -46,8 +46,36 @@ export const mapProduct = (product) => {
   const mainImage = urls[0] || '';
   const fallbackHover = urls[1] || product.hoverImage || mainImage;
 
+  // On-the-fly migration for Product Content CMS
+  let productContent = product.productContent;
+  if (!productContent || typeof productContent !== 'object' || Array.isArray(productContent) || Object.keys(productContent).length === 0) {
+    productContent = {
+      hero: {
+        collectionName: "",
+        tagline: "",
+        heading: "",
+        description: ""
+      },
+      about: product.description || "",
+      whyChoose: [],
+      highlights: [],
+      nutrientsTable: [],
+      waysToEnjoy: [],
+      suggestedServing: "",
+      storageInstructions: [],
+      ingredients: "",
+      packaging: "",
+      qualityCommitment: [],
+      faqs: [],
+      ourPromise: "",
+      suryodayaDifference: "",
+      customSpecs: []
+    };
+  }
+
   return {
     ...product,
+    productContent,
     images: mappedImages,
     image: mainImage,
     hoverImage: fallbackHover,

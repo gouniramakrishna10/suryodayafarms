@@ -15,7 +15,7 @@ router.use(adminOnly);
 // GET /api/admin/analytics
 router.get('/analytics', async (req, res, next) => {
   try {
-    // Execute multiple aggregates concurrently
+    // Execute multiple read queries concurrently using Promise.all
     const [
       totalOrders,
       totalCustomers,
@@ -23,7 +23,7 @@ router.get('/analytics', async (req, res, next) => {
       orders,
       categories,
       contactSubmissionsCount
-    ] = await prisma.$transaction([
+    ] = await Promise.all([
       prisma.order.count(),
       prisma.user.count({ where: { role: 'CUSTOMER' } }),
       prisma.product.count(),
@@ -90,7 +90,7 @@ router.post('/products', async (req, res, next) => {
     sku, inventory, hoverImage, mobileBanner,
     isFeatured, isTrending, isBestseller, isNewLaunch, isVisible, isComingSoon,
     nutrients, origin, shelfLife, deliveryEta, codAvailable, returnEligible, weight,
-    seoTitle, seoDescription, seoKeywords, image, images, variants
+    seoTitle, seoDescription, seoKeywords, image, images, variants, productContent
   } = req.body;
 
   try {
@@ -125,7 +125,8 @@ router.post('/products', async (req, res, next) => {
         categories: {
           connect: idsToConnect.map(id => ({ id }))
         },
-        description: description || '',
+        description: (productContent && typeof productContent === 'object' && productContent.about) ? productContent.about : (description || ''),
+        productContent: productContent || null,
         shortDescription: shortDescription || '',
         brand: brand || 'Suryodaya Farms',
         productType: productType || '',
@@ -157,13 +158,20 @@ router.post('/products', async (req, res, next) => {
         seoKeywords: seoKeywords || '',
         images: finalImages,
         variants: {
-          create: (variants && Array.isArray(variants)) ? variants.map(v => ({
-            name: v.name,
-            price: parseFloat(v.price),
-            mrp: v.mrp ? parseFloat(v.mrp) : null,
-            sku: v.sku || null,
-            inventory: parseInt(v.inventory, 10) || 0
-          })) : []
+          create: (variants && Array.isArray(variants)) ? variants.map(v => {
+            const vWeight = v.weight ? String(v.weight).trim() : '';
+            const vUnit = v.unit || 'g';
+            const vName = v.name || (vWeight ? `${vWeight}${vUnit}` : 'Default');
+            return {
+              name: vName,
+              weight: vWeight,
+              unit: vUnit,
+              price: parseFloat(v.price || price || 0),
+              mrp: v.mrp ? parseFloat(v.mrp) : (mrp ? parseFloat(mrp) : null),
+              sku: v.sku || null,
+              inventory: parseInt(v.inventory || inventory || 0, 10) || 0
+            };
+          }) : []
         }
       },
       include: { variants: true }
@@ -185,7 +193,7 @@ router.put('/products/:id', async (req, res, next) => {
     sku, inventory, hoverImage, mobileBanner,
     isFeatured, isTrending, isBestseller, isNewLaunch, isVisible, isComingSoon,
     nutrients, origin, shelfLife, deliveryEta, codAvailable, returnEligible, weight,
-    seoTitle, seoDescription, seoKeywords, image, images, variants
+    seoTitle, seoDescription, seoKeywords, image, images, variants, productContent
   } = req.body;
 
   try {
@@ -196,7 +204,8 @@ router.put('/products/:id', async (req, res, next) => {
 
     const updatedData = {
       name,
-      description,
+      description: (productContent && typeof productContent === 'object' && productContent.about) ? productContent.about : description,
+      productContent: productContent !== undefined ? productContent : undefined,
       shortDescription,
       brand,
       productType,
@@ -284,11 +293,16 @@ router.put('/products/:id', async (req, res, next) => {
       }
 
       for (const v of variants) {
+        const vWeight = v.weight ? String(v.weight).trim() : '';
+        const vUnit = v.unit || 'g';
+        const vName = v.name || (vWeight ? `${vWeight}${vUnit}` : 'Default');
         if (v.id) {
           await prisma.productVariant.update({
             where: { id: v.id },
             data: {
-              name: v.name,
+              name: vName,
+              weight: vWeight,
+              unit: vUnit,
               price: parseFloat(v.price),
               mrp: v.mrp ? parseFloat(v.mrp) : null,
               sku: v.sku || null,
@@ -299,7 +313,9 @@ router.put('/products/:id', async (req, res, next) => {
           await prisma.productVariant.create({
             data: {
               productId: id,
-              name: v.name,
+              name: vName,
+              weight: vWeight,
+              unit: vUnit,
               price: parseFloat(v.price),
               mrp: v.mrp ? parseFloat(v.mrp) : null,
               sku: v.sku || null,
@@ -573,10 +589,15 @@ router.post('/categories/:id/remove', async (req, res, next) => {
 
 // ================= 4. ORDERS CRUD =================
 
+import { syncAllPendingRefunds } from '../services/razorpay.service.js';
+
 // GET ALL ORDERS WITH USER DETAILS
 // GET /api/admin/orders
 router.get('/orders', async (req, res, next) => {
   try {
+    // Trigger refund sync for any pending refunds
+    await syncAllPendingRefunds().catch(() => null);
+
     const orders = await prisma.order.findMany({
       include: {
         user: { select: { name: true, email: true } },
@@ -586,6 +607,64 @@ router.get('/orders', async (req, res, next) => {
     });
 
     res.status(200).json({ success: true, count: orders.length, orders: orders.map(mapOrderLogistics) });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// DELETE ALL ORDERS (DEVELOPMENT ONLY)
+// POST /api/admin/orders/delete-all
+router.post('/orders/delete-all', async (req, res, next) => {
+  if (process.env.NODE_ENV === 'production') {
+    return res.status(403).json({
+      success: false,
+      message: 'This operation is strictly prohibited in production environment.'
+    });
+  }
+
+  try {
+    await prisma.$transaction(async (tx) => {
+      // 1. Delete all order items
+      await tx.orderItem.deleteMany({});
+
+      // 2. Delete all support messages linked to tickets with orderId
+      const ticketsWithOrder = await tx.supportTicket.findMany({
+        where: { orderId: { not: null } },
+        select: { id: true }
+      });
+      if (ticketsWithOrder.length > 0) {
+        const ticketIds = ticketsWithOrder.map(t => t.id);
+        await tx.supportMessage.deleteMany({
+          where: { ticketId: { in: ticketIds } }
+        });
+      }
+
+      // 3. Delete all support tickets linked to orders
+      await tx.supportTicket.deleteMany({
+        where: { orderId: { not: null } }
+      });
+
+      // 4. Delete notifications matching order keywords
+      await tx.notification.deleteMany({
+        where: {
+          OR: [
+            { title: { contains: 'Order', mode: 'insensitive' } },
+            { message: { contains: 'Order', mode: 'insensitive' } },
+            { title: { contains: 'Shipment', mode: 'insensitive' } },
+            { message: { contains: 'Shipment', mode: 'insensitive' } }
+          ]
+        }
+      });
+
+      // 5. Delete all orders
+      await tx.order.deleteMany({});
+    });
+
+    console.log('[ADMIN_DEV] All test orders and associated logistics/refund records deleted successfully.');
+    res.status(200).json({
+      success: true,
+      message: 'All test orders have been deleted successfully.'
+    });
   } catch (error) {
     next(error);
   }
@@ -603,25 +682,11 @@ router.put('/orders/:id/status', async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'Order records not found.' });
     }
 
-    const currentLogistics = order.logistics || {};
-    const updatedLogistics = {
-      status: status,
-      courierName: currentLogistics.courierName || '',
-      trackingNumber: currentLogistics.trackingNumber || '',
-      trackingUrl: currentLogistics.trackingUrl || '',
-      dispatchDate: currentLogistics.dispatchDate || '',
-      estimatedDeliveryDate: estimatedDelivery ? new Date(estimatedDelivery).toISOString() : (currentLogistics.estimatedDeliveryDate || '')
-    };
-
     const updatedData = {
       status,
       paymentStatus,
-      logistics: updatedLogistics
+      shiprocketStatus: status
     };
-
-    if (estimatedDelivery !== undefined) {
-      updatedData.estimatedDelivery = estimatedDelivery ? new Date(estimatedDelivery) : null;
-    }
 
     const updated = await prisma.order.update({
       where: { id },
@@ -692,15 +757,10 @@ router.put('/orders/:id/shipment', async (req, res, next) => {
 
     const updatedData = {
       status: finalStatus,
-      estimatedDelivery: eDate,
-      logistics: {
-        status: finalStatus,
-        courierName: courierName || '',
-        trackingNumber: trackingNumber || '',
-        trackingUrl: trackingUrl || '',
-        dispatchDate: dDate ? dDate.toISOString() : '',
-        estimatedDeliveryDate: eDate ? eDate.toISOString() : ''
-      }
+      shiprocketStatus: finalStatus,
+      courierName: courierName || order.courierName,
+      awbCode: trackingNumber || order.awbCode,
+      labelUrl: trackingUrl || order.labelUrl
     };
 
     const updated = await prisma.order.update({

@@ -5,7 +5,7 @@ import { useCartStore } from '../store/useCartStore';
 import { useAuthStore } from '../store/useAuthStore';
 import { useSettingsStore } from '../store/useSettingsStore';
 import api from '../utils/api';
-import { getOptimizedImageUrl } from '../utils/imageOptimizer';
+import { getOptimizedImageUrl, handleImageError, DEFAULT_FALLBACK_IMAGE } from '../utils/imageOptimizer';
 import { parseWeightToKG } from '../utils/weightParser';
 
 export default function Cart() {
@@ -145,7 +145,8 @@ export default function Cart() {
                 
                 {cartItems.map((item) => {
                   const itemPrice = item.variant ? item.variant.price : item.product.price;
-                  const itemImg = item.product.images?.length > 0 ? item.product.images[0].url : item.product.image;
+                  const rawImgUrl = typeof item.product?.images?.[0] === 'string' ? item.product.images[0] : (item.product?.images?.[0]?.url || item.product?.image);
+                  const itemImg = getOptimizedImageUrl(rawImgUrl, { width: 100, height: 100, cropMode: 'fit' });
                   
                   return (
                     <div 
@@ -155,9 +156,10 @@ export default function Cart() {
                       <div className="flex gap-4 items-center text-left">
                         <div className="w-20 h-20 bg-transparent shrink-0 flex items-center justify-center relative">
                           <img
-                            src={getOptimizedImageUrl(itemImg, { width: 100, height: 100, cropMode: 'fit' })}
+                            src={itemImg}
                             alt={item.product.name}
                             loading="lazy"
+                            onError={(e) => handleImageError(e)}
                             className="w-full h-full object-contain p-1 filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.1)]"
                           />
                         </div>

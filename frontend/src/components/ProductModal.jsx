@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FiX, FiCheck, FiShoppingBag, FiInfo } from 'react-icons/fi';
 import { FaWhatsapp } from 'react-icons/fa';
-import { getOptimizedImageUrl, getImageSrcSet } from '../utils/imageOptimizer';
+import { getOptimizedImageUrl, getImageSrcSet, handleImageError, DEFAULT_FALLBACK_IMAGE } from '../utils/imageOptimizer';
 
 export default function ProductModal({ product, onClose }) {
   if (!product) return null;
@@ -37,14 +37,16 @@ export default function ProductModal({ product, onClose }) {
             </div>
           )}
           <img
-            src={getOptimizedImageUrl(product.image, { width: 800, cropMode: 'limit' })}
-            srcSet={getImageSrcSet(product.image, { widths: [400, 800, 1500], cropMode: 'limit' })}
+            src={getOptimizedImageUrl(product.image || (typeof product.images?.[0] === 'string' ? product.images[0] : product.images?.[0]?.url), { width: 800, cropMode: 'limit' })}
+            srcSet={getImageSrcSet(product.image || (typeof product.images?.[0] === 'string' ? product.images[0] : product.images?.[0]?.url), { widths: [400, 800, 1500], cropMode: 'limit' })}
             sizes="(max-width: 768px) 100vw, 450px"
             alt={product.name}
             onLoad={() => setIsImgLoaded(true)}
-            className={`w-full h-full object-contain p-6 filter drop-shadow-[0_15px_25px_rgba(0,0,0,0.15)] transition-opacity duration-300 ${
-              isImgLoaded ? 'opacity-100' : 'opacity-0'
-            }`}
+            onError={(e) => {
+              setIsImgLoaded(true);
+              handleImageError(e, DEFAULT_FALLBACK_IMAGE);
+            }}
+            className="w-full h-full object-contain p-6 filter drop-shadow-[0_15px_25px_rgba(0,0,0,0.15)] transition-opacity duration-300 opacity-100"
           />
           
           <div className="absolute bottom-6 left-6 z-10">

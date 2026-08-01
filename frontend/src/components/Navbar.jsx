@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import { NavLink, Link, useNavigate, useLocation } from 'react-router-dom';
 import { FiMenu, FiX, FiChevronRight, FiShoppingBag, FiUser, FiTrash2, FiPlus, FiMinus, FiHeart } from 'react-icons/fi';
 import { GiSun } from 'react-icons/gi';
 import { useAuthStore } from '../store/useAuthStore';
 import { useCartStore } from '../store/useCartStore';
 import { useWishlistStore } from '../store/useWishlistStore';
-import { getOptimizedImageUrl } from '../utils/imageOptimizer';
+import { getOptimizedImageUrl, handleImageError, DEFAULT_FALLBACK_IMAGE } from '../utils/imageOptimizer';
 
-export default function Navbar() {
+const Navbar = memo(function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
@@ -79,6 +79,8 @@ export default function Navbar() {
             <img 
               src="https://i.ibb.co/Pz01P9Y5/Whats-App-Image-2026-05-29-at-6-51-48-PM-removebg-preview.png" 
               alt="Suryodaya Farms Logo" 
+              loading="eager"
+              fetchPriority="high"
               className="h-10 sm:h-12 md:h-16 lg:h-20 w-auto object-contain transition duration-500 group-hover:scale-105"
             />
             <div className="flex flex-col justify-center text-left">
@@ -271,14 +273,16 @@ export default function Navbar() {
             ) : (
               cartItems.map((item) => {
                 const itemPrice = item.variant ? item.variant.price : item.product.price;
-                const itemImg = item.product.images?.length > 0 ? item.product.images[0].url : item.product.image;
+                const rawImgUrl = typeof item.product?.images?.[0] === 'string' ? item.product.images[0] : (item.product?.images?.[0]?.url || item.product?.image);
+                const itemImg = getOptimizedImageUrl(rawImgUrl, { width: 80, height: 80, cropMode: 'fit' });
                 
                 return (
                   <div key={item.id} className="flex gap-4 items-start border-b border-light-beige/50 pb-5 last:border-b-0">
                     <div className="w-16 h-16 bg-transparent shrink-0 flex items-center justify-center relative">
                       <img
-                        src={getOptimizedImageUrl(itemImg, { width: 80, height: 80, cropMode: 'fit' })}
+                        src={itemImg}
                         alt={item.product.name}
+                        onError={(e) => handleImageError(e, DEFAULT_FALLBACK_IMAGE)}
                         className="w-full h-full object-contain p-1 filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.1)]"
                       />
                     </div>
@@ -438,4 +442,6 @@ export default function Navbar() {
       </div>
     </>
   );
-}
+});
+
+export default Navbar;

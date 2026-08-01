@@ -1,23 +1,42 @@
 import express from 'express';
 import crypto from 'crypto';
+import Razorpay from 'razorpay';
 import prisma from '../utils/db.js';
 import { protect } from '../middlewares/authMiddleware.js';
 import { mapCartItem, mapWishlistItem, mapOrder } from '../utils/productMapper.js';
+import { syncService } from '../services/shiprocket/sync.service.js';
+import { ordersService } from '../services/shiprocket/orders.service.js';
 
 const router = express.Router();
 
+const razorpayKeyId = process.env.RAZORPAY_KEY_ID || 'rzp_live_TKPje1gjpvHTve';
+const razorpayKeySecret = process.env.RAZORPAY_KEY_SECRET || 'EQ7HfH1H5MRvb44z48C7w93X';
+const isLiveMode = razorpayKeyId.startsWith('rzp_live_');
+
+console.log(`[Razorpay Audit Mode Check]: ${isLiveMode ? 'LIVE' : 'TEST'} | Key ID: ${razorpayKeyId} | Secret Configured: ${!!razorpayKeySecret}`);
+
+const razorpay = new Razorpay({
+  key_id: razorpayKeyId,
+  key_secret: razorpayKeySecret,
+});
+
 export const mapOrderLogistics = (order) => {
   if (!order) return null;
-  const logistics = order.logistics || {};
   return {
     ...order,
+    courierName: order.courierName || '',
+    trackingNumber: order.awbCode || '',
+    shiprocketStatus: order.shiprocketStatus || order.status || 'PENDING',
+    labelUrl: order.labelUrl || null,
+    manifestUrl: order.manifestUrl || null,
+    invoiceUrl: order.invoiceUrl || null,
     logistics: {
-      status: logistics.status || order.status || 'PENDING',
-      courierName: logistics.courierName || '',
-      trackingNumber: logistics.trackingNumber || '',
-      trackingUrl: logistics.trackingUrl || '',
-      dispatchDate: logistics.dispatchDate || '',
-      estimatedDeliveryDate: logistics.estimatedDeliveryDate || (order.estimatedDelivery ? order.estimatedDelivery.toISOString() : '')
+      status: order.shiprocketStatus || order.status || 'PENDING',
+      courierName: order.courierName || '',
+      trackingNumber: order.awbCode || '',
+      trackingUrl: order.labelUrl || '',
+      dispatchDate: order.createdAt ? new Date(order.createdAt).toISOString() : '',
+      estimatedDeliveryDate: order.updatedAt ? new Date(order.updatedAt).toISOString() : ''
     }
   };
 };
@@ -311,13 +330,14 @@ router.post('/coupon/validate', protect, async (req, res, next) => {
 // ================= CHECKOUTS & ORDERS =================
 
 // 8. PROCESS CHECKOUT (COD & RAZORPAY INIT)
+// 8. PROCESS CHECKOUT (RAZORPAY ONLINE PAYMENT ONLY)
 // POST /api/orders/checkout
 router.post('/checkout', protect, async (req, res, next) => {
-  const { addressId, couponCode, paymentMethod } = req.body;
+  const { addressId, couponCode } = req.body;
 
   try {
-    if (!addressId || !paymentMethod) {
-      return res.status(400).json({ success: false, message: 'Shipping address and payment method are required.' });
+    if (!addressId) {
+      return res.status(400).json({ success: false, message: 'Shipping address is required.' });
     }
 
     // Fetch Cart
@@ -409,14 +429,56 @@ router.post('/checkout', protect, async (req, res, next) => {
       shippingFee = shippingCharge;
     }
 
+    // Zero out delivery charge if FREEDEL coupon is applied
+    if (couponCode && couponCode.toUpperCase() === 'FREEDEL') {
+      shippingFee = 0;
+    }
+
     const totalAmount = Math.max(subtotal - discountAmount + shippingFee, 0);
     const orderNumber = `SURY-${Date.now()}-${Math.floor(1000 + Math.random() * 9000)}`;
+
+    // Create Razorpay Order via Official Razorpay Orders API
+    const amountInPaise = Math.round(totalAmount * 100);
+    let rzpOrder;
+    try {
+      console.log(`[Razorpay Order Create Attempt]: Amount: ₹${totalAmount} (${amountInPaise} paise) | Currency: INR | Receipt: ${orderNumber} | Mode: ${isLiveMode ? 'LIVE' : 'TEST'}`);
+      
+      rzpOrder = await razorpay.orders.create({
+        amount: amountInPaise,
+        currency: 'INR',
+        receipt: orderNumber,
+        notes: {
+          userId: req.user.id,
+          orderNumber,
+          recipientName: address.recipientName,
+          phone: address.phone
+        }
+      });
+
+      console.log('[Razorpay Orders API Response]:', JSON.stringify(rzpOrder, null, 2));
+
+      // Validate order.id format
+      if (!rzpOrder || !rzpOrder.id || !rzpOrder.id.startsWith('order_')) {
+        console.error('[Razorpay Order Validation Failed] Invalid order.id structure returned:', rzpOrder);
+        return res.status(500).json({
+          success: false,
+          message: `Razorpay Orders API returned an invalid Order ID format: ${rzpOrder?.id || 'null'}`
+        });
+      }
+    } catch (rzpErr) {
+      console.error('[Razorpay Order Creation Error]:', rzpErr.response?.data || rzpErr.error || rzpErr);
+      return res.status(500).json({
+        success: false,
+        message: `Failed to initiate payment gateway: ${rzpErr.message || rzpErr.description || 'Razorpay Gateway Error'}`
+      });
+    }
 
     // Build database order data
     const orderData = {
       userId: req.user.id,
       orderNumber,
-      paymentMethod,
+      paymentMethod: 'RAZORPAY',
+      razorpayOrderId: rzpOrder.id,
       totalAmount,
       discountAmount,
       couponId,
@@ -429,25 +491,11 @@ router.post('/checkout', protect, async (req, res, next) => {
         postalCode: address.postalCode,
         country: address.country,
       },
-      status: 'PENDING', // default PENDING (Placed) for COD
-      paymentStatus: 'PENDING',
-      logistics: {
-        status: 'PENDING',
-        courierName: '',
-        trackingNumber: '',
-        trackingUrl: '',
-        dispatchDate: '',
-        estimatedDeliveryDate: ''
-      }
+      status: 'PENDING',
+      paymentStatus: 'PENDING'
     };
 
-    // If online checkout with Razorpay, initialize a mock order ID
-    if (paymentMethod === 'RAZORPAY') {
-      orderData.razorpayOrderId = `rzp_order_${orderNumber}`;
-      orderData.status = 'PENDING';
-    }
-
-    // Save order in transaction
+    // Save order record in DB
     const order = await prisma.order.create({
       data: {
         ...orderData,
@@ -460,87 +508,134 @@ router.post('/checkout', protect, async (req, res, next) => {
           })),
         },
       },
-      include: { orderItems: true },
+      include: { orderItems: { include: { product: true, variant: true } } },
     });
 
-    // If order is completed successfully, empty user's cart (for COD)
-    if (paymentMethod === 'COD') {
-      await prisma.cartItem.deleteMany({ where: { userId: req.user.id } });
-      
-      // Send a push notification log
-      await prisma.notification.create({
-        data: {
-          userId: req.user.id,
-          title: 'Order Placed!',
-          message: `Your order ${orderNumber} has been placed successfully and is awaiting confirmation.`,
-        }
-      });
-    }
-
-    res.status(201).json({
+    const checkoutResponse = {
       success: true,
-      order: mapOrderLogistics(order),
-      razorpayOrderId: order.razorpayOrderId,
-      totalAmount: order.totalAmount,
-    });
+      orderId: rzpOrder.id,
+      razorpayOrderId: rzpOrder.id,
+      amount: order.totalAmount,
+      currency: 'INR',
+      key: razorpayKeyId,
+      razorpayKeyId: razorpayKeyId,
+      order: mapOrderLogistics(order)
+    };
+
+    console.log('[Checkout Response Sent To Frontend]:', JSON.stringify(checkoutResponse, null, 2));
+
+    res.status(201).json(checkoutResponse);
   } catch (error) {
+    console.error('[Checkout Error]:', error);
     next(error);
   }
 });
 
-// 9. VERIFY PAYMENT (FOR ONLINE CHECKOUT)
+// 9. VERIFY PAYMENT (HMAC SHA256 SIGNATURE VERIFICATION)
 // POST /api/orders/verify-payment
 router.post('/verify-payment', protect, async (req, res, next) => {
   const { razorpayOrderId, razorpayPaymentId, razorpaySignature } = req.body;
 
   try {
-    if (!razorpayOrderId || !razorpayPaymentId) {
-      return res.status(400).json({ success: false, message: 'Payment validation identifiers are missing.' });
+    if (!razorpayOrderId || !razorpayPaymentId || !razorpaySignature) {
+      return res.status(400).json({ success: false, message: 'Payment validation identifiers or signature missing.' });
     }
+
+    console.log('[Razorpay Verification Triggered]:', { razorpayOrderId, razorpayPaymentId, razorpaySignature });
 
     // Find the corresponding order
     const order = await prisma.order.findFirst({
       where: { razorpayOrderId, userId: req.user.id },
+      include: {
+        orderItems: {
+          include: { product: true, variant: true }
+        }
+      }
     });
 
     if (!order) {
       return res.status(404).json({ success: false, message: 'Corresponding order records not found.' });
     }
 
-    // In a live integration, we check the crypto signature. Since we are in dev sandbox,
-    // we confirm the payment automatically, ensuring it integrates beautifully!
-    await prisma.order.update({
+    // Idempotency check: If order is already completed/paid, return success without duplicate processing
+    if (order.paymentStatus === 'COMPLETED' || order.paymentStatus === 'PAID') {
+      return res.status(200).json({
+        success: true,
+        message: 'Payment already verified.',
+        order: mapOrder(mapOrderLogistics(order))
+      });
+    }
+
+    // Verify HMAC SHA256 signature using Razorpay Secret
+    const secret = razorpayKeySecret;
+    const body = razorpayOrderId + '|' + razorpayPaymentId;
+    const expectedSignature = crypto
+      .createHmac('sha256', secret)
+      .update(body.toString())
+      .digest('hex');
+
+    console.log('[Razorpay Signature Comparison]:', {
+      receivedSignature: razorpaySignature,
+      expectedSignature,
+      match: expectedSignature === razorpaySignature
+    });
+
+    if (expectedSignature !== razorpaySignature) {
+      // Record failed payment attempt on order record
+      await prisma.order.update({
+        where: { id: order.id },
+        data: { paymentStatus: 'FAILED' }
+      });
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid payment signature. Razorpay verification failed.'
+      });
+    }
+
+    // Signature verified successfully -> Update order status to COMPLETED & CONFIRMED
+    const updatedOrder = await prisma.order.update({
       where: { id: order.id },
       data: {
         paymentStatus: 'COMPLETED',
         status: 'CONFIRMED',
         razorpayPaymentId,
       },
-    });
-
-    // Empty User Cart
-    await prisma.cartItem.deleteMany({ where: { userId: req.user.id } });
-
-    // Send notification
-    await prisma.notification.create({
-      data: {
-        userId: req.user.id,
-        title: 'Payment Completed!',
-        message: `Your payment for order ${order.orderNumber} was confirmed. We are processing your harvest.`,
+      include: {
+        orderItems: {
+          include: { product: true, variant: true }
+        }
       }
     });
 
-    res.status(200).json({ success: true, message: 'Payment authenticated and order processed.' });
+    // Empty User Cart ONLY AFTER payment verification succeeds
+    await prisma.cartItem.deleteMany({ where: { userId: req.user.id } });
+
+    // Send push notification / activity log
+    await prisma.notification.create({
+      data: {
+        userId: req.user.id,
+        title: 'Payment Successful!',
+        message: `Your payment for order ${order.orderNumber} (TXN: ${razorpayPaymentId}) was confirmed successfully. We are processing your harvest.`,
+      }
+    });
+
+    res.status(200).json({
+      success: true,
+      message: 'Payment authenticated and order confirmed.',
+      order: mapOrder(mapOrderLogistics(updatedOrder))
+    });
   } catch (error) {
     next(error);
   }
 });
 
-// 10. FETCH USER ORDER HISTORY
+import { syncOrderRefundStatus } from '../services/razorpay.service.js';
+
+// 10. FETCH USER ORDER HISTORY (WITH SILENT TRACKING & REFUND AUTO-SYNC)
 // GET /api/orders/history
 router.get('/history', protect, async (req, res, next) => {
   try {
-    const orders = await prisma.order.findMany({
+    let orders = await prisma.order.findMany({
       where: { userId: req.user.id },
       include: {
         orderItems: {
@@ -553,21 +648,51 @@ router.get('/history', protect, async (req, res, next) => {
       orderBy: { createdAt: 'desc' },
     });
 
-    const mappedOrders = orders.map(order => mapOrder(mapOrderLogistics(order)));
+    // Silent background sync for active shipments that haven't been updated in 2 minutes
+    const twoMinsAgo = new Date(Date.now() - 2 * 60 * 1000);
+    const activeToSync = orders.filter(o => 
+      o.shiprocketOrderId && 
+      !['DELIVERED', 'CANCELLED'].includes(o.status) &&
+      (!o.updatedAt || new Date(o.updatedAt) < twoMinsAgo)
+    );
 
+    if (activeToSync.length > 0) {
+      Promise.all(activeToSync.map(o => syncService.syncOrder(o.id).catch(() => null))).catch(() => null);
+    }
+
+    // Silent sync for any pending refunds
+    const pendingRefunds = orders.filter(o => ['INITIATED', 'PROCESSING', 'PENDING'].includes((o.refundStatus || '').toUpperCase()) && o.refundId);
+    if (pendingRefunds.length > 0) {
+      await Promise.all(pendingRefunds.map(o => syncOrderRefundStatus(o.id).catch(() => null)));
+      // Refetch mapped orders if refund status updated
+      orders = await prisma.order.findMany({
+        where: { userId: req.user.id },
+        include: {
+          orderItems: {
+            include: {
+              product: true,
+              variant: true
+            }
+          }
+        },
+        orderBy: { createdAt: 'desc' },
+      });
+    }
+
+    const mappedOrders = orders.map(order => mapOrder(mapOrderLogistics(order)));
     res.status(200).json({ success: true, count: mappedOrders.length, orders: mappedOrders });
   } catch (error) {
     next(error);
   }
 });
 
-// 11. FETCH ORDER DETAILS
+// 11. FETCH ORDER DETAILS (WITH SILENT TRACKING & REFUND AUTO-SYNC)
 // GET /api/orders/history/:orderId
 router.get('/history/:orderId', protect, async (req, res, next) => {
   const { orderId } = req.params;
 
   try {
-    const order = await prisma.order.findFirst({
+    let order = await prisma.order.findFirst({
       where: { id: orderId, userId: req.user.id },
       include: {
         orderItems: {
@@ -583,9 +708,73 @@ router.get('/history/:orderId', protect, async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'Order details not found.' });
     }
 
+    // Silent auto sync if active shipment
+    if (order.shiprocketOrderId && !['DELIVERED', 'CANCELLED'].includes(order.status)) {
+      try {
+        const syncResult = await syncService.syncOrder(order.id);
+        if (syncResult && syncResult.order) {
+          order = syncResult.order;
+        }
+      } catch (syncErr) {
+        // Silent catch for resilience
+      }
+    }
+
+    // Silent auto sync for pending refund status
+    const currentRefundStatus = (order.refundStatus || '').toUpperCase();
+    if (['INITIATED', 'PROCESSING', 'PENDING'].includes(currentRefundStatus) && order.refundId) {
+      try {
+        const syncedRefundOrder = await syncOrderRefundStatus(order.id);
+        if (syncedRefundOrder) {
+          order = syncedRefundOrder;
+        }
+      } catch (refundSyncErr) {
+        // Silent catch for resilience
+      }
+    }
+
     res.status(200).json({ success: true, order: mapOrder(mapOrderLogistics(order)) });
   } catch (error) {
     next(error);
+  }
+});
+
+// 12. CANCEL ORDER (CUSTOMER / ADMIN)
+// POST /api/orders/:orderId/cancel
+router.post('/:orderId/cancel', protect, async (req, res, next) => {
+  const { orderId } = req.params;
+
+  try {
+    const dbOrder = await prisma.order.findUnique({ where: { id: orderId } });
+    if (!dbOrder) {
+      return res.status(404).json({ success: false, message: 'Order not found.' });
+    }
+
+    // Verify ownership if not admin
+    if (req.user.role !== 'ADMIN' && !req.user.isAdmin && dbOrder.userId !== req.user.id) {
+      return res.status(403).json({ success: false, message: 'Access denied.' });
+    }
+
+    const cancelledBy = (req.user.role === 'ADMIN' || req.user.isAdmin) ? 'ADMIN' : 'CUSTOMER';
+    const result = await ordersService.cancelShiprocketOrder(orderId, cancelledBy);
+    res.json(result);
+  } catch (error) {
+    res.status(error.statusCode || 400).json({ success: false, message: error.message });
+  }
+});
+
+// 13. RETRY RAZORPAY REFUND (ADMIN ONLY)
+// POST /api/orders/:orderId/retry-refund
+router.post('/:orderId/retry-refund', protect, async (req, res, next) => {
+  const { orderId } = req.params;
+  try {
+    if (req.user.role !== 'ADMIN' && !req.user.isAdmin) {
+      return res.status(403).json({ success: false, message: 'Admin access required.' });
+    }
+    const result = await ordersService.retryRazorpayRefund(orderId);
+    res.json(result);
+  } catch (error) {
+    res.status(error.statusCode || 400).json({ success: false, message: error.message });
   }
 });
 
