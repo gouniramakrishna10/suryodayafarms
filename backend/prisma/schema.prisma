@@ -1,66 +1,33 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-1.1.x", "debian-openssl-3.0.x", "rhel-openssl-1.0.x", "rhel-openssl-3.0.x", "linux-musl", "linux-musl-openssl-3.0.x"]
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
-}
-
-enum Role {
-  CUSTOMER
-  ADMIN
-}
-
-enum OrderStatus {
-  PENDING
-  CONFIRMED
-  PROCESSING
-  SHIPPED
-  IN_TRANSIT
-  OUT_FOR_DELIVERY
-  DELIVERED
-  CANCELLED
-}
-
-enum PaymentStatus {
-  PENDING
-  COMPLETED
-  FAILED
-  REFUNDED
-}
-
-enum PaymentMethod {
-  COD
-  RAZORPAY
-}
-
-enum DiscountType {
-  PERCENTAGE
-  FLAT
-}
-
 model User {
-  id            String         @id @default(cuid())
-  name          String?
-  email         String?        @unique
-  mobile        String?        @unique
-  passwordHash  String?
-  walletBalance Float          @default(0)
-  role          Role           @default(CUSTOMER)
-  avatarUrl     String?
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-
-  addresses         Address[]
-  orders            Order[]
-  cartItems         CartItem[]
-  wishlistItems     WishlistItem[]
-  reviews           Review[]
-  notifications     Notification[]
-  sessions          Session[]
-  supportTickets    SupportTicket[]
-  supportMessages   SupportMessage[]
+  id              String           @id @default(cuid())
+  name            String?
+  email           String?          @unique
+  passwordHash    String?
+  role            Role             @default(CUSTOMER)
+  avatarUrl       String?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  mobile          String?          @unique
+  walletBalance   Float            @default(0)
+  addresses       Address[]
+  cartItems       CartItem[]
+  notifications   Notification[]
+  orders          Order[]
+  sessions        Session[]
+  supportMessages SupportMessage[]
+  supportTickets  SupportTicket[]
+  wishlistItems   WishlistItem[]
+  reviews         Review[]
 }
 
 model OtpVerification {
@@ -77,17 +44,16 @@ model OtpVerification {
 model Session {
   id        String   @id @default(uuid())
   userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   token     String   @unique
   expiresAt DateTime
   createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Address {
   id            String   @id @default(uuid())
   userId        String
-  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  title         String   // e.g., "Home", "Office"
+  title         String
   recipientName String
   phone         String
   street        String
@@ -98,6 +64,7 @@ model Address {
   isDefault     Boolean  @default(false)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Category {
@@ -113,65 +80,63 @@ model Category {
   promoVisible    Boolean   @default(true)
   position        Int       @default(0)
   isFeatured      Boolean   @default(false)
-  products        Product[]
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
+  products        Product[] @relation("CategoryToProduct")
 }
 
 model Product {
-  id             String           @id @default(uuid())
-  name           String
-  slug           String           @unique
-  categories     Category[]
-  description    String           // Acts as long description
-  shortDescription String?
-  detailedDescription String?        @db.Text
-  brand          String?          @default("Suryodaya Farms")
-  productType    String?
-  price          Float            // Acts as active Sale Price
-  compareAtPrice Float?           // Serves as dynamic compare price
-  mrp            Float?           // Explicit MRP
-  discountPercent Float?          @default(0)
-  taxPercent     Float?           @default(0)
-  stockStatus    String?          @default("IN_STOCK")
-  sku            String           @unique
-  inventory      Int              @default(0)
-  hoverImage     String?
-  mobileBanner   String?
-  isFeatured     Boolean          @default(false)
-  isTrending     Boolean          @default(false)
-  isBestseller   Boolean          @default(false)
-  isNewLaunch    Boolean          @default(false)
-  isVisible      Boolean          @default(true)
-  isComingSoon   Boolean          @default(false)
-  nutrients      String?
-  origin         String?
-  shelfLife      String?
-  deliveryEta    String?          @default("2-3 Days")
-  codAvailable   Boolean          @default(true)
-  returnEligible Boolean          @default(false)
-  weight         String?
-  seoTitle       String?
-  seoDescription String?
-  seoKeywords    String?
-  productContent Json?
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
-
-  images         String[]
-  productImages  ProductImage[]
-  variants       ProductVariant[]
-  cartItems      CartItem[]
-  wishlistItems  WishlistItem[]
-  orderItems     OrderItem[]
-  reviews        Review[]
-  contentSections ProductContent[]
+  id                  String           @id @default(uuid())
+  name                String
+  slug                String           @unique
+  description         String
+  shortDescription    String?
+  brand               String?          @default("Suryodaya Farms")
+  productType         String?
+  price               Float
+  compareAtPrice      Float?
+  mrp                 Float?
+  discountPercent     Float?           @default(0)
+  taxPercent          Float?           @default(0)
+  stockStatus         String?          @default("IN_STOCK")
+  sku                 String           @unique
+  inventory           Int              @default(0)
+  hoverImage          String?
+  mobileBanner        String?
+  isFeatured          Boolean          @default(false)
+  isTrending          Boolean          @default(false)
+  isBestseller        Boolean          @default(false)
+  isNewLaunch         Boolean          @default(false)
+  isVisible           Boolean          @default(true)
+  isComingSoon        Boolean          @default(false)
+  nutrients           String?
+  origin              String?
+  shelfLife           String?
+  deliveryEta         String?          @default("2-3 Days")
+  codAvailable        Boolean          @default(true)
+  returnEligible      Boolean          @default(false)
+  weight              String?
+  seoTitle            String?
+  seoDescription      String?
+  seoKeywords         String?
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+  images              String[]
+  productContent      Json?
+  detailedDescription String?
+  cartItems           CartItem[]
+  orderItems          OrderItem[]
+  contentSections     ProductContent[]
+  productImages       ProductImage[]
+  variants            ProductVariant[]
+  wishlistItems       WishlistItem[]
+  reviews             Review[]
+  categories          Category[]       @relation("CategoryToProduct")
 }
 
 model ProductContent {
   id          String   @id @default(uuid())
   productId   String
-  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   sectionType String
   title       String?
   content     Json
@@ -179,111 +144,108 @@ model ProductContent {
   isVisible   Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
 model ProductImage {
-  id         String   @id @default(uuid())
+  id         String  @id @default(uuid())
   productId  String
-  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   url        String
-  isFeatured Boolean  @default(false)
+  isFeatured Boolean @default(false)
+  product    Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
 model ProductVariant {
   id         String      @id @default(uuid())
   productId  String
-  product    Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
-  name       String      // e.g. "500ml", "1 Kg", "1 Liter"
-  weight     String?     // e.g. "500"
-  unit       String?     // e.g. "g", "kg", "ml", "l", "pcs"
+  name       String
   price      Float
   mrp        Float?
   sku        String?
   inventory  Int         @default(0)
+  unit       String?
+  weight     String?
   cartItems  CartItem[]
   orderItems OrderItem[]
+  product    Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
 model CartItem {
   id        String          @id @default(uuid())
   userId    String
-  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   productId String
-  product   Product         @relation(fields: [productId], references: [id])
   variantId String?
-  variant   ProductVariant? @relation(fields: [variantId], references: [id])
   quantity  Int             @default(1)
   createdAt DateTime        @default(now())
+  product   Product         @relation(fields: [productId], references: [id])
+  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  variant   ProductVariant? @relation(fields: [variantId], references: [id])
 }
 
 model WishlistItem {
   id        String   @id @default(uuid())
   userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   productId String
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Coupon {
-  id             String       @id @default(uuid())
-  code           String       @unique
-  discountType   DiscountType @default(PERCENTAGE)
-  discountValue  Float
-  minOrderValue  Float        @default(0)
-  expiryDate     DateTime
-  usageLimit     Int?         @default(-1)
-  isActive       Boolean      @default(true)
-  createdAt      DateTime     @default(now())
-  orders         Order[]
+  id            String       @id @default(uuid())
+  code          String       @unique
+  discountType  DiscountType @default(PERCENTAGE)
+  discountValue Float
+  minOrderValue Float        @default(0)
+  expiryDate    DateTime
+  usageLimit    Int?         @default(-1)
+  isActive      Boolean      @default(true)
+  createdAt     DateTime     @default(now())
+  orders        Order[]
 }
 
 model Order {
-  id                String        @id @default(uuid())
-  userId            String
-  user              User          @relation(fields: [userId], references: [id])
-  orderNumber       String        @unique
-  status            OrderStatus   @default(PENDING)
-  paymentStatus     PaymentStatus @default(PENDING)
-  paymentMethod     PaymentMethod @default(COD)
-  razorpayOrderId   String?
-  razorpayPaymentId String?
-  totalAmount       Float
-  discountAmount    Float         @default(0)
-  couponId          String?
-  coupon            Coupon?       @relation(fields: [couponId], references: [id])
-  shippingAddress   Json          // Save serialized address details
-  createdAt         DateTime      @default(now())
-  updatedAt         DateTime      @updatedAt
-  // Shiprocket Logistics Integration Fields
-  shiprocketOrderId Int?
-  shipmentId        Int?
-  awbCode           String?
-  courierName       String?
-  courierId         Int?
-  pickupId          String?
-  labelUrl          String?
-  manifestUrl       String?
-  invoiceUrl        String?
-  shiprocketStatus  String?
-  shiprocketData    Json?
-  trackingHistory   Json?
-
-  // Refund Audit Integration Fields
-  refundStatus      String?   // "NONE" | "INITIATED" | "PROCESSING" | "COMPLETED" | "FAILED"
-  refundId          String?
-  refundAmount      Float?
-  refundGateway     String?   @default("Razorpay")
-  refundDate        DateTime?
-  refundInitiatedAt DateTime?
+  id                 String          @id @default(uuid())
+  userId             String
+  orderNumber        String          @unique
+  status             OrderStatus     @default(PENDING)
+  paymentStatus      PaymentStatus   @default(PENDING)
+  paymentMethod      PaymentMethod   @default(COD)
+  razorpayOrderId    String?
+  razorpayPaymentId  String?
+  totalAmount        Float
+  discountAmount     Float           @default(0)
+  couponId           String?
+  shippingAddress    Json
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  awbCode            String?
+  courierId          Int?
+  courierName        String?
+  invoiceUrl         String?
+  labelUrl           String?
+  manifestUrl        String?
+  pickupId           String?
+  shipmentId         Int?
+  shiprocketData     Json?
+  shiprocketOrderId  Int?
+  shiprocketStatus   String?
+  trackingHistory    Json?
+  refundAmount       Float?
+  refundDate         DateTime?
+  refundError        String?
+  refundId           String?
+  refundResponse     Json?
+  refundStatus       String?
+  lastRefundSync     DateTime?
+  refundCompletedAt  DateTime?
   refundExpectedDate DateTime?
-  refundCompletedAt DateTime?
-  lastRefundSync    DateTime?
-  refundResponse    Json?
-  refundError       String?
-
-  orderItems        OrderItem[]
-  supportTickets    SupportTicket[]
+  refundGateway      String?         @default("Razorpay")
+  refundInitiatedAt  DateTime?
+  coupon             Coupon?         @relation(fields: [couponId], references: [id])
+  user               User            @relation(fields: [userId], references: [id])
+  orderItems         OrderItem[]
+  supportTickets     SupportTicket[]
 }
 
 model ShippingSettings {
@@ -291,14 +253,14 @@ model ShippingSettings {
   defaultPickupLocation String   @default("Primary Warehouse")
   pickupPincode         String   @default("302001")
   autoAssignCourier     Boolean  @default(true)
-  preferredCourierMode  String   @default("CHEAPEST") // "CHEAPEST" | "FASTEST" | "CUSTOM"
+  preferredCourierMode  String   @default("CHEAPEST")
   preferredCourierId    Int?
   freeShippingThreshold Float    @default(999)
   codEnabled            Boolean  @default(true)
-  maxWeight             Float    @default(20) // in kg
-  defaultLength         Float    @default(15) // in cm
-  defaultWidth          Float    @default(15) // in cm
-  defaultHeight         Float    @default(10) // in cm
+  maxWeight             Float    @default(20)
+  defaultLength         Float    @default(15)
+  defaultWidth          Float    @default(15)
+  defaultHeight         Float    @default(10)
   webhookUrl            String?
   updatedAt             DateTime @updatedAt
 }
@@ -306,29 +268,29 @@ model ShippingSettings {
 model OrderItem {
   id        String          @id @default(uuid())
   orderId   String
-  order     Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
   productId String
-  product   Product         @relation(fields: [productId], references: [id])
   variantId String?
-  variant   ProductVariant? @relation(fields: [variantId], references: [id])
   quantity  Int
   price     Float
+  order     Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product         @relation(fields: [productId], references: [id])
+  variant   ProductVariant? @relation(fields: [variantId], references: [id])
 }
 
 model Review {
   id           String   @id @default(uuid())
   userId       String   @map("customer_id")
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   productId    String   @map("product_id")
-  product      Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   customerName String?  @map("customer_name")
   rating       Int      @default(5)
   reviewTitle  String?  @map("review_title")
   reviewText   String?  @map("review_text")
   reviewImages String[] @map("review_images")
-  status       String   @default("PENDING") // PENDING, APPROVED, REJECTED
+  status       String   @default("PENDING")
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product      Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@map("product_reviews")
 }
@@ -375,11 +337,11 @@ model Gallery {
 model Notification {
   id        String   @id @default(uuid())
   userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   title     String
   message   String
   isRead    Boolean  @default(false)
   createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model ContactMessage {
@@ -394,7 +356,7 @@ model ContactMessage {
 
 model SEOSetting {
   id          String @id @default(uuid())
-  page        String @unique // e.g. "home", "products"
+  page        String @unique
   title       String
   description String
   keywords    String
@@ -402,28 +364,28 @@ model SEOSetting {
 
 model WebsiteSetting {
   id    String @id @default(uuid())
-  key   String @unique // e.g. "phone", "email"
+  key   String @unique
   value String
 }
 
 model HomepageCampaign {
-  id                   String    @id @default(uuid())
-  title                String
-  subtitle             String
-  description          String
-  heroImage            String
-  featuredProductId    String?
-  discountText         String?
-  primaryButtonText    String    @default("Shop Now")
-  primaryButtonLink    String    @default("/")
-  secondaryButtonText  String?   @default("Explore Collection")
-  secondaryButtonLink  String?   @default("/")
-  badgeText            String?
-  isActive             Boolean   @default(false)
-  startDate            DateTime?
-  endDate              DateTime?
-  createdAt            DateTime  @default(now())
-  updatedAt            DateTime  @updatedAt
+  id                  String    @id @default(uuid())
+  title               String
+  subtitle            String
+  description         String
+  heroImage           String
+  featuredProductId   String?
+  discountText        String?
+  primaryButtonText   String    @default("Shop Now")
+  primaryButtonLink   String    @default("/")
+  secondaryButtonText String?   @default("Explore Collection")
+  secondaryButtonLink String?   @default("/")
+  badgeText           String?
+  isActive            Boolean   @default(false)
+  startDate           DateTime?
+  endDate             DateTime?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
 }
 
 model HomepageCollection {
@@ -442,53 +404,98 @@ model HomepageCollection {
   @@map("homepage_collections")
 }
 
-
-
 model HomepageHero {
-  id                    String @id @default(uuid())
-
+  id                    String   @id @default(uuid())
   trustBadgeText        String?
   headingLine1          String?
   headingHighlight      String?
   headingLine2          String?
-
   description           String?
-
   bulletOne             String?
   bulletTwo             String?
   bulletThree           String?
   bulletFour            String?
-
   primaryButtonText     String?
   primaryButtonLink     String?
-
   secondaryButtonText   String?
   secondaryButtonLink   String?
-
   promoText             String?
-
   heroImage             String?
-
   cropX                 Float?
   cropY                 Float?
   cropWidth             Float?
   cropHeight            Float?
   zoom                  Float?
   aspectRatio           String?
-
   featuredProductId     String?
-
   offerBadgeText        String?
-
   floatingBadgeTitle    String?
   floatingBadgeSubtitle String?
-
-  slideOrder            Int     @default(0)
-  isFeatured            Boolean @default(false)
-  isActive              Boolean @default(true)
-
+  slideOrder            Int      @default(0)
+  isFeatured            Boolean  @default(false)
+  isActive              Boolean  @default(true)
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
+}
+
+model SupportTicket {
+  id           String           @id @default(uuid())
+  ticketNumber String           @unique
+  userId       String
+  orderId      String?
+  subject      String
+  status       TicketStatus     @default(OPEN)
+  priority     TicketPriority   @default(MEDIUM)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  messages     SupportMessage[]
+  order        Order?           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  user         User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model SupportMessage {
+  id        String        @id @default(uuid())
+  ticketId  String
+  senderId  String
+  role      Role          @default(CUSTOMER)
+  message   String
+  imageUrl  String?
+  createdAt DateTime      @default(now())
+  sender    User          @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  ticket    SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+}
+
+enum Role {
+  CUSTOMER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PROCESSING
+  SHIPPED
+  IN_TRANSIT
+  OUT_FOR_DELIVERY
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+enum PaymentMethod {
+  COD
+  RAZORPAY
+}
+
+enum DiscountType {
+  PERCENTAGE
+  FLAT
 }
 
 enum TicketStatus {
@@ -503,31 +510,4 @@ enum TicketPriority {
   MEDIUM
   HIGH
   URGENT
-}
-
-model SupportTicket {
-  id           String           @id @default(uuid())
-  ticketNumber String           @unique
-  userId       String
-  user         User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  orderId      String?
-  order        Order?           @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  subject      String
-  status       TicketStatus     @default(OPEN)
-  priority     TicketPriority   @default(MEDIUM)
-  messages     SupportMessage[]
-  createdAt    DateTime         @default(now())
-  updatedAt    DateTime         @updatedAt
-}
-
-model SupportMessage {
-  id        String        @id @default(uuid())
-  ticketId  String
-  ticket    SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
-  senderId  String
-  sender    User          @relation(fields: [senderId], references: [id], onDelete: Cascade)
-  role      Role          @default(CUSTOMER)
-  message   String
-  imageUrl  String?
-  createdAt DateTime      @default(now())
 }

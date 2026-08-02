@@ -90,6 +90,9 @@ app.use('/api/', limiter);
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'OK', environment: process.env.NODE_ENV, timestamp: new Date() });
 });
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ status: 'OK', environment: process.env.NODE_ENV, timestamp: new Date() });
+});
 
 // --- REST Route Integrations ---
 import authRoutes from './routes/authRoutes.js';

@@ -11,6 +11,11 @@ const apiKey = process.env.FAST2SMS_API_KEY;
 const messageId = process.env.FAST2SMS_MESSAGE_ID || process.env.FAST2SMS_OTP_TEMPLATE_ID;
 const phoneId = process.env.FAST2SMS_PHONE_NUMBER_ID;
 
+console.log("Node:", process.version);
+console.log("Prisma:", prisma._clientVersion);
+console.log("Platform:", process.platform, process.arch);
+console.log("OpenSSL:", process.versions.openssl || "N/A");
+
 console.log("FAST2SMS CONFIG");
 console.log({
   apiKeyLoaded: !!apiKey,
