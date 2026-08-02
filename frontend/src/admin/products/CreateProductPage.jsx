@@ -1,3 +1,5 @@
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FiArrowLeft, FiCheck } from 'react-icons/fi';
 import { HiSparkles } from 'react-icons/hi2';
 import ProductForm from './ProductForm';
@@ -11,7 +13,8 @@ export default function CreateProductPage({
   setAiFilePreview,
   setAiFilePdfText,
   setIsAiGenerating,
-  setAiProgressStep
+  setAiProgressStep,
+  aiGeneratedProductData
 }) {
   const navigate = useNavigate();
   const [productModalTab, setProductModalTab] = useState('basic');
@@ -25,6 +28,7 @@ export default function CreateProductPage({
     categoryIds: [],
     description: '',
     shortDescription: '',
+    detailedDescription: '',
     brand: 'Suryodaya Farms',
     productType: '',
     price: '',
@@ -55,6 +59,7 @@ export default function CreateProductPage({
     seoKeywords: '',
     image: '',
     images: ['', '', '', ''],
+    contentSections: [],
     variants: [
       {
         id: '',
@@ -81,6 +86,55 @@ export default function CreateProductPage({
       qualityCommitment: []
     }
   });
+
+  useEffect(() => {
+    if (!aiGeneratedProductData) return;
+    console.log('⚛️ [CreateProductPage] Syncing AI Generated Data into local productForm state:', aiGeneratedProductData);
+
+    const generatedName = aiGeneratedProductData.productName || aiGeneratedProductData.name || '';
+    const generatedShortDesc = aiGeneratedProductData.shortDescription || '';
+    const generatedDesc = aiGeneratedProductData.description || aiGeneratedProductData.detailedDescription || '';
+    const generatedIngredients = aiGeneratedProductData.ingredients || '';
+    const generatedNutrition = aiGeneratedProductData.nutrition || aiGeneratedProductData.nutrients || '';
+    const generatedOrigin = aiGeneratedProductData.origin || '';
+    const generatedShelfLife = aiGeneratedProductData.shelfLife || '';
+    const generatedSections = aiGeneratedProductData.sections || aiGeneratedProductData.productContentSections || [];
+
+    let matchedCatIds = [];
+    let matchedCatId = '';
+    if (aiGeneratedProductData.categories && Array.isArray(aiGeneratedProductData.categories) && aiGeneratedProductData.categories.length > 0 && categories) {
+      const catMatch = categories.find(c =>
+        aiGeneratedProductData.categories.some(catName => c.name.toLowerCase().includes(catName.toLowerCase()) || catName.toLowerCase().includes(c.name.toLowerCase()))
+      );
+      if (catMatch) {
+        matchedCatIds = [catMatch.id];
+        matchedCatId = catMatch.id;
+      }
+    }
+
+    setProductForm(prev => ({
+      ...prev,
+      name: generatedName || prev.name,
+      shortDescription: generatedShortDesc || prev.shortDescription,
+      description: generatedDesc || prev.description,
+      detailedDescription: generatedDesc || prev.detailedDescription,
+      ingredients: generatedIngredients || prev.ingredients,
+      nutrients: generatedNutrition || prev.nutrients,
+      origin: generatedOrigin || prev.origin,
+      shelfLife: generatedShelfLife || prev.shelfLife,
+      categoryId: matchedCatId || prev.categoryId,
+      categoryIds: matchedCatIds.length > 0 ? matchedCatIds : prev.categoryIds,
+      seoTitle: aiGeneratedProductData.seo?.seoTitle || prev.seoTitle || generatedName,
+      seoDescription: aiGeneratedProductData.seo?.seoDescription || prev.seoDescription || generatedShortDesc,
+      seoKeywords: aiGeneratedProductData.seo?.seoKeywords || prev.seoKeywords,
+      contentSections: generatedSections.length > 0 ? generatedSections : prev.contentSections,
+      productContent: {
+        ...(prev.productContent || {}),
+        ingredients: generatedIngredients || prev.productContent?.ingredients,
+        about: generatedDesc || prev.productContent?.about
+      }
+    }));
+  }, [aiGeneratedProductData, categories]);
 
   const isFormDirty = () => {
     return !!(

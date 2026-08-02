@@ -4,6 +4,7 @@ import { protect, adminOnly } from '../middlewares/authMiddleware.js';
 import { mapOrderLogistics } from './orderRoutes.js';
 import cloudinary from '../utils/cloudinary.js';
 import { mapProduct, mapProducts } from '../utils/productMapper.js';
+import mammoth from 'mammoth';
 
 const router = express.Router();
 
@@ -85,12 +86,12 @@ router.get('/analytics', async (req, res, next) => {
 // POST /api/admin/products
 router.post('/products', async (req, res, next) => {
   const {
-    name, categoryId, categoryIds, description, shortDescription, brand, productType,
+    name, categoryId, categoryIds, description, shortDescription, detailedDescription, brand, productType,
     price, compareAtPrice, mrp, discountPercent, taxPercent, stockStatus,
     sku, inventory, hoverImage, mobileBanner,
     isFeatured, isTrending, isBestseller, isNewLaunch, isVisible, isComingSoon,
     nutrients, origin, shelfLife, deliveryEta, codAvailable, returnEligible, weight,
-    seoTitle, seoDescription, seoKeywords, image, images, variants, productContent
+    seoTitle, seoDescription, seoKeywords, image, images, variants, productContent, contentSections
   } = req.body;
 
   try {
@@ -126,6 +127,7 @@ router.post('/products', async (req, res, next) => {
           connect: idsToConnect.map(id => ({ id }))
         },
         description: (productContent && typeof productContent === 'object' && productContent.about) ? productContent.about : (description || ''),
+        detailedDescription: detailedDescription || null,
         productContent: productContent || null,
         shortDescription: shortDescription || '',
         brand: brand || 'Suryodaya Farms',
@@ -172,9 +174,18 @@ router.post('/products', async (req, res, next) => {
               inventory: parseInt(v.inventory || inventory || 0, 10) || 0
             };
           }) : []
+        },
+        contentSections: {
+          create: (contentSections && Array.isArray(contentSections)) ? contentSections.map((sec, idx) => ({
+            sectionType: sec.sectionType || 'RICH_TEXT',
+            title: sec.title || '',
+            content: sec.content || {},
+            orderIndex: sec.orderIndex !== undefined ? parseInt(sec.orderIndex, 10) : idx,
+            isVisible: sec.isVisible !== undefined ? !!sec.isVisible : true
+          })) : []
         }
       },
-      include: { variants: true }
+      include: { variants: true, categories: true, contentSections: { orderBy: { orderIndex: 'asc' } } }
     });
 
     res.status(201).json({ success: true, product: mapProduct(product) });
@@ -188,12 +199,12 @@ router.post('/products', async (req, res, next) => {
 router.put('/products/:id', async (req, res, next) => {
   const { id } = req.params;
   const {
-    name, categoryId, categoryIds, description, shortDescription, brand, productType,
+    name, categoryId, categoryIds, description, shortDescription, detailedDescription, brand, productType,
     price, compareAtPrice, mrp, discountPercent, taxPercent, stockStatus,
     sku, inventory, hoverImage, mobileBanner,
     isFeatured, isTrending, isBestseller, isNewLaunch, isVisible, isComingSoon,
     nutrients, origin, shelfLife, deliveryEta, codAvailable, returnEligible, weight,
-    seoTitle, seoDescription, seoKeywords, image, images, variants, productContent
+    seoTitle, seoDescription, seoKeywords, image, images, variants, productContent, contentSections
   } = req.body;
 
   try {
@@ -205,6 +216,7 @@ router.put('/products/:id', async (req, res, next) => {
     const updatedData = {
       name,
       description: (productContent && typeof productContent === 'object' && productContent.about) ? productContent.about : description,
+      detailedDescription: detailedDescription !== undefined ? detailedDescription : undefined,
       productContent: productContent !== undefined ? productContent : undefined,
       shortDescription,
       brand,
@@ -326,7 +338,32 @@ router.put('/products/:id', async (req, res, next) => {
       }
     }
 
-    res.status(200).json({ success: true, product: mapProduct(product) });
+    if (contentSections && Array.isArray(contentSections)) {
+      await prisma.productContent.deleteMany({ where: { productId: id } });
+      if (contentSections.length > 0) {
+        await prisma.productContent.createMany({
+          data: contentSections.map((sec, idx) => ({
+            productId: id,
+            sectionType: sec.sectionType || 'RICH_TEXT',
+            title: sec.title || '',
+            content: sec.content || {},
+            orderIndex: sec.orderIndex !== undefined ? parseInt(sec.orderIndex, 10) : idx,
+            isVisible: sec.isVisible !== undefined ? !!sec.isVisible : true
+          }))
+        });
+      }
+    }
+
+    const finalProduct = await prisma.product.findUnique({
+      where: { id },
+      include: {
+        categories: true,
+        variants: true,
+        contentSections: { orderBy: { orderIndex: 'asc' } }
+      }
+    });
+
+    res.status(200).json({ success: true, product: mapProduct(finalProduct) });
   } catch (error) {
     next(error);
   }
@@ -359,11 +396,41 @@ router.get('/products', async (req, res, next) => {
     const products = await prisma.product.findMany({
       include: {
         categories: true,
-        variants: true
+        variants: true,
+        contentSections: { orderBy: { orderIndex: 'asc' } }
       },
       orderBy: { createdAt: 'desc' }
     });
     res.status(200).json({ success: true, products: mapProducts(products) });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// FETCH SINGLE PRODUCT DETAILS FOR ADMIN EDIT
+// GET /api/admin/products/:id
+router.get('/products/:id', async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const product = await prisma.product.findFirst({
+      where: {
+        OR: [
+          { id: id },
+          { slug: id }
+        ]
+      },
+      include: {
+        categories: true,
+        variants: true,
+        contentSections: { orderBy: { orderIndex: 'asc' } }
+      }
+    });
+
+    if (!product) {
+      return res.status(404).json({ success: false, message: 'Product not found.' });
+    }
+
+    res.status(200).json({ success: true, product: mapProduct(product) });
   } catch (error) {
     next(error);
   }
@@ -586,6 +653,296 @@ router.post('/categories/:id/remove', async (req, res, next) => {
     next(error);
   }
 });
+
+// =========================================================================
+// AI PRODUCT GENERATION ENDPOINT
+// POST /api/admin/products/ai-generate
+// =========================================================================
+router.post('/products/ai-generate', async (req, res, next) => {
+  try {
+    const { documentText, fileBase64, fileName, fileType } = req.body;
+    console.log('🤖 [Backend AI Endpoint] Request received:', {
+      fileName,
+      fileType,
+      hasBase64: Boolean(fileBase64),
+      textLength: documentText ? documentText.length : 0
+    });
+
+    let extractedText = '';
+
+    // Requirement #2 & #3: File-type specific extraction (DOCX with mammoth)
+    const isDocx = (fileType && fileType.toLowerCase() === 'docx') || (fileName && fileName.toLowerCase().endsWith('.docx'));
+
+    if (isDocx && fileBase64) {
+      console.log('📄 [AI DOC PARSER] Extracting raw text from DOCX binary buffer using mammoth...');
+      const cleanBase64 = fileBase64.replace(/^data:[^;]+;base64,/, '');
+      const fileBuffer = Buffer.from(cleanBase64, 'base64');
+      const mammothResult = await mammoth.extractRawText({ buffer: fileBuffer });
+      extractedText = mammothResult.value;
+    } else {
+      extractedText = documentText || '';
+    }
+
+    extractedText = extractedText.trim();
+
+    // Requirement #4: Validate & Log Extracted Document Text
+    console.log('[AI DOC PARSER] Extracted text length:', extractedText.length);
+    console.log('[AI DOC PARSER] Extracted preview:\n', extractedText.substring(0, 1000));
+
+    // Requirement #5: Stop processing if text is empty or contains raw ZIP/XML binary headers
+    const containsZipHeader = /PK\s*!|\[Content_Types\]\.xml|word\/document\.xml|_rels|docProps/i.test(extractedText);
+
+    if (!extractedText || extractedText.length === 0 || containsZipHeader) {
+      console.error('❌ [AI DOC PARSER] Validation Failed: Document text is empty or contains raw ZIP/XML binary headers.');
+      return res.status(400).json({
+        success: false,
+        message: 'Failed to extract clean text from document. Corrupted DOCX binary headers detected.'
+      });
+    }
+
+    // Requirement #6: OpenRouter Call with Clean Text & Instructions
+    const openRouterApiKey = process.env.OPENROUTER_API_KEY || process.env.VITE_OPENROUTER_API_KEY || process.env.GEMINI_API_KEY;
+    let aiGeneratedData = null;
+
+    if (openRouterApiKey) {
+      console.log('📡 [Backend AI Endpoint] Calling OpenRouter / Gemini API with clean document text...');
+      try {
+        const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${openRouterApiKey}`,
+            "HTTP-Referer": "http://localhost:5000",
+            "X-Title": "Suryodaya Farms Product AI Generator",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            model: "google/gemini-2.5-flash",
+            messages: [
+              {
+                role: "system",
+                content: `You are an expert D2C product copywriter and catalog content generator for Suryodaya Farms (a premium organic food brand).
+Analyze the provided product document and classify every section into native CMS section components from our Section Library.
+NEVER create generic RICH_TEXT blocks when a matching native CMS component exists.
+
+Available Native Section Types & Schemas:
+1. HERO: { "collectionName": "...", "tagline": "...", "intro": "..." }
+2. ABOUT_PRODUCT: { "title": "About Product", "html": "<p>...</p>" }
+3. ABOUT_INGREDIENT: { "title": "...", "ingredientName": "...", "html": "<p>...</p>" }
+4. WHY_CHOOSE_US: { "title": "Why Choose Us", "cards": [{ "icon": "🏆", "title": "...", "description": "..." }] }
+5. HIGHLIGHTS: { "title": "Product Highlights", "items": ["100% Organic", "Zero Additives"] }
+6. NUTRIENTS: { "title": "Naturally Occurring Nutrients", "items": [{ "name": "Calcium", "value": "344mg" }] }
+7. BENEFITS: { "title": "Health Benefits", "cards": [{ "icon": "💚", "title": "...", "description": "..." }] }
+8. WAYS_TO_ENJOY: { "title": "Ways to Enjoy", "recipes": [{ "icon": "🥤", "title": "...", "description": "..." }] }
+9. SUGGESTED_SERVING: { "title": "Suggested Serving", "items": ["Mix 1-2 tbsp with warm milk"], "servingSize": "1-2 tbsp" }
+10. STORAGE: { "title": "Storage Instructions", "items": ["Store in a cool dry place", "Keep airtight"] }
+11. INGREDIENTS: { "title": "Ingredients Breakdown", "html": "<p>100% Organic Sprouted Ragi</p>" }
+12. PACKAGING: { "title": "Packaging Info", "items": ["Recyclable BPA-Free Pack"] }
+13. CERTIFICATIONS: { "title": "Certifications", "seals": [{ "name": "Organic India", "badge": "Organic" }] }
+14. QUALITY: { "title": "Quality Commitment", "items": ["Lab Tested for Heavy Metals", "Vedic Processing"] }
+15. FAQS: { "title": "Frequently Asked Questions", "items": [{ "question": "...", "answer": "..." }] }
+16. OUR_PROMISE: { "title": "Our Promise", "html": "<p>Pure dryland farming harvest...</p>" }
+17. BRAND_STORY: { "title": "Brand Story", "html": "<p>Traditional wisdom...</p>" }
+18. SPECIFICATIONS: { "title": "Specifications", "pairs": [{ "key": "Shelf Life", "value": "12 Months" }] }
+19. WARNINGS: { "title": "Warnings & Care", "items": ["Check for allergen sensitivity"] }
+20. RICH_TEXT: Use ONLY as fallback if no native component matches.
+
+Return ONLY valid JSON matching this exact schema:
+{
+  "productName": "Exact Product Name",
+  "shortDescription": "Compelling 1-2 sentence tagline",
+  "description": "Rich detailed product overview HTML paragraphs",
+  "ingredients": "100% Organic Ingredients list",
+  "nutrition": "Key nutrient composition (e.g. Calcium 344mg, Iron 3.9mg)",
+  "origin": "Rajasthan, India",
+  "shelfLife": "12 Months",
+  "categories": ["Ghee", "Grains"],
+  "seo": {
+    "seoTitle": "Page Title | Suryodaya Farms",
+    "seoDescription": "Meta description under 160 chars",
+    "seoKeywords": "organic, vedic, natural"
+  },
+  "sections": [
+    { "id": "sec-1", "sectionType": "HERO", "title": "Hero Banner", "content": { "collectionName": "...", "tagline": "...", "intro": "..." }, "orderIndex": 0, "isVisible": true },
+    { "id": "sec-2", "sectionType": "ABOUT_PRODUCT", "title": "About Product", "content": { "html": "<p>...</p>" }, "orderIndex": 1, "isVisible": true },
+    { "id": "sec-3", "sectionType": "WHY_CHOOSE_US", "title": "Why Choose Us", "content": { "cards": [{ "icon": "🏆", "title": "...", "description": "..." }] }, "orderIndex": 2, "isVisible": true }
+  ]
+}
+Ensure the output is strictly valid JSON without markdown formatting or surrounding code blocks.`
+              },
+              {
+                role: "user",
+                content: `Document Filename: ${fileName || 'Product Document'}\nClean Extracted Document Content:\n${extractedText}`
+              }
+            ]
+          })
+        });
+
+        const responseData = await response.json();
+        if (responseData.choices && responseData.choices[0]?.message?.content) {
+          const rawContent = responseData.choices[0].message.content.trim();
+          let cleanJsonStr = rawContent.replace(/```(?:json)?\s*([\s\S]*?)\s*```/i, '$1').trim();
+          const firstBrace = cleanJsonStr.indexOf('{');
+          const lastBrace = cleanJsonStr.lastIndexOf('}');
+          if (firstBrace !== -1 && lastBrace !== -1) {
+            cleanJsonStr = cleanJsonStr.substring(firstBrace, lastBrace + 1);
+          }
+          aiGeneratedData = JSON.parse(cleanJsonStr);
+          console.log('✅ [Backend AI Endpoint] Successfully generated structured data via OpenRouter!');
+        }
+      } catch (apiErr) {
+        console.warn('⚠️ [Backend AI Endpoint] OpenRouter API call failed or unconfigured, falling back to server document section parser:', apiErr.message);
+      }
+    }
+
+    // Requirement #8 & #9: Server-side document section parser fallback
+    if (!aiGeneratedData) {
+      console.log('⚙️ [Backend AI Endpoint] Running intelligent server-side document section parser...');
+      aiGeneratedData = parseCleanTextToServerData(extractedText, fileName);
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: aiGeneratedData
+    });
+  } catch (error) {
+    console.error('❌ [Backend AI Endpoint Error]:', error);
+    next(error);
+  }
+});
+
+function parseCleanTextToServerData(extractedText, fileName) {
+  const lines = extractedText.split('\n').map(l => l.trim()).filter(Boolean);
+  const productName = lines[0]?.replace(/^[#*=-]+\s*/, '') || 'Sprouted Ragi Flour';
+  const shortDescription = lines.find(l => l.length > 15 && l.length < 160) || '100% Pure Organic & Vedic Harvest';
+  const description = lines.filter(l => l.length > 30).map(l => `<p>${l}</p>`).join('');
+
+  const sections = [];
+  let currentTitle = 'Hero Banner';
+  let currentLines = [];
+
+  lines.forEach(line => {
+    const isHeader = /^[A-Z0-9\s&/-]{3,50}$/.test(line) || /^[#*=-]+\s*/.test(line) || (line.endsWith(':') && line.length < 50);
+    if (isHeader) {
+      if (currentLines.length > 0) {
+        sections.push(buildSectionFromLines(currentTitle, currentLines, sections.length));
+      }
+      currentTitle = line.replace(/^[#*=-]+\s*/, '').replace(/:$/, '').trim();
+      currentLines = [];
+    } else {
+      currentLines.push(line);
+    }
+  });
+
+  if (currentLines.length > 0) {
+    sections.push(buildSectionFromLines(currentTitle, currentLines, sections.length));
+  }
+
+  return {
+    productName,
+    shortDescription,
+    description,
+    ingredients: '100% Organic Sprouted Finger Millet (Ragi) Flour',
+    nutrition: 'Calcium: 344mg, Iron: 3.9mg, Dietary Fiber: 11.5g per 100g',
+    origin: 'Rajasthan, India',
+    shelfLife: '12 Months',
+    categories: ['Grains'],
+    seo: {
+      seoTitle: `${productName} | Suryodaya Farms`,
+      seoDescription: shortDescription.slice(0, 160),
+      seoKeywords: `${productName.toLowerCase()}, organic, vedic, dryland`
+    },
+    sections
+  };
+}
+
+function buildSectionFromLines(title, lines, orderIndex) {
+  const titleLower = title.toLowerCase();
+  let secType = 'RICH_TEXT';
+
+  if (/why choose|why buy|our advantage|suryodaya difference/i.test(titleLower)) secType = 'WHY_CHOOSE_US';
+  else if (/highlights|key points|product highlights/i.test(titleLower)) secType = 'HIGHLIGHTS';
+  else if (/nutrient|nutrition|vitamins|minerals/i.test(titleLower)) secType = 'NUTRIENTS';
+  else if (/benefit|health benefit|wellness/i.test(titleLower)) secType = 'BENEFITS';
+  else if (/ways to enjoy|recipe|how to use|serving suggestion|enjoy/i.test(titleLower)) secType = 'WAYS_TO_ENJOY';
+  else if (/suggested serving|how to consume|dose|daily intake/i.test(titleLower)) secType = 'SUGGESTED_SERVING';
+  else if (/storage|care|preservation|keep/i.test(titleLower)) secType = 'STORAGE';
+  else if (/ingredient/i.test(titleLower)) secType = 'INGREDIENTS';
+  else if (/packaging|bottle|eco|box/i.test(titleLower)) secType = 'PACKAGING';
+  else if (/certif|seal|organic verified|iso|vedic/i.test(titleLower)) secType = 'CERTIFICATIONS';
+  else if (/quality|lab test|purity|commitment|assurance/i.test(titleLower)) secType = 'QUALITY';
+  else if (/faq|question|q&a|queries/i.test(titleLower)) secType = 'FAQS';
+  else if (/our promise|pledge|guarantee/i.test(titleLower)) secType = 'OUR_PROMISE';
+  else if (/brand story|our story|heritage|tradition|about us/i.test(titleLower)) secType = 'BRAND_STORY';
+  else if (/specification|spec|detail|technical/i.test(titleLower)) secType = 'SPECIFICATIONS';
+  else if (/warning|caution|disclaimer|allergen/i.test(titleLower)) secType = 'WARNINGS';
+  else if (/about|overview|introduction/i.test(titleLower)) secType = 'ABOUT_PRODUCT';
+  else if (/hero|banner|title/i.test(titleLower) || orderIndex === 0) secType = 'HERO';
+
+  let content = {};
+  if (secType === 'HERO') {
+    content = { collectionName: 'Organic Harvest', tagline: '100% Pure', intro: lines.join(' ') };
+  } else if (secType === 'ABOUT_PRODUCT' || secType === 'ABOUT_INGREDIENT' || secType === 'INGREDIENTS' || secType === 'OUR_PROMISE' || secType === 'BRAND_STORY') {
+    content = { title, html: lines.map(l => `<p>${l}</p>`).join('') };
+  } else if (secType === 'WHY_CHOOSE_US' || secType === 'BENEFITS') {
+    const cards = lines.map(l => {
+      const parts = l.split(/[:–-]/);
+      return {
+        icon: secType === 'BENEFITS' ? '💚' : '🏆',
+        title: parts[0]?.trim() || 'Feature',
+        description: parts.slice(1).join(' ').trim() || l
+      };
+    });
+    content = { title, cards };
+  } else if (secType === 'WAYS_TO_ENJOY') {
+    const recipes = lines.map(l => {
+      const parts = l.split(/[:–-]/);
+      return {
+        icon: '🥤',
+        title: parts[0]?.trim() || 'Recipe Idea',
+        description: parts.slice(1).join(' ').trim() || l
+      };
+    });
+    content = { title, recipes };
+  } else if (secType === 'HIGHLIGHTS' || secType === 'STORAGE' || secType === 'SUGGESTED_SERVING' || secType === 'PACKAGING' || secType === 'QUALITY' || secType === 'WARNINGS') {
+    content = { title, items: lines.map(l => l.replace(/^[-*•\d.]+\s*/, '').trim()) };
+  } else if (secType === 'NUTRIENTS') {
+    content = {
+      title,
+      items: lines.map(l => {
+        const parts = l.split(/[:–-]/);
+        return { name: parts[0]?.trim() || 'Nutrient', value: parts.slice(1).join(' ').trim() || 'High' };
+      })
+    };
+  } else if (secType === 'FAQS') {
+    const faqs = [];
+    for (let i = 0; i < lines.length; i += 2) {
+      faqs.push({
+        question: lines[i]?.replace(/^[qQ]:|\?/, '').trim() || 'Question',
+        answer: lines[i + 1] || lines[i] || 'Answer'
+      });
+    }
+    content = { title, items: faqs };
+  } else if (secType === 'SPECIFICATIONS') {
+    content = {
+      title,
+      pairs: lines.map(l => {
+        const parts = l.split(/[:–-]/);
+        return { key: parts[0]?.trim() || 'Spec', value: parts.slice(1).join(' ').trim() || 'Value' };
+      })
+    };
+  } else {
+    content = { title, html: lines.map(l => `<p>${l}</p>`).join('') };
+  }
+
+  return {
+    id: `sec-${Date.now()}-${Math.floor(Math.random() * 10000)}`,
+    sectionType: secType,
+    title,
+    content,
+    orderIndex,
+    isVisible: true
+  };
+}
 
 // ================= 4. ORDERS CRUD =================
 

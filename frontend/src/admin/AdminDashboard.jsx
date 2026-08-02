@@ -47,7 +47,8 @@ import { GiSun } from 'react-icons/gi';
 import api from '../utils/api';
 import ImageCropper from './components/ImageCropper';
 import UnifiedUploader from '../components/UnifiedUploader';
-import RichTextEditor from './components/RichTextEditor';
+import LazyRichTextEditor from './components/LazyRichTextEditor';
+const RichTextEditor = LazyRichTextEditor;
 import ProductsListPage from './products/ProductsListPage';
 import CreateProductPage from './products/CreateProductPage';
 import EditProductPage from './products/EditProductPage';
@@ -320,6 +321,7 @@ export default function AdminDashboard() {
   const [supportSearchQuery, setSupportSearchQuery] = useState('');
   const [supportStatusFilter, setSupportStatusFilter] = useState('ALL');
   const [supportPriorityFilter, setSupportPriorityFilter] = useState('ALL');
+  const [aiGeneratedProductData, setAiGeneratedProductData] = useState(null);
 
   // Orders tab search and filter states for enterprise logistics panel
   const [orderSearchQuery, setOrderSearchQuery] = useState('');
@@ -1752,119 +1754,62 @@ export default function AdminDashboard() {
     setIsAiGenerating(true);
     setAiProgressStep(0);
 
-    const activeSteps = aiFileType === 'pdf' ? AI_PDF_STEPS : (aiFileType === 'docx' ? AI_DOCX_STEPS : AI_IMAGE_STEPS);
-    const maxSteps = activeSteps.length - 1;
-
-    const stepInterval = setInterval(() => {
-      setAiProgressStep((prev) => (prev < maxSteps ? prev + 1 : prev));
-    }, 1000);
+    console.log("🚀 [Frontend AI Generator] Generate button clicked");
+    console.log("📄 Document Name:", aiSelectedFile.name, "File Type:", aiFileType);
 
     try {
-      let userContentPayload = [];
+      let fileBase64 = null;
+      let documentTextContent = aiFilePdfText || '';
+      
+      const isDocxFile = aiFileType === 'docx' || (aiSelectedFile.name && aiSelectedFile.name.toLowerCase().endsWith('.docx'));
 
-      if (aiFileType === 'pdf' || aiFileType === 'docx') {
-        userContentPayload = [
-          {
-            type: "text",
-            text: `Extract and generate complete e-commerce product listing details from this product document / catalogue text:
-
-DOCUMENT FILENAME: ${aiSelectedFile.name}
-DOCUMENT TYPE: ${aiFileType.toUpperCase()}
-EXTRACTED TEXT CONTENT:
-${aiFilePdfText || aiSelectedFile.name}`
-          }
-        ];
-      } else {
-        userContentPayload = [
-          {
-            type: "text",
-            text: "Extract and generate complete e-commerce product catalog details from this product packaging label / photo."
-          },
-          {
-            type: "image_url",
-            image_url: {
-              url: aiFilePreview
-            }
-          }
-        ];
+      if (isDocxFile && aiSelectedFile) {
+        console.log("📄 [Frontend AI Generator] Reading DOCX file as Base64 DataURL for backend mammoth parser...");
+        fileBase64 = await new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onload = (e) => resolve(e.target.result);
+          reader.onerror = () => resolve(null);
+          reader.readAsDataURL(aiSelectedFile);
+        });
+      } else if (!aiFilePdfText && aiSelectedFile) {
+        documentTextContent = await new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onload = (e) => resolve(e.target.result || aiSelectedFile.name);
+          reader.onerror = () => resolve(aiSelectedFile.name);
+          reader.readAsText(aiSelectedFile);
+        });
       }
 
-      const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${import.meta.env.VITE_OPENROUTER_API_KEY || ''}`,
-          "HTTP-Referer": window.location.origin || "http://localhost:5173",
-          "X-Title": "Suryodaya Farms Product AI Generator",
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          model: "google/gemini-2.5-flash",
-          messages: [
-            {
-              role: "system",
-              content: `You are an expert D2C product copywriter and SEO content generator for Suryodaya Farms (a premium organic food and farming brand).
-Analyze the provided product document / packaging photo and generate complete e-commerce product catalog details.
+      console.log("📡 [Frontend AI Generator] Calling backend AI endpoint via API client: POST /admin/products/ai-generate");
+      const payload = {
+        documentText: documentTextContent,
+        fileBase64: fileBase64,
+        fileName: aiSelectedFile.name,
+        fileType: isDocxFile ? 'docx' : aiFileType
+      };
+      console.log("📤 Request Payload:", { fileName: payload.fileName, fileType: payload.fileType, hasBase64: Boolean(fileBase64) });
 
-Return ONLY a raw, unadorned JSON object matching this exact schema:
-{
-  "name": "Product Name",
-  "categoryName": "Category Name (e.g. Ghee, Honey, Wood Pressed Oils, Leaf Powders, Fruit Powders, Spices, Grains)",
-  "shortDescription": "Compelling 1-2 sentence tagline",
-  "description": "Rich detailed product description (2-3 engaging paragraphs)",
-  "ingredients": "100% Pure Organic Ingredients list",
-  "highlights": ["Benefit or feature 1", "Benefit or feature 2", "Benefit or feature 3", "Benefit or feature 4"],
-  "waysToEnjoy": [
-    { "title": "Usage 1", "description": "How to consume or use..." },
-    { "title": "Usage 2", "description": "How to consume or use..." }
-  ],
-  "storageInstructions": ["Store in a cool dry place", "Keep away from direct sunlight"],
-  "weight": "250g",
-  "price": 299,
-  "mrp": 399,
-  "variants": [
-    { "weight": "250", "unit": "g", "mrp": 299, "price": 199, "inventory": 50 },
-    { "weight": "500", "unit": "g", "mrp": 549, "price": 349, "inventory": 50 }
-  ],
-  "seoTitle": "SEO Page Title | Suryodaya Farms",
-  "seoDescription": "Meta description under 160 characters",
-  "nutrients": "Key nutrient composition",
-  "origin": "Rajasthan, India",
-  "shelfLife": "12 Months",
-  "fssaiNumber": "FSSAI License No.",
-  "tags": "organics, natural, traditional, ghee"
-}
-Ensure the output is strictly valid JSON without markdown formatting, code blocks, or surrounding backticks.`
-            },
-            {
-              role: "user",
-              content: userContentPayload
-            }
-          ]
-        })
-      });
+      const resData = await api.post('/admin/products/ai-generate', payload);
+      console.log("📥 Raw Response JSON from API Client:", resData);
 
-      const responseData = await response.json();
-      if (!responseData.choices || responseData.choices.length === 0) {
-        throw new Error(responseData.error?.message || "Invalid response from AI model.");
+      if (!resData || !resData.success) {
+        throw new Error(resData?.message || 'Failed to generate product details from backend AI endpoint.');
       }
 
-      const rawContent = responseData.choices[0].message.content.trim();
-      let cleanJsonStr = rawContent.replace(/```(?:json)?\s*([\s\S]*?)\s*```/i, '$1').trim();
-      const firstBrace = cleanJsonStr.indexOf('{');
-      const lastBrace = cleanJsonStr.lastIndexOf('}');
-      if (firstBrace !== -1 && lastBrace !== -1) {
-        cleanJsonStr = cleanJsonStr.substring(firstBrace, lastBrace + 1);
-      }
-
-      const parsed = JSON.parse(cleanJsonStr);
+      const aiData = resData.data;
+      console.log("🧩 [Frontend AI Generator] Parsed AI Data from Backend:", aiData);
+      setAiGeneratedProductData({ ...aiData, timestamp: Date.now() });
 
       setProductForm(prev => {
+        console.log("⚛️ [Frontend AI Generator] Updating React state (productForm) with backend AI data...");
+        const generatedName = aiData.productName || aiData.name || prev.name || 'Organic Product';
+        const autoSku = prev.sku || `SURY-${generatedName.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8)}-${Math.floor(1000 + Math.random() * 9000)}`;
+
         let matchedCatIds = prev.categoryIds || [];
         let matchedCatId = prev.categoryId || '';
-        if (parsed.categoryName && categories && categories.length > 0) {
+        if (aiData.categories && Array.isArray(aiData.categories) && aiData.categories.length > 0 && categories) {
           const catMatch = categories.find(c =>
-            c.name.toLowerCase().includes(parsed.categoryName.toLowerCase()) ||
-            parsed.categoryName.toLowerCase().includes(c.name.toLowerCase())
+            aiData.categories.some(catName => c.name.toLowerCase().includes(catName.toLowerCase()) || catName.toLowerCase().includes(c.name.toLowerCase()))
           );
           if (catMatch) {
             matchedCatIds = [catMatch.id];
@@ -1872,92 +1817,37 @@ Ensure the output is strictly valid JSON without markdown formatting, code block
           }
         }
 
-        const generatedName = parsed.name || prev.name || 'Organic Product';
-        const autoSku = prev.sku || `SURY-${generatedName.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8)}-${Math.floor(1000 + Math.random() * 9000)}`;
-
-        let generatedVariants = [];
-        if (parsed.variants && Array.isArray(parsed.variants) && parsed.variants.length > 0) {
-          generatedVariants = parsed.variants.map((v, i) => {
-            const w = v.weight ? String(v.weight).replace(/[^0-9.]/g, '') : '250';
-            const u = v.unit || 'g';
-            const cleanName = generatedName.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8);
-            return {
-              id: '',
-              weight: w,
-              unit: u,
-              price: v.price ? v.price.toString() : (parsed.price ? parsed.price.toString() : '199'),
-              mrp: v.mrp ? v.mrp.toString() : (parsed.mrp ? parsed.mrp.toString() : ''),
-              inventory: v.inventory ? v.inventory.toString() : '50',
-              sku: `SURY-${cleanName}-${w}${u.toUpperCase()}`,
-              isExpanded: i === 0
-            };
-          });
-        } else {
-          const rawWeight = parsed.weight || '250g';
-          const numWeight = rawWeight.replace(/[^0-9.]/g, '') || '250';
-          const unitWeight = rawWeight.match(/(g|kg|ml|l|pcs)/i)?.[0] || 'g';
-          const cleanName = generatedName.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8);
-          generatedVariants = [
-            {
-              id: '',
-              weight: numWeight,
-              unit: unitWeight,
-              price: parsed.price ? parsed.price.toString() : '199',
-              mrp: parsed.mrp ? parsed.mrp.toString() : '',
-              inventory: '50',
-              sku: `SURY-${cleanName}-${numWeight}${unitWeight.toUpperCase()}`,
-              isExpanded: true
-            }
-          ];
-        }
-
-        const primaryVariant = generatedVariants[0] || {};
-
-        return {
+        const updatedState = {
           ...prev,
           name: generatedName,
-          sku: primaryVariant.sku || autoSku,
+          sku: autoSku,
           categoryId: matchedCatId,
           categoryIds: matchedCatIds,
-          shortDescription: parsed.shortDescription || prev.shortDescription,
-          description: parsed.description || prev.description,
-          price: primaryVariant.price || (parsed.price ? parsed.price.toString() : prev.price),
-          mrp: primaryVariant.mrp || (parsed.mrp ? parsed.mrp.toString() : prev.mrp),
-          weight: `${primaryVariant.weight || '250'}${primaryVariant.unit || 'g'}`,
-          variants: generatedVariants,
-          seoTitle: parsed.seoTitle || prev.seoTitle,
-          seoDescription: parsed.seoDescription || prev.seoDescription,
-          seoKeywords: parsed.tags || prev.seoKeywords,
-          origin: parsed.origin || prev.origin,
-          shelfLife: parsed.shelfLife || prev.shelfLife,
-          nutrients: parsed.nutrients || prev.nutrients,
-          productContent: {
-            ...(prev.productContent || {}),
-            about: parsed.description || prev.productContent?.about,
-            ingredients: parsed.ingredients || prev.productContent?.ingredients,
-            highlights: parsed.highlights && parsed.highlights.length > 0 ? parsed.highlights : (prev.productContent?.highlights || []),
-            waysToEnjoy: {
-              title: 'Ways To Enjoy',
-              items: parsed.waysToEnjoy && parsed.waysToEnjoy.length > 0 ? parsed.waysToEnjoy : (prev.productContent?.waysToEnjoy?.items || [])
-            },
-            storageInstructions: parsed.storageInstructions && parsed.storageInstructions.length > 0 ? parsed.storageInstructions : (prev.productContent?.storageInstructions || [])
-          }
+          shortDescription: aiData.shortDescription || prev.shortDescription,
+          description: aiData.description || prev.description,
+          detailedDescription: aiData.description || prev.detailedDescription,
+          ingredients: aiData.ingredients || prev.ingredients,
+          nutrients: aiData.nutrition || prev.nutrients,
+          origin: aiData.origin || prev.origin,
+          shelfLife: aiData.shelfLife || prev.shelfLife,
+          seoTitle: aiData.seo?.seoTitle || prev.seoTitle,
+          seoDescription: aiData.seo?.seoDescription || prev.seoDescription,
+          seoKeywords: aiData.seo?.seoKeywords || prev.seoKeywords,
+          contentSections: (aiData.sections && aiData.sections.length > 0) ? aiData.sections : (prev.contentSections || [])
         };
+
+        console.log("✅ [Frontend AI Generator] Updated Form State Object:", updatedState);
+        return updatedState;
       });
 
-      setAiProgressStep(maxSteps);
-      setTimeout(() => {
-        clearInterval(stepInterval);
-        setIsAiGenerating(false);
-        setShowAiModal(false);
-        useFeedbackStore.getState().showToast('✨ Product details generated successfully! Review the populated fields below.', 'success');
-      }, 400);
+      setIsAiGenerating(false);
+      setShowAiModal(false);
+      useFeedbackStore.getState().showToast('✨ Product details & CMS sections generated successfully! Form fields are populated below.', 'success');
 
     } catch (err) {
-      console.error('AI Generation error:', err);
-      clearInterval(stepInterval);
+      console.error("❌ [Frontend AI Generator Error]:", err);
       setIsAiGenerating(false);
-      useFeedbackStore.getState().showToast(`❌ AI Analysis failed: ${err.message || 'Could not parse document.'}`, 'error');
+      useFeedbackStore.getState().showToast(`AI Generation Error: ${err.message}`, 'error');
     }
   };
 
@@ -3407,28 +3297,49 @@ Ensure confidence scores are numbers between 0 and 100. Always reply ONLY with r
 
   // ================= CRUD TRIGGERS =================
 
-  const handleSaveProduct = async (e) => {
-    e.preventDefault();
+  const handleSaveProduct = async (eOrData) => {
+    if (eOrData && typeof eOrData.preventDefault === 'function') {
+      eOrData.preventDefault();
+    }
+    const dataToSave = (eOrData && typeof eOrData === 'object' && typeof eOrData.preventDefault !== 'function') ? eOrData : productForm;
+
     const errors = {};
-    if (!productForm.name) errors.name = 'Product name is required';
-    if (!productForm.price || isNaN(productForm.price)) errors.price = 'Valid product price is required';
-    if (productForm.inventory === undefined || productForm.inventory === '') errors.inventory = 'Stock quantity is required';
-    if (!productForm.categoryIds || productForm.categoryIds.length === 0) errors.categoryIds = 'Please select at least one category';
-    if (!productForm.images?.[0] && !productForm.image) errors.images = 'Main product image is required';
+    if (!dataToSave.name) errors.name = 'Product name is required';
+    if (!dataToSave.price || isNaN(dataToSave.price)) {
+      if (dataToSave.variants && dataToSave.variants.length > 0 && dataToSave.variants[0].price && !isNaN(dataToSave.variants[0].price)) {
+        dataToSave.price = dataToSave.variants[0].price;
+      } else {
+        errors.price = 'Valid product price is required';
+      }
+    }
+    if (dataToSave.inventory === undefined || dataToSave.inventory === '') {
+      if (dataToSave.variants && dataToSave.variants.length > 0 && dataToSave.variants[0].inventory !== undefined) {
+        dataToSave.inventory = dataToSave.variants[0].inventory;
+      } else {
+        dataToSave.inventory = 50;
+      }
+    }
+    if (!dataToSave.categoryIds || dataToSave.categoryIds.length === 0) {
+      if (dataToSave.categoryId) {
+        dataToSave.categoryIds = [dataToSave.categoryId];
+      }
+    }
 
     if (Object.keys(errors).length > 0) {
       setProductFormErrors(errors);
-      return;
+      const firstError = Object.values(errors)[0];
+      useFeedbackStore.getState().showToast(`Validation Error: ${firstError}`, 'error');
+      throw new Error(firstError);
     }
     setProductFormErrors({});
 
-    const isUpdating = !!productForm.id;
-    useFeedbackStore.getState().showLoader(isUpdating ? 'Saving product...' : 'Saving product...');
+    const isUpdating = !!dataToSave.id;
+    useFeedbackStore.getState().showLoader(isUpdating ? 'Updating product...' : 'Publishing product...');
     try {
-      if (productForm.id) {
-        await api.put(`/admin/products/${productForm.id}`, productForm);
+      if (dataToSave.id) {
+        await api.put(`/admin/products/${dataToSave.id}`, dataToSave);
       } else {
-        await api.post('/admin/products', productForm);
+        await api.post('/admin/products', dataToSave);
       }
       setShowProductModal(false);
       resetProductForm();
@@ -3439,6 +3350,7 @@ Ensure confidence scores are numbers between 0 and 100. Always reply ONLY with r
     } catch (err) {
       useFeedbackStore.getState().hideLoader();
       useFeedbackStore.getState().showToast(`❌ Failed to save product: ${err.message}`, 'error');
+      throw err;
     }
   };
 
@@ -5594,6 +5506,8 @@ Ensure confidence scores are numbers between 0 and 100. Always reply ONLY with r
                 setAiFilePdfText={setAiFilePdfText}
                 setIsAiGenerating={setIsAiGenerating}
                 setAiProgressStep={setAiProgressStep}
+                aiGeneratedProductData={aiGeneratedProductData}
+                onAiGeneratedProductData={setAiGeneratedProductData}
               />
             ) : location.pathname.includes('/edit') ? (
               <EditProductPage
@@ -5605,6 +5519,8 @@ Ensure confidence scores are numbers between 0 and 100. Always reply ONLY with r
                 setAiFilePdfText={setAiFilePdfText}
                 setIsAiGenerating={setIsAiGenerating}
                 setAiProgressStep={setAiProgressStep}
+                aiGeneratedProductData={aiGeneratedProductData}
+                onAiGeneratedProductData={setAiGeneratedProductData}
               />
             ) : (
               <ProductsListPage

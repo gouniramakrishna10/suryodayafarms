@@ -23,7 +23,71 @@ export const useAuthStore = create((set, get) => ({
   setCheckoutResumeRedirect: (redirect) => set({ checkoutResumeRedirect: redirect }),
   clearError: () => set({ error: null }),
 
-  // 1. REGISTER NEW USER
+  // 1. FAST2SMS SEND OTP
+  sendOtp: async (mobile) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await api.post('/auth/send-otp', { mobile });
+      set({ isLoading: false });
+      return response;
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
+      throw error;
+    }
+  },
+
+  // 2. FAST2SMS VERIFY OTP & SET SESSION
+  verifyOtp: async (mobile, otp) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await api.post('/auth/verify-otp', { mobile, otp });
+      if (response && (response.return === true || response.success) && response.user) {
+        set({
+          user: response.user,
+          isAuthenticated: true,
+          isLoading: false,
+          isAuthChecked: true
+        });
+      }
+      return response;
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
+      throw error;
+    }
+  },
+
+  // 3. FAST2SMS RESEND OTP
+  resendOtp: async (mobile) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await api.post('/auth/resend-otp', { mobile });
+      set({ isLoading: false });
+      return response;
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
+      throw error;
+    }
+  },
+
+  // 4. UPDATE USER PROFILE (Name, Email, Gender, DOB)
+  updateProfile: async (profileData) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await api.put('/auth/profile', profileData);
+      if (response && response.success && response.user) {
+        set((state) => ({
+          user: { ...state.user, ...response.user },
+          isLoading: false
+        }));
+      }
+      return response;
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
+      throw error;
+    }
+  },
+
+  // 5. REGISTER NEW USER (LEGACY SUPPORT)
   register: async (name, email, password) => {
     set({ isLoading: true, error: null });
     useFeedbackStore.getState().showLoader('Creating your account...');
@@ -51,7 +115,7 @@ export const useAuthStore = create((set, get) => ({
     }
   },
 
-  // 2. LOGIN USER
+  // 6. LOGIN USER (LEGACY SUPPORT)
   login: async (email, password) => {
     set({ isLoading: true, error: null });
     useFeedbackStore.getState().showLoader('Logging in...');
@@ -79,7 +143,7 @@ export const useAuthStore = create((set, get) => ({
     }
   },
 
-  // 3. CHECK SESSIONS
+  // 7. CHECK SESSIONS
   checkAuth: async () => {
     set({ isLoading: true, error: null });
     try {
@@ -109,7 +173,7 @@ export const useAuthStore = create((set, get) => ({
     }
   },
 
-  // 4. LOGOUT USER
+  // 8. LOGOUT USER
   logout: async () => {
     set({ isLoading: true, error: null });
     useFeedbackStore.getState().showLoader('Logging out...');

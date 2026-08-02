@@ -12,6 +12,7 @@ import api from '../utils/api';
 
 import { getOptimizedImageUrl, getImageSrcSet, resolveImageUrl, handleImageError, DEFAULT_FALLBACK_IMAGE } from '../utils/imageOptimizer';
 import DOMPurify from 'dompurify';
+import DynamicSectionRenderer from '../components/DynamicSectionRenderer';
 
 // Simple, high-quality, organic confetti effect
 const triggerConfetti = (canvasEl) => {
@@ -619,14 +620,34 @@ export default function ProductDetails() {
               {/* ===== MODULAR CONTENT SECTIONS ===== */}
               <div className="space-y-6">
 
+                {/* DYNAMIC CMS CONTENT SECTIONS */}
+                <DynamicSectionRenderer sections={product.contentSections} />
+
+                {/* DETAILED PRODUCT DESCRIPTION (Fallback if no sections defined) */}
+                {Boolean(product.detailedDescription && product.detailedDescription.trim() && (!product.contentSections || product.contentSections.length === 0)) && (
+                  <div className="bg-white border border-[#EDE7D9] rounded-[28px] p-6 sm:p-8 md:p-10 shadow-xs max-w-[900px] mx-auto">
+                    <div className="flex items-center gap-3 mb-6 pb-4 border-b border-[#EDE7D9]">
+                      <span className="text-2xl">✨</span>
+                      <div>
+                        <span className="text-[10px] font-extrabold tracking-widest text-[#C68A2B] uppercase block">Deep Dive & Specifications</span>
+                        <h2 className="font-serif text-xl sm:text-2xl font-bold text-[#2F3B0C]">Detailed Product Description</h2>
+                      </div>
+                    </div>
+                    <div 
+                      className="detailed-product-description prose max-w-none text-left select-text"
+                      dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product.detailedDescription) }}
+                    />
+                  </div>
+                )}
+
                 {/* SECTION 1: Product Description */}
                 {(product.productContent?.about || product.description) && (
-                  <div className="bg-white border border-[#EDE7D9] rounded-[28px] p-6 sm:p-8 shadow-xs">
+                  <div className="bg-white border border-[#EDE7D9] rounded-[28px] p-6 sm:p-8 shadow-xs max-w-[900px] mx-auto">
                     <div className="flex items-center gap-3 mb-5 pb-4 border-b border-[#EDE7D9]">
                       <span className="text-2xl">📄</span>
                       <div>
                         <span className="text-[10px] font-extrabold tracking-widest text-[#C68A2B] uppercase block">Product Story</span>
-                        <h2 className="font-serif text-xl font-bold text-[#2F3B0C]">Product Description</h2>
+                        <h2 className="font-serif text-xl font-bold text-[#2F3B0C]">Product Overview</h2>
                       </div>
                     </div>
                     {product.shortDescription && (

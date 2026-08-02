@@ -41,14 +41,16 @@ enum DiscountType {
 }
 
 model User {
-  id           String         @id @default(cuid())
-  name         String?
-  email        String         @unique
-  passwordHash String
-  role         Role           @default(CUSTOMER)
-  avatarUrl    String?
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
+  id            String         @id @default(cuid())
+  name          String?
+  email         String?        @unique
+  mobile        String?        @unique
+  passwordHash  String?
+  walletBalance Float          @default(0)
+  role          Role           @default(CUSTOMER)
+  avatarUrl     String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
 
   addresses         Address[]
   orders            Order[]
@@ -59,6 +61,17 @@ model User {
   sessions          Session[]
   supportTickets    SupportTicket[]
   supportMessages   SupportMessage[]
+}
+
+model OtpVerification {
+  id          String   @id @default(uuid())
+  mobile      String   @unique
+  hashedOtp   String
+  attempts    Int      @default(0)
+  resendCount Int      @default(0)
+  expiresAt   DateTime
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Session {
@@ -112,6 +125,7 @@ model Product {
   categories     Category[]
   description    String           // Acts as long description
   shortDescription String?
+  detailedDescription String?        @db.Text
   brand          String?          @default("Suryodaya Farms")
   productType    String?
   price          Float            // Acts as active Sale Price
@@ -151,6 +165,20 @@ model Product {
   wishlistItems  WishlistItem[]
   orderItems     OrderItem[]
   reviews        Review[]
+  contentSections ProductContent[]
+}
+
+model ProductContent {
+  id          String   @id @default(uuid())
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  sectionType String
+  title       String?
+  content     Json
+  orderIndex  Int      @default(0)
+  isVisible   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model ProductImage {

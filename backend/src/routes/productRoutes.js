@@ -151,11 +151,17 @@ router.get('/:slug', async (req, res, next) => {
   const { slug } = req.params;
 
   try {
-    const product = await prisma.product.findUnique({
-      where: { slug },
+    const product = await prisma.product.findFirst({
+      where: {
+        OR: [
+          { slug: slug },
+          { id: slug }
+        ]
+      },
       include: {
         variants: true,
         categories: true,
+        contentSections: { orderBy: { orderIndex: 'asc' } },
         reviews: {
           where: { status: 'APPROVED' },
           include: {

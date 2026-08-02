@@ -73,8 +73,25 @@ export const mapProduct = (product) => {
     };
   }
 
+  let contentSections = Array.isArray(product.contentSections) ? [...product.contentSections] : [];
+
+  if (contentSections.length === 0) {
+    if (product.detailedDescription && product.detailedDescription.trim()) {
+      contentSections.push({
+        id: `legacy-detailed-${product.id}`,
+        productId: product.id,
+        sectionType: 'RICH_TEXT',
+        title: 'Detailed Product Description',
+        content: { html: product.detailedDescription },
+        orderIndex: 0,
+        isVisible: true
+      });
+    }
+  }
+
   return {
     ...product,
+    contentSections,
     productContent,
     images: mappedImages,
     image: mainImage,

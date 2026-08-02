@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import UnifiedUploader from '../../components/UnifiedUploader';
 import ImageCropper from '../components/ImageCropper';
-import RichTextEditor from '../components/RichTextEditor';
+import LazyRichTextEditor from '../components/LazyRichTextEditor';
+import ProductContentBuilder from '../components/ProductContentBuilder';
 import { useFeedbackStore } from '../../store/useFeedbackStore';
 
 export default function ProductForm({
@@ -18,6 +19,12 @@ export default function ProductForm({
   const [categorySearchQuery, setCategorySearchQuery] = useState('');
   const [previewDeviceMode, setPreviewDeviceMode] = useState('desktop');
   const [cropTarget, setCropTarget] = useState(null);
+
+  console.log("🎨 [ProductForm Render] Rendering Product Name:", productForm.name);
+  console.log("🎨 [ProductForm Render] Rendering Short Description:", productForm.shortDescription);
+  console.log("🎨 [ProductForm Render] Rendering Ingredients:", productForm.ingredients || productForm.productContent?.ingredients);
+  console.log("🎨 [ProductForm Render] Rendering Nutrients:", productForm.nutrients || productForm.nutrition);
+  console.log("🎨 [ProductForm Render] Rendering Content Sections Count:", (productForm.contentSections || []).length);
 
   // Variant Helper Functions
   const handleAddVariant = () => {
@@ -141,8 +148,9 @@ export default function ProductForm({
             { id: 'pricing', label: 'Product Variants', step: '2' },
             { id: 'media', label: 'Media & Gallery', step: '3' },
             { id: 'details', label: 'Product Details', step: '4' },
-            { id: 'seo', label: 'SEO Settings', step: '5' },
-            { id: 'preview', label: 'Preview & Publish', step: '6' }
+            { id: 'content_builder', label: 'Product Content', step: '5' },
+            { id: 'seo', label: 'SEO Settings', step: '6' },
+            { id: 'preview', label: 'Preview & Publish', step: '7' }
           ].map((s) => {
             const isActive = productModalTab === s.id;
             return (
@@ -541,17 +549,39 @@ export default function ProductForm({
         {productModalTab === 'details' && (
           <div className="space-y-6 animate-fade-in text-left">
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-stone-700">Detailed Description (About Product)</label>
-              <RichTextEditor
-                value={productForm.productContent?.about || productForm.description || ''}
-                onChange={(val) => {
+              <label className="text-xs font-semibold text-stone-700">Normal Description / Product Summary</label>
+              <textarea
+                placeholder="Standard product description summary..."
+                value={productForm.description || ''}
+                onChange={(e) => {
+                  const val = e.target.value;
                   setProductForm(prev => ({
                     ...prev,
                     description: val,
                     productContent: { ...(prev.productContent || {}), about: val }
                   }));
                 }}
-                placeholder="Write rich product description..."
+                className="w-full bg-white border border-stone-300 rounded-xl py-3 px-4 text-stone-900 text-xs h-24 focus:outline-none focus:border-[#4E641A] resize-none"
+              />
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-bold text-stone-850 uppercase tracking-wider flex items-center gap-1.5">
+                  <span className="text-base">✨</span>
+                  <span>Detailed Product Description</span>
+                </label>
+                <span className="text-[10px] text-stone-400 font-medium">Rich HTML content for product details page</span>
+              </div>
+              <LazyRichTextEditor
+                value={productForm.detailedDescription || ''}
+                onChange={(val) => {
+                  setProductForm(prev => ({
+                    ...prev,
+                    detailedDescription: val
+                  }));
+                }}
+                placeholder="Craft a rich, formatted description with headings, lists, tables, images, and FAQs..."
               />
             </div>
 
@@ -560,9 +590,10 @@ export default function ProductForm({
               <input
                 type="text"
                 placeholder="e.g. 100% Organic Raw Moringa Leaves"
-                value={productForm.productContent?.ingredients || ''}
+                value={productForm.ingredients || productForm.productContent?.ingredients || ''}
                 onChange={(e) => setProductForm(prev => ({
                   ...prev,
+                  ingredients: e.target.value,
                   productContent: { ...(prev.productContent || {}), ingredients: e.target.value }
                 }))}
                 className="w-full bg-white border border-stone-300 rounded-xl py-2.5 px-3.5 text-xs text-stone-900 focus:outline-none focus:border-[#4E641A]"
@@ -575,8 +606,8 @@ export default function ProductForm({
                 <input
                   type="text"
                   placeholder="Energy: 350kcal, Protein: 25g..."
-                  value={productForm.nutrients || ''}
-                  onChange={(e) => setProductForm({ ...productForm, nutrients: e.target.value })}
+                  value={productForm.nutrients || productForm.nutrition || ''}
+                  onChange={(e) => setProductForm({ ...productForm, nutrients: e.target.value, nutrition: e.target.value })}
                   className="w-full bg-white border border-stone-300 rounded-xl py-2.5 px-3.5 text-xs text-stone-900 focus:outline-none focus:border-[#4E641A]"
                 />
               </div>
@@ -611,6 +642,71 @@ export default function ProductForm({
                 className="border border-stone-300 text-stone-700 px-5 py-2.5 rounded-xl font-semibold text-xs hover:bg-stone-50 transition cursor-pointer"
               >
                 ← Back
+              </button>
+              <button
+                type="button"
+                onClick={() => setProductModalTab('content_builder')}
+                className="bg-[#4E641A] hover:bg-[#2F3B0C] text-white px-6 py-2.5 rounded-xl font-bold text-xs transition cursor-pointer"
+              >
+                Continue to Product Content →
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* STEP 5: PRODUCT CONTENT (CMS BUILDER) */}
+        {productModalTab === 'content_builder' && (
+          <div className="animate-fade-in text-left -mx-6 md:-mx-8 -my-6 md:-my-8 p-3 sm:p-5 bg-[#FAF8F5] overflow-hidden">
+            <ProductContentBuilder
+              sections={productForm.contentSections || []}
+              onChange={(updatedSections) => {
+                setProductForm(prev => ({
+                  ...prev,
+                  contentSections: updatedSections
+                }));
+              }}
+              onProductFieldsGenerated={(mapped) => {
+                if (!mapped) return;
+                console.log('STEP 6 & 7: Setting Product Form State Fields:');
+                console.log('  Setting Product Name:', mapped.productName);
+                console.log('  Setting Short Description:', mapped.shortDescription);
+                console.log('  Setting Detailed Description:', mapped.detailedDescription);
+                console.log('  Setting Ingredients:', mapped.ingredients);
+                console.log('  Setting Nutrition:', mapped.nutrition);
+                console.log('  Setting Origin:', mapped.origin);
+                console.log('  Setting Shelf Life:', mapped.shelfLife);
+
+                setProductForm(prev => {
+                  const updatedForm = {
+                    ...prev,
+                    name: mapped.productName || prev.name,
+                    shortDescription: mapped.shortDescription || prev.shortDescription,
+                    detailedDescription: mapped.detailedDescription || prev.detailedDescription,
+                    description: mapped.detailedDescription || prev.description,
+                    ingredients: mapped.ingredients || prev.ingredients,
+                    nutrients: mapped.nutrition || prev.nutrients,
+                    origin: mapped.origin || prev.origin,
+                    shelfLife: mapped.shelfLife || prev.shelfLife,
+                    categoryIds: (mapped.categories && mapped.categories.length > 0) ? mapped.categories : prev.categoryIds,
+                    categoryId: (mapped.categories && mapped.categories[0]) ? mapped.categories[0] : prev.categoryId,
+                    seoTitle: mapped.seo?.seoTitle || prev.seoTitle,
+                    seoDescription: mapped.seo?.seoDescription || prev.seoDescription,
+                    seoKeywords: mapped.seo?.seoKeywords || prev.seoKeywords
+                  };
+                  console.log('STEP 7: Log Final Form Object:', updatedForm);
+                  return updatedForm;
+                });
+              }}
+              onBack={() => setProductModalTab('details')}
+              onSave={() => setProductModalTab('seo')}
+            />
+            <div className="flex justify-between pt-4 border-t border-stone-200">
+              <button
+                type="button"
+                onClick={() => setProductModalTab('details')}
+                className="border border-stone-300 text-stone-700 px-5 py-2.5 rounded-xl font-semibold text-xs hover:bg-stone-50 transition cursor-pointer"
+              >
+                ← Back to Details
               </button>
               <button
                 type="button"

@@ -93,6 +93,7 @@ app.get('/health', (req, res) => {
 
 // --- REST Route Integrations ---
 import authRoutes from './routes/authRoutes.js';
+import fast2smsAuthRoutes from './routes/auth.routes.js';
 import productRoutes from './routes/productRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
@@ -100,7 +101,9 @@ import publicRoutes from './routes/publicRoutes.js';
 import supportRoutes from './routes/supportRoutes.js';
 import shiprocketRoutes from './routes/shiprocketRoutes.js';
 
-app.use('/api/auth', authRoutes);         // Sign-in, Register, Profile, Saved Addresses
+app.use('/api/auth', authRoutes);            // Sign-in, Register, Profile, Saved Addresses
+app.use('/api/auth', fast2smsAuthRoutes);     // Fast2SMS OTP Auth & WhatsApp endpoints (/api/auth/send-otp, /api/auth/verify-otp, etc.)
+app.use('/', fast2smsAuthRoutes);            // Fast2SMS Direct Endpoints (/dev/otp/send, /dev/otp/verify, /dev/otp/resend, /dev/whatsapp, etc.)
 app.use('/api/products', productRoutes);     // Products catalog, reviews, category lists
 app.use('/api/categories', productRoutes);   // Double-bind categories fetching
 app.use('/api/cart', orderRoutes);           // Cart item CRUD
