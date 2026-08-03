@@ -1,5 +1,6 @@
 import Razorpay from 'razorpay';
 import { PrismaClient } from '@prisma/client';
+import whatsappService from './whatsapp.service.js';
 
 const prisma = new PrismaClient();
 
@@ -161,6 +162,15 @@ export const syncOrderRefundStatus = async (orderOrId) => {
         data: updatedData
       });
       console.log(`[RAZORPAY_REFUND_SYNC] Order #${dbOrder.orderNumber} refund status updated to ${updatedData.refundStatus}!`);
+
+      if (updatedData.refundStatus === 'COMPLETED') {
+        whatsappService.sendRefundCompleted(
+          updatedOrder,
+          updatedOrder.refundAmount || updatedOrder.totalAmount,
+          rzpRefund.id
+        ).catch(err => console.error('[WhatsApp Service] Refund Completed notification error:', err.message));
+      }
+
       return updatedOrder;
     } else {
       return await prisma.order.update({

@@ -2,6 +2,7 @@ import { shiprocketClient } from './shiprocket.client.js';
 import { shiprocketLogger } from './shiprocket.logger.js';
 import { parseShiprocketDelivery } from './serviceability.service.js';
 import { PrismaClient } from '@prisma/client';
+import whatsappService from '../whatsapp.service.js';
 
 const prisma = new PrismaClient();
 
@@ -132,8 +133,18 @@ export const syncService = {
           shiprocketData: trackRes,
           trackingHistory: updatedHistory,
           updatedAt: new Date()
+        },
+        include: {
+          orderItems: {
+            include: { product: true }
+          }
         }
       });
+
+      if (mappedOrderStatus === 'DELIVERED' && order.status !== 'DELIVERED') {
+        whatsappService.sendOrderDelivered(updatedOrder)
+          .catch(err => shiprocketLogger.error('SYNC_SERVICE', `WhatsApp Order Delivered error: ${err.message}`));
+      }
 
       shiprocketLogger.info('SYNC_SERVICE', `Synced Order ${order.orderNumber} successfully! Status: ${newStatus} (${hasChanged ? 'Updated' : 'No changes'}).`);
 

@@ -3,6 +3,7 @@ import { shiprocketLogger } from './shiprocket.logger.js';
 import { pickupService } from './pickup.service.js';
 import { processRazorpayRefund } from '../razorpay.service.js';
 import { PrismaClient } from '@prisma/client';
+import whatsappService from '../whatsapp.service.js';
 
 const prisma = new PrismaClient();
 
@@ -255,14 +256,31 @@ export const ordersService = {
       throw new Error('Order record not found.');
     }
 
-    const normShipStatus = (dbOrder.shiprocketStatus || dbOrder.status || '').toUpperCase().trim();
+    const normOrderStatus = (dbOrder.status || '').toUpperCase().trim();
+    const normShipStatus = (dbOrder.shiprocketStatus || '').toUpperCase().trim();
 
-    if (normShipStatus === 'CANCELLED' || normShipStatus === 'CANCELED') {
-      throw new Error('Order is already cancelled.');
+    if (normOrderStatus === 'CANCELLED' || normShipStatus === 'CANCELLED' || normShipStatus === 'CANCELED') {
+      const err = new Error('Order is already cancelled.');
+      err.statusCode = 400;
+      throw err;
     }
 
-    if (['PICKED UP', 'PICKED_UP', 'IN_TRANSIT', 'OUT_FOR_DELIVERY', 'DELIVERED'].includes(normShipStatus)) {
-      throw new Error('Shipment already picked up. Cancellation unavailable.');
+    const NON_CANCELLABLE_STATUSES = [
+      'SHIPPED',
+      'DISPATCHED',
+      'PICKED UP',
+      'PICKED_UP',
+      'IN_TRANSIT',
+      'IN TRANSIT',
+      'OUT_FOR_DELIVERY',
+      'OUT FOR DELIVERY',
+      'DELIVERED'
+    ];
+
+    if (NON_CANCELLABLE_STATUSES.includes(normOrderStatus) || NON_CANCELLABLE_STATUSES.includes(normShipStatus)) {
+      const err = new Error('Order has already been shipped and cannot be cancelled.');
+      err.statusCode = 400;
+      throw err;
     }
 
     let shiprocketResult = null;
@@ -279,18 +297,23 @@ export const ordersService = {
       }
     }
 
-    // 2. Initial DB state update: Order & Shipment marked CANCELLED
+    // 2. Initial DB state update: Order & Shipment marked CANCELLED with complete audit log
     const existingHistory = Array.isArray(dbOrder.trackingHistory) ? dbOrder.trackingHistory : [];
     const cancelTimestamp = new Date().toISOString();
+    const isPrepaid = dbOrder.paymentStatus === 'COMPLETED' || dbOrder.paymentStatus === 'PAID' || !!dbOrder.razorpayPaymentId;
+    const initialRefundStatus = isPrepaid ? 'INITIATED' : 'NONE';
 
     const cancelLog = {
       status: 'CANCELLED',
-      location: 'System',
+      location: 'System Audit',
       timestamp: cancelTimestamp,
-      activity: `✔ ${cancelledBy === 'ADMIN' ? 'Admin' : 'Customer'} cancelled order. Shipment cancelled in Shiprocket.`
+      orderId: dbOrder.id,
+      orderNumber: dbOrder.orderNumber,
+      cancelledBy: cancelledBy === 'ADMIN' ? 'Admin' : 'Customer',
+      previousStatus: dbOrder.status,
+      refundStatus: initialRefundStatus,
+      activity: `✔ ${cancelledBy === 'ADMIN' ? 'Admin' : 'Customer'} cancelled order (Prev Status: ${dbOrder.status}). Shipment cancelled in Shiprocket.`
     };
-
-    const isPrepaid = dbOrder.paymentStatus === 'COMPLETED' || dbOrder.paymentStatus === 'PAID' || !!dbOrder.razorpayPaymentId;
 
     let orderAfterCancel = await prisma.order.update({
       where: { id: orderId },
@@ -350,6 +373,10 @@ export const ordersService = {
 
         shiprocketLogger.info('ORDERS_SERVICE', `Automated Razorpay refund INITIATED & PROCESSING for Order #${dbOrder.orderNumber} (Refund ID: ${refundResult.id}).`);
 
+        // Trigger WhatsApp Refund Initiated Notification
+        whatsappService.sendRefundInitiated(orderAfterCancel, dbOrder.totalAmount)
+          .catch(err => shiprocketLogger.error('ORDERS_SERVICE', `WhatsApp Refund Initiated error: ${err.message}`));
+
       } catch (err) {
         refundError = err.message || 'Razorpay Refund API error';
         shiprocketLogger.error('ORDERS_SERVICE', `Automated Razorpay refund FAILED for Order #${dbOrder.orderNumber}: ${refundError}`, err);
@@ -358,22 +385,26 @@ export const ordersService = {
           status: 'REFUND_FAILED',
           location: 'Razorpay Gateway',
           timestamp: new Date().toISOString(),
-          activity: `❌ Razorpay Refund Attempt Failed: ${refundError}`
+          activity: `✕ Razorpay Refund Failed: ${refundError}`
         };
 
-        const finalHistory = Array.isArray(orderAfterCancel.trackingHistory) ? orderAfterCancel.trackingHistory : [];
+        const errorHistory = Array.isArray(orderAfterCancel.trackingHistory) ? orderAfterCancel.trackingHistory : [];
 
         orderAfterCancel = await prisma.order.update({
           where: { id: orderId },
           data: {
             refundStatus: 'FAILED',
             refundError: refundError,
-            trackingHistory: [...finalHistory, failLog],
+            trackingHistory: [...errorHistory, failLog],
             updatedAt: new Date()
           }
         });
       }
     }
+
+    // Trigger WhatsApp Order Cancelled Notification
+    whatsappService.sendOrderCancelled(orderAfterCancel)
+      .catch(err => shiprocketLogger.error('ORDERS_SERVICE', `WhatsApp Order Cancelled error: ${err.message}`));
 
     return {
       success: true,

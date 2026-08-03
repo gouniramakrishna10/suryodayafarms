@@ -4,6 +4,7 @@ import bcrypt from 'bcryptjs';
 import prisma from '../utils/db.js';
 import { protect } from '../middlewares/authMiddleware.js';
 import cloudinary from '../utils/cloudinary.js';
+import whatsappService from '../services/whatsapp.service.js';
 
 const router = express.Router();
 
@@ -88,6 +89,9 @@ router.post('/register', async (req, res, next) => {
     } catch (notifError) {
       console.error('Failed to create welcome notification:', notifError);
     }
+
+    // Trigger WhatsApp Welcome Template (welcome_new_user)
+    whatsappService.sendWelcome(user).catch(err => console.error('[WhatsApp Service] Welcome error:', err));
 
     console.log(`[Express Backend] Auto-created User Profile: ${user.email}`);
     sendTokenResponse(user, 201, req, res);

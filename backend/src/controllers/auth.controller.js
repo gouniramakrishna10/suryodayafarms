@@ -2,8 +2,7 @@ import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import prisma from '../utils/db.js';
-import fast2smsService from '../services/fast2sms.service.js';
-import { sendWhatsappNotification } from '../utils/whatsappTemplates.js';
+import whatsappService from '../services/whatsapp.service.js';
 
 // Configuration Defaults
 const OTP_EXPIRY_MINUTES = parseInt(process.env.OTP_EXPIRY || '5', 10);
@@ -122,7 +121,7 @@ export async function sendOtp(req, res, next) {
     });
 
     // Send OTP through Fast2SMS WhatsApp Template API
-    await fast2smsService.sendWhatsappOtp({
+    await whatsappService.sendOtp({
       mobile: cleanedMobile,
       otp: plainOtp
     });
@@ -270,12 +269,8 @@ export async function verifyOtp(req, res, next) {
         console.error('Failed to create welcome notification:', notifErr.message);
       }
 
-      // Trigger optional WhatsApp Welcome Notification
-      try {
-        await sendWhatsappNotification('WELCOME', cleanedMobile, [user.name]);
-      } catch (waErr) {
-        console.warn('Welcome WhatsApp notification skipped/unconfigured:', waErr.message);
-      }
+      // Trigger Meta WhatsApp Welcome Notification (welcome_new_user)
+      whatsappService.sendWelcome(user).catch(err => console.error('[WhatsApp Service] Welcome error:', err));
     }
 
     // Generate JWT & send response

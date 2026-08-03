@@ -6,6 +6,7 @@ import { protect } from '../middlewares/authMiddleware.js';
 import { mapCartItem, mapWishlistItem, mapOrder } from '../utils/productMapper.js';
 import { syncService } from '../services/shiprocket/sync.service.js';
 import { ordersService } from '../services/shiprocket/orders.service.js';
+import whatsappService from '../services/whatsapp.service.js';
 
 const router = express.Router();
 
@@ -537,16 +538,20 @@ router.post('/verify-payment', protect, async (req, res, next) => {
   const { razorpayOrderId, razorpayPaymentId, razorpaySignature } = req.body;
 
   try {
+    console.log('\n====================================================');
+    console.log('VERIFY STEP 1');
+    console.log('Verify payment endpoint entered');
+    console.log('Identifiers:', { razorpayOrderId, razorpayPaymentId, razorpaySignature });
+
     if (!razorpayOrderId || !razorpayPaymentId || !razorpaySignature) {
       return res.status(400).json({ success: false, message: 'Payment validation identifiers or signature missing.' });
     }
 
-    console.log('[Razorpay Verification Triggered]:', { razorpayOrderId, razorpayPaymentId, razorpaySignature });
-
-    // Find the corresponding order
+    // Find the corresponding order with user and items
     const order = await prisma.order.findFirst({
       where: { razorpayOrderId, userId: req.user.id },
       include: {
+        user: true,
         orderItems: {
           include: { product: true, variant: true }
         }
@@ -554,11 +559,29 @@ router.post('/verify-payment', protect, async (req, res, next) => {
     });
 
     if (!order) {
+      console.warn('❌ [verify-payment] Order not found for razorpayOrderId:', razorpayOrderId);
       return res.status(404).json({ success: false, message: 'Corresponding order records not found.' });
     }
 
-    // Idempotency check: If order is already completed/paid, return success without duplicate processing
+    // Idempotency check: If order is already completed/paid, send notifications if missing and return
     if (order.paymentStatus === 'COMPLETED' || order.paymentStatus === 'PAID') {
+      console.log('ℹ️ [verify-payment] Order already completed/paid in DB.');
+
+      if (!order.orderPlacedWhatsappSent) {
+        console.log('VERIFY STEP 6 - Calling sendOrderPlacedSuccessfully() (Idempotent Path)');
+        await whatsappService.sendOrderPlaced(order).catch(err => console.error('❌ Customer Notif Error:', err.message));
+        console.log('VERIFY STEP 7 - Returned from sendOrderPlacedSuccessfully()');
+      }
+
+      if (!order.adminOrderWhatsappSent) {
+        console.log('VERIFY STEP 8 - Calling sendAdminNewOrder() (Idempotent Path)');
+        await whatsappService.sendAdminNewOrder(order).catch(err => console.error('❌ Admin Notif Error:', err.message));
+        console.log('VERIFY STEP 9 - Returned from sendAdminNewOrder()');
+      }
+
+      console.log('VERIFY STEP 10 - Returning HTTP response (Idempotent Path)');
+      console.log('====================================================\n');
+
       return res.status(200).json({
         success: true,
         message: 'Payment already verified.',
@@ -574,14 +597,8 @@ router.post('/verify-payment', protect, async (req, res, next) => {
       .update(body.toString())
       .digest('hex');
 
-    console.log('[Razorpay Signature Comparison]:', {
-      receivedSignature: razorpaySignature,
-      expectedSignature,
-      match: expectedSignature === razorpaySignature
-    });
-
     if (expectedSignature !== razorpaySignature) {
-      // Record failed payment attempt on order record
+      console.error('❌ VERIFY STEP FAILED - Signature mismatch! Received:', razorpaySignature, 'Expected:', expectedSignature);
       await prisma.order.update({
         where: { id: order.id },
         data: { paymentStatus: 'FAILED' }
@@ -592,6 +609,9 @@ router.post('/verify-payment', protect, async (req, res, next) => {
       });
     }
 
+    console.log('VERIFY STEP 2');
+    console.log('Signature verified');
+
     // Signature verified successfully -> Update order status to COMPLETED & CONFIRMED
     const updatedOrder = await prisma.order.update({
       where: { id: order.id },
@@ -601,30 +621,73 @@ router.post('/verify-payment', protect, async (req, res, next) => {
         razorpayPaymentId,
       },
       include: {
+        user: true,
         orderItems: {
           include: { product: true, variant: true }
         }
       }
     });
 
+    console.log('VERIFY STEP 3');
+    console.log('Database updated');
+
+    // Parse shipping address JSON safely
+    const addr = typeof updatedOrder.shippingAddress === 'string'
+      ? (JSON.parse(updatedOrder.shippingAddress || '{}'))
+      : (updatedOrder.shippingAddress || {});
+
+    const customerUser = updatedOrder.user || req.user;
+    const customerName = addr.recipientName || customerUser.name || 'Valued Customer';
+    const customerMobile = addr.phone || customerUser.mobile || req.user.mobile || 'N/A';
+
+    console.log('VERIFY STEP 4');
+    console.log(`Loaded customer:\nName: ${customerName}\nMobile: ${customerMobile}`);
+
+    // Fetch product names for logging
+    const productNamesList = (updatedOrder.orderItems || []).map(item => {
+      const name = item.product?.name || item.name || 'Product';
+      const qty = item.quantity || 1;
+      return `${name} x${qty}`;
+    }).join(', ');
+
+    console.log('VERIFY STEP 5');
+    console.log(`Loaded products:\nProduct Names: ${productNamesList || 'Organic Harvest Products'}`);
+
     // Empty User Cart ONLY AFTER payment verification succeeds
-    await prisma.cartItem.deleteMany({ where: { userId: req.user.id } });
+    await prisma.cartItem.deleteMany({ where: { userId: req.user.id } }).catch(() => {});
 
     // Send push notification / activity log
     await prisma.notification.create({
       data: {
         userId: req.user.id,
         title: 'Payment Successful!',
-        message: `Your payment for order ${order.orderNumber} (TXN: ${razorpayPaymentId}) was confirmed successfully. We are processing your harvest.`,
+        message: `Your payment for order ${updatedOrder.orderNumber} (TXN: ${razorpayPaymentId}) was confirmed successfully. We are processing your harvest.`,
       }
-    });
+    }).catch(() => {});
 
-    res.status(200).json({
+    console.log('VERIFY STEP 6');
+    console.log('Calling sendOrderPlacedSuccessfully()');
+    await whatsappService.sendOrderPlaced(updatedOrder).catch(err => console.error('❌ Customer Notif Error:', err.message));
+    console.log('VERIFY STEP 7');
+    console.log('Returned from sendOrderPlacedSuccessfully()');
+
+    console.log('VERIFY STEP 8');
+    console.log('Calling sendAdminNewOrder()');
+    await whatsappService.sendAdminNewOrder(updatedOrder).catch(err => console.error('❌ Admin Notif Error:', err.message));
+    console.log('VERIFY STEP 9');
+    console.log('Returned from sendAdminNewOrder()');
+
+    console.log('VERIFY STEP 10');
+    console.log('Returning HTTP response');
+    console.log('====================================================\n');
+
+    return res.status(200).json({
       success: true,
       message: 'Payment authenticated and order confirmed.',
       order: mapOrder(mapOrderLogistics(updatedOrder))
     });
   } catch (error) {
+    console.error('❌ [verify-payment Fatal Error]:', error);
     next(error);
   }
 });
@@ -636,7 +699,14 @@ import { syncOrderRefundStatus } from '../services/razorpay.service.js';
 router.get('/history', protect, async (req, res, next) => {
   try {
     let orders = await prisma.order.findMany({
-      where: { userId: req.user.id },
+      where: {
+        userId: req.user.id,
+        paymentStatus: { not: 'PENDING' },
+        OR: [
+          { cancelReason: null },
+          { cancelReason: { not: 'Payment Timeout' } }
+        ]
+      },
       include: {
         orderItems: {
           include: {
@@ -666,7 +736,14 @@ router.get('/history', protect, async (req, res, next) => {
       await Promise.all(pendingRefunds.map(o => syncOrderRefundStatus(o.id).catch(() => null)));
       // Refetch mapped orders if refund status updated
       orders = await prisma.order.findMany({
-        where: { userId: req.user.id },
+        where: {
+          userId: req.user.id,
+          paymentStatus: { not: 'PENDING' },
+          OR: [
+            { cancelReason: null },
+            { cancelReason: { not: 'Payment Timeout' } }
+          ]
+        },
         include: {
           orderItems: {
             include: {
@@ -693,7 +770,15 @@ router.get('/history/:orderId', protect, async (req, res, next) => {
 
   try {
     let order = await prisma.order.findFirst({
-      where: { id: orderId, userId: req.user.id },
+      where: {
+        id: orderId,
+        userId: req.user.id,
+        paymentStatus: { not: 'PENDING' },
+        OR: [
+          { cancelReason: null },
+          { cancelReason: { not: 'Payment Timeout' } }
+        ]
+      },
       include: {
         orderItems: {
           include: {

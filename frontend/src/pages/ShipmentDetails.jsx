@@ -329,16 +329,30 @@ export default function ShipmentDetails() {
           
           <div className="flex flex-wrap gap-2 items-center">
             {(() => {
-              const normStatus = (order?.shiprocketStatus || order?.status || '').toUpperCase().trim();
-              const isPickedUpOrInTransit = ['PICKED UP', 'PICKED_UP', 'IN_TRANSIT', 'OUT_FOR_DELIVERY', 'DELIVERED'].includes(normStatus);
-              const isCancelled = normStatus === 'CANCELLED' || normStatus === 'CANCELED' || normStatus.includes('CANCEL');
+              const normOrderStatus = (order?.status || '').toUpperCase().trim();
+              const normShipStatus = (order?.shiprocketStatus || '').toUpperCase().trim();
+              const isCancelled = normOrderStatus === 'CANCELLED' || normShipStatus === 'CANCELLED' || normShipStatus === 'CANCELED' || normOrderStatus.includes('CANCEL');
 
               if (isCancelled) return null;
 
-              if (isPickedUpOrInTransit) {
+              const NON_CANCELLABLE = [
+                'SHIPPED',
+                'DISPATCHED',
+                'PICKED UP',
+                'PICKED_UP',
+                'IN_TRANSIT',
+                'IN TRANSIT',
+                'OUT_FOR_DELIVERY',
+                'OUT FOR DELIVERY',
+                'DELIVERED'
+              ];
+
+              const isShippedOrBeyond = NON_CANCELLABLE.includes(normOrderStatus) || NON_CANCELLABLE.includes(normShipStatus);
+
+              if (isShippedOrBeyond) {
                 return (
-                  <span className="text-[10px] font-bold text-amber-800 bg-amber-50 border border-amber-200 px-3 py-2 rounded-xl">
-                    Shipment already picked up. Cancellation unavailable.
+                  <span className="text-xs font-semibold text-amber-800 bg-amber-50 border border-amber-200 px-3.5 py-2 rounded-xl flex items-center gap-1.5 shadow-2xs">
+                    <span>🚚</span> This order has already been shipped and can no longer be cancelled.
                   </span>
                 );
               }

@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import app from './app.js';
 import prisma from './utils/db.js';
 import { initShiprocketSyncCron } from './cron/shiprocketSyncCron.js';
+import { startPaymentTimeoutWorker } from './workers/paymentTimeoutWorker.js';
 
 // 1. MUST BE VERY FIRST EXECUTABLE STATEMENT BEFORE ANY OTHER CODE
 dotenv.config();
@@ -50,8 +51,43 @@ async function startServer() {
       console.warn('Failed to initialize Shiprocket sync cron:', cronErr.message);
     }
 
+    // Initialize 10-Minute Payment Timeout Worker
+    try {
+      startPaymentTimeoutWorker(60000); // Scans every 60 seconds
+    } catch (timeoutErr) {
+      console.warn('Failed to initialize Payment Timeout Worker:', timeoutErr.message);
+    }
+
     app.listen(PORT, "0.0.0.0", () => {
       console.log(`Server running on port ${PORT}`);
+      console.log('\n====================================================');
+      console.log('🚀 BACKEND SERVER RUNTIME DETAILS');
+      console.log(`PID: ${process.pid}`);
+      console.log(`Working Directory: ${process.cwd()}`);
+      console.log(`Server File: ${import.meta.url}`);
+      console.log(`Node Version: ${process.version}`);
+      console.log('====================================================\n');
+
+      console.log('📌 REGISTERED EXPRESS ROUTES:');
+      function printRoutes(stack, parentPath = '') {
+        (stack || []).forEach(r => {
+          if (r.route) {
+            const methods = Object.keys(r.route.methods).map(m => m.toUpperCase()).join(', ');
+            console.log(`  ${methods} ${parentPath}${r.route.path}`);
+          } else if (r.name === 'router' && r.handle.stack) {
+            let path = r.regexp.source
+              .replace('^\\', '')
+              .replace('\\/?(?=\\/|$)', '')
+              .replace('(?=\\/|$)', '')
+              .replace(/\\\//g, '/');
+            if (path.startsWith('/')) path = path.slice(1);
+            printRoutes(r.handle.stack, '/' + path);
+          }
+        });
+      }
+      if (app._router && app._router.stack) {
+        printRoutes(app._router.stack);
+      }
     });
 
   } catch (err) {

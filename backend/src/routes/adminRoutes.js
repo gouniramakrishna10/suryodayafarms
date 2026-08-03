@@ -5,6 +5,7 @@ import { mapOrderLogistics } from './orderRoutes.js';
 import cloudinary from '../utils/cloudinary.js';
 import { mapProduct, mapProducts } from '../utils/productMapper.js';
 import mammoth from 'mammoth';
+import whatsappService from '../services/whatsapp.service.js';
 
 const router = express.Router();
 
@@ -25,15 +26,16 @@ router.get('/analytics', async (req, res, next) => {
       categories,
       contactSubmissionsCount
     ] = await Promise.all([
-      prisma.order.count(),
+      prisma.order.count({
+        where: {
+          paymentStatus: 'COMPLETED'
+        }
+      }),
       prisma.user.count({ where: { role: 'CUSTOMER' } }),
       prisma.product.count(),
       prisma.order.findMany({
         where: {
-          OR: [
-            { paymentStatus: 'COMPLETED' },
-            { paymentMethod: 'COD' }
-          ]
+          paymentStatus: 'COMPLETED'
         },
         select: { totalAmount: true }
       }),
@@ -46,13 +48,22 @@ router.get('/analytics', async (req, res, next) => {
           _count: { select: { products: true } }
         }
       }),
-      prisma.contactMessage.count()
+      (prisma.contactMessage && typeof prisma.contactMessage.count === 'function')
+        ? prisma.contactMessage.count().catch(() => 0)
+        : Promise.resolve(0)
     ]);
 
     const totalRevenue = orders.reduce((acc, order) => acc + order.totalAmount, 0);
 
-    // Fetch recent 5 orders
+    // Fetch recent 5 valid orders (excluding temporary pending & payment timeout abandoned checkouts)
     const recentOrders = await prisma.order.findMany({
+      where: {
+        paymentStatus: { not: 'PENDING' },
+        OR: [
+          { cancelReason: null },
+          { cancelReason: { not: 'Payment Timeout' } }
+        ]
+      },
       take: 5,
       orderBy: { createdAt: 'desc' },
       include: {
@@ -948,14 +959,34 @@ function buildSectionFromLines(title, lines, orderIndex) {
 
 import { syncAllPendingRefunds } from '../services/razorpay.service.js';
 
-// GET ALL ORDERS WITH USER DETAILS
+// GET ALL ORDERS WITH USER DETAILS (Excludes temporary pending checkouts by default)
 // GET /api/admin/orders
 router.get('/orders', async (req, res, next) => {
+  const { showAbandoned } = req.query;
+
   try {
     // Trigger refund sync for any pending refunds
     await syncAllPendingRefunds().catch(() => null);
 
+    let filter = {
+      paymentStatus: { not: 'PENDING' },
+      OR: [
+        { cancelReason: null },
+        { cancelReason: { not: 'Payment Timeout' } }
+      ]
+    };
+
+    if (showAbandoned === 'true') {
+      filter = {
+        OR: [
+          { paymentStatus: 'PENDING' },
+          { cancelReason: 'Payment Timeout' }
+        ]
+      };
+    }
+
     const orders = await prisma.order.findMany({
+      where: filter,
       include: {
         user: { select: { name: true, email: true } },
         orderItems: { include: { product: true } }
@@ -1039,6 +1070,13 @@ router.put('/orders/:id/status', async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'Order records not found.' });
     }
 
+    const normStatus = (status || '').toString().trim().toUpperCase();
+
+    if (normStatus === 'CANCELLED' || normStatus === 'ORDER_CANCELLED') {
+      const cancelRes = await ordersService.cancelShiprocketOrder(id, 'ADMIN');
+      return res.status(200).json({ success: true, message: 'Order cancelled successfully.', order: mapOrderLogistics(cancelRes.order) });
+    }
+
     const updatedData = {
       status,
       paymentStatus,
@@ -1058,6 +1096,19 @@ router.put('/orders/:id/status', async (req, res, next) => {
         message: `Your order ${order.orderNumber} status label was updated to ${status}.`,
       }
     });
+
+    // Trigger Meta WhatsApp Notifications based on Order Status (order_packed, order_shipped)
+    const normStatus = (status || '').toString().trim().toUpperCase();
+
+    if (normStatus === 'PACKED' || normStatus === 'ORDER_PACKED') {
+      whatsappService.sendOrderPacked(updated).catch(err => console.error('[WhatsApp Service] Order Packed error:', err));
+    } else if (normStatus === 'SHIPPED' || normStatus === 'ORDER_SHIPPED') {
+      whatsappService.sendOrderShipped(updated).catch(err => console.error('[WhatsApp Service] Order Shipped error:', err));
+    } else if (normStatus === 'CANCELLED' || normStatus === 'ORDER_CANCELLED') {
+      whatsappService.sendOrderCancelled(updated).catch(err => console.error('[WhatsApp Service] Order Cancelled error:', err));
+    } else if (normStatus === 'DELIVERED' || normStatus === 'ORDER_DELIVERED') {
+      whatsappService.sendOrderDelivered(updated).catch(err => console.error('[WhatsApp Service] Order Delivered error:', err));
+    }
 
     res.status(200).json({ success: true, order: mapOrderLogistics(updated) });
   } catch (error) {
@@ -2148,16 +2199,83 @@ router.put('/testimonials/:id', async (req, res, next) => {
   }
 });
 
-// DELETE /api/admin/testimonials/:id
-router.delete('/testimonials/:id', async (req, res, next) => {
-  const { id } = req.params;
+// ================= WHATSAPP NOTIFICATION LOGS & RETRY =================
+
+import { sendTemplate as retryWhatsappTemplate } from '../services/whatsapp.service.js';
+
+// GET /api/admin/whatsapp/logs
+router.get('/whatsapp/logs', async (req, res, next) => {
+  const { page = 1, limit = 20, status, search } = req.query;
+
   try {
-    const exists = await prisma.testimonial.findUnique({ where: { id } });
-    if (!exists) {
-      return res.status(404).json({ success: false, message: 'Testimonial not found.' });
+    const skip = (parseInt(page, 10) - 1) * parseInt(limit, 10);
+    const take = parseInt(limit, 10);
+
+    const filter = {};
+    if (status && status !== 'ALL') {
+      filter.status = status.toUpperCase();
     }
-    await prisma.testimonial.delete({ where: { id } });
-    res.status(200).json({ success: true, message: 'Testimonial deleted successfully.' });
+    if (search) {
+      filter.OR = [
+        { recipient: { contains: search, mode: 'insensitive' } },
+        { customerName: { contains: search, mode: 'insensitive' } },
+        { orderId: { contains: search, mode: 'insensitive' } },
+        { templateName: { contains: search, mode: 'insensitive' } }
+      ];
+    }
+
+    const [logs, totalCount] = await Promise.all([
+      prisma.whatsAppLog.findMany({
+        where: filter,
+        orderBy: { createdAt: 'desc' },
+        skip,
+        take
+      }),
+      prisma.whatsAppLog.count({ where: filter })
+    ]);
+
+    res.status(200).json({
+      success: true,
+      count: logs.length,
+      totalCount,
+      page: parseInt(page, 10),
+      totalPages: Math.ceil(totalCount / take),
+      logs
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// POST /api/admin/whatsapp/logs/:id/retry
+router.post('/whatsapp/logs/:id/retry', async (req, res, next) => {
+  const { id } = req.params;
+
+  try {
+    const log = await prisma.whatsAppLog.findUnique({ where: { id } });
+    if (!log) {
+      return res.status(404).json({ success: false, message: 'WhatsApp notification log record not found.' });
+    }
+
+    console.log(`🔄 [Admin Panel] Re-triggering WhatsApp Notification Log ID: ${id} | Template: ${log.templateId} | Mobile: ${log.recipient}`);
+
+    const result = await retryWhatsappTemplate({
+      messageId: log.templateId,
+      templateName: log.templateName,
+      mobile: log.recipient,
+      variables: log.variables,
+      customerName: log.customerName,
+      orderId: log.orderId
+    });
+
+    const updatedLog = await prisma.whatsAppLog.findUnique({ where: { id } });
+
+    res.status(200).json({
+      success: result.success,
+      message: result.success ? 'WhatsApp notification re-sent successfully.' : `Retry failed: ${result.error}`,
+      log: updatedLog,
+      result
+    });
   } catch (error) {
     next(error);
   }

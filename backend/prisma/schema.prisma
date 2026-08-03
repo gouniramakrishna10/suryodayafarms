@@ -19,6 +19,7 @@ model User {
   updatedAt       DateTime         @updatedAt
   mobile          String?          @unique
   walletBalance   Float            @default(0)
+  welcomeWhatsappSent Boolean     @default(false)
   addresses       Address[]
   cartItems       CartItem[]
   notifications   Notification[]
@@ -242,6 +243,13 @@ model Order {
   refundExpectedDate DateTime?
   refundGateway      String?         @default("Razorpay")
   refundInitiatedAt  DateTime?
+  orderPlacedWhatsappSent Boolean    @default(false)
+  orderPackedWhatsappSent Boolean    @default(false)
+  orderShippedWhatsappSent Boolean   @default(false)
+  adminOrderWhatsappSent   Boolean   @default(false)
+  whatsappLogs       Json?
+  cancelReason       String?
+  cancelledAt        DateTime?
   coupon             Coupon?         @relation(fields: [couponId], references: [id])
   user               User            @relation(fields: [userId], references: [id])
   orderItems         OrderItem[]
@@ -482,6 +490,7 @@ enum OrderStatus {
   PENDING
   CONFIRMED
   PROCESSING
+  PACKED
   SHIPPED
   IN_TRANSIT
   OUT_FOR_DELIVERY
@@ -561,6 +570,22 @@ model SupportRequest {
   updatedAt   DateTime @updatedAt
 
   @@map("support_requests")
+}
+
+model WhatsAppLog {
+  id            String   @id @default(uuid())
+  templateId    String
+  templateName  String
+  recipient     String
+  customerName  String?
+  orderId       String?
+  variables     String[]
+  status        String   @default("PENDING")
+  response      Json?
+  errorMessage  String?
+  attempts      Int      @default(1)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
 

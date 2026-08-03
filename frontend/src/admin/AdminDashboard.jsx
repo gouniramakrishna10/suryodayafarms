@@ -6230,6 +6230,15 @@ Ensure confidence scores are numbers between 0 and 100. Always reply ONLY with r
                                       </>
                                     )}
                                   </button>
+
+                                  <button
+                                    type="button"
+                                    onClick={() => setCancelOrderTarget(o)}
+                                    disabled={isCancellingShipment[o.id]}
+                                    className="w-full bg-red-50 hover:bg-red-100 border border-red-200 text-red-700 text-xs font-bold uppercase tracking-wider py-2.5 rounded-xl transition cursor-pointer flex items-center justify-center gap-1.5 shadow-2xs cursor-pointer"
+                                  >
+                                    <span>✕</span> Cancel Order
+                                  </button>
                                 </div>
                               )}
 
@@ -6421,28 +6430,26 @@ Ensure confidence scores are numbers between 0 and 100. Always reply ONLY with r
                                           );
                                         }
 
-                                        // If not picked up, allow cancellation
-                                        if (normStatus === 'READY_TO_SHIP' || normStatus === 'PICKUP_SCHEDULED') {
-                                          return (
-                                            <button
-                                              type="button"
-                                              onClick={() => setCancelOrderTarget(o)}
-                                              disabled={isCancellingShipment[o.id]}
-                                              className="col-span-2 bg-red-50 hover:bg-red-100 border border-red-200 text-red-700 rounded-xl py-2.5 px-3 text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs disabled:opacity-50 mt-1"
-                                            >
-                                              <span>✕</span> Cancel Shipment
-                                            </button>
-                                          );
-                                        }
-                                        
-                                        // Picked Up or In Transit 
+                                        // Picked Up, Shipped, In Transit, Delivered -> Disable cancellation & show notice
                                         if (isPickedUpOrInTransit) {
                                           return (
-                                            <div className="col-span-2 text-center text-[9px] font-bold text-amber-800 bg-amber-50 border border-amber-200 py-2 px-3 rounded-xl mt-1">
-                                              Shipment in transit. Cancellation unavailable.
+                                            <div className="col-span-2 text-center text-[11px] font-bold text-amber-800 bg-amber-50 border border-amber-200 py-2.5 px-3 rounded-xl mt-1">
+                                              Shipment has already been dispatched. Cancellation is no longer possible.
                                             </div>
                                           );
                                         }
+
+                                        // Any stage before SHIPPED -> Allow cancellation
+                                        return (
+                                          <button
+                                            type="button"
+                                            onClick={() => setCancelOrderTarget(o)}
+                                            disabled={isCancellingShipment[o.id]}
+                                            className="col-span-2 bg-red-50 hover:bg-red-100 border border-red-200 text-red-700 rounded-xl py-2.5 px-3 text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs disabled:opacity-50 mt-1"
+                                          >
+                                            <span>✕</span> Cancel Order / Shipment
+                                          </button>
+                                        );
 
                                         return null;
                                       })()}
