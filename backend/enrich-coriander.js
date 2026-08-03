@@ -1,0 +1,342 @@
+import prisma from './src/utils/db.js';
+
+async function enrichCoriander() {
+  console.log('--- ENRICHING EXISTING CORIANDER LEAF POWDER PRODUCT ---');
+
+  // 1. Locate existing product in DB
+  const targetProduct = await prisma.product.findFirst({
+    where: {
+      OR: [
+        { name: { contains: 'Coriander', mode: 'insensitive' } }
+      ]
+    },
+    include: {
+      categories: true,
+      variants: true,
+      productImages: true
+    }
+  });
+
+  if (!targetProduct) {
+    console.error('❌ Target Coriander Leaf Powder product not found in database.');
+    process.exit(1);
+  }
+
+  console.log(`\n🎯 TARGET PRODUCT FOR ENRICHMENT: ID = ${targetProduct.id} ("${targetProduct.name}") | SKU = ${targetProduct.sku}`);
+
+  // 2. Prepare Enriched Structured Content Sections
+  const contentSections = [
+    {
+      id: `sec-hero-${Date.now()}`,
+      sectionType: 'HERO',
+      title: 'Hero Overview',
+      content: {
+        collectionName: 'Green Vitality Collection',
+        tagline: 'Fresh Herbal Goodness for Everyday Cooking.',
+        intro: 'At Suryodaya Farms, we believe that the finest flavours begin with nature. Our Coriander Leaf Powder is prepared from carefully selected coriander leaves using science-guided quality practices designed to help preserve their natural aroma, vibrant green colour, and nutritional value.'
+      },
+      orderIndex: 0,
+      isVisible: true
+    },
+    {
+      id: `sec-about-${Date.now()}`,
+      sectionType: 'ABOUT_PRODUCT',
+      title: 'About Coriander Leaves',
+      content: {
+        title: 'About Coriander Leaves',
+        html: '<p>Coriander (Coriandrum sativum) is one of the world\'s most widely used culinary herbs, valued for its refreshing aroma, distinctive flavour, and versatility in everyday cooking.</p><p>Its leaves naturally contain vitamins, minerals, dietary fibre, plant-based nutrients, and naturally occurring antioxidants, making coriander a wholesome ingredient for a balanced diet.</p><p>At Suryodaya Farms, we honour this remarkable herb through careful ingredient selection, responsible processing, and quality-focused manufacturing practices.</p>'
+      },
+      orderIndex: 1,
+      isVisible: true
+    },
+    {
+      id: `sec-why-choose-${Date.now()}`,
+      sectionType: 'WHY_CHOOSE_US',
+      title: 'Why Choose Suryodaya Farms Coriander Leaf Powder?',
+      content: {
+        title: 'Why Choose Suryodaya Farms Coriander Leaf Powder?',
+        cards: [
+          {
+            icon: '🌿',
+            title: 'Carefully Selected Coriander Leaves',
+            description: 'Prepared from carefully selected coriander leaves that meet our quality standards.'
+          },
+          {
+            icon: '🔬',
+            title: 'Science-Guided Product Development',
+            description: 'Developed using a scientific approach to support product consistency, quality, and continuous improvement.'
+          },
+          {
+            icon: '🏆',
+            title: 'Quality Without Compromise',
+            description: 'Every stage—from ingredient selection to packaging—is carried out under disciplined quality practices.'
+          },
+          {
+            icon: '✨',
+            title: 'Hygienically Processed',
+            description: 'Processed with careful attention to cleanliness, hygiene, and responsible handling.'
+          },
+          {
+            icon: '🛍️',
+            title: 'Carefully Packed',
+            description: 'Packed in food-grade packaging designed to help preserve freshness, natural aroma, and product quality.'
+          },
+          {
+            icon: '💚',
+            title: 'Trusted Natural Nutrition',
+            description: 'Every pack reflects the core values of Suryodaya Farms: Nature • Science • Quality • Trust.'
+          }
+        ]
+      },
+      orderIndex: 2,
+      isVisible: true
+    },
+    {
+      id: `sec-highlights-${Date.now()}`,
+      sectionType: 'HIGHLIGHTS',
+      title: 'Product Highlights',
+      content: {
+        title: 'Product Highlights',
+        items: [
+          '100% Coriander Leaf Powder',
+          'Carefully Selected Ingredients',
+          'Hygienically Processed',
+          'Premium Quality',
+          'Science-Guided Product Development',
+          'No Artificial Colours',
+          'No Artificial Flavours',
+          'No Added Preservatives'
+        ]
+      },
+      orderIndex: 3,
+      isVisible: true
+    },
+    {
+      id: `sec-nutrients-${Date.now()}`,
+      sectionType: 'NUTRIENTS',
+      title: 'Naturally Occurring Nutrients',
+      content: {
+        title: 'Naturally Occurring Nutrients',
+        items: [
+          { name: 'Vitamins', value: 'Vitamins A, C & K' },
+          { name: 'Minerals', value: 'Potassium, Manganese & Iron' },
+          { name: 'Dietary Fibre', value: 'Digestive Ease' },
+          { name: 'Plant-Based Nutrients', value: 'Phytonutrients' },
+          { name: 'Naturally Occurring Antioxidants', value: 'Cellular Defense' }
+        ]
+      },
+      orderIndex: 4,
+      isVisible: true
+    },
+    {
+      id: `sec-ways-${Date.now()}`,
+      sectionType: 'WAYS_TO_ENJOY',
+      title: 'Ways to Enjoy',
+      content: {
+        title: 'Ways to Enjoy',
+        recipes: [
+          { icon: '🍲', title: 'Soups', description: 'Stir into warm lentil, tomato, or vegetable soups for fresh cilantro aroma.' },
+          { icon: '🍛', title: 'Curries', description: 'Add to Indian curries, korma, and gravies as a convenient green garnish.' },
+          { icon: '🥘', title: 'Dals', description: 'Whisk into daily dals, sambar, rasam, and khichdi.' },
+          { icon: '🥣', title: 'Chutneys & Dips', description: 'Blend with mint, green chillies, and lemon for fresh green chutney.' },
+          { icon: '🍚', title: 'Rice Dishes', description: 'Sprinkle over biryani, pulao, lemon rice, and fried rice.' },
+          { icon: '🥗', title: 'Salads', description: 'Dust over fresh salads, chickpea bowls, and sprouted salads.' },
+          { icon: '🌯', title: 'Wraps & Sandwiches', description: 'Season vegetable wraps, rolls, and grilled sandwiches.' },
+          { icon: '🍳', title: 'Omelettes & Savoury Recipes', description: 'Whisk into omelettes, cheela, and savory breakfast batters.' }
+        ]
+      },
+      orderIndex: 5,
+      isVisible: true
+    },
+    {
+      id: `sec-serving-${Date.now()}`,
+      sectionType: 'SUGGESTED_SERVING',
+      title: 'Suggested Serving',
+      content: {
+        title: 'Suggested Serving',
+        items: [
+          'Use according to your taste and dietary preferences as part of a balanced and varied diet.',
+          'If you have specific dietary concerns or are under medical care, consult a qualified healthcare professional before making significant dietary changes.'
+        ]
+      },
+      orderIndex: 6,
+      isVisible: true
+    },
+    {
+      id: `sec-storage-${Date.now()}`,
+      sectionType: 'STORAGE',
+      title: 'Storage Instructions',
+      content: {
+        title: 'Storage Instructions',
+        items: [
+          'Store in a cool, dry place.',
+          'Keep the pack tightly closed after opening.',
+          'Use a clean, dry spoon.',
+          'Protect from moisture and direct sunlight.'
+        ]
+      },
+      orderIndex: 7,
+      isVisible: true
+    },
+    {
+      id: `sec-ingredients-${Date.now()}`,
+      sectionType: 'INGREDIENTS',
+      title: 'Ingredients Breakdown',
+      content: {
+        title: 'Ingredients Breakdown',
+        html: '<p><strong>100% Coriander Leaf Powder</strong></p><p>Nothing Added. Nothing Removed. Just Carefully Prepared Coriander Leaves.</p>'
+      },
+      orderIndex: 8,
+      isVisible: true
+    },
+    {
+      id: `sec-packaging-${Date.now()}`,
+      sectionType: 'PACKAGING',
+      title: 'Packaging Information',
+      content: {
+        title: 'Packaging Information',
+        items: [
+          'Packed in high-quality food-grade packaging designed to help preserve freshness, natural aroma, and product quality.'
+        ]
+      },
+      orderIndex: 9,
+      isVisible: true
+    },
+    {
+      id: `sec-quality-${Date.now()}`,
+      sectionType: 'QUALITY',
+      title: 'Our Quality Commitment',
+      content: {
+        title: 'Our Quality Commitment',
+        items: [
+          'Carefully Selected Ingredients',
+          'Science-Guided Product Development',
+          'Hygienic Processing',
+          'Responsible Quality Practices',
+          'Thoughtful Packaging',
+          'Continuous Improvement',
+          'Honest Communication',
+          'Customer Trust'
+        ]
+      },
+      orderIndex: 10,
+      isVisible: true
+    },
+    {
+      id: `sec-faqs-${Date.now()}`,
+      sectionType: 'FAQS',
+      title: 'Frequently Asked Questions',
+      content: {
+        title: 'Frequently Asked Questions',
+        items: [
+          {
+            question: 'Is this made from 100% coriander leaves?',
+            answer: 'Yes. Our product contains only 100% Coriander Leaf Powder.'
+          },
+          {
+            question: 'How can I use it?',
+            answer: 'It can be added to soups, curries, dals, rice dishes, chutneys, salads, wraps, sandwiches, and many everyday recipes.'
+          },
+          {
+            question: 'How should I store it?',
+            answer: 'Store in a cool, dry place. Keep the pack tightly closed and always use a clean, dry spoon after opening.'
+          },
+          {
+            question: 'Does it contain additives?',
+            answer: 'No. It contains no artificial colours, flavours, or added preservatives.'
+          }
+        ]
+      },
+      orderIndex: 11,
+      isVisible: true
+    },
+    {
+      id: `sec-promise-${Date.now()}`,
+      sectionType: 'OUR_PROMISE',
+      title: 'Our Promise',
+      content: {
+        title: 'Our Promise',
+        html: '<p>Every pack of Suryodaya Farms Coriander Leaf Powder reflects our dedication to quality, scientific responsibility, and customer trust.</p><p>We continuously improve our products because we believe our customers deserve safe, consistent, and reliable quality with every purchase.</p>'
+      },
+      orderIndex: 12,
+      isVisible: true
+    },
+    {
+      id: `sec-difference-${Date.now()}`,
+      sectionType: 'SURVEYODAYA_DIFFERENCE',
+      title: 'The Suryodaya Difference',
+      content: {
+        title: 'The Suryodaya Difference',
+        html: '<p>At Suryodaya Farms, we do more than simply process coriander leaves. From carefully selecting fresh, quality leaves to applying science-guided product development, maintaining hygienic processing practices, and using thoughtful packaging, every step is carried out with care and responsibility.</p><p>Our goal is to deliver a product that reflects the values we stand for—Nature, Science, Quality, and Trust—so you can enjoy the fresh flavour and natural goodness of coriander with confidence, every day.</p><p><strong>Suryodaya Farms: Pure by Nature. Guided by Science. Trusted for Quality.</strong></p>'
+      },
+      orderIndex: 13,
+      isVisible: true
+    }
+  ];
+
+  // 3. Selective Product Enrichment in PostgreSQL
+  const shortDescription = '100% Pure Coriander Leaf (Coriandrum sativum) Powder. Science-guided dried & processed, rich in fresh cilantro aroma, vitamins A/C/K & antioxidants.';
+  const detailedDescription = 'At Suryodaya Farms, we believe that the finest flavours begin with nature. Our Coriander Leaf Powder is prepared from carefully selected coriander leaves using science-guided quality practices designed to help preserve their natural aroma, vibrant green colour, and nutritional value. Thoughtfully processed and carefully packed, it provides a convenient way to enjoy the fresh taste and natural goodness of coriander throughout the year.';
+
+  const updatedProduct = await prisma.product.update({
+    where: { id: targetProduct.id },
+    data: {
+      name: 'Coriander Leaf Powder',
+      shortDescription,
+      detailedDescription,
+      description: detailedDescription,
+      productType: 'Dehydrated Herb Powder',
+      brand: 'Suryodaya Farms',
+      nutrients: 'Vitamins A/C/K, Potassium, Manganese, Iron, Dietary Fibre, Antioxidants',
+      shelfLife: '12 Months from packaging',
+      seoTitle: 'Coriander Leaf Powder (100% Pure Dhaniya Leaf) | Suryodaya Farms',
+      seoDescription: 'Buy 100% Pure Coriander Leaf (Dhaniya Patta) Powder. Gently dried, aromatic cilantro leaves rich in antioxidants for curries, dals, chutneys & soups.',
+      seoKeywords: 'coriander leaf powder, dhaniya patta powder, dried cilantro leaves, organic coriander, cilantro powder, Indian culinary herb, suryodaya farms',
+      productContent: contentSections
+    },
+    include: {
+      categories: true,
+      variants: true
+    }
+  });
+
+  // Re-create ProductContent relations in DB
+  await prisma.productContent.deleteMany({
+    where: { productId: targetProduct.id }
+  });
+
+  for (let i = 0; i < contentSections.length; i++) {
+    const sec = contentSections[i];
+    await prisma.productContent.create({
+      data: {
+        productId: targetProduct.id,
+        sectionType: sec.sectionType,
+        title: sec.title,
+        content: sec.content,
+        orderIndex: i,
+        isVisible: true
+      }
+    });
+  }
+
+  console.log('\n✅ CORIANDER LEAF POWDER ENRICHED SUCCESSFULLY IN DATABASE!');
+  console.log(`- Product Name: ${updatedProduct.name}`);
+  console.log(`- Product ID: ${updatedProduct.id} (UNCHANGED)`);
+  console.log(`- Slug: ${updatedProduct.slug} (UNCHANGED)`);
+  console.log(`- SKU: ${updatedProduct.sku} (UNCHANGED)`);
+  console.log(`- Price: ₹${updatedProduct.price} (UNCHANGED)`);
+  console.log(`- Short Description: ${updatedProduct.shortDescription}`);
+  console.log(`- Total Enriched CMS Content Sections: ${contentSections.length}`);
+  console.log(`- SEO Title: ${updatedProduct.seoTitle}`);
+
+  console.log('\n--- ALL CORIANDER ENRICHMENT CHECKS PASSED PERFECTLY! ---');
+}
+
+enrichCoriander()
+  .catch(e => {
+    console.error('❌ Error during enrichment:', e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });

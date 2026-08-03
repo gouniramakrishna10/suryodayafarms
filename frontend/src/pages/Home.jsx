@@ -2017,6 +2017,79 @@ export default function Home() {
     return <HomepageSkeleton />;
   }
 
+  const renderPartnerCTASection = () => (
+    <section className="py-20 px-4 sm:px-6 lg:px-12 bg-gradient-to-b from-[#F9F6F0] via-[#FAF6EE] to-[#F1ECE1] relative overflow-hidden">
+      {/* Decorative background glows */}
+      <div className="absolute -top-24 -right-24 w-96 h-96 bg-[#4E641A]/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-[#B8833E]/10 rounded-full blur-3xl pointer-events-none" />
+
+      <div className="max-w-6xl mx-auto relative z-10">
+        <div className="bg-white/80 backdrop-blur-xl border border-[#EDE7D9] rounded-[36px] p-8 sm:p-12 lg:p-16 shadow-xl relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-10">
+          
+          {/* Subtle grid pattern overlay */}
+          <div className="absolute inset-0 opacity-[0.03] bg-[radial-gradient(#4E641A_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none" />
+
+          {/* Left Content */}
+          <div className="max-w-2xl text-left space-y-5">
+            <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-[#4E641A]/10 border border-[#4E641A]/20 text-[#4E641A] font-sans text-xs font-semibold uppercase tracking-wider">
+              <GiSprout className="text-base text-[#B8833E]" />
+              <span>Grow With Suryodaya</span>
+            </div>
+
+            <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#2F3B0C] leading-tight">
+              Partner with <span className="text-[#4E641A]">Suryodaya Farms</span>
+            </h2>
+
+            <p className="font-sans text-stone-600 text-sm sm:text-base leading-relaxed">
+              Grow your business with Suryodaya Farms. We welcome distributors, retailers, wholesalers, exporters, institutions, corporate buyers, and strategic partners who share our commitment to quality, integrity, and sustainable growth.
+            </p>
+
+            <div className="flex flex-wrap items-center gap-4 pt-2">
+              <Link
+                to="/become-a-partner"
+                className="inline-flex items-center gap-3 bg-[#4E641A] hover:bg-[#2F3B0C] text-white font-sans text-xs sm:text-sm font-bold tracking-wider uppercase px-7 py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5"
+              >
+                <span>Become a Partner</span>
+                <FiArrowRight className="text-base" />
+              </Link>
+
+              <Link
+                to="/contact"
+                className="inline-flex items-center gap-3 bg-white hover:bg-[#F4EFE6] text-[#2F3B0C] border border-[#EDE7D9] font-sans text-xs sm:text-sm font-bold tracking-wider uppercase px-7 py-4 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300"
+              >
+                <span>Contact Us</span>
+              </Link>
+            </div>
+          </div>
+
+          {/* Right Decorative Feature Pill Cards */}
+          <div className="grid grid-cols-2 gap-4 w-full lg:w-auto shrink-0">
+            <div className="bg-[#FDFBF7] border border-[#EDE7D9] p-5 rounded-2xl flex flex-col gap-2 shadow-xs hover:border-[#4E641A]/40 transition duration-300">
+              <span className="font-serif text-2xl font-bold text-[#4E641A]">100%</span>
+              <span className="font-sans text-xs text-stone-600 font-medium">Natural Staples</span>
+            </div>
+
+            <div className="bg-[#FDFBF7] border border-[#EDE7D9] p-5 rounded-2xl flex flex-col gap-2 shadow-xs hover:border-[#4E641A]/40 transition duration-300">
+              <span className="font-serif text-2xl font-bold text-[#B8833E]">B2B & Bulk</span>
+              <span className="font-sans text-xs text-stone-600 font-medium">Flexible Supply</span>
+            </div>
+
+            <div className="bg-[#FDFBF7] border border-[#EDE7D9] p-5 rounded-2xl flex flex-col gap-2 shadow-xs hover:border-[#4E641A]/40 transition duration-300">
+              <span className="font-serif text-2xl font-bold text-[#2F3B0C]">Pan-India</span>
+              <span className="font-sans text-xs text-stone-600 font-medium">Export Logistics</span>
+            </div>
+
+            <div className="bg-[#FDFBF7] border border-[#EDE7D9] p-5 rounded-2xl flex flex-col gap-2 shadow-xs hover:border-[#4E641A]/40 transition duration-300">
+              <span className="font-serif text-2xl font-bold text-[#4E641A]">Ethical</span>
+              <span className="font-sans text-xs text-stone-600 font-medium">Fair Trade & Quality</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  );
+
   return (
     <Profiler id="Homepage" onRender={onRenderCallback}>
 
@@ -2045,6 +2118,8 @@ export default function Home() {
             {renderSection(sectName)}
           </React.Fragment>
         ))}
+
+        {renderPartnerCTASection()}
 
       </div>
     </Profiler>

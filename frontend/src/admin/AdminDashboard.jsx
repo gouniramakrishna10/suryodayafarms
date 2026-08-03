@@ -41,7 +41,9 @@ import {
   FiChevronUp,
   FiMoreVertical,
   FiArrowLeft,
-  FiRefreshCw
+  FiRefreshCw,
+  FiBriefcase,
+  FiMail
 } from 'react-icons/fi';
 import { GiSun } from 'react-icons/gi';
 import api from '../utils/api';
@@ -54,6 +56,9 @@ import CreateProductPage from './products/CreateProductPage';
 import EditProductPage from './products/EditProductPage';
 import ShiprocketSettings from './components/ShiprocketSettings';
 import LogisticsDashboardPage from './logistics/LogisticsDashboardPage';
+import PartnerRequestsAdminPage from './PartnerRequestsAdminPage';
+import SupportRequestsAdminPage from './SupportRequestsAdminPage';
+import ContactAdminPage from './ContactAdminPage';
 
 const getCloudinaryCroppedUrl = (url, crop) => {
   if (!url || !crop || crop.cropX === undefined || crop.cropX === null || !crop.cropWidth) return url;
@@ -296,6 +301,12 @@ export default function AdminDashboard() {
       setActiveTab('reviews');
     } else if (path.startsWith('/admin/support-tickets')) {
       setActiveTab('support');
+    } else if (path.startsWith('/admin/partner-requests')) {
+      setActiveTab('partner-requests');
+    } else if (path.startsWith('/admin/support-requests')) {
+      setActiveTab('support-requests');
+    } else if (path.startsWith('/admin/contact')) {
+      setActiveTab('contact-messages');
     } else {
       setActiveTab('overview');
     }
@@ -305,6 +316,8 @@ export default function AdminDashboard() {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [collapsedGroups, setCollapsedGroups] = useState({
     core: false,
+    business: false,
+    customerSupport: false,
     marketing: false,
     content: false,
     config: false,
@@ -3714,7 +3727,10 @@ Ensure confidence scores are numbers between 0 and 100. Always reply ONLY with r
       coupons: 'coupons',
       reviews: 'reviews',
       testimonials: 'testimonials',
-      'support-tickets': 'support-tickets'
+      'support-tickets': 'support-tickets',
+      'partner-requests': 'partner-requests',
+      'support-requests': 'support-requests',
+      'contact-messages': 'contact'
     };
     setIsMobileSidebarOpen(false);
     navigate(`/admin/${routeMap[tabId]}`);
@@ -4506,6 +4522,87 @@ Ensure confidence scores are numbers between 0 and 100. Always reply ONLY with r
                             <span className="w-1.5 h-1.5 rounded-full bg-[#B8833E] shadow-lg animate-pulse" />
                           )}
                         </div>
+                      </button>
+                    );
+                  })}
+                </nav>
+              )}
+            </div>
+
+            {/* Business Management Group */}
+            <div>
+              <button
+                onClick={() => setCollapsedGroups(prev => ({ ...prev, business: !prev.business }))}
+                className="w-full flex items-center justify-between text-[8px] font-extrabold tracking-widest text-[#B8833E]/70 uppercase mb-2 px-1 bg-transparent border-none cursor-pointer hover:text-[#4E641A] transition select-none"
+              >
+                <span>Business</span>
+                {collapsedGroups.business ? <FiChevronDown className="w-2.5 h-2.5" /> : <FiChevronUp className="w-2.5 h-2.5" />}
+              </button>
+              
+              {!collapsedGroups.business && (
+                <nav className="space-y-1 animate-fade-in">
+                  {[
+                    { id: 'partner-requests', label: 'Partner Requests', icon: FiBriefcase },
+                  ].map((tab) => {
+                    const isTabActive = activeTab === 'partner-requests';
+                    return (
+                      <button
+                        key={tab.id}
+                        onClick={() => handleTabChange(tab.id)}
+                        className={`w-full flex items-center justify-between font-sans text-xs font-bold py-2.5 px-4 rounded-xl transition duration-350 relative group cursor-pointer border-none text-left ${
+                          isTabActive
+                            ? 'bg-[#4E641A] text-white shadow-md shadow-[#4E641A]/10 ring-1 ring-white/10'
+                            : 'text-stone-600 hover:bg-[#EDE7D9]/50 hover:text-[#37411A] bg-transparent'
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <tab.icon className={`w-4.5 h-4.5 ${isTabActive ? 'text-[#B8833E]' : 'text-stone-400 group-hover:text-[#4E641A]'}`} />
+                          <span className="tracking-wider uppercase text-[9px]">{tab.label}</span>
+                        </div>
+                        {isTabActive && (
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#B8833E] shadow-lg animate-pulse" />
+                        )}
+                      </button>
+                    );
+                  })}
+                </nav>
+              )}
+            </div>
+
+            {/* Customer Support Group */}
+            <div>
+              <button
+                onClick={() => setCollapsedGroups(prev => ({ ...prev, customerSupport: !prev.customerSupport }))}
+                className="w-full flex items-center justify-between text-[8px] font-extrabold tracking-widest text-[#B8833E]/70 uppercase mb-2 px-1 bg-transparent border-none cursor-pointer hover:text-[#4E641A] transition select-none"
+              >
+                <span>Customer Support</span>
+                {collapsedGroups.customerSupport ? <FiChevronDown className="w-2.5 h-2.5" /> : <FiChevronUp className="w-2.5 h-2.5" />}
+              </button>
+              
+              {!collapsedGroups.customerSupport && (
+                <nav className="space-y-1 animate-fade-in">
+                  {[
+                    { id: 'support-requests', label: 'Support Requests', icon: FiMessageSquare },
+                    { id: 'contact-messages', label: 'Contact Messages', icon: FiMail },
+                  ].map((tab) => {
+                    const isTabActive = activeTab === tab.id;
+                    return (
+                      <button
+                        key={tab.id}
+                        onClick={() => handleTabChange(tab.id)}
+                        className={`w-full flex items-center justify-between font-sans text-xs font-bold py-2.5 px-4 rounded-xl transition duration-350 relative group cursor-pointer border-none text-left ${
+                          isTabActive
+                            ? 'bg-[#4E641A] text-white shadow-md shadow-[#4E641A]/10 ring-1 ring-white/10'
+                            : 'text-stone-600 hover:bg-[#EDE7D9]/50 hover:text-[#37411A] bg-transparent'
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <tab.icon className={`w-4.5 h-4.5 ${isTabActive ? 'text-[#B8833E]' : 'text-stone-400 group-hover:text-[#4E641A]'}`} />
+                          <span className="tracking-wider uppercase text-[9px]">{tab.label}</span>
+                        </div>
+                        {isTabActive && (
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#B8833E] shadow-lg animate-pulse" />
+                        )}
                       </button>
                     );
                   })}
@@ -12626,6 +12723,21 @@ Ensure confidence scores are numbers between 0 and 100. Always reply ONLY with r
         </AnimatePresence>,
         document.body
       )}
+
+        {/* TAB: PARTNER REQUESTS */}
+        {activeTab === 'partner-requests' && (
+          <PartnerRequestsAdminPage />
+        )}
+
+        {/* TAB: SUPPORT REQUESTS */}
+        {activeTab === 'support-requests' && (
+          <SupportRequestsAdminPage />
+        )}
+
+        {/* TAB: CONTACT MESSAGES */}
+        {activeTab === 'contact-messages' && (
+          <ContactAdminPage />
+        )}
 
       </main>
 

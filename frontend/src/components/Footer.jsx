@@ -40,7 +40,10 @@ const Footer = memo(function Footer() {
     { label: 'Home Story', path: '/' },
     { label: 'Our Heritage', path: '/about' },
     { label: 'Organic Harvest', path: '/products' },
-    { label: 'Inquiries', path: '/contact' },
+    { label: 'Become a Partner', path: '/become-a-partner' },
+    { label: 'FAQs & Support', path: '/faq' },
+    { label: 'Contact Us', path: '/contact' },
+    { label: 'Privacy Policy', path: '/privacy' },
   ];
 
   return (

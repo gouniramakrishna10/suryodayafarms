@@ -14,6 +14,9 @@ import Home from './pages/Home';
 const About = lazy(() => import('./pages/About'));
 const Products = lazy(() => import('./pages/Products'));
 const Contact = lazy(() => import('./pages/Contact'));
+const Partner = lazy(() => import('./pages/Partner'));
+const Faq = lazy(() => import('./pages/Faq'));
+const Privacy = lazy(() => import('./pages/Privacy'));
 const CategoryCollection = lazy(() => import('./pages/CategoryCollection'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Checkout = lazy(() => import('./pages/Checkout'));
@@ -67,7 +70,10 @@ export default function App() {
             <Route path="/profile" element={<Dashboard />} />
             <Route path="/profile/:tab" element={<Dashboard />} />
             <Route path="/profile/shipments/:orderId" element={<ShipmentDetails />} />
+            <Route path="/become-a-partner" element={<Partner />} />
+            <Route path="/faq" element={<Faq />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/privacy" element={<Privacy />} />
           </Route>
 
           {/* 2. Isolated Admin Portal Route Group (Admin CMS) */}
@@ -89,6 +95,9 @@ export default function App() {
           <Route path="/admin/reviews/:productId" element={<AdminDashboard />} />
           <Route path="/admin/support-tickets" element={<AdminDashboard />} />
           <Route path="/admin/support-tickets/:id" element={<AdminDashboard />} />
+          <Route path="/admin/partner-requests" element={<AdminDashboard />} />
+          <Route path="/admin/support-requests" element={<AdminDashboard />} />
+          <Route path="/admin/contact" element={<AdminDashboard />} />
 
           {/* 3. Fallback Redirection */}
           <Route path="*" element={<Navigate to="/" replace />} />

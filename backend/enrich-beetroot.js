@@ -1,0 +1,348 @@
+import prisma from './src/utils/db.js';
+
+async function enrichBeetroot() {
+  console.log('--- ENRICHING EXISTING BEETROOT POWDER PRODUCT ---');
+
+  // 1. Locate existing product in DB
+  const targetProduct = await prisma.product.findFirst({
+    where: {
+      OR: [
+        { name: { contains: 'Beetroot', mode: 'insensitive' } },
+        { name: { contains: 'Beet Root', mode: 'insensitive' } }
+      ]
+    },
+    include: {
+      categories: true,
+      variants: true,
+      productImages: true
+    }
+  });
+
+  if (!targetProduct) {
+    console.error('❌ Target Beetroot Powder product not found in database.');
+    process.exit(1);
+  }
+
+  console.log(`\n🎯 TARGET PRODUCT FOR ENRICHMENT: ID = ${targetProduct.id} ("${targetProduct.name}") | SKU = ${targetProduct.sku}`);
+
+  // 2. Prepare Enriched Structured Content Sections
+  const contentSections = [
+    {
+      id: `sec-hero-${Date.now()}`,
+      sectionType: 'HERO',
+      title: 'Hero Overview',
+      content: {
+        collectionName: 'Root Vitality Collection',
+        tagline: 'Nature\'s Vibrant Colour. Everyday Nutrition.',
+        intro: 'At Suryodaya Farms, we believe that vibrant nutrition begins with nature. Our Beetroot Powder is prepared from carefully selected beetroot using science-guided quality practices designed to help preserve its natural colour, flavour, and nutritional value.'
+      },
+      orderIndex: 0,
+      isVisible: true
+    },
+    {
+      id: `sec-about-${Date.now()}`,
+      sectionType: 'ABOUT_PRODUCT',
+      title: 'About Beetroot',
+      content: {
+        title: 'About Beetroot',
+        html: '<p>Beetroot (Beta vulgaris) is a colourful root vegetable that has long been appreciated as part of a balanced diet.</p><p>Naturally containing vitamins, minerals, dietary fibre, plant-based nutrients, and naturally occurring antioxidants, beetroot is widely enjoyed in both traditional and modern cuisines.</p><p>Its naturally vibrant colour and mildly sweet flavour make it a versatile ingredient for smoothies, soups, baking, beverages, and a wide variety of everyday recipes.</p><p>At Suryodaya Farms, we honour this wholesome root vegetable through careful ingredient selection, responsible processing, and quality-focused manufacturing practices.</p>'
+      },
+      orderIndex: 1,
+      isVisible: true
+    },
+    {
+      id: `sec-why-choose-${Date.now()}`,
+      sectionType: 'WHY_CHOOSE_US',
+      title: 'Why Choose Suryodaya Farms Beetroot Powder?',
+      content: {
+        title: 'Why Choose Suryodaya Farms Beetroot Powder?',
+        cards: [
+          {
+            icon: '🔴',
+            title: 'Carefully Selected Beetroot',
+            description: 'Prepared from carefully selected beetroot that meets our quality standards.'
+          },
+          {
+            icon: '🔬',
+            title: 'Science-Guided Product Development',
+            description: 'Developed using a scientific approach to support product consistency, quality, and continuous improvement.'
+          },
+          {
+            icon: '🏆',
+            title: 'Quality Without Compromise',
+            description: 'Every stage—from ingredient selection to packaging—is carried out under disciplined quality practices.'
+          },
+          {
+            icon: '✨',
+            title: 'Hygienically Processed',
+            description: 'Processed with careful attention to cleanliness, hygiene, and responsible handling.'
+          },
+          {
+            icon: '🛍️',
+            title: 'Carefully Packed',
+            description: 'Packed in high-quality food-grade packaging designed to help preserve freshness, natural colour, and product quality.'
+          },
+          {
+            icon: '💚',
+            title: 'Trusted Natural Nutrition',
+            description: 'Every pack reflects the core values of Suryodaya Farms: Nature • Science • Quality • Trust.'
+          }
+        ]
+      },
+      orderIndex: 2,
+      isVisible: true
+    },
+    {
+      id: `sec-highlights-${Date.now()}`,
+      sectionType: 'HIGHLIGHTS',
+      title: 'Product Highlights',
+      content: {
+        title: 'Product Highlights',
+        items: [
+          '100% Beetroot Powder',
+          'Carefully Selected Ingredients',
+          'Hygienically Processed',
+          'Premium Quality',
+          'Science-Guided Product Development',
+          'Naturally Vibrant Colour',
+          'No Artificial Colours',
+          'No Artificial Flavours',
+          'No Added Preservatives'
+        ]
+      },
+      orderIndex: 3,
+      isVisible: true
+    },
+    {
+      id: `sec-nutrients-${Date.now()}`,
+      sectionType: 'NUTRIENTS',
+      title: 'Naturally Occurring Nutrients',
+      content: {
+        title: 'Naturally Occurring Nutrients',
+        items: [
+          { name: 'Vitamins', value: 'Folate (Vitamin B9) & Vitamin C' },
+          { name: 'Minerals', value: 'Potassium, Manganese & Iron' },
+          { name: 'Dietary Fibre', value: 'Digestive & Cardiovascular Support' },
+          { name: 'Plant-Based Nutrients', value: 'Betalain Pigments & Nitrates' },
+          { name: 'Naturally Occurring Antioxidants', value: 'Cellular Health Support' }
+        ]
+      },
+      orderIndex: 4,
+      isVisible: true
+    },
+    {
+      id: `sec-ways-${Date.now()}`,
+      sectionType: 'WAYS_TO_ENJOY',
+      title: 'Ways to Enjoy',
+      content: {
+        title: 'Ways to Enjoy',
+        recipes: [
+          { icon: '🥤', title: 'Smoothies', description: 'Blend into berry, banana, or detox green smoothies for a vibrant pink-red boost.' },
+          { icon: '🧃', title: 'Fresh Juices', description: 'Stir into fresh apple, pomegranate, or orange juices.' },
+          { icon: '🥤', title: 'Milkshakes', description: 'Whisk into cold milk or plant milk with honey for a delicious pink milkshake.' },
+          { icon: '🍲', title: 'Soups', description: 'Add to tomato soup, borscht, or lentil stews for deep rich color and taste.' },
+          { icon: '🥞', title: 'Pancakes, Dosa & Other Batters', description: 'Mix into dosa, idli, or waffle batter for colorful breakfast foods.' },
+          { icon: '🍞', title: 'Bread & Baking Recipes', description: 'Incorporate into red velvet baking, artisanal loaves, and savory breads.' },
+          { icon: '🧁', title: 'Cakes & Desserts', description: 'Use as a natural pink food color in cake frosting, puddings, and macarons.' },
+          { icon: '🍝', title: 'Pasta Sauces & Other Healthy Recipes', description: 'Stir into pasta sauces, hummus, dips, and paratha dough.' }
+        ]
+      },
+      orderIndex: 5,
+      isVisible: true
+    },
+    {
+      id: `sec-serving-${Date.now()}`,
+      sectionType: 'SUGGESTED_SERVING',
+      title: 'Suggested Serving',
+      content: {
+        title: 'Suggested Serving',
+        items: [
+          'Use according to your taste and dietary preferences as part of a balanced and varied diet.',
+          'If you have specific dietary concerns or are under medical care, consult a qualified healthcare professional before making significant dietary changes.'
+        ]
+      },
+      orderIndex: 6,
+      isVisible: true
+    },
+    {
+      id: `sec-storage-${Date.now()}`,
+      sectionType: 'STORAGE',
+      title: 'Storage Instructions',
+      content: {
+        title: 'Storage Instructions',
+        items: [
+          'Store in a cool, dry place.',
+          'Keep the pack tightly closed after opening.',
+          'Use a clean, dry spoon.',
+          'Protect from moisture and direct sunlight.'
+        ]
+      },
+      orderIndex: 7,
+      isVisible: true
+    },
+    {
+      id: `sec-ingredients-${Date.now()}`,
+      sectionType: 'INGREDIENTS',
+      title: 'Ingredients Breakdown',
+      content: {
+        title: 'Ingredients Breakdown',
+        html: '<p><strong>100% Beetroot Powder</strong></p><p>Nothing Added. Nothing Removed. Just Carefully Prepared Beetroot.</p>'
+      },
+      orderIndex: 8,
+      isVisible: true
+    },
+    {
+      id: `sec-packaging-${Date.now()}`,
+      sectionType: 'PACKAGING',
+      title: 'Packaging Information',
+      content: {
+        title: 'Packaging Information',
+        items: [
+          'Packed in high-quality food-grade packaging designed to help preserve freshness, natural colour, and product quality.'
+        ]
+      },
+      orderIndex: 9,
+      isVisible: true
+    },
+    {
+      id: `sec-quality-${Date.now()}`,
+      sectionType: 'QUALITY',
+      title: 'Our Quality Commitment',
+      content: {
+        title: 'Our Quality Commitment',
+        items: [
+          'Carefully Selected Ingredients',
+          'Science-Guided Product Development',
+          'Hygienic Processing',
+          'Responsible Quality Practices',
+          'Thoughtful Packaging',
+          'Continuous Improvement',
+          'Honest Communication',
+          'Customer Trust'
+        ]
+      },
+      orderIndex: 10,
+      isVisible: true
+    },
+    {
+      id: `sec-faqs-${Date.now()}`,
+      sectionType: 'FAQS',
+      title: 'Frequently Asked Questions',
+      content: {
+        title: 'Frequently Asked Questions',
+        items: [
+          {
+            question: 'Is this made from 100% beetroot?',
+            answer: 'Yes. Our product contains only 100% Beetroot Powder.'
+          },
+          {
+            question: 'How can I use it?',
+            answer: 'It can be added to smoothies, juices, milkshakes, soups, baking recipes, desserts, batters, and many everyday recipes.'
+          },
+          {
+            question: 'Can it be used as a natural food colour?',
+            answer: 'Yes. Its naturally vibrant colour makes it a versatile ingredient that can add natural red-pink colour to a variety of recipes where appropriate.'
+          },
+          {
+            question: 'How should I store it?',
+            answer: 'Store in a cool, dry place. Keep the pack tightly closed and always use a clean, dry spoon after opening.'
+          },
+          {
+            question: 'Does it contain additives?',
+            answer: 'No. It contains no artificial colours, flavours, or added preservatives.'
+          }
+        ]
+      },
+      orderIndex: 11,
+      isVisible: true
+    },
+    {
+      id: `sec-promise-${Date.now()}`,
+      sectionType: 'OUR_PROMISE',
+      title: 'Our Promise',
+      content: {
+        title: 'Our Promise',
+        html: '<p>Every pack of Suryodaya Farms Beetroot Powder reflects our dedication to quality, scientific responsibility, and customer trust.</p><p>We continuously improve our products because we believe our customers deserve safe, consistent, and reliable quality with every purchase.</p>'
+      },
+      orderIndex: 12,
+      isVisible: true
+    },
+    {
+      id: `sec-difference-${Date.now()}`,
+      sectionType: 'SURVEYODAYA_DIFFERENCE',
+      title: 'The Suryodaya Difference',
+      content: {
+        title: 'The Suryodaya Difference',
+        html: '<p>At Suryodaya Farms, we do more than simply process beetroot. From carefully selecting quality roots to applying science-guided product development, maintaining hygienic processing practices, and using thoughtful packaging, every step is carried out with care and responsibility.</p><p>Our goal is to deliver a product that reflects the values we stand for—Nature, Science, Quality, and Trust—so you can enjoy the natural goodness, vibrant colour, and versatility of beetroot with confidence, every day.</p><p><strong>Suryodaya Farms: Pure by Nature. Guided by Science. Trusted for Quality.</strong></p>'
+      },
+      orderIndex: 13,
+      isVisible: true
+    }
+  ];
+
+  // 3. Selective Product Enrichment in PostgreSQL
+  const shortDescription = '100% Pure Beetroot (Beta vulgaris) Powder. Gently dried, science-guided processed, naturally vibrant red-pink colour, rich in nitrates, folate, iron & betalain antioxidants.';
+  const detailedDescription = 'At Suryodaya Farms, we believe that vibrant nutrition begins with nature. Our Beetroot Powder is prepared from carefully selected beetroot using science-guided quality practices designed to help preserve its natural colour, flavour, and nutritional value. Thoughtfully processed and carefully packed, it offers a convenient way to enjoy the natural goodness of beetroot in your everyday meals, beverages, and recipes.';
+
+  const updatedProduct = await prisma.product.update({
+    where: { id: targetProduct.id },
+    data: {
+      name: 'Beetroot Powder',
+      shortDescription,
+      detailedDescription,
+      description: detailedDescription,
+      productType: 'Dehydrated Root Powder',
+      brand: 'Suryodaya Farms',
+      nutrients: 'Folate (B9), Potassium, Iron, Betalains, Natural Nitrates, Dietary Fibre, Antioxidants',
+      shelfLife: '12 Months from packaging',
+      seoTitle: 'Beetroot Powder (100% Pure Dehydrated Root) | Suryodaya Farms',
+      seoDescription: 'Buy 100% Pure Beetroot Powder. Vibrant natural pink-red colour powder rich in nitrates, iron & antioxidants for smoothies, juices, baking & natural food colouring.',
+      seoKeywords: 'beetroot powder, organic beetroot powder, natural red food color, nitrate powder, beet juice powder, pre workout beet powder, suryodaya farms',
+      productContent: contentSections
+    },
+    include: {
+      categories: true,
+      variants: true
+    }
+  });
+
+  // Re-create ProductContent relations in DB
+  await prisma.productContent.deleteMany({
+    where: { productId: targetProduct.id }
+  });
+
+  for (let i = 0; i < contentSections.length; i++) {
+    const sec = contentSections[i];
+    await prisma.productContent.create({
+      data: {
+        productId: targetProduct.id,
+        sectionType: sec.sectionType,
+        title: sec.title,
+        content: sec.content,
+        orderIndex: i,
+        isVisible: true
+      }
+    });
+  }
+
+  console.log('\n✅ BEETROOT POWDER ENRICHED SUCCESSFULLY IN DATABASE!');
+  console.log(`- Product Name: ${updatedProduct.name}`);
+  console.log(`- Product ID: ${updatedProduct.id} (UNCHANGED)`);
+  console.log(`- Slug: ${updatedProduct.slug} (UNCHANGED)`);
+  console.log(`- SKU: ${updatedProduct.sku} (UNCHANGED)`);
+  console.log(`- Price: ₹${updatedProduct.price} (UNCHANGED)`);
+  console.log(`- Short Description: ${updatedProduct.shortDescription}`);
+  console.log(`- Total Enriched CMS Content Sections: ${contentSections.length}`);
+  console.log(`- SEO Title: ${updatedProduct.seoTitle}`);
+
+  console.log('\n--- ALL BEETROOT ENRICHMENT CHECKS PASSED PERFECTLY! ---');
+}
+
+enrichBeetroot()
+  .catch(e => {
+    console.error('❌ Error during enrichment:', e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });

@@ -345,13 +345,21 @@ model Notification {
 }
 
 model ContactMessage {
-  id        String   @id @default(uuid())
-  name      String
-  email     String
-  phone     String
-  type      String
-  message   String
-  createdAt DateTime @default(now())
+  id         String   @id @default(uuid())
+  name       String
+  email      String
+  phone      String
+  subject    String   @default("General Enquiry")
+  category   String   @default("General Enquiry")
+  type       String?  @default("General Enquiry")
+  message    String
+  attachment String?
+  status     String   @default("NEW")
+  adminNotes String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("contact_messages")
 }
 
 model SEOSetting {
@@ -511,3 +519,48 @@ enum TicketPriority {
   HIGH
   URGENT
 }
+
+model PartnerRequest {
+  id                  String   @id @default(uuid())
+  name                String
+  companyName         String
+  businessType        String
+  gstNumber           String?
+  email               String
+  phone               String
+  country             String
+  state               String
+  city                String
+  website             String?
+  partnershipType     String
+  yearsInBusiness     String?
+  monthlyRequirement  String?
+  businessDescription String?
+  message             String?
+  status              String   @default("NEW")
+  notes               String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@map("partner_requests")
+}
+
+model SupportRequest {
+  id          String   @id @default(uuid())
+  name        String
+  email       String
+  phone       String
+  subject     String
+  category    String
+  message     String
+  orderNumber String?
+  attachment  String?
+  status      String   @default("NEW")
+  adminNotes  String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("support_requests")
+}
+
+

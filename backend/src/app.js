@@ -103,6 +103,9 @@ import adminRoutes from './routes/adminRoutes.js';
 import publicRoutes from './routes/publicRoutes.js';
 import supportRoutes from './routes/supportRoutes.js';
 import shiprocketRoutes from './routes/shiprocketRoutes.js';
+import partnerRoutes from './routes/partnerRoutes.js';
+import supportRequestRoutes from './routes/supportRequestRoutes.js';
+import contactRoutes from './routes/contactRoutes.js';
 
 app.use('/api/auth', authRoutes);            // Sign-in, Register, Profile, Saved Addresses
 app.use('/api/auth', fast2smsAuthRoutes);     // Fast2SMS OTP Auth & WhatsApp endpoints (/api/auth/send-otp, /api/auth/verify-otp, etc.)
@@ -117,6 +120,12 @@ app.use('/api/admin', adminRoutes);          // Dashboard metrics and administra
 app.use('/api/public', publicRoutes);        // Blog chronicle lists, testimonials, contact submit
 app.use('/api/support', supportRoutes);      // Order support and customer help tickets
 app.use('/api/shiprocket', shiprocketRoutes); // Shiprocket Logistics APIs & Webhooks
+app.use('/api', partnerRoutes);              // Become a Partner public submission and admin management routes
+app.use('/api', supportRequestRoutes);       // FAQ & Customer Support module routes
+app.use('/api', contactRoutes);              // Contact Us module routes
+
+
+
 
 // 6. Global Error Handling Middleware
 app.use((err, req, res, next) => {

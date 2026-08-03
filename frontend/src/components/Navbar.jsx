@@ -49,6 +49,8 @@ const Navbar = memo(function Navbar() {
     { label: 'Home', path: '/' },
     { label: 'About Us', path: '/about' },
     { label: 'Products', path: '/products' },
+    { label: 'FAQs', path: '/faq' },
+    { label: 'Become a Partner', path: '/become-a-partner' },
     { label: 'Contact', path: '/contact' },
   ];
 
