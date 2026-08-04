@@ -1098,8 +1098,6 @@ router.put('/orders/:id/status', async (req, res, next) => {
     });
 
     // Trigger Meta WhatsApp Notifications based on Order Status (order_packed, order_shipped)
-    const normStatus = (status || '').toString().trim().toUpperCase();
-
     if (normStatus === 'PACKED' || normStatus === 'ORDER_PACKED') {
       whatsappService.sendOrderPacked(updated).catch(err => console.error('[WhatsApp Service] Order Packed error:', err));
     } else if (normStatus === 'SHIPPED' || normStatus === 'ORDER_SHIPPED') {
