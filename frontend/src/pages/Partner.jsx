@@ -471,8 +471,8 @@ export default function Partner() {
       {/* 11. JOIN HANDS WITH SURYODAYA FARMS & APPLICATION FORM */}
       <section id="partner-form-section" className="py-28 sm:py-36 lg:py-40 px-4 sm:px-6 lg:px-12 bg-[#2F3B0C] text-white relative overflow-hidden dark-section">
         <div className="max-w-5xl mx-auto space-y-16 text-center relative z-10">
-          <div className="space-y-6 max-w-4xl mx-auto">
-            <h2 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight">
+          <div className="space-y-6 max-w-5xl mx-auto">
+            <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white leading-tight whitespace-nowrap">
               Join Hands with Suryodaya Farms
             </h2>
             <p className="text-white/90 text-base sm:text-lg lg:text-xl leading-relaxed font-sans font-normal">
