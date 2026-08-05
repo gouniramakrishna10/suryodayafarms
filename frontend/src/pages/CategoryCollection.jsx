@@ -149,7 +149,7 @@ export default function CategoryCollection() {
               
               <div className="relative text-white space-y-2 max-w-2xl text-left">
                 <span className="font-sans text-[9px] font-extrabold tracking-[0.3em] uppercase text-[#C68A2B]">
-                  Suryodaya Organic Harvest
+                  PURE • NATURAL • NUTRITIOUS
                 </span>
                 <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold leading-tight drop-shadow-sm text-white">
                   {category.name}

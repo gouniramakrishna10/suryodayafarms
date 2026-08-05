@@ -635,7 +635,7 @@ export default function Home() {
             {/* Section Header */}
             <div className="text-center max-w-xl mx-auto space-y-4 mb-16">
               <span className="text-xs font-bold uppercase tracking-widest text-[#C68A2B] bg-[#C68A2B]/10 px-3.5 py-1 rounded-full inline-block">
-                {settings.homepage_section_badge_categories || "Organic Harvest"}
+                {settings.homepage_section_badge_categories || "PURE • NATURAL • NUTRITIOUS"}
               </span>
               <h2 className="font-serif text-3xl md:text-5xl font-semibold text-[#2F3B0C]">
                 {settings.homepage_section_title_categories || "Shop By Category"}
@@ -766,7 +766,7 @@ export default function Home() {
           {/* Section Header */}
           <div className="text-center max-w-xl mx-auto space-y-4 mb-16">
             <span className="text-xs font-bold uppercase tracking-widest text-[#C68A2B] bg-[#C68A2B]/10 px-3.5 py-1 rounded-full inline-block">
-              {settings.homepage_section_badge_categories || "Organic Harvest"}
+              {settings.homepage_section_badge_categories || "PURE • NATURAL • NUTRITIOUS"}
             </span>
             <h2 className="font-serif text-3xl md:text-5xl font-semibold text-[#2F3B0C]">
               {settings.homepage_section_title_categories || "Shop By Category"}
