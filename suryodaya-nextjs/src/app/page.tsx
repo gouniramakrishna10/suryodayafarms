@@ -1340,8 +1340,8 @@ export default function LuxuryStorefrontPage() {
                 {settings.companyName.split(' ')[0]}
               </span>
             </div>
-            <p className="text-xxs text-[#F9F6F0]/70 leading-relaxed font-light">
-              Restoring traditional crop ecosystems, supporting dryland farmers, and serving premium unrefined Vedic staples. We believe that soil health is direct human health.
+            <p className="text-xs text-[#F9F6F0]/80 leading-relaxed font-normal">
+              Rooted in nature and guided by science, we produce pure, nutrient-rich superfoods with uncompromising quality. Carefully crafted to support healthier lives and promote natural wellness.
             </p>
             <div className="space-y-1 text-xxs font-semibold text-stone-300">
               <p>🏡 Address: {settings.address}</p>

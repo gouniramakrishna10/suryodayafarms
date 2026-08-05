@@ -68,6 +68,9 @@ const Footer = memo(function Footer() {
               Pure • Natural • Nutritious
             </p>
           </div>
+          <p className="font-sans text-xs sm:text-sm text-light-beige/80 leading-relaxed font-normal">
+            Rooted in nature and guided by science, we produce pure, nutrient-rich superfoods with uncompromising quality. Carefully crafted to support healthier lives and promote natural wellness.
+          </p>
           <div className="flex items-center gap-4 mt-2">
             <a href={settings.socialInstagram} target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-primary-green/30 flex items-center justify-center text-light-beige hover:bg-sunrise-gold hover:text-dark-olive transition-all duration-300">
               <FiInstagram size={18} />
