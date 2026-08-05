@@ -194,7 +194,7 @@ export default function Partner() {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="font-serif text-4xl sm:text-6xl lg:text-7xl font-bold text-[#2F3B0C] leading-[1.12] tracking-tight max-w-4xl mx-auto"
+            className="font-serif text-2xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-[#2F3B0C] leading-[1.12] tracking-tight max-w-6xl mx-auto whitespace-nowrap"
           >
             Partner with <span className="text-[#4E641A]">Suryodaya Farms</span>
           </motion.h1>
