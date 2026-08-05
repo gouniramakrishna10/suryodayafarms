@@ -410,26 +410,63 @@ export default function Contact() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 items-stretch">
           
           {/* Business Enquiries Highlighted Section */}
-          <div className="bg-[#2F3B0C] text-white rounded-[36px] p-9 sm:p-14 shadow-xl text-left space-y-8 relative overflow-hidden flex flex-col justify-between h-full min-h-[460px]">
+          <div className="bg-[#2F3B0C] text-white rounded-[36px] p-8 sm:p-10 lg:p-12 shadow-xl text-left space-y-6 relative overflow-hidden flex flex-col justify-between h-full">
             <div className="absolute -right-28 -bottom-28 w-96 h-96 bg-[#4E641A]/30 rounded-full blur-3xl pointer-events-none" />
             
-            <div className="space-y-5 relative z-10">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 text-sunrise-gold text-xs font-semibold uppercase tracking-wider">
-                <FiBriefcase />
-                <span>Commercial Partnerships</span>
-              </div>
+            <div className="space-y-6 relative z-10">
+              <div className="space-y-3">
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 text-[#C68A2B] text-xs font-semibold uppercase tracking-wider">
+                  <FiBriefcase />
+                  <span>Commercial Partnerships</span>
+                </div>
 
-              <h2 className="font-serif text-3xl sm:text-4xl font-bold leading-tight">Business Enquiries</h2>
+                <h2 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight text-white">
+                  Commercial Partnerships
+                </h2>
+              </div>
               
-              <p className="text-stone-300 text-sm sm:text-base leading-relaxed font-sans font-normal">
+              <p className="text-white/85 text-xs sm:text-sm leading-relaxed font-sans font-normal">
                 For wholesale, distribution, retail partnerships, institutional supply, export opportunities, private label manufacturing, and strategic collaborations, please contact our Business Development Team.
               </p>
+
+              {/* Key Partnership Opportunities List */}
+              <div className="space-y-2.5 pt-2 border-t border-white/15">
+                <span className="font-sans text-[10px] font-bold uppercase tracking-widest text-[#C68A2B] block mb-3">
+                  Key Partnership Opportunities
+                </span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs font-sans text-white/90">
+                  <div className="flex items-center gap-2">
+                    <FiCheckCircle className="text-[#C68A2B] shrink-0 text-sm" />
+                    <span>Wholesale Distribution</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <FiCheckCircle className="text-[#C68A2B] shrink-0 text-sm" />
+                    <span>Retail Partnerships</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <FiCheckCircle className="text-[#C68A2B] shrink-0 text-sm" />
+                    <span>Institutional Supply</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <FiCheckCircle className="text-[#C68A2B] shrink-0 text-sm" />
+                    <span>Export Opportunities</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <FiCheckCircle className="text-[#C68A2B] shrink-0 text-sm" />
+                    <span>Private Label Manufacturing</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <FiCheckCircle className="text-[#C68A2B] shrink-0 text-sm" />
+                    <span>Strategic Collaborations</span>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div className="pt-6 relative z-10">
               <Link
                 to="/become-a-partner"
-                className="inline-flex items-center gap-3 bg-[#4E641A] hover:bg-white hover:text-[#2F3B0C] text-white font-sans text-xs sm:text-sm font-bold tracking-widest uppercase px-9 py-4 rounded-2xl shadow-lg transition-all duration-200"
+                className="inline-flex items-center gap-3 bg-[#4E641A] hover:bg-white hover:text-[#2F3B0C] text-white font-sans text-xs sm:text-sm font-bold tracking-widest uppercase px-8 py-4 rounded-2xl shadow-lg transition-all duration-300"
               >
                 <span>Become a Partner</span>
                 <FiArrowRight />
