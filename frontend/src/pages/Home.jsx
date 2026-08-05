@@ -1560,7 +1560,7 @@ export default function Home() {
 
   const renderTrustSection = () => {
     return (
-      <section key="trust" className="bg-[#2F3B0C] text-[#F9F6F0] py-16 px-6 md:px-12 relative overflow-hidden">
+      <section key="trust" className="dark-section bg-[#2F3B0C] text-[#F9F6F0] py-16 px-6 md:px-12 relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(#4E641A_1.5px,transparent_1.5px)] [background-size:24px_24px] opacity-15" />
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="text-center max-w-2xl mx-auto space-y-3 mb-12">

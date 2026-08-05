@@ -469,7 +469,7 @@ export default function Faq() {
 
       {/* STILL NEED HELP CTA SECTION */}
       <section className="py-16 px-4 sm:px-6 lg:px-12 max-w-5xl mx-auto my-8">
-        <div className="bg-[#2F3B0C] text-white rounded-[36px] p-8 sm:p-14 shadow-xl text-center space-y-6 relative overflow-hidden">
+        <div className="dark-section bg-[#2F3B0C] text-white rounded-[36px] p-8 sm:p-14 shadow-xl text-center space-y-6 relative overflow-hidden">
           <div className="absolute -right-24 -bottom-24 w-80 h-80 bg-[#4E641A]/30 rounded-full blur-3xl pointer-events-none" />
           
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-sunrise-gold text-xs font-semibold uppercase tracking-wider mx-auto">

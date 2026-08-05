@@ -47,7 +47,7 @@ const Footer = memo(function Footer() {
   ];
 
   return (
-    <footer className="bg-dark-olive text-cream-bg pt-10 pb-6 px-4 md:pt-16 md:pb-8 md:px-12 border-t border-primary-green/20">
+    <footer className="dark-section bg-dark-olive text-cream-bg pt-10 pb-6 px-4 md:pt-16 md:pb-8 md:px-12 border-t border-primary-green/20">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-12 mb-8 md:mb-16">
         
         {/* Brand Section */}

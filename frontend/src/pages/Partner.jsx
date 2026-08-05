@@ -18,7 +18,9 @@ import {
   FiPhoneCall,
   FiMail,
   FiClock,
-  FiAlertCircle
+  FiAlertCircle,
+  FiCompass,
+  FiStar
 } from 'react-icons/fi';
 import { GiSprout, GiSun, GiWheat, GiHand } from 'react-icons/gi';
 import api from '../utils/api';
@@ -123,41 +125,41 @@ export default function Partner() {
     }
   };
 
-  // Content Arrays
+  // Structured client lists with associated visual icons for clean grid rendering
   const partnershipOpportunities = [
-    { title: 'Distribution Partnerships', desc: 'Expand Suryodaya Farms’ pristine Vedic staples across regional, state, and nationwide distribution networks.', icon: FiTruck },
-    { title: 'Wholesale Supply', desc: 'Bulk procurement and direct farm supply for grain merchants, food traders, and commercial aggregators.', icon: FiBox },
-    { title: 'Retail & Supermarket Partnerships', desc: 'Premium shelf placement and co-branded retail programs for organic chains and modern trade stores.', icon: FiBriefcase },
-    { title: 'Institutional & Corporate Supply', desc: 'Healthy, chemical-free nutrition programs tailored for corporate cafeterias, wellness retreats, and educational institutions.', icon: FiUsers },
-    { title: 'Export Opportunities', desc: 'International distribution of ISO-standard heirloom millets, cold-pressed oils, and Vedic Bilona Ghee worldwide.', icon: FiGlobe },
-    { title: 'Private Label & Contract Manufacturing', desc: 'Custom white-label packaging and contract processing adhering to clean-room hygienic food standards.', icon: FiLayers },
-    { title: 'Strategic Product Collaborations', desc: 'Co-creating functional health foods, ancient grain blends, and natural wellness innovations.', icon: GiSprout }
+    { title: 'Distribution Partnerships', icon: FiTruck },
+    { title: 'Wholesale Supply', icon: FiBox },
+    { title: 'Retail & Supermarket Partnerships', icon: FiBriefcase },
+    { title: 'Institutional & Corporate Supply', icon: FiUsers },
+    { title: 'Export Opportunities', icon: FiGlobe },
+    { title: 'Private Label & Contract Manufacturing', icon: FiLayers },
+    { title: 'Product Development & Strategic Collaborations', icon: GiSprout }
   ];
 
-  const whyPartnerWithUs = [
-    { title: 'Premium-Quality Natural Products', desc: '100% heirloom seeds, unadulterated processing, and chemical-free soil nutrition.' },
-    { title: 'Science-Guided Product Development', desc: 'Preserving ancient Vedic wisdom with modern enzyme testing and strict quality protocols.' },
-    { title: 'Carefully Selected Ingredients', desc: 'Hand-sorted grains and seed selections from certified biodiverse farms.' },
-    { title: 'Hygienic Manufacturing', desc: 'Low-temperature processing under 35°C in clean-room certified processing units.' },
-    { title: 'Food Grade Packaging', desc: 'Aroma-sealed, moisture-barrier food grade packaging for extended shelf stability.' },
-    { title: 'Ethical Business Practices', desc: 'Transparent pricing, fair trade farmer support, and dependable commercial contracts.' },
-    { title: 'Reliable Customer Support', desc: 'Dedicated partner relationship managers and quick inquiry turnaround times.' },
-    { title: 'Continuous Product Innovation', desc: 'Regular releases of novel millet blends, health superfoods, and cold-pressed oils.' },
-    { title: 'Long-Term Business Relationships', desc: 'Building sustainable commercial growth founded on mutual respect and shared profitability.' },
-    { title: 'Sustainable Growth', desc: 'Ecological responsibility aligned with scalable commercial success.' }
+  const whyPartnerItems = [
+    'Premium-Quality Natural Products',
+    'Science-Guided Product Development',
+    'Carefully Selected Ingredients',
+    'Hygienic Processing & Quality-Focused Manufacturing',
+    'Food-Grade Packaging',
+    'Ethical & Transparent Business Practices',
+    'Reliable Customer Service',
+    'Continuous Product Improvement',
+    'Long-Term Business Relationships',
+    'Sustainable Growth through Mutual Success'
   ];
 
-  const ourPromises = [
+  const promiseValues = [
     'Respect for Nature',
     'Science-Guided Product Development',
-    'Quality Without Compromise',
-    'Honest Relationships',
+    'Quality without Compromise',
+    'Honest & Transparent Relationships',
     'Continuous Innovation',
     'Sustainable Growth',
     'Shared Success'
   ];
 
-  const whatYouCanExpect = [
+  const expectItems = [
     'Consistent Product Quality',
     'Responsible Quality Management',
     'Reliable Supply Support',
@@ -170,558 +172,557 @@ export default function Partner() {
   ];
 
   return (
-    <div className="bg-[#F9F6F0] min-h-screen pt-24 pb-16 font-sans text-[#2F3B0C]">
+    <div className="bg-[#F9F6F0] min-h-screen font-sans text-[#2F3B0C] selection:bg-[#4E641A] selection:text-white">
       
-      {/* HERO SECTION */}
-      <section className="relative py-16 sm:py-24 px-4 sm:px-6 lg:px-12 bg-gradient-to-b from-[#F4EFE6] via-[#F9F6F0] to-[#F9F6F0] overflow-hidden border-b border-[#EDE7D9]/60">
-        <div className="absolute -top-32 -left-32 w-96 h-96 bg-[#4E641A]/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute top-1/2 -right-32 w-96 h-96 bg-[#B8833E]/10 rounded-full blur-3xl pointer-events-none" />
+      {/* 1. HERO SECTION */}
+      <section className="relative pt-32 sm:pt-40 lg:pt-48 pb-24 sm:pb-32 lg:pb-36 px-4 sm:px-6 lg:px-12 bg-gradient-to-b from-[#F4EFE6] via-[#FAF7F2] to-[#F9F6F0] overflow-hidden border-b border-[#EDE7D9]">
+        <div className="absolute -top-48 -left-48 w-[540px] h-[540px] bg-[#4E641A]/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-1/2 -right-48 w-[540px] h-[540px] bg-[#B8833E]/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute inset-0 bg-[radial-gradient(#4E641A_1px,transparent_1px)] [background-size:32px_32px] opacity-10 pointer-events-none" />
 
-        <div className="max-w-5xl mx-auto text-center relative z-10 space-y-6">
+        <div className="max-w-5xl mx-auto text-center relative z-10 space-y-8">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-[#4E641A]/10 border border-[#4E641A]/20 text-[#4E641A] text-xs font-semibold uppercase tracking-wider mx-auto"
+            className="inline-flex items-center gap-2.5 px-5 py-2 rounded-full bg-[#4E641A]/10 border border-[#4E641A]/20 backdrop-blur-md text-[#4E641A] text-xs sm:text-sm font-semibold uppercase tracking-widest mx-auto shadow-xs"
           >
-            <GiSun className="text-[#B8833E] text-base" />
+            <GiSun className="text-[#B8833E] text-lg" />
             <span>Growing Together. Building a Healthier Future.</span>
           </motion.div>
 
           <motion.h1
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-[#2F3B0C] leading-tight"
+            transition={{ delay: 0.1 }}
+            className="font-serif text-4xl sm:text-6xl lg:text-7xl font-bold text-[#2F3B0C] leading-[1.12] tracking-tight max-w-4xl mx-auto"
           >
             Partner with <span className="text-[#4E641A]">Suryodaya Farms</span>
           </motion.h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-stone-600 text-base sm:text-lg max-w-3xl mx-auto leading-relaxed"
-          >
-            At Suryodaya Farms, we believe meaningful partnerships are built on trust, shared values, integrity, and long-term success. Whether you're a distributor, retailer, wholesaler, exporter, institution, entrepreneur, or corporate buyer, we welcome opportunities to grow together.
-          </motion.p>
-
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="flex flex-wrap items-center justify-center gap-4 pt-4"
+            transition={{ delay: 0.2 }}
+            className="flex items-center justify-center pt-4"
           >
             <button
               onClick={scrollToForm}
-              className="inline-flex items-center gap-3 bg-[#4E641A] hover:bg-[#2F3B0C] text-white font-sans text-xs sm:text-sm font-bold tracking-widest uppercase px-8 py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 cursor-pointer"
+              className="inline-flex items-center gap-3.5 bg-[#4E641A] hover:bg-[#2F3B0C] text-white font-sans text-xs sm:text-sm font-bold tracking-widest uppercase px-10 py-5 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 active:scale-[0.99] cursor-pointer"
             >
-              <span>Become a Partner</span>
-              <FiArrowRight className="text-base" />
+              <span>Submit Partnership Request</span>
+              <FiArrowRight className="text-lg" />
             </button>
-
-            <Link
-              to="/contact"
-              className="inline-flex items-center gap-3 bg-white hover:bg-[#F4EFE6] text-[#2F3B0C] border border-[#EDE7D9] font-sans text-xs sm:text-sm font-bold tracking-widest uppercase px-8 py-4 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300"
-            >
-              <span>Contact Our Team</span>
-            </Link>
           </motion.div>
         </div>
       </section>
 
-      {/* SECTION 1: PARTNERSHIP OPPORTUNITIES */}
-      <section className="py-16 sm:py-24 px-4 sm:px-6 lg:px-12 max-w-7xl mx-auto">
-        <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
-          <span className="font-sans text-xs font-semibold text-[#B8833E] uppercase tracking-widest">Collaborative Avenues</span>
-          <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#2F3B0C]">Partnership Opportunities</h2>
-          <p className="text-stone-600 text-sm">Explore tailored channels to bring natural, unadulterated staples to your customers.</p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {partnershipOpportunities.map((opp, idx) => {
-            const Icon = opp.icon;
-            return (
-              <motion.div
-                key={opp.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: idx * 0.05 }}
-                className="bg-white border border-[#EDE7D9] p-8 rounded-3xl shadow-sm hover:shadow-xl hover:border-[#4E641A]/40 transition-all duration-300 group flex flex-col justify-between"
-              >
-                <div className="space-y-4">
-                  <div className="w-14 h-14 rounded-2xl bg-[#4E641A]/10 text-[#4E641A] flex items-center justify-center text-2xl group-hover:bg-[#4E641A] group-hover:text-white transition-colors duration-300">
-                    <Icon />
-                  </div>
-                  <h3 className="font-serif text-xl font-bold text-[#2F3B0C] group-hover:text-[#4E641A] transition-colors">{opp.title}</h3>
-                  <p className="text-stone-600 text-sm leading-relaxed">{opp.desc}</p>
-                </div>
-                <div className="pt-6 border-t border-[#EDE7D9]/50 mt-6 flex items-center gap-2 text-xs font-bold text-[#4E641A] uppercase tracking-wider">
-                  <span>Explore Collaboration</span>
-                  <FiArrowRight className="group-hover:translate-x-1 transition-transform" />
-                </div>
-              </motion.div>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* SECTION 2: WHY PARTNER WITH US */}
-      <section className="py-16 sm:py-24 px-4 sm:px-6 lg:px-12 bg-[#FAF7F2] border-y border-[#EDE7D9]">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
-            <span className="font-sans text-xs font-semibold text-[#4E641A] uppercase tracking-widest">Our Foundation</span>
-            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#2F3B0C]">Why Partner With Us</h2>
-            <p className="text-stone-600 text-sm">Built on relentless product standards, ethical farming, and long-term trust.</p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
-            {whyPartnerWithUs.map((item, idx) => (
-              <motion.div
-                key={item.title}
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.3, delay: idx * 0.04 }}
-                className="bg-white border border-[#EDE7D9] p-6 rounded-2xl shadow-xs hover:border-[#4E641A] hover:shadow-md transition-all duration-300 text-left flex flex-col justify-between"
-              >
-                <div>
-                  <div className="w-8 h-8 rounded-full bg-[#B8833E]/10 text-[#B8833E] flex items-center justify-center text-sm font-bold mb-3">
-                    <FiCheck />
-                  </div>
-                  <h4 className="font-serif text-base font-bold text-[#2F3B0C] mb-2 leading-snug">{item.title}</h4>
-                  <p className="text-stone-500 text-xs leading-relaxed">{item.desc}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* SECTION 3: OUR PARTNERSHIP PHILOSOPHY */}
-      <section className="py-20 px-4 sm:px-6 lg:px-12 max-w-5xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="bg-gradient-to-br from-[#2F3B0C] to-[#1E2707] text-white p-10 sm:p-16 rounded-[40px] shadow-2xl relative overflow-hidden text-center space-y-6"
-        >
-          <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none" />
-          <GiSprout className="text-4xl text-[#B8833E] mx-auto" />
-          
-          <span className="font-sans text-xs font-semibold uppercase tracking-widest text-[#B8833E] block">Our Partnership Philosophy</span>
-
-          <blockquote className="font-serif text-xl sm:text-2xl lg:text-3xl font-light italic leading-relaxed text-[#F9F6F0] max-w-3xl mx-auto">
-            "A true partnership is not simply about doing business together. It is about growing together, learning together, creating lasting value, and building relationships founded on trust, integrity, and shared success."
-          </blockquote>
-
-          <div className="w-16 h-0.5 bg-[#B8833E] mx-auto rounded-full" />
-          <span className="font-sans text-xs font-semibold tracking-wider text-stone-300 block">Suryodaya Farms Leadership Core</span>
-        </motion.div>
-      </section>
-
-      {/* SECTION 4: OUR SHARED VISION */}
-      <section className="py-16 sm:py-24 px-4 sm:px-6 lg:px-12 max-w-6xl mx-auto border-b border-[#EDE7D9]">
-        <div className="bg-white border border-[#EDE7D9] rounded-[36px] p-8 sm:p-14 shadow-lg grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-          <div className="lg:col-span-5 relative">
-            <div className="aspect-4/3 rounded-3xl overflow-hidden shadow-md border border-[#EDE7D9]">
-              <img
-                src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80&w=800"
-                alt="Suryodaya Organic Farm Fields"
-                className="w-full h-full object-cover transform hover:scale-105 transition duration-700"
-              />
-            </div>
-            <div className="absolute -bottom-5 -right-5 bg-[#4E641A] text-white p-4 rounded-2xl shadow-lg font-serif text-xs font-bold uppercase tracking-wider hidden sm:block">
-              Organic Farming Excellence
-            </div>
-          </div>
-
-          <div className="lg:col-span-7 space-y-5 text-left">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#B8833E]/10 text-[#B8833E] text-xs font-semibold uppercase tracking-wider">
-              <GiSun />
-              <span>Forward Together</span>
-            </div>
-            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#2F3B0C]">Our Shared Vision</h2>
-            <p className="font-serif text-lg text-stone-700 italic leading-relaxed">
-              "We envision a future where responsible businesses work together to make premium-quality natural nutrition more accessible, inspire healthier lifestyles, strengthen communities, and create lasting value for future generations."
+      {/* 2. INTRODUCTION */}
+      <section className="py-24 sm:py-32 lg:py-36 px-4 sm:px-6 lg:px-12 bg-white border-b border-[#EDE7D9]">
+        <div className="max-w-4xl mx-auto space-y-8 text-left">
+          <div className="w-16 h-1 bg-[#4E641A] rounded-full mb-8" />
+          <div className="space-y-6 text-stone-700 text-base sm:text-lg lg:text-xl font-sans leading-[1.8] font-normal">
+            <p className="font-serif text-xl sm:text-2xl lg:text-3xl text-[#2F3B0C] font-semibold leading-relaxed">
+              At Suryodaya Farms, we believe that the strongest partnerships are built on trust, shared values, mutual respect, integrity, and a common purpose.
+            </p>
+            <p>
+              We warmly welcome distributors, retailers, wholesalers, exporters, institutions, corporate buyers, entrepreneurs, and strategic business partners to join us on our journey.
+            </p>
+            <p>
+              Together, we can achieve more than business success. We can make premium-quality natural nutrition more accessible, inspire healthier lifestyles, strengthen healthier communities, and create lasting value for future generations.
+            </p>
+            <p className="font-bold text-[#2F3B0C] pt-2 border-l-4 border-[#B8833E] pl-6 italic">
+              We believe that when people work together with honesty, responsibility, and a shared vision, everyone grows—our partners, our customers, our communities, and our future.
             </p>
           </div>
         </div>
       </section>
 
-      {/* SECTION 5: OUR PROMISE */}
-      <section className="py-16 sm:py-24 px-4 sm:px-6 lg:px-12 max-w-7xl mx-auto">
-        <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
-          <span className="font-sans text-xs font-semibold text-[#4E641A] uppercase tracking-widest">Unwavering Commitments</span>
-          <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#2F3B0C]">Our Promise</h2>
-          <p className="text-stone-600 text-sm">Every agreement and product batch is anchored in these seven core principles.</p>
-        </div>
+      {/* 3. PARTNERSHIP OPPORTUNITIES */}
+      <section className="py-24 sm:py-32 lg:py-36 px-4 sm:px-6 lg:px-12 bg-[#FAF7F2] border-b border-[#EDE7D9]">
+        <div className="max-w-7xl mx-auto space-y-16">
+          <div className="text-center max-w-3xl mx-auto space-y-4">
+            <span className="font-sans text-xs font-bold text-[#B8833E] uppercase tracking-widest">Collaborative Avenues</span>
+            <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">Partnership Opportunities</h2>
+            <p className="text-stone-600 text-base sm:text-lg font-sans">We welcome collaborations in the following areas:</p>
+          </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {ourPromises.map((promise, idx) => (
-            <motion.div
-              key={promise}
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.3, delay: idx * 0.05 }}
-              className="bg-white border border-[#EDE7D9] p-6 rounded-2xl shadow-xs hover:border-[#4E641A] hover:shadow-md transition duration-300 flex items-center gap-4 text-left"
-            >
-              <div className="w-10 h-10 rounded-xl bg-[#4E641A]/10 text-[#4E641A] shrink-0 flex items-center justify-center font-bold">
-                <FiCheckCircle size={20} />
-              </div>
-              <span className="font-serif text-base font-bold text-[#2F3B0C]">{promise}</span>
-            </motion.div>
-          ))}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
+            {partnershipOpportunities.map((opp, idx) => {
+              const Icon = opp.icon;
+              return (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: idx * 0.05 }}
+                  className="bg-white border border-[#EDE7D9] p-8 sm:p-10 rounded-[28px] shadow-xs hover:shadow-xl hover:border-[#4E641A]/50 transition-all duration-300 group flex flex-col justify-between"
+                >
+                  <div className="space-y-6">
+                    <div className="w-14 h-14 rounded-2xl bg-[#4E641A]/10 text-[#4E641A] flex items-center justify-center text-2xl group-hover:bg-[#4E641A] group-hover:text-white transition-colors duration-300 shadow-inner">
+                      <Icon />
+                    </div>
+                    <h3 className="font-serif text-xl sm:text-2xl font-bold text-[#2F3B0C] group-hover:text-[#4E641A] transition-colors leading-snug">
+                      {opp.title}
+                    </h3>
+                  </div>
+                  <div className="pt-8 border-t border-[#EDE7D9]/60 mt-8 flex items-center gap-2 text-xs font-bold text-[#4E641A] uppercase tracking-wider">
+                    <span>Explore Collaboration</span>
+                    <FiArrowRight className="group-hover:translate-x-1.5 transition-transform" />
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
         </div>
       </section>
 
-      {/* SECTION 6: WHAT YOU CAN EXPECT */}
-      <section className="py-16 sm:py-24 px-4 sm:px-6 lg:px-12 bg-[#FAF7F2] border-t border-[#EDE7D9]">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
-            <span className="font-sans text-xs font-semibold text-[#B8833E] uppercase tracking-widest">Operational Standards</span>
-            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#2F3B0C]">What You Can Expect</h2>
-            <p className="text-stone-600 text-sm">A seamless, reliable partnership experience engineered for commercial performance.</p>
+      {/* 4. WHY PARTNER WITH SURYODAYA FARMS? */}
+      <section className="py-24 sm:py-32 lg:py-36 px-4 sm:px-6 lg:px-12 bg-white border-b border-[#EDE7D9]">
+        <div className="max-w-7xl mx-auto space-y-16">
+          <div className="text-center max-w-3xl mx-auto space-y-4">
+            <span className="font-sans text-xs font-bold text-[#4E641A] uppercase tracking-widest">Our Foundation</span>
+            <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">Why Partner with Suryodaya Farms?</h2>
+            <p className="text-stone-700 text-base sm:text-lg leading-relaxed font-sans font-normal">
+              When you choose Suryodaya Farms, you gain more than a supplier—you gain a reliable business partner committed to long-term success.
+            </p>
+            <p className="text-[#4E641A] text-sm sm:text-base font-bold uppercase tracking-wider pt-2">
+              We are committed to providing:
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {whatYouCanExpect.map((item, idx) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left max-w-5xl mx-auto">
+            {whyPartnerItems.map((item, idx) => (
               <motion.div
-                key={item}
+                key={idx}
                 initial={{ opacity: 0, scale: 0.98 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.3, delay: idx * 0.04 }}
-                className="bg-white border border-[#EDE7D9] p-6 rounded-2xl shadow-xs flex items-center gap-3.5 text-left"
+                transition={{ duration: 0.3, delay: idx * 0.03 }}
+                className="bg-[#FAF7F2] border border-[#EDE7D9] p-6 sm:p-8 rounded-[24px] shadow-xs flex items-center gap-4 hover:border-[#4E641A] hover:bg-white hover:shadow-md transition-all duration-300"
               >
-                <div className="w-3 h-3 rounded-full bg-[#B8833E] shrink-0" />
-                <span className="font-serif text-base font-semibold text-[#2F3B0C]">{item}</span>
+                <div className="w-9 h-9 rounded-full bg-[#4E641A]/10 text-[#4E641A] flex items-center justify-center text-base font-bold shrink-0 shadow-inner">
+                  ✔
+                </div>
+                <span className="font-serif text-base sm:text-lg font-bold text-[#2F3B0C]">{item}</span>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* SECTION 7: JOIN HANDS WITH SURYODAYA FARMS (CTA BANNER) */}
-      <section className="py-16 px-4 sm:px-6 lg:px-12 max-w-6xl mx-auto my-8">
-        <div className="bg-[#2F3B0C] text-white rounded-[36px] p-8 sm:p-14 shadow-xl text-center space-y-6 relative overflow-hidden">
-          <div className="absolute -right-20 -bottom-20 w-80 h-80 bg-[#4E641A]/30 rounded-full blur-3xl pointer-events-none" />
-          <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold">Join Hands With Suryodaya Farms</h2>
-          <p className="text-stone-300 text-sm sm:text-base max-w-2xl mx-auto">
-            Take the first step towards building a resilient, high-growth commercial partnership rooted in natural purity.
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
-            <button
-              onClick={scrollToForm}
-              className="bg-[#4E641A] hover:bg-white hover:text-[#2F3B0C] text-white font-sans text-xs sm:text-sm font-bold tracking-widest uppercase px-8 py-4 rounded-2xl shadow-lg transition duration-300 cursor-pointer"
-            >
-              Become a Partner
-            </button>
-            <Link
-              to="/contact"
-              className="bg-transparent hover:bg-white/10 text-white border border-white/30 font-sans text-xs sm:text-sm font-bold tracking-widest uppercase px-8 py-4 rounded-2xl transition duration-300"
-            >
-              Contact Us
-            </Link>
+      {/* 5. LET'S BEGIN THE JOURNEY TOGETHER */}
+      <section className="py-24 sm:py-32 lg:py-36 px-4 sm:px-6 lg:px-12 bg-[#F4EFE6] border-b border-[#EDE7D9]">
+        <div className="max-w-4xl mx-auto">
+          <div className="bg-white border border-[#EDE7D9] rounded-[40px] p-10 sm:p-16 shadow-lg text-center space-y-8 relative overflow-hidden">
+            <div className="w-16 h-16 rounded-2xl bg-[#B8833E]/10 text-[#B8833E] flex items-center justify-center text-3xl mx-auto">
+              <GiSprout />
+            </div>
+            <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">Let's Begin the Journey Together</h2>
+            
+            <div className="space-y-6 text-stone-700 text-base sm:text-lg leading-relaxed font-sans max-w-2xl mx-auto">
+              <p>
+                Whether you are an established organization or an emerging entrepreneur, we would be delighted to explore opportunities to work with you.
+              </p>
+              <p>
+                If our values align with yours, let us build a partnership founded on trust, quality, innovation, responsibility, and long-term success.
+              </p>
+              <p className="font-bold text-[#2F3B0C] text-lg sm:text-xl pt-2">
+                Our team looks forward to understanding your business goals and exploring opportunities to grow together.
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* PARTNER APPLICATION FORM SECTION */}
-      <section id="partner-form-section" className="py-16 sm:py-24 px-4 sm:px-6 lg:px-12 max-w-4xl mx-auto">
-        <div className="bg-white border border-[#EDE7D9] rounded-[36px] p-8 sm:p-14 shadow-xl text-left">
+      {/* 6. OUR PARTNERSHIP PHILOSOPHY */}
+      <section className="py-28 sm:py-36 lg:py-40 px-4 sm:px-6 lg:px-12 bg-gradient-to-br from-[#2F3B0C] to-[#1E2707] text-white relative overflow-hidden dark-section">
+        <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[radial-gradient(#ffffff_1.5px,transparent_1.5px)] [background-size:32px_32px] pointer-events-none" />
+        <div className="max-w-5xl mx-auto text-center space-y-8 relative z-10">
+          <span className="text-7xl font-serif text-[#B8833E]/50 leading-none block select-none">“</span>
           
-          <div className="text-center max-w-2xl mx-auto mb-10 space-y-3">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#4E641A]/10 text-[#4E641A] text-xs font-semibold uppercase tracking-wider">
-              <GiHand />
-              <span>Application Portal</span>
-            </div>
-            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#2F3B0C]">Submit Partnership Request</h2>
-            <p className="text-stone-600 text-sm">Fill out your organization details below. Our business development team will review your application within 24 hours.</p>
+          <span className="font-sans text-xs font-bold uppercase tracking-[0.25em] text-[#B8833E] block">Our Partnership Philosophy</span>
+
+          <blockquote className="font-serif text-2xl sm:text-3xl lg:text-4xl font-light italic leading-relaxed text-[#F9F6F0] max-w-4xl mx-auto">
+            "A true partnership is not simply about doing business together. It is about growing together, learning together, creating lasting value, and building relationships founded on trust, integrity, and shared success."
+          </blockquote>
+
+          <div className="w-24 h-1 bg-[#B8833E] mx-auto rounded-full mt-8" />
+        </div>
+      </section>
+
+      {/* 7. OUR SHARED VISION */}
+      <section className="py-24 sm:py-32 lg:py-36 px-4 sm:px-6 lg:px-12 bg-white border-b border-[#EDE7D9]">
+        <div className="max-w-4xl mx-auto text-center space-y-8">
+          <span className="font-sans text-xs font-bold text-[#4E641A] uppercase tracking-widest">Forward Together</span>
+          <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">Our Shared Vision</h2>
+          
+          <div className="space-y-6 text-stone-700 text-base sm:text-lg lg:text-xl leading-relaxed font-sans max-w-3xl mx-auto">
+            <p>
+              We envision a future where responsible businesses work together to make premium-quality natural nutrition more accessible for everyone.
+            </p>
+            <p className="font-bold text-[#2F3B0C] font-serif text-xl sm:text-2xl leading-relaxed italic text-[#4E641A] pt-4 border-t border-[#EDE7D9]">
+              Together, we can inspire healthier lifestyles, strengthen healthier communities, support sustainable growth, and create a brighter future for generations to come.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* 8. OUR PROMISE TO EVERY PARTNER (PREMIUM 2-COLUMN LAYOUT) */}
+      <section className="py-24 sm:py-32 lg:py-36 px-4 sm:px-6 lg:px-12 bg-[#FAF7F2] border-b border-[#EDE7D9]">
+        <div className="max-w-7xl mx-auto space-y-16">
+          <div className="text-center max-w-3xl mx-auto space-y-3">
+            <span className="font-sans text-xs font-bold text-[#B8833E] uppercase tracking-widest">Unwavering Principles</span>
+            <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">Our Promise to Every Partner</h2>
           </div>
 
-          <AnimatePresence mode="wait">
-            {submitSuccess ? (
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+            {/* Left Column: Intro Paragraphs */}
+            <div className="lg:col-span-6 space-y-6 text-left text-stone-700 text-base sm:text-lg leading-relaxed font-sans">
+              <div className="bg-white border border-[#EDE7D9] rounded-[32px] p-8 sm:p-10 shadow-xs space-y-6">
+                <p>
+                  When you partner with Suryodaya Farms, you become more than a business associate.
+                </p>
+                <p>
+                  You become part of a relationship built on trust, shared growth, professional excellence, and a common commitment to delivering premium-quality natural products with integrity.
+                </p>
+                <p className="font-bold text-[#4E641A] text-lg pt-2 border-t border-[#EDE7D9]">
+                  Every partnership is guided by our core values:
+                </p>
+              </div>
+            </div>
+
+            {/* Right Column: Values Grid */}
+            <div className="lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
+              {promiseValues.map((val, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 15 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.3, delay: idx * 0.04 }}
+                  className="bg-white border border-[#EDE7D9] p-6 rounded-2xl shadow-xs flex items-center gap-3.5 hover:border-[#4E641A] hover:shadow-md transition duration-200"
+                >
+                  <div className="w-3 h-3 rounded-full bg-[#4E641A] shrink-0" />
+                  <span className="font-serif text-base font-bold text-[#2F3B0C]">{val}</span>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+
+          {/* Full Width Concluding Statement */}
+          <div className="bg-white border border-[#EDE7D9] rounded-[28px] p-8 sm:p-10 shadow-xs text-center max-w-4xl mx-auto">
+            <p className="font-serif text-lg sm:text-xl font-bold text-[#2F3B0C] italic leading-relaxed">
+              Because we believe your success is our success, and our growth is meaningful only when we grow together.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* 9. WHAT YOU CAN EXPECT */}
+      <section className="py-24 sm:py-32 lg:py-36 px-4 sm:px-6 lg:px-12 bg-white border-b border-[#EDE7D9]">
+        <div className="max-w-7xl mx-auto space-y-16">
+          <div className="text-center max-w-3xl mx-auto space-y-4">
+            <span className="font-sans text-xs font-bold text-[#4E641A] uppercase tracking-widest">Operational Excellence</span>
+            <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">What You Can Expect</h2>
+            <p className="text-stone-700 text-base sm:text-lg font-sans">As our business partner, you can expect:</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-left">
+            {expectItems.map((item, idx) => (
               <motion.div
-                key="success"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                className="py-16 text-center space-y-6"
+                key={idx}
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.3, delay: idx * 0.04 }}
+                className="bg-[#FAF7F2] border border-[#EDE7D9] p-8 rounded-[24px] shadow-xs flex items-center gap-4 hover:bg-white hover:border-[#4E641A]/50 hover:shadow-md transition-all duration-300"
               >
-                <div className="w-20 h-20 bg-[#4E641A]/10 text-[#4E641A] rounded-full flex items-center justify-center mx-auto text-4xl shadow-inner">
-                  <FiCheckCircle className="animate-bounce" />
-                </div>
-                <div className="space-y-2 max-w-md mx-auto">
-                  <h3 className="font-serif text-2xl font-bold text-[#2F3B0C]">Partnership Request Received!</h3>
-                  <p className="text-stone-600 text-sm leading-relaxed">
-                    Thank you for submitting your application. A confirmation message has been logged. Our representative will get in touch with you shortly.
-                  </p>
-                </div>
-                <button
-                  onClick={() => setSubmitSuccess(false)}
-                  className="bg-[#4E641A] hover:bg-[#2F3B0C] text-white font-sans text-xs font-bold uppercase tracking-wider px-8 py-3.5 rounded-xl transition duration-300 cursor-pointer"
-                >
-                  Submit Another Request
-                </button>
+                <div className="w-3.5 h-3.5 rounded-full bg-[#B8833E] shrink-0" />
+                <span className="font-serif text-base sm:text-lg font-bold text-[#2F3B0C]">{item}</span>
               </motion.div>
-            ) : (
-              <motion.form
-                key="form"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                onSubmit={handleSubmit}
-                className="space-y-6"
-              >
-                {errorMessage && (
-                  <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-xs font-medium flex items-center gap-2">
-                    <FiAlertCircle className="shrink-0 text-base" />
-                    <span>{errorMessage}</span>
-                  </div>
-                )}
+            ))}
+          </div>
+        </div>
+      </section>
 
-                {/* Grid 1: Basic Information */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">Full Name *</label>
-                    <input
-                      type="text"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      required
-                      placeholder="e.g. Rajesh Sharma"
-                      className="w-full px-4 py-3 bg-[#FAF8F5] border border-[#EDE7D9] rounded-xl focus:ring-2 focus:ring-[#4E641A] focus:outline-none text-sm text-[#2F3B0C]"
-                    />
-                  </div>
+      {/* 10. OUR COMMITMENT */}
+      <section className="py-24 sm:py-32 lg:py-36 px-4 sm:px-6 lg:px-12 bg-[#F4EFE6] border-b border-[#EDE7D9]">
+        <div className="max-w-4xl mx-auto">
+          <div className="bg-white border border-[#EDE7D9] rounded-[40px] p-10 sm:p-16 shadow-lg text-center space-y-8">
+            <span className="font-sans text-xs font-bold text-[#B8833E] uppercase tracking-widest">Our Promise</span>
+            <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">Our Commitment</h2>
+            
+            <div className="space-y-6 text-stone-700 text-base sm:text-lg leading-relaxed font-sans max-w-2xl mx-auto">
+              <p>
+                Every decision we make is guided by our commitment to quality, integrity, responsibility, and continuous improvement.
+              </p>
+              <p>
+                We strive to build partnerships that create value not only for businesses, but also for customers, communities, and society.
+              </p>
+              <p className="font-bold text-[#2F3B0C] text-lg sm:text-xl pt-2">
+                Our goal is to establish relationships that are trusted, sustainable, and beneficial for everyone involved.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
 
-                  <div>
-                    <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">Company Name *</label>
-                    <input
-                      type="text"
-                      name="companyName"
-                      value={formData.companyName}
-                      onChange={handleInputChange}
-                      required
-                      placeholder="e.g. Green Earth Traders Pvt Ltd"
-                      className="w-full px-4 py-3 bg-[#FAF8F5] border border-[#EDE7D9] rounded-xl focus:ring-2 focus:ring-[#4E641A] focus:outline-none text-sm text-[#2F3B0C]"
-                    />
-                  </div>
-                </div>
+      {/* 11. JOIN HANDS WITH SURYODAYA FARMS & APPLICATION FORM */}
+      <section id="partner-form-section" className="py-28 sm:py-36 lg:py-40 px-4 sm:px-6 lg:px-12 bg-[#2F3B0C] text-white relative overflow-hidden dark-section">
+        <div className="max-w-5xl mx-auto space-y-16 text-center relative z-10">
+          <div className="space-y-6 max-w-4xl mx-auto">
+            <h2 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight">
+              Join Hands with Suryodaya Farms
+            </h2>
+            <p className="text-white/90 text-base sm:text-lg lg:text-xl leading-relaxed font-sans font-normal">
+              At Suryodaya Farms, we believe every successful partnership begins with trust and grows through shared commitment. Whether you are expanding your business, entering new markets, or looking for a dependable partner, we are ready to grow with you. Together, let us deliver premium-quality natural nutrition, inspire healthier lifestyles, help build healthier communities, and create lasting value for generations to come.
+            </p>
+            <p className="text-white/90 text-base sm:text-lg lg:text-xl leading-relaxed font-sans font-medium pt-4 border-t border-white/20">
+              Because true success is measured not only by business growth, but also by the trust we earn, the relationships we build, the lives we enrich, and the positive impact we create for society.
+            </p>
+          </div>
 
-                {/* Grid 2: Business Type & GST */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">Business Type *</label>
-                    <input
-                      type="text"
-                      name="businessType"
-                      value={formData.businessType}
-                      onChange={handleInputChange}
-                      required
-                      placeholder="e.g. Wholesale Trader / Supermarket Chain"
-                      className="w-full px-4 py-3 bg-[#FAF8F5] border border-[#EDE7D9] rounded-xl focus:ring-2 focus:ring-[#4E641A] focus:outline-none text-sm text-[#2F3B0C]"
-                    />
-                  </div>
+          {/* APPLICATION FORM INSIDE SECTION 11 */}
+          <div className="bg-white text-[#2F3B0C] border border-[#EDE7D9] rounded-[36px] p-8 sm:p-14 shadow-2xl text-left mt-12">
+            <div className="text-center max-w-2xl mx-auto mb-10 space-y-3">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#4E641A]/10 text-[#4E641A] text-xs font-semibold uppercase tracking-wider">
+                <GiHand />
+                <span>Application Portal</span>
+              </div>
+              <h3 className="font-serif text-2xl sm:text-4xl font-bold text-[#2F3B0C]">Submit Partnership Request</h3>
+            </div>
 
-                  <div>
-                    <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">GST Number (Optional)</label>
-                    <input
-                      type="text"
-                      name="gstNumber"
-                      value={formData.gstNumber}
-                      onChange={handleInputChange}
-                      placeholder="e.g. 36AAAAA0000A1Z5"
-                      className="w-full px-4 py-3 bg-[#FAF8F5] border border-[#EDE7D9] rounded-xl focus:ring-2 focus:ring-[#4E641A] focus:outline-none text-sm text-[#2F3B0C]"
-                    />
-                  </div>
-                </div>
-
-                {/* Grid 3: Contact Info */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">Email *</label>
-                    <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      required
-                      placeholder="e.g. partner@company.com"
-                      className="w-full px-4 py-3 bg-[#FAF8F5] border border-[#EDE7D9] rounded-xl focus:ring-2 focus:ring-[#4E641A] focus:outline-none text-sm text-[#2F3B0C]"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">Phone Number *</label>
-                    <input
-                      type="tel"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                      required
-                      placeholder="e.g. +91 9876543210"
-                      className="w-full px-4 py-3 bg-[#FAF8F5] border border-[#EDE7D9] rounded-xl focus:ring-2 focus:ring-[#4E641A] focus:outline-none text-sm text-[#2F3B0C]"
-                    />
-                  </div>
-                </div>
-
-                {/* Grid 4: Location */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                  <div>
-                    <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">Country *</label>
-                    <input
-                      type="text"
-                      name="country"
-                      value={formData.country}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full px-4 py-3 bg-[#FAF8F5] border border-[#EDE7D9] rounded-xl focus:ring-2 focus:ring-[#4E641A] focus:outline-none text-sm text-[#2F3B0C]"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">State *</label>
-                    <input
-                      type="text"
-                      name="state"
-                      value={formData.state}
-                      onChange={handleInputChange}
-                      required
-                      placeholder="e.g. Telangana"
-                      className="w-full px-4 py-3 bg-[#FAF8F5] border border-[#EDE7D9] rounded-xl focus:ring-2 focus:ring-[#4E641A] focus:outline-none text-sm text-[#2F3B0C]"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">City *</label>
-                    <input
-                      type="text"
-                      name="city"
-                      value={formData.city}
-                      onChange={handleInputChange}
-                      required
-                      placeholder="e.g. Hyderabad"
-                      className="w-full px-4 py-3 bg-[#FAF8F5] border border-[#EDE7D9] rounded-xl focus:ring-2 focus:ring-[#4E641A] focus:outline-none text-sm text-[#2F3B0C]"
-                    />
-                  </div>
-                </div>
-
-                {/* Grid 5: Partnership Type & Website */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">Partnership Type *</label>
-                    <select
-                      name="partnershipType"
-                      value={formData.partnershipType}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-3 bg-[#FAF8F5] border border-[#EDE7D9] rounded-xl focus:ring-2 focus:ring-[#4E641A] focus:outline-none text-sm text-[#2F3B0C]"
-                    >
-                      {partnershipTypes.map(pt => (
-                        <option key={pt} value={pt}>{pt}</option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">Business Website (Optional)</label>
-                    <input
-                      type="url"
-                      name="website"
-                      value={formData.website}
-                      onChange={handleInputChange}
-                      placeholder="https://example.com"
-                      className="w-full px-4 py-3 bg-[#FAF8F5] border border-[#EDE7D9] rounded-xl focus:ring-2 focus:ring-[#4E641A] focus:outline-none text-sm text-[#2F3B0C]"
-                    />
-                  </div>
-                </div>
-
-                {/* Grid 6: Business Details */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">Years in Business</label>
-                    <input
-                      type="text"
-                      name="yearsInBusiness"
-                      value={formData.yearsInBusiness}
-                      onChange={handleInputChange}
-                      placeholder="e.g. 5 Years"
-                      className="w-full px-4 py-3 bg-[#FAF8F5] border border-[#EDE7D9] rounded-xl focus:ring-2 focus:ring-[#4E641A] focus:outline-none text-sm text-[#2F3B0C]"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">Monthly Requirement</label>
-                    <input
-                      type="text"
-                      name="monthlyRequirement"
-                      value={formData.monthlyRequirement}
-                      onChange={handleInputChange}
-                      placeholder="e.g. 500 Quintals / 2000 Units"
-                      className="w-full px-4 py-3 bg-[#FAF8F5] border border-[#EDE7D9] rounded-xl focus:ring-2 focus:ring-[#4E641A] focus:outline-none text-sm text-[#2F3B0C]"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">Business Description</label>
-                  <textarea
-                    name="businessDescription"
-                    rows={3}
-                    value={formData.businessDescription}
-                    onChange={handleInputChange}
-                    placeholder="Briefly describe your existing distribution, retail presence, or market operations..."
-                    className="w-full px-4 py-3 bg-[#FAF8F5] border border-[#EDE7D9] rounded-xl focus:ring-2 focus:ring-[#4E641A] focus:outline-none text-sm text-[#2F3B0C]"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">Additional Message</label>
-                  <textarea
-                    name="message"
-                    rows={3}
-                    value={formData.message}
-                    onChange={handleInputChange}
-                    placeholder="Any specific questions or proposals..."
-                    className="w-full px-4 py-3 bg-[#FAF8F5] border border-[#EDE7D9] rounded-xl focus:ring-2 focus:ring-[#4E641A] focus:outline-none text-sm text-[#2F3B0C]"
-                  />
-                </div>
-
-                {/* Checkbox */}
-                <div className="flex items-center gap-3 pt-2">
-                  <input
-                    type="checkbox"
-                    id="agreeToContact"
-                    name="agreeToContact"
-                    checked={formData.agreeToContact}
-                    onChange={handleInputChange}
-                    className="w-4 h-4 text-[#4E641A] accent-[#4E641A] rounded focus:ring-0 cursor-pointer"
-                  />
-                  <label htmlFor="agreeToContact" className="text-xs text-stone-600 cursor-pointer select-none">
-                    I agree to be contacted by Suryodaya Farms regarding this partnership inquiry. *
-                  </label>
-                </div>
-
-                {/* Submit button */}
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full bg-[#4E641A] hover:bg-[#2F3B0C] disabled:bg-stone-400 text-white font-sans text-xs sm:text-sm font-bold tracking-widest uppercase py-4 rounded-2xl shadow-lg transition duration-300 flex items-center justify-center gap-2 cursor-pointer"
+            <AnimatePresence mode="wait">
+              {submitSuccess ? (
+                <motion.div
+                  key="success"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  className="py-16 text-center space-y-6"
                 >
-                  {isSubmitting ? (
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  ) : (
-                    <>
-                      <span>Submit Partnership Request</span>
-                      <FiArrowRight className="text-base" />
-                    </>
+                  <div className="w-20 h-20 bg-[#4E641A]/10 text-[#4E641A] rounded-full flex items-center justify-center mx-auto text-4xl shadow-inner">
+                    <FiCheckCircle className="animate-bounce" />
+                  </div>
+                  <div className="space-y-2 max-w-md mx-auto">
+                    <h4 className="font-serif text-2xl sm:text-3xl font-bold text-[#2F3B0C]">Partnership Request Received!</h4>
+                    <p className="text-stone-600 text-sm sm:text-base leading-relaxed">
+                      Thank you for submitting your application. A confirmation message has been logged. Our representative will get in touch with you shortly.
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setSubmitSuccess(false)}
+                    className="bg-[#4E641A] hover:bg-[#2F3B0C] text-white font-sans text-xs font-bold uppercase tracking-wider px-9 py-4 rounded-xl transition duration-200 cursor-pointer shadow-md"
+                  >
+                    Submit Another Request
+                  </button>
+                </motion.div>
+              ) : (
+                <motion.form
+                  key="form"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  onSubmit={handleSubmit}
+                  className="space-y-7"
+                >
+                  {errorMessage && (
+                    <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-xs font-medium flex items-center gap-2">
+                      <FiAlertCircle className="shrink-0 text-base" />
+                      <span>{errorMessage}</span>
+                    </div>
                   )}
-                </button>
-              </motion.form>
-            )}
-          </AnimatePresence>
+
+                  {/* Grid 1: Basic Information */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">Full Name *</label>
+                      <input
+                        type="text"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        required
+                        placeholder="e.g. Rajesh Sharma"
+                        className="w-full px-4.5 py-3.5 bg-[#FAF8F5] border border-[#EDE7D9] rounded-xl focus:ring-2 focus:ring-[#4E641A] focus:outline-none text-sm text-[#2F3B0C]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">Company / Organization Name *</label>
+                      <input
+                        type="text"
+                        name="companyName"
+                        value={formData.companyName}
+                        onChange={handleInputChange}
+                        required
+                        placeholder="e.g. Apex Organic Distributors"
+                        className="w-full px-4.5 py-3.5 bg-[#FAF8F5] border border-[#EDE7D9] rounded-xl focus:ring-2 focus:ring-[#4E641A] focus:outline-none text-sm text-[#2F3B0C]"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Grid 2: Business Type & GST */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">Business Type *</label>
+                      <select
+                        name="businessType"
+                        value={formData.businessType}
+                        onChange={handleInputChange}
+                        required
+                        className="w-full px-4.5 py-3.5 bg-[#FAF8F5] border border-[#EDE7D9] rounded-xl focus:ring-2 focus:ring-[#4E641A] focus:outline-none text-sm text-[#2F3B0C]"
+                      >
+                        <option value="">Select Business Type</option>
+                        {partnershipTypes.map((t) => (
+                          <option key={t} value={t}>{t}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">GST / Tax Registration No.</label>
+                      <input
+                        type="text"
+                        name="gstNumber"
+                        value={formData.gstNumber}
+                        onChange={handleInputChange}
+                        placeholder="e.g. 36AAAAA0000A1Z5"
+                        className="w-full px-4.5 py-3.5 bg-[#FAF8F5] border border-[#EDE7D9] rounded-xl focus:ring-2 focus:ring-[#4E641A] focus:outline-none text-sm text-[#2F3B0C]"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Grid 3: Contact Info */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">Business Email Address *</label>
+                      <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        required
+                        placeholder="e.g. partner@company.com"
+                        className="w-full px-4.5 py-3.5 bg-[#FAF8F5] border border-[#EDE7D9] rounded-xl focus:ring-2 focus:ring-[#4E641A] focus:outline-none text-sm text-[#2F3B0C]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">Phone / Mobile Number *</label>
+                      <input
+                        type="tel"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleInputChange}
+                        required
+                        placeholder="e.g. +91 9876543210"
+                        className="w-full px-4.5 py-3.5 bg-[#FAF8F5] border border-[#EDE7D9] rounded-xl focus:ring-2 focus:ring-[#4E641A] focus:outline-none text-sm text-[#2F3B0C]"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Grid 4: Location */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                    <div>
+                      <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">Country *</label>
+                      <input
+                        type="text"
+                        name="country"
+                        value={formData.country}
+                        onChange={handleInputChange}
+                        required
+                        className="w-full px-4.5 py-3.5 bg-[#FAF8F5] border border-[#EDE7D9] rounded-xl focus:ring-2 focus:ring-[#4E641A] focus:outline-none text-sm text-[#2F3B0C]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">State / Province *</label>
+                      <input
+                        type="text"
+                        name="state"
+                        value={formData.state}
+                        onChange={handleInputChange}
+                        required
+                        placeholder="e.g. Telangana"
+                        className="w-full px-4.5 py-3.5 bg-[#FAF8F5] border border-[#EDE7D9] rounded-xl focus:ring-2 focus:ring-[#4E641A] focus:outline-none text-sm text-[#2F3B0C]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">City *</label>
+                      <input
+                        type="text"
+                        name="city"
+                        value={formData.city}
+                        onChange={handleInputChange}
+                        required
+                        placeholder="e.g. Hyderabad"
+                        className="w-full px-4.5 py-3.5 bg-[#FAF8F5] border border-[#EDE7D9] rounded-xl focus:ring-2 focus:ring-[#4E641A] focus:outline-none text-sm text-[#2F3B0C]"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Additional details */}
+                  <div>
+                    <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">Brief Business Overview & Partnership Message</label>
+                    <textarea
+                      name="message"
+                      rows={4}
+                      value={formData.message}
+                      onChange={handleInputChange}
+                      placeholder="Share brief details about your organization, operating regions, and partnership goals..."
+                      className="w-full px-4.5 py-3.5 bg-[#FAF8F5] border border-[#EDE7D9] rounded-xl focus:ring-2 focus:ring-[#4E641A] focus:outline-none text-sm text-[#2F3B0C]"
+                    />
+                  </div>
+
+                  {/* Consent checkbox */}
+                  <div className="flex items-start gap-3 pt-2">
+                    <input
+                      type="checkbox"
+                      id="agreeToContact"
+                      name="agreeToContact"
+                      checked={formData.agreeToContact}
+                      onChange={handleInputChange}
+                      className="mt-1 w-4 h-4 text-[#4E641A] focus:ring-[#4E641A] border-[#EDE7D9] rounded cursor-pointer"
+                    />
+                    <label htmlFor="agreeToContact" className="text-xs text-stone-600 cursor-pointer">
+                      I agree to be contacted by Suryodaya Farms representative regarding this partnership inquiry.
+                    </label>
+                  </div>
+
+                  {/* Submit button */}
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full bg-[#4E641A] hover:bg-[#2F3B0C] text-white font-sans text-xs sm:text-sm font-bold tracking-widest uppercase py-4 rounded-xl shadow-lg transition duration-200 cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
+                  >
+                    {isSubmitting ? (
+                      <span>Submitting Request...</span>
+                    ) : (
+                      <>
+                        <span>Submit Partnership Request</span>
+                        <FiArrowRight />
+                      </>
+                    )}
+                  </button>
+                </motion.form>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+      </section>
+
+      {/* 12. FOOTER MOTTO */}
+      <section className="py-24 sm:py-32 lg:py-36 px-4 sm:px-6 lg:px-12 max-w-4xl mx-auto text-center border-t border-[#EDE7D9] bg-[#FAF7F2]">
+        <div className="space-y-5">
+          <h3 className="font-serif text-4xl sm:text-5xl font-bold text-[#2F3B0C]">Suryodaya Farms</h3>
+          <p className="text-xs sm:text-sm font-bold uppercase tracking-[0.3em] text-[#B8833E]">
+            Nature • Science • Quality • Trust
+          </p>
+          <p className="font-serif text-lg sm:text-xl italic text-[#4E641A] font-semibold max-w-2xl mx-auto leading-relaxed">
+            Together, We Cultivate Trust, Deliver Quality, and Grow a Healthier Future.
+          </p>
         </div>
       </section>
 

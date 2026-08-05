@@ -1,12 +1,13 @@
 import { create } from 'zustand';
 import api from '../utils/api';
+import { WHATSAPP_FORMATTED_PHONE } from '../config/constants';
 
 export const useSettingsStore = create((set, get) => ({
   settings: {
     companyName: 'Suryodaya Farms',
     brandName: 'Suryodaya Farms & Organics',
     email: 'care@suryodayafarms.com',
-    phone: '+91 9100422140',
+    phone: WHATSAPP_FORMATTED_PHONE,
     address: 'Plot No-20 NP, Kuruma Nagar, Peerzadiguda Mandal, Medchal (Malkajgiri), Telangana – 500039',
     websiteUrl: 'https://suryodayafarms.com',
     gstNumber: '36AAAAA0000A1Z5',

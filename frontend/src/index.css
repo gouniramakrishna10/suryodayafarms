@@ -45,6 +45,52 @@
   }
 }
 
+/* ==========================================================================
+   WCAG AA Compliance: Reusable Theme-Aware Dark Section Contrast Engine
+   ========================================================================== */
+.dark-section {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+/* 1. All headings inside dark sections must be pure white (#FFFFFF) */
+.dark-section h1,
+.dark-section h2,
+.dark-section h3,
+.dark-section h4,
+.dark-section h5,
+.dark-section h6,
+.dark-section .dark-heading,
+.dark-section .card-heading,
+.dark-section .section-title,
+.dark-section .hero-title {
+  color: #ffffff !important;
+}
+
+/* 2. Primary body text inside dark green sections */
+.dark-section p,
+.dark-section li,
+.dark-section .body-text {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+/* 3. Secondary text inside dark green sections */
+.dark-section .secondary-text,
+.dark-section .text-secondary,
+.dark-section p.secondary,
+.dark-section span.secondary,
+.dark-section .subtext,
+.dark-section caption {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+/* 4. Preserve explicit button and badge contrast styles */
+.dark-section button span,
+.dark-section a.btn span,
+.dark-section .btn span,
+.dark-section .badge span {
+  color: inherit;
+}
+
 /* Premium Animations & Utility classes */
 @keyframes fadeIn {
   from { opacity: 0; }

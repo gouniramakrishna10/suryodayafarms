@@ -3,6 +3,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import { FaWhatsapp } from 'react-icons/fa';
+import { getWhatsAppUrl } from '../config/constants';
 
 export default function MainLayout() {
   const { pathname } = useLocation();
@@ -31,7 +32,7 @@ export default function MainLayout() {
 
       {/* 4. Floating WhatsApp Assistant Overlay */}
       <a
-        href={`https://wa.me/919845273105?text=${whatsappMessage}`}
+        href={getWhatsAppUrl(whatsappMessage)}
         target="_blank"
         rel="noopener noreferrer"
         className="fixed bottom-6 right-6 z-40 bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:bg-[#1ebd59] transition-all duration-300 hover:scale-110 flex items-center justify-center cursor-pointer ring-4 ring-white/10 group whatsapp-floating-btn"

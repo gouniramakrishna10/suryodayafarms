@@ -580,7 +580,7 @@ export default function Products() {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="fixed bottom-6 right-6 z-45 bg-[#2F3B0C] text-white border border-[#C68A2B]/40 rounded-[20px] shadow-xl p-4 flex items-center justify-between gap-4 max-w-sm w-full select-none"
+            className="dark-section fixed bottom-6 right-6 z-45 bg-[#2F3B0C] text-white border border-[#C68A2B]/40 rounded-[20px] shadow-xl p-4 flex items-center justify-between gap-4 max-w-sm w-full select-none"
           >
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-sunrise-gold">

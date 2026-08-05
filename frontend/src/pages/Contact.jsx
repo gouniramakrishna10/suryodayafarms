@@ -18,6 +18,7 @@ import {
 import { FaWhatsapp, FaFacebook, FaInstagram, FaYoutube, FaLinkedin } from 'react-icons/fa';
 import { GiSun } from 'react-icons/gi';
 import api from '../utils/api';
+import { getWhatsAppUrl, WHATSAPP_FORMATTED_PHONE } from '../config/constants';
 import { useSettingsStore } from '../store/useSettingsStore';
 
 export default function Contact() {
@@ -236,14 +237,14 @@ export default function Contact() {
                 </div>
                 <div>
                   <h4 className="font-sans text-[11px] font-bold uppercase tracking-wider text-stone-400">Phone Support</h4>
-                  <a href="tel:+919100422140" className="font-serif text-lg font-bold text-[#2F3B0C] hover:text-[#4E641A] transition-colors block">
-                    +91 9100422140
+                  <a href={`tel:${WHATSAPP_FORMATTED_PHONE.replace(/\s/g, '')}`} className="font-serif text-lg font-bold text-[#2F3B0C] hover:text-[#4E641A] transition-colors block">
+                    {WHATSAPP_FORMATTED_PHONE}
                   </a>
                 </div>
               </div>
               
               <a
-                href="https://wa.me/919100422140?text=Namaste%20Suryodaya%20Farms!%20I%20would%20like%20to%20know%20more."
+                href={getWhatsAppUrl("Namaste Suryodaya Farms! I would like to know more.")}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 text-xs font-bold text-[#25D366] bg-[#25D366]/10 px-4 py-2.5 rounded-xl w-full justify-center hover:bg-[#25D366]/20 transition-all duration-200"
@@ -288,27 +289,37 @@ export default function Contact() {
               </div>
               <h3 className="font-serif text-xl sm:text-2xl font-bold text-[#2F3B0C]">Customer Support Hours</h3>
               
-              <div className="bg-[#FAF7F2] border border-[#EDE7D9]/80 p-5 rounded-2xl space-y-3 font-sans">
-                <div className="flex justify-between items-center text-xs font-bold text-[#2F3B0C]">
-                  <span className="text-stone-500 font-normal">Working Days:</span>
-                  <span>Monday – Saturday</span>
+              <div className="bg-[#FAF7F2] border border-[#EDE7D9]/80 p-5 sm:p-6 rounded-2xl space-y-4 font-sans">
+                {/* Working Days */}
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-4">
+                  <span className="text-xs sm:text-sm font-medium text-stone-600">Working Days:</span>
+                  <span className="text-xs sm:text-sm font-bold text-[#2F3B0C]">Monday – Saturday</span>
                 </div>
-                <div className="flex justify-between items-center text-xs font-bold text-[#4E641A]">
-                  <span className="text-stone-500 font-normal">Support Hours:</span>
-                  <span>9:00 AM – 6:00 PM (IST)</span>
+
+                {/* Support Hours */}
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-4 pt-3 border-t border-[#EDE7D9]/60">
+                  <span className="text-xs sm:text-sm font-medium text-stone-600">Support Hours:</span>
+                  <span className="text-xs sm:text-sm font-bold text-[#4E641A]">9:00 AM – 6:00 PM (IST)</span>
                 </div>
-                <div className="flex justify-between items-center text-[11px] text-stone-500 pt-2 border-t border-[#EDE7D9]">
-                  <span>Sunday:</span>
-                  <span className="font-semibold text-stone-600">Closed (Online Orders Open)</span>
+
+                {/* Sunday */}
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1 sm:gap-4 pt-3 border-t border-[#EDE7D9]/60">
+                  <span className="text-xs sm:text-sm font-medium text-stone-600">Sunday:</span>
+                  <div className="sm:text-right">
+                    <span className="text-xs sm:text-sm font-bold text-stone-700 block">Customer Support Closed</span>
+                    <span className="text-[11px] sm:text-xs text-stone-500 font-normal block mt-0.5">
+                      (Online Orders Accepted 24/7)
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="bg-[#4E641A]/5 border border-[#4E641A]/15 rounded-2xl p-4.5 space-y-1">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-[#4E641A] block">Timely Response Promise</span>
-              <p className="text-xs text-stone-600 leading-relaxed font-sans">
-                Our care team responds to all email messages and inquiries within 24 business hours.
-              </p>
+              {/* Final Paragraph */}
+              <div className="pt-2">
+                <p className="text-xs sm:text-sm text-stone-600 leading-relaxed font-sans font-normal">
+                  Our customer support team is available during the above business hours to assist you with inquiries, orders, and product-related questions. Orders can be placed through our website at any time, including Sundays and public holidays.
+                </p>
+              </div>
             </div>
           </div>
 
@@ -437,19 +448,34 @@ export default function Contact() {
               </p>
             </div>
 
-            {/* Our Promise Glassmorphism Card */}
-            <div className="bg-white/80 backdrop-blur-md border border-[#4E641A]/30 rounded-[32px] p-8 sm:p-10 shadow-md relative overflow-hidden space-y-4">
+            {/* Timely Response Promise Card */}
+            <div className="bg-white/90 backdrop-blur-md border border-[#4E641A]/30 rounded-[32px] p-8 sm:p-10 shadow-md relative overflow-hidden space-y-4">
               <div className="absolute top-0 right-0 w-28 h-28 bg-[#4E641A]/8 rounded-bl-full pointer-events-none" />
               
-              <div className="flex items-center gap-2.5 text-[#4E641A]">
-                <FiShield className="text-2xl shrink-0" />
-                <h3 className="font-serif text-xl font-bold">Our Promise</h3>
+              <div className="space-y-1">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-[#4E641A] block">
+                  TIMELY RESPONSE PROMISE
+                </span>
+                <div className="flex items-center gap-2.5 text-[#4E641A]">
+                  <FiShield className="text-2xl shrink-0" />
+                  <h3 className="font-serif text-xl sm:text-2xl font-bold text-[#2F3B0C]">Timely Response Promise</h3>
+                </div>
               </div>
 
-              <p className="text-stone-700 text-sm sm:text-base leading-relaxed font-sans italic">
-                Every message matters. Every customer matters.<br />
-                We are committed to responding with professionalism, respect, and genuine care because lasting relationships are built on trust and honest communication.
-              </p>
+              <div className="space-y-3.5 text-stone-600 text-xs sm:text-sm font-sans leading-[1.75] font-normal pt-1">
+                <p>
+                  At Suryodaya Farms, we believe that trust begins with communication. We value every customer inquiry and are committed to providing prompt, helpful, and reliable support.
+                </p>
+                <p>
+                  Every email, message, and inquiry is important to us. We strive to respond to all customer communications within 24 business hours, ensuring that you receive the care, attention, and assistance you deserve.
+                </p>
+                <p>
+                  During weekends, public holidays, or periods of unusually high inquiry volume, response times may be slightly longer. We appreciate your patience and understanding during such times.
+                </p>
+                <p>
+                  Thank you for your trust in Suryodaya Farms. We look forward to serving you and ensuring a positive experience with every interaction.
+                </p>
+              </div>
             </div>
 
           </div>

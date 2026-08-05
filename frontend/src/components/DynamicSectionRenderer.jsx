@@ -34,7 +34,7 @@ function renderSingleSection(sec, idx, activeFaqIndex, setActiveFaqIndex) {
   switch (sec.sectionType) {
     case 'HERO':
       return (
-        <div className="bg-gradient-to-br from-[#2F3B0C] via-[#37411A] to-[#4E641A] text-white rounded-[32px] p-8 sm:p-12 shadow-md relative overflow-hidden space-y-4 border border-[#4E641A]/30">
+        <div className="dark-section bg-gradient-to-br from-[#2F3B0C] via-[#37411A] to-[#4E641A] text-white rounded-[32px] p-8 sm:p-12 shadow-md relative overflow-hidden space-y-4 border border-[#4E641A]/30">
           <div className="space-y-1">
             {content.collectionName && (
               <span className="text-[10px] font-extrabold tracking-widest text-[#C68A2B] uppercase block">

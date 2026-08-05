@@ -464,7 +464,7 @@ export default function Privacy() {
             <article id="guiding-principle" className="space-y-8 scroll-mt-28">
               
               {/* Highlighted Quote Box */}
-              <div className="bg-[#2F3B0C] text-white rounded-[36px] p-9 sm:p-14 shadow-xl text-center space-y-4 relative overflow-hidden">
+              <div className="dark-section bg-[#2F3B0C] text-white rounded-[36px] p-9 sm:p-14 shadow-xl text-center space-y-4 relative overflow-hidden">
                 <div className="absolute -right-20 -bottom-20 w-72 h-72 bg-[#4E641A]/30 rounded-full blur-3xl pointer-events-none" />
                 
                 <span className="text-xs font-bold uppercase tracking-widest text-[#B8833E]">Our Guiding Principle</span>

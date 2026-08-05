@@ -8,6 +8,7 @@ import { useWishlistStore } from '../store/useWishlistStore';
 import { useAuthStore } from '../store/useAuthStore';
 import { useModalStore } from '../store/useModalStore';
 import { useSettingsStore } from '../store/useSettingsStore';
+import { getWhatsAppUrl } from '../config/constants';
 import api from '../utils/api';
 
 import { getOptimizedImageUrl, getImageSrcSet, resolveImageUrl, handleImageError, DEFAULT_FALLBACK_IMAGE } from '../utils/imageOptimizer';
@@ -1052,7 +1053,7 @@ export default function ProductDetails() {
 
                 {/* WhatsApp Inquiry */}
                 <a
-                  href={`https://wa.me/919845273105?text=${whatsappMessage}`}
+                  href={getWhatsAppUrl(whatsappMessage)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-center gap-2 bg-[#25D366] text-white font-sans text-xs font-bold uppercase tracking-widest py-3.5 rounded-xl hover:bg-[#1ebd59] transition-colors shadow-xs"

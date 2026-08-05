@@ -4428,9 +4428,9 @@ Ensure confidence scores are numbers between 0 and 100. Always reply ONLY with r
       </header>
 
       {/* 1. LIGHT EARTHY SIDEBAR (Drawer on mobile, static sidebar on desktop) */}
-      <aside className={`fixed top-0 bottom-0 left-0 w-[280px] bg-[#F3EFE6] border-r border-[#EDE7D9] flex flex-col shrink-0 p-6 z-50 transition-transform duration-300 ease-in-out ${
+      <aside className={`fixed top-0 bottom-0 left-0 w-70 bg-[#F3EFE6] border-r border-light-beige flex flex-col shrink-0 p-6 z-50 transition-transform duration-300 ease-in-out ${
         isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-      } lg:translate-x-0 lg:static lg:w-[260px] lg:h-screen lg:sticky lg:top-0 lg:overflow-y-auto lg:overflow-x-hidden custom-scroll shadow-2xl lg:shadow-none`}>
+      } lg:translate-x-0 lg:w-65 lg:h-screen lg:sticky lg:top-0 lg:overflow-y-auto lg:overflow-x-hidden custom-scroll shadow-2xl lg:shadow-none`}>
         
         {/* Logo Branding & Drawer Close Button */}
         <div className="flex items-center justify-between pb-4 border-b border-[#EDE7D9] mb-4">
@@ -6235,7 +6235,7 @@ Ensure confidence scores are numbers between 0 and 100. Always reply ONLY with r
                                     type="button"
                                     onClick={() => setCancelOrderTarget(o)}
                                     disabled={isCancellingShipment[o.id]}
-                                    className="w-full bg-red-50 hover:bg-red-100 border border-red-200 text-red-700 text-xs font-bold uppercase tracking-wider py-2.5 rounded-xl transition cursor-pointer flex items-center justify-center gap-1.5 shadow-2xs cursor-pointer"
+                                    className="w-full bg-red-50 hover:bg-red-100 border border-red-200 text-red-700 text-xs font-bold uppercase tracking-wider py-2.5 rounded-xl transition cursor-pointer flex items-center justify-center gap-1.5 shadow-2xs"
                                   >
                                     <span>✕</span> Cancel Order
                                   </button>

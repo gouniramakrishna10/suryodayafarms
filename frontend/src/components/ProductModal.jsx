@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { FiX, FiCheck, FiShoppingBag, FiInfo } from 'react-icons/fi';
 import { FaWhatsapp } from 'react-icons/fa';
 import { getOptimizedImageUrl, getImageSrcSet, handleImageError, DEFAULT_FALLBACK_IMAGE } from '../utils/imageOptimizer';
+import { getWhatsAppUrl } from '../config/constants';
 
 export default function ProductModal({ product, onClose }) {
   if (!product) return null;
@@ -130,7 +131,7 @@ export default function ProductModal({ product, onClose }) {
           {/* Action CTAs */}
           <div className="flex flex-col sm:flex-row gap-3 mt-8 border-t border-light-beige pt-6 shrink-0">
             <a
-              href={`https://wa.me/919845273105?text=${whatsappMessage}`}
+              href={getWhatsAppUrl(whatsappMessage)}
               target="_blank"
               rel="noopener noreferrer"
               className="flex-1 flex items-center justify-center gap-2 bg-[#25D366] text-white font-sans text-xs font-semibold uppercase tracking-widest py-4 rounded-xl hover:bg-[#1ebd59] transition-colors duration-300 shadow-md"
