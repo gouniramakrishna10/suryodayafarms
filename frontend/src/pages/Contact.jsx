@@ -407,66 +407,31 @@ export default function Contact() {
 
       {/* 5. BUSINESS HOURS & RESPONSE COMMITMENT */}
       <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-b border-[#EDE7D9]/80">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 items-stretch">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 items-start">
           
           {/* Business Enquiries Highlighted Section */}
-          <div className="bg-[#2F3B0C] text-white rounded-[36px] p-8 sm:p-10 lg:p-12 shadow-xl text-left space-y-6 relative overflow-hidden flex flex-col justify-between h-full">
+          <div className="bg-[#2F3B0C] text-white rounded-[36px] p-7 sm:p-9 lg:p-10 shadow-xl text-left relative overflow-hidden flex flex-col space-y-6">
             <div className="absolute -right-28 -bottom-28 w-96 h-96 bg-[#4E641A]/30 rounded-full blur-3xl pointer-events-none" />
             
-            <div className="space-y-6 relative z-10">
-              <div className="space-y-3">
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 text-[#C68A2B] text-xs font-semibold uppercase tracking-wider">
-                  <FiBriefcase />
-                  <span>Commercial Partnerships</span>
-                </div>
-
-                <h2 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight text-white">
-                  Commercial Partnerships
-                </h2>
+            <div className="space-y-4 relative z-10">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 text-sunrise-gold text-xs font-semibold uppercase tracking-wider">
+                <FiBriefcase />
+                <span>Commercial Partnerships</span>
               </div>
+
+              <h2 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight text-white">
+                Business Enquiries
+              </h2>
               
-              <p className="text-white/85 text-xs sm:text-sm leading-relaxed font-sans font-normal">
+              <p className="text-stone-300 text-sm sm:text-base leading-relaxed font-sans font-normal">
                 For wholesale, distribution, retail partnerships, institutional supply, export opportunities, private label manufacturing, and strategic collaborations, please contact our Business Development Team.
               </p>
-
-              {/* Key Partnership Opportunities List */}
-              <div className="space-y-2.5 pt-2 border-t border-white/15">
-                <span className="font-sans text-[10px] font-bold uppercase tracking-widest text-[#C68A2B] block mb-3">
-                  Key Partnership Opportunities
-                </span>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs font-sans text-white/90">
-                  <div className="flex items-center gap-2">
-                    <FiCheckCircle className="text-[#C68A2B] shrink-0 text-sm" />
-                    <span>Wholesale Distribution</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <FiCheckCircle className="text-[#C68A2B] shrink-0 text-sm" />
-                    <span>Retail Partnerships</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <FiCheckCircle className="text-[#C68A2B] shrink-0 text-sm" />
-                    <span>Institutional Supply</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <FiCheckCircle className="text-[#C68A2B] shrink-0 text-sm" />
-                    <span>Export Opportunities</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <FiCheckCircle className="text-[#C68A2B] shrink-0 text-sm" />
-                    <span>Private Label Manufacturing</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <FiCheckCircle className="text-[#C68A2B] shrink-0 text-sm" />
-                    <span>Strategic Collaborations</span>
-                  </div>
-                </div>
-              </div>
             </div>
 
-            <div className="pt-6 relative z-10">
+            <div className="pt-2 relative z-10">
               <Link
                 to="/become-a-partner"
-                className="inline-flex items-center gap-3 bg-[#4E641A] hover:bg-white hover:text-[#2F3B0C] text-white font-sans text-xs sm:text-sm font-bold tracking-widest uppercase px-8 py-4 rounded-2xl shadow-lg transition-all duration-300"
+                className="inline-flex items-center gap-3 bg-[#4E641A] hover:bg-white hover:text-[#2F3B0C] text-white font-sans text-xs sm:text-sm font-bold tracking-widest uppercase px-8 py-3.5 rounded-2xl shadow-lg transition-all duration-200"
               >
                 <span>Become a Partner</span>
                 <FiArrowRight />
@@ -475,9 +440,9 @@ export default function Contact() {
           </div>
 
           {/* Customer Feedback & Our Promise Split Stack */}
-          <div className="space-y-6 text-left flex flex-col justify-between h-full">
+          <div className="space-y-6 text-left">
             
-            <div className="bg-white border border-[#EDE7D9] rounded-[32px] p-8 sm:p-10 shadow-xs space-y-3">
+            <div className="bg-white border border-[#EDE7D9] rounded-[32px] p-7 sm:p-9 shadow-xs space-y-3">
               <span className="font-sans text-xs font-bold text-[#4E641A] uppercase tracking-widest">We Value Your Thoughts</span>
               <h2 className="font-serif text-2xl font-bold text-[#2F3B0C]">Customer Feedback</h2>
               <p className="text-stone-600 text-sm leading-relaxed font-sans">
@@ -486,7 +451,7 @@ export default function Contact() {
             </div>
 
             {/* Timely Response Promise Card */}
-            <div className="bg-white/90 backdrop-blur-md border border-[#4E641A]/30 rounded-[32px] p-8 sm:p-10 shadow-md relative overflow-hidden space-y-4">
+            <div className="bg-white/90 backdrop-blur-md border border-[#4E641A]/30 rounded-[32px] p-7 sm:p-9 shadow-md relative overflow-hidden space-y-4">
               <div className="absolute top-0 right-0 w-28 h-28 bg-[#4E641A]/8 rounded-bl-full pointer-events-none" />
               
               <div className="space-y-1">

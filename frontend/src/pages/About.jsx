@@ -323,9 +323,9 @@ export default function About() {
 
       {/* 11. OUR TAGLINE */}
       <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 bg-[#F4EFE6] border-b border-[#EDE7D9]">
-        <div className="max-w-4xl mx-auto text-center space-y-3">
+        <div className="max-w-6xl mx-auto text-center space-y-3">
           <span className="font-sans text-xs font-bold uppercase tracking-[0.3em] text-[#B8833E]">OUR TAGLINE</span>
-          <h3 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#2F3B0C]">
+          <h3 className="font-serif text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-[#2F3B0C] whitespace-nowrap">
             Pure Nature. Scientific Quality. Trusted Nutrition.
           </h3>
         </div>
