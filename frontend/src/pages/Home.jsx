@@ -763,7 +763,7 @@ export default function Home() {
 
     const trustBadgeText = activeHero
       ? activeHero.trustBadgeText?.trim()
-      : "🌿 100% Natural & Chemical Free";
+      : "🌿 100% Pure & Natural";
 
     const handleFeaturedProductAction = () => {
       const targetProduct = resolvedFeaturedProduct;

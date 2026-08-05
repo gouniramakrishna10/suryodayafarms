@@ -285,7 +285,7 @@ export default function Products() {
           to deliver high-vibrational, nutrient-dense organic staples directly from our soil to your family.
         </p>
         <div className="flex flex-wrap gap-2.5 justify-center mt-2 products-hero-chips">
-          <span className="text-[9px] uppercase font-bold text-[#4E641A] tracking-wider bg-[#4E641A]/5 px-3 py-1 rounded-full border border-[#4E641A]/10">🌱 100% Chemical-Free</span>
+          <span className="text-[9px] uppercase font-bold text-[#4E641A] tracking-wider bg-[#4E641A]/5 px-3 py-1 rounded-full border border-[#4E641A]/10">🌱 100% Pure & Natural</span>
           <span className="text-[9px] uppercase font-bold text-[#C68A2B] tracking-wider bg-[#C68A2B]/5 px-3 py-1 rounded-full border border-[#C68A2B]/10">☀️ Solar Dried</span>
           <span className="text-[9px] uppercase font-bold text-stone-600 tracking-wider bg-stone-100 px-3 py-1 rounded-full border border-stone-200">🤝 Fair Price to Farmers</span>
         </div>
