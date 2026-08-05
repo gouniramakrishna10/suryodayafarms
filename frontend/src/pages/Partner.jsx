@@ -714,13 +714,13 @@ export default function Partner() {
       </section>
 
       {/* 12. FOOTER MOTTO */}
-      <section className="py-24 sm:py-32 lg:py-36 px-4 sm:px-6 lg:px-12 max-w-4xl mx-auto text-center border-t border-[#EDE7D9] bg-[#FAF7F2]">
+      <section className="py-20 sm:py-28 lg:py-32 px-4 sm:px-6 lg:px-12 max-w-5xl mx-auto text-center border-t border-[#EDE7D9] bg-[#FAF7F2]">
         <div className="space-y-5">
           <h3 className="font-serif text-4xl sm:text-5xl font-bold text-[#2F3B0C]">Suryodaya Farms</h3>
           <p className="text-xs sm:text-sm font-bold uppercase tracking-[0.3em] text-[#B8833E]">
-            Nature • Science • Quality • Trust
+            NATURE • SCIENCE • QUALITY • TRUST
           </p>
-          <p className="font-serif text-lg sm:text-xl italic text-[#4E641A] font-semibold max-w-2xl mx-auto leading-relaxed">
+          <p className="font-serif text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl italic text-[#4E641A] font-semibold max-w-full mx-auto leading-relaxed whitespace-nowrap">
             Together, We Cultivate Trust, Deliver Quality, and Grow a Healthier Future.
           </p>
         </div>
