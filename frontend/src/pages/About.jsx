@@ -374,9 +374,9 @@ export default function About() {
       </section>
 
       {/* 14. OUR RESEARCH, TECHNICAL & PRODUCT DEVELOPMENT TEAM */}
-      <section className="py-24 sm:py-32 px-4 sm:px-6 lg:px-12 bg-white border-b border-[#EDE7D9]">
-        <div className="max-w-4xl mx-auto space-y-8 text-left">
-          <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#2F3B0C]">
+      <section className="py-20 sm:py-28 px-4 sm:px-6 lg:px-12 bg-white border-b border-[#EDE7D9]">
+        <div className="max-w-6xl mx-auto space-y-8 text-left">
+          <h2 className="font-serif text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-[#2F3B0C] whitespace-nowrap">
             Our Research, Technical & Product Development Team
           </h2>
 
