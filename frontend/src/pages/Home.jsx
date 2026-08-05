@@ -220,7 +220,7 @@ export default function Home() {
   const [hasHydrated, setHasHydrated] = useState(false);
 
   const [toast, setToast] = useState({ show: false, message: '' });
-  const [activeCategory, setActiveCategory] = useState({ id: 'All', name: 'All' });
+  const [activeCategory, setActiveCategory] = useState({ id: 'All', name: 'Shop All' });
   const [activeBenefit, setActiveBenefit] = useState('All');
 
   const promoCategories = (() => {
@@ -1412,7 +1412,7 @@ export default function Home() {
 
         {/* Dynamic Category Filtering Bar */}
         <div className="flex flex-wrap justify-center gap-2 mb-10">
-          {[{ id: 'All', name: 'All' }, ...homepageCategories].map((cat) => (
+          {[{ id: 'All', name: 'Shop All' }, ...homepageCategories].map((cat) => (
             <button
               key={cat.id}
               onClick={() => setActiveCategory(cat)}
@@ -1421,7 +1421,7 @@ export default function Home() {
                 : 'bg-white hover:bg-stone-50 text-stone-600 border-[#EAE4D8]'
                 }`}
             >
-              {cat.name}
+              {cat.id === 'All' ? 'Shop All' : cat.name}
             </button>
           ))}
         </div>
@@ -1436,7 +1436,7 @@ export default function Home() {
           <div className="text-center py-16 bg-white border border-[#EAE4D8] rounded-[28px]">
             <GiSprout className="w-12 h-12 text-stone-300 mx-auto mb-2 animate-bounce" />
             <p className="text-sm font-semibold text-stone-500">No staples found in this category.</p>
-            <button onClick={() => { setActiveCategory({ id: 'All', name: 'All' }); }} className="mt-2 text-xs font-bold text-[#4E641A] underline">Reset Filters</button>
+            <button onClick={() => { setActiveCategory({ id: 'All', name: 'Shop All' }); }} className="mt-2 text-xs font-bold text-[#4E641A] underline">Reset Filters</button>
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8">

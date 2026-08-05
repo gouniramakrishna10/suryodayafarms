@@ -56,8 +56,8 @@ export default function Products() {
   const navigate = useNavigate();
   const location = useLocation();
   const [productsList, setProductsList] = useState([]);
-  const [categories, setCategories] = useState([{ id: 'All', name: 'All', slug: 'All' }]);
-  const [selectedCategory, setSelectedCategory] = useState({ id: 'All', name: 'All', slug: 'All' });
+  const [categories, setCategories] = useState([{ id: 'All', name: 'Shop All', slug: 'All' }]);
+  const [selectedCategory, setSelectedCategory] = useState({ id: 'All', name: 'Shop All', slug: 'All' });
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('newest');
   const [isLoading, setIsLoading] = useState(true);
@@ -148,7 +148,7 @@ export default function Products() {
         }
       }, 100);
     } else if (!catSlug && categories.length > 1) {
-      setSelectedCategory({ id: 'All', name: 'All', slug: 'All' });
+      setSelectedCategory({ id: 'All', name: 'Shop All', slug: 'All' });
     }
   }, [location.search, categories]);
 
@@ -178,7 +178,7 @@ export default function Products() {
       const filtered = (response.categories || []).filter(
         c => c.slug?.toLowerCase() !== 'uncategorized' && c.name?.toLowerCase() !== 'uncategorized'
       );
-      setCategories([{ id: 'All', name: 'All', slug: 'All' }, ...filtered]);
+      setCategories([{ id: 'All', name: 'Shop All', slug: 'All' }, ...filtered]);
     } catch (err) {
       console.error(err);
     }
@@ -360,7 +360,7 @@ export default function Products() {
                       : 'bg-cream-bg border-light-beige text-dark-text hover:bg-light-beige hover:border-light-beige/85'
                   }`}
                 >
-                  {cat.name} ({getCount(cat)})
+                  {cat.id === 'All' ? 'Shop All' : cat.name} ({getCount(cat)})
                 </button>
               ))}
             </div>
@@ -404,7 +404,7 @@ export default function Products() {
             <button
               onClick={() => { 
                 setSearchQuery(''); 
-                setSelectedCategory({ id: 'All', name: 'All', slug: 'All' }); 
+                setSelectedCategory({ id: 'All', name: 'Shop All', slug: 'All' }); 
                 navigate('/products');
               }}
               className="px-8 py-3.5 bg-[#4E641A] hover:bg-[#2F3B0C] text-white font-sans text-xs font-bold uppercase tracking-widest rounded-xl transition-all duration-300 cursor-pointer border-none"
