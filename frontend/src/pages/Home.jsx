@@ -1760,70 +1760,66 @@ export default function Home() {
   };
 
   const renderBenefitsSection = () => {
+    const cards = [
+      {
+        icon: "🌱",
+        title: "Daily Wellness",
+        desc: "Nutrient-rich superfoods for balanced nutrition and everyday well-being."
+      },
+      {
+        icon: "🛡️",
+        title: "Immunity Support",
+        desc: "Carefully selected natural foods rich in essential nutrients and antioxidants."
+      },
+      {
+        icon: "⚡",
+        title: "Energy & Vitality",
+        desc: "Wholesome nutrition to help you stay active, energized, and refreshed."
+      },
+      {
+        icon: "🥗",
+        title: "Healthy Lifestyle",
+        desc: "Pure and nourishing foods designed to support overall wellness and vitality."
+      },
+      {
+        icon: "👨‍👩‍👧‍👦",
+        title: "Family Nutrition",
+        desc: "Thoughtfully crafted products to meet the nutritional needs of every family member."
+      },
+      {
+        icon: "🔬",
+        title: "Natural Nutrition",
+        desc: "Pure, high-quality superfoods guided by nature and backed by science."
+      }
+    ];
+
     return (
       <section key="benefits" className="py-20 px-6 md:px-12 max-w-7xl mx-auto border-b border-[#EAE4D8] bg-[#FDFBF7]/30">
-        <div className="text-center max-w-xl mx-auto space-y-3 mb-12">
+        <div className="text-center max-w-2xl mx-auto space-y-3 mb-12">
           <span className="text-xs font-bold uppercase tracking-widest text-[#C68A2B] bg-[#C68A2B]/10 px-3.5 py-1 rounded-full">
-            {settings.homepage_section_badge_benefits || "Targeted Purity"}
+            {settings.homepage_section_badge_benefits || "Targeted Nutrition"}
           </span>
           <h2 className="font-serif text-3xl md:text-5xl font-semibold text-[#2F3B0C]">
-            {settings.homepage_section_title_benefits || "Shop By Health Benefit"}
+            {settings.homepage_section_title_benefits || "Shop by Wellness Goal"}
           </h2>
           <p className="text-xs md:text-sm text-stone-500 font-medium">
-            {settings.homepage_section_subtitle_benefits || "Find the perfect staple configured for your family's personal wellness pathways."}
+            {settings.homepage_section_subtitle_benefits || "Find the perfect superfoods to support your family's journey toward healthier living."}
           </p>
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 md:gap-6 text-left benefits-grid">
-          <div
-            className="bg-white border border-[#EAE4D8] rounded-2xl p-4 sm:p-6 shadow-sm transition duration-300 group cursor-default benefits-card"
-          >
-            <span className="text-2xl mb-4 block">❤️</span>
-            <h4 className="font-serif text-base font-bold text-[#2F3B0C]">Heart Healthy</h4>
-            <p className="text-xs text-stone-500 leading-relaxed font-light mt-1.5">
-              Pure, natural and nutritious superfoods supporting daily wellness.
-            </p>
-          </div>
-
-          <div
-            className="bg-white border border-[#EAE4D8] rounded-2xl p-4 sm:p-6 shadow-sm transition duration-300 group cursor-default benefits-card"
-          >
-            <span className="text-2xl mb-4 block">🌾</span>
-            <h4 className="font-serif text-base font-bold text-[#2F3B0C]">Diabetic Friendly</h4>
-            <p className="text-xs text-stone-500 leading-relaxed font-light mt-1.5">
-              Low glycemic index heirloom grains, rich in natural fibers and minerals.
-            </p>
-          </div>
-
-          <div
-            className="bg-white border border-[#EAE4D8] rounded-2xl p-4 sm:p-6 shadow-sm transition duration-300 group cursor-default benefits-card"
-          >
-            <span className="text-2xl mb-4 block">💪</span>
-            <h4 className="font-serif text-base font-bold text-[#2F3B0C]">Protein Rich</h4>
-            <p className="text-xs text-stone-500 leading-relaxed font-light mt-1.5">
-              Unpolished ancient seeds and indigenous farm pulses packed with bio-proteins.
-            </p>
-          </div>
-
-          <div
-            className="bg-white border border-[#EAE4D8] rounded-2xl p-4 sm:p-6 shadow-sm transition duration-300 group cursor-default benefits-card"
-          >
-            <span className="text-2xl mb-4 block">👧</span>
-            <h4 className="font-serif text-base font-bold text-[#2F3B0C]">Kids Nutrition</h4>
-            <p className="text-xs text-stone-500 leading-relaxed font-light mt-1.5">
-              Bilona ghee and sprouted multigrain porridge formulas for growing bones and brains.
-            </p>
-          </div>
-
-          <div
-            className="bg-white border border-[#EAE4D8] rounded-2xl p-4 sm:p-6 shadow-sm transition duration-300 group cursor-default benefits-card col-span-2 lg:col-span-1"
-          >
-            <span className="text-2xl mb-4 block">🧘</span>
-            <h4 className="font-serif text-base font-bold text-[#2F3B0C]">Traditional Wellness</h4>
-            <p className="text-xs text-stone-500 leading-relaxed font-light mt-1.5">
-              Raw honeys and forest medicinal herbs that nurture core Agni and immune shield.
-            </p>
-          </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 text-left benefits-grid">
+          {cards.map((card, idx) => (
+            <div
+              key={idx}
+              className="bg-white border border-[#EAE4D8] hover:border-[#4E641A] rounded-2xl p-5 sm:p-6 shadow-xs hover:shadow-sm transition duration-300 group cursor-default benefits-card"
+            >
+              <span className="text-2xl mb-3 block">{card.icon}</span>
+              <h4 className="font-serif text-base font-bold text-[#2F3B0C] group-hover:text-[#4E641A] transition-colors">{card.title}</h4>
+              <p className="text-xs text-stone-500 leading-relaxed font-light mt-1.5">
+                {card.desc}
+              </p>
+            </div>
+          ))}
         </div>
       </section>
     );

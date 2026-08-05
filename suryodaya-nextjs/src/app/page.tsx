@@ -1180,84 +1180,99 @@ export default function LuxuryStorefrontPage() {
 
       </section>
 
-      {/* SECTION 7 — SHOP BY BENEFIT */}
+      {/* SECTION 7 — SHOP BY WELLNESS GOAL */}
       <section className="py-20 px-4 md:px-8 max-w-7xl mx-auto border-b border-[#EAE4D8] bg-[#FDFBF7]/30">
         
         {/* Section Title */}
-        <div className="text-center max-w-xl mx-auto space-y-3 mb-12">
+        <div className="text-center max-w-2xl mx-auto space-y-3 mb-12">
           <span className="text-xs font-bold uppercase tracking-widest text-[#C68A2B] bg-[#C68A2B]/10 px-3.5 py-1 rounded-full">
-            Targeted Purity
+            Targeted Nutrition
           </span>
           <h2 className="font-serif text-3xl md:text-5xl font-semibold text-[#2F3B0C]">
-            Shop By Health Benefit
+            Shop by Wellness Goal
           </h2>
           <p className="text-xs md:text-sm text-stone-500 font-medium">
-            Find the perfect staple configured for your family's personal wellness pathways.
+            Find the perfect superfoods to support your family's journey toward healthier living.
           </p>
         </div>
 
         {/* Benefits Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 text-left">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 text-left">
           
           {/* Card 1 */}
           <div 
-            onClick={() => { selectCategoryByName('Cold Pressed Oils'); scrollToSection(bestSellersRef); }}
+            onClick={() => scrollToSection(bestSellersRef)}
             className="bg-white border border-[#EAE4D8] hover:border-[#4E641A] rounded-2xl p-6 shadow-sm hover:shadow-md transition duration-300 group cursor-pointer"
           >
-            <span className="text-2xl mb-4 block">❤️</span>
-            <h4 className="font-serif text-base font-bold text-[#2F3B0C] group-hover:text-[#4E641A]">Heart Healthy</h4>
+            <span className="text-2xl mb-4 block">🌱</span>
+            <h4 className="font-serif text-base font-bold text-[#2F3B0C] group-hover:text-[#4E641A]">Daily Wellness</h4>
             <p className="text-xs text-stone-500 leading-relaxed font-light mt-1.5">
-              Unsaturated fatty acids from pure cold-pressed wooden-mill oils.
+              Nutrient-rich superfoods for balanced nutrition and everyday well-being.
             </p>
           </div>
 
           {/* Card 2 */}
           <div 
-            onClick={() => { selectCategoryByName('Organic Grains'); scrollToSection(bestSellersRef); }}
+            onClick={() => scrollToSection(bestSellersRef)}
             className="bg-white border border-[#EAE4D8] hover:border-[#4E641A] rounded-2xl p-6 shadow-sm hover:shadow-md transition duration-300 group cursor-pointer"
           >
-            <span className="text-2xl mb-4 block">🌾</span>
-            <h4 className="font-serif text-base font-bold text-[#2F3B0C] group-hover:text-[#4E641A]">Diabetic Friendly</h4>
+            <span className="text-2xl mb-4 block">🛡️</span>
+            <h4 className="font-serif text-base font-bold text-[#2F3B0C] group-hover:text-[#4E641A]">Immunity Support</h4>
             <p className="text-xs text-stone-500 leading-relaxed font-light mt-1.5">
-              Low glycemic index heirloom grains, rich in natural fibers and minerals.
+              Carefully selected natural foods rich in essential nutrients and antioxidants.
             </p>
           </div>
 
           {/* Card 3 */}
           <div 
-            onClick={() => { selectCategoryByName('Ancient Millets'); scrollToSection(bestSellersRef); }}
+            onClick={() => scrollToSection(bestSellersRef)}
             className="bg-white border border-[#EAE4D8] hover:border-[#4E641A] rounded-2xl p-6 shadow-sm hover:shadow-md transition duration-300 group cursor-pointer"
           >
-            <span className="text-2xl mb-4 block">💪</span>
-            <h4 className="font-serif text-base font-bold text-[#2F3B0C] group-hover:text-[#4E641A]">Protein Rich</h4>
+            <span className="text-2xl mb-4 block">⚡</span>
+            <h4 className="font-serif text-base font-bold text-[#2F3B0C] group-hover:text-[#4E641A]">Energy & Vitality</h4>
             <p className="text-xs text-stone-500 leading-relaxed font-light mt-1.5">
-              Unpolished ancient seeds and indigenous farm pulses packed with bio-proteins.
+              Wholesome nutrition to help you stay active, energized, and refreshed.
             </p>
           </div>
 
           {/* Card 4 */}
           <div 
-            onClick={() => { selectCategoryByName('A2 Ghee'); scrollToSection(bestSellersRef); }}
+            onClick={() => scrollToSection(bestSellersRef)}
             className="bg-white border border-[#EAE4D8] hover:border-[#4E641A] rounded-2xl p-6 shadow-sm hover:shadow-md transition duration-300 group cursor-pointer"
           >
-            <span className="text-2xl mb-4 block">👧</span>
-            <h4 className="font-serif text-base font-bold text-[#2F3B0C] group-hover:text-[#4E641A]">Kids Nutrition</h4>
+            <span className="text-2xl mb-4 block">🥗</span>
+            <h4 className="font-serif text-base font-bold text-[#2F3B0C] group-hover:text-[#4E641A]">Healthy Lifestyle</h4>
             <p className="text-xs text-stone-500 leading-relaxed font-light mt-1.5">
-              Bilona ghee and sprouted multigrain porridge formulas for growing bones and brains.
+              Pure and nourishing foods designed to support overall wellness and vitality.
             </p>
           </div>
 
           {/* Card 5 */}
           <div 
-            onClick={() => { selectCategoryByName('Raw Honey & Sweeteners'); scrollToSection(bestSellersRef); }}
+            onClick={() => scrollToSection(bestSellersRef)}
             className="bg-white border border-[#EAE4D8] hover:border-[#4E641A] rounded-2xl p-6 shadow-sm hover:shadow-md transition duration-300 group cursor-pointer"
           >
-            <span className="text-2xl mb-4 block">🧘</span>
-            <h4 className="font-serif text-base font-bold text-[#2F3B0C] group-hover:text-[#4E641A]">Traditional Wellness</h4>
+            <span className="text-2xl mb-4 block">👨‍👩‍👧‍👦</span>
+            <h4 className="font-serif text-base font-bold text-[#2F3B0C] group-hover:text-[#4E641A]">Family Nutrition</h4>
             <p className="text-xs text-stone-500 leading-relaxed font-light mt-1.5">
-              Raw honeys and forest medicinal herbs that nurture core Agni and immune shield.
+              Thoughtfully crafted products to meet the nutritional needs of every family member.
             </p>
           </div>
+
+          {/* Card 6 */}
+          <div 
+            onClick={() => scrollToSection(bestSellersRef)}
+            className="bg-white border border-[#EAE4D8] hover:border-[#4E641A] rounded-2xl p-6 shadow-sm hover:shadow-md transition duration-300 group cursor-pointer"
+          >
+            <span className="text-2xl mb-4 block">🔬</span>
+            <h4 className="font-serif text-base font-bold text-[#2F3B0C] group-hover:text-[#4E641A]">Natural Nutrition</h4>
+            <p className="text-xs text-stone-500 leading-relaxed font-light mt-1.5">
+              Pure, high-quality superfoods guided by nature and backed by science.
+            </p>
+          </div>
+
+        </div>
+      </section>
 
         </div>
 
