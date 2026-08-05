@@ -56,16 +56,18 @@ const Footer = memo(function Footer() {
             <GiSun className="text-sunrise-gold text-3xl animate-spin-slow" />
             <div className="flex flex-col text-left">
               <span className="font-serif text-2xl font-bold tracking-wide text-white">
-                {settings.companyName?.toUpperCase() || 'SURYODAYA'}
-              </span>
-              <span className="font-sans text-[10px] font-semibold tracking-[0.25em] text-sunrise-gold">
-                {settings.brandName?.toUpperCase().replace(settings.companyName?.toUpperCase(), '').trim() || 'FARMS & ORGANICS'}
+                SURYODAYA FARMS
               </span>
             </div>
           </Link>
-          <p className="font-sans text-xs sm:text-sm text-light-beige/70 leading-relaxed font-light">
-            Rooted in traditional Vedic wisdom and modern agronomic science, we cultivate pure, high-vitality organic foods. Nurtured by local hands, dedicated to global wellness.
-          </p>
+          <div className="space-y-1">
+            <p className="font-serif text-sm font-medium text-light-beige/90 italic">
+              Nature's Superfoods for Modern Living
+            </p>
+            <p className="font-sans text-xs font-bold tracking-wider text-sunrise-gold uppercase">
+              Pure • Natural • Nutritious
+            </p>
+          </div>
           <div className="flex items-center gap-4 mt-2">
             <a href={settings.socialInstagram} target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-primary-green/30 flex items-center justify-center text-light-beige hover:bg-sunrise-gold hover:text-dark-olive transition-all duration-300">
               <FiInstagram size={18} />
@@ -144,14 +146,14 @@ const Footer = memo(function Footer() {
             onClick={() => toggleAccordion('newsletter')}
             className="w-full md:pointer-events-none flex items-center justify-between font-serif text-base sm:text-lg font-semibold tracking-wide text-white border-b border-primary-green/20 pb-2 text-left bg-transparent border-none p-0 cursor-pointer focus:outline-none"
           >
-            <span>Harvest Newsletter</span>
+            <span>Suryodaya Farms Newsletter</span>
             <span className="md:hidden text-sunrise-gold text-sm font-bold">
               {activeAccordion.newsletter ? '−' : '+'}
             </span>
           </button>
           <div className={`flex flex-col gap-3 transition-all duration-300 md:flex ${activeAccordion.newsletter ? 'flex' : 'hidden'}`}>
             <p className="font-sans text-xs sm:text-sm text-light-beige/70 leading-relaxed font-light text-left">
-              Subscribe to receive organic wellness articles, crop harvesting updates, and seasonal grain availabilities straight from our soil.
+              Stay connected with us. Subscribe to receive wellness tips, superfood insights, product updates, new launches, exclusive offers, and the latest news from Suryodaya Farms—delivered directly to your inbox.
             </p>
             <form onSubmit={handleSubscribe} className="relative flex items-center mt-1 w-full">
               <input
@@ -171,7 +173,7 @@ const Footer = memo(function Footer() {
             </form>
             {subscribed && (
               <p className="font-sans text-xs text-sunrise-gold animate-pulse text-left">
-                Namaste! You are now subscribed to our organic harvest updates.
+                Thank you! You are now subscribed to the Suryodaya Farms Newsletter.
               </p>
             )}
           </div>

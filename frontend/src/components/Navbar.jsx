@@ -73,24 +73,28 @@ const Navbar = memo(function Navbar() {
       >
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           
-          {/* Logo Reveal */}
+          {/* Logo & Official Visiting Card Brand Header */}
           <Link
             to="/"
-            className="flex items-center gap-2 sm:gap-3.5 cursor-pointer group select-none text-left animate-fade-in"
+            className="flex items-center gap-2.5 sm:gap-3 cursor-pointer group select-none text-left animate-fade-in"
           >
             <img 
               src="https://i.ibb.co/Pz01P9Y5/Whats-App-Image-2026-05-29-at-6-51-48-PM-removebg-preview.png" 
               alt="Suryodaya Farms Logo" 
               loading="eager"
               fetchPriority="high"
-              className="h-10 sm:h-12 md:h-16 lg:h-20 w-auto object-contain transition duration-500 group-hover:scale-105"
+              className="h-10 sm:h-12 md:h-14 lg:h-16 w-auto object-contain transition duration-500 group-hover:scale-105"
             />
             <div className="flex flex-col justify-center text-left">
-              <span className="font-serif text-base sm:text-xl md:text-2xl font-bold tracking-wide text-dark-olive leading-none group-hover:text-primary-green transition-colors duration-300">
-                SURYODAYA
+              <span className="font-serif text-base sm:text-lg md:text-xl font-bold tracking-wide text-dark-olive leading-tight group-hover:text-primary-green transition-colors duration-300 uppercase">
+                SURYODAYA FARMS
               </span>
-              <span className="font-sans text-[8px] sm:text-[9px] font-semibold tracking-[0.2em] sm:tracking-[0.25em] text-sunrise-gold leading-none mt-1 sm:mt-1.5 hidden min-[400px]:block">
-                FARMS & ORGANICS
+              <span className="font-sans text-[8px] sm:text-[9px] font-bold tracking-wider text-primary-green uppercase leading-none mt-1 hidden min-[360px]:flex items-center gap-1">
+                <span>Pure</span>
+                <span className="text-sunrise-gold">•</span>
+                <span>Natural</span>
+                <span className="text-sunrise-gold">•</span>
+                <span>Nutritious</span>
               </span>
             </div>
           </Link>

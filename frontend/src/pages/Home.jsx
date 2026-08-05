@@ -1111,14 +1111,24 @@ export default function Home() {
                 </div>
               ) : null}
 
-              {/* Headline (Spacious, less wrapping) */}
-              <h1 className="font-serif text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight text-[#2F3B0C] leading-[1.15] max-w-none">
-                <>
-                  {headingLine1 && <span className="block text-[#2F3B0C]">{headingLine1}</span>}
-                  {headingHighlight && <span className="block text-[#C68A2B] italic font-normal font-serif my-0.5">{headingHighlight}</span>}
-                  {headingLine2 && <span className="block text-[#C68A2B]">{headingLine2}</span>}
-                </>
-              </h1>
+              {/* Official Visiting Card Hero Branding Header */}
+              <div className="space-y-2 text-left">
+                <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight text-[#2F3B0C] uppercase leading-none">
+                  SURYODAYA FARMS
+                </h1>
+
+                <p className="font-serif text-base md:text-lg lg:text-xl font-medium text-stone-700 italic pt-0.5">
+                  Nature's Superfoods for Modern Living
+                </p>
+
+                <div className="font-sans text-xs md:text-sm font-bold tracking-widest text-[#4E641A] uppercase flex items-center gap-2 pt-0.5">
+                  <span>Pure</span>
+                  <span className="text-[#C68A2B]">•</span>
+                  <span>Natural</span>
+                  <span className="text-[#C68A2B]">•</span>
+                  <span>Nutritious</span>
+                </div>
+              </div>
 
               {/* Description (Wider and readable) */}
               <p className="text-[12px] lg:text-sm text-stone-600 max-w-none leading-relaxed font-medium">
@@ -1410,21 +1420,23 @@ export default function Home() {
               </div>
             ) : null}
 
-            {/* 4. Title & Subtitle */}
-            <div className="space-y-1 px-6 text-center">
-              <h2 className="font-serif text-xl sm:text-2xl font-bold tracking-tight text-[#2F3B0C] leading-tight">
-                {headingLine1 && <span className="block text-[#2F3B0C]">{headingLine1}</span>}
-              </h2>
-              {headingHighlight && (
-                <span className="block text-sm sm:text-base text-[#C68A2B] italic font-normal font-serif mt-0.5">
-                  {headingHighlight}
-                </span>
-              )}
-              {headingLine2 && (
-                <span className="block text-sm sm:text-base font-bold text-[#C68A2B] uppercase tracking-wider">
-                  {headingLine2}
-                </span>
-              )}
+            {/* 4. Official Visiting Card Hero Branding Header (Mobile) */}
+            <div className="space-y-1.5 px-4 text-center">
+              <h1 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-[#2F3B0C] uppercase leading-tight">
+                SURYODAYA FARMS
+              </h1>
+
+              <p className="font-serif text-sm sm:text-base font-medium text-stone-700 italic pt-0.5">
+                Nature's Superfoods for Modern Living
+              </p>
+
+              <div className="font-sans text-xs sm:text-sm font-bold tracking-wider text-[#4E641A] uppercase flex items-center justify-center gap-2 pt-0.5">
+                <span>Pure</span>
+                <span className="text-[#C68A2B]">•</span>
+                <span>Natural</span>
+                <span className="text-[#C68A2B]">•</span>
+                <span>Nutritious</span>
+              </div>
             </div>
 
             {/* 5. Description */}
@@ -1769,7 +1781,7 @@ export default function Home() {
             <span className="text-2xl mb-4 block">❤️</span>
             <h4 className="font-serif text-base font-bold text-[#2F3B0C]">Heart Healthy</h4>
             <p className="text-xs text-stone-500 leading-relaxed font-light mt-1.5">
-              Unsaturated fatty acids from pure cold-pressed wooden-mill oils.
+              Pure, natural and nutritious superfoods supporting daily wellness.
             </p>
           </div>
 

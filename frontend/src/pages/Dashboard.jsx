@@ -804,7 +804,7 @@ export default function Dashboard() {
                           Namaste, {user.name?.split(' ')[0] || 'Premium Member'}
                         </h2>
                         <p className="text-xs text-stone-300 font-medium">
-                          Putting Soil First with premium native harvests, cold-pressed oils, and raw forest honey.
+                          Nature's Superfoods for Modern Living — Pure, Natural and Nutritious.
                         </p>
                       </div>
                       <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/15 min-w-[180px] shrink-0 text-left">
@@ -964,7 +964,7 @@ export default function Dashboard() {
                           <div className="space-y-1">
                             <h4 className="font-serif text-sm font-bold text-[#2F3B0C]">First Harvest Awaits</h4>
                             <p className="text-stone-500 font-sans text-[11px] leading-relaxed font-medium">
-                              Try our unrefined cold-pressed oils, native grains, and pure raw honey.
+                              Discover pure, natural and nutritious superfoods from Suryodaya Farms.
                             </p>
                           </div>
                           <button onClick={() => navigate('/products')} className="w-full py-2.5 bg-[#4E641A] hover:bg-[#2F3B0C] text-white text-[10px] font-bold uppercase tracking-widest rounded-xl shadow-sm transition duration-350 cursor-pointer border-none">

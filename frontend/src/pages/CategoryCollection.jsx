@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FiSliders, FiArrowRight, FiStar, FiChevronRight, FiChevronLeft, FiHeart, FiShoppingBag } from 'react-icons/fi';
 import { GiSun } from 'react-icons/gi';
 import api from '../utils/api';
+import { updateSEO } from '../hooks/useSEO';
 import { useCartStore } from '../store/useCartStore';
 import { useWishlistStore } from '../store/useWishlistStore';
 import ProductCard from '../components/ProductCard';
@@ -75,15 +76,12 @@ export default function CategoryCollection() {
       const catData = catResponse.category;
       setCategory(catData);
 
-      // Dynamically update SEO tags
+      // Dynamically update SEO tags using client-approved brand metadata
       if (catData) {
-        document.title = catData.seoTitle || `${catData.name} | Suryodaya Farms`;
-        
-        // Update meta description dynamically if exists
-        let metaDescription = document.querySelector('meta[name="description"]');
-        if (metaDescription) {
-          metaDescription.setAttribute('content', catData.seoDescription || catData.description || '');
-        }
+        updateSEO({
+          title: catData.seoTitle || `${catData.name} | Suryodaya Farms`,
+          description: catData.seoDescription || catData.description || `Discover pure, natural and nutritious ${catData.name} superfoods by Suryodaya Farms.`
+        });
       }
 
       // 2. Fetch products linked to this category

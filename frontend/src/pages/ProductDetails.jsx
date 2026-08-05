@@ -9,6 +9,7 @@ import { useAuthStore } from '../store/useAuthStore';
 import { useModalStore } from '../store/useModalStore';
 import { useSettingsStore } from '../store/useSettingsStore';
 import { getWhatsAppUrl } from '../config/constants';
+import { updateSEO } from '../hooks/useSEO';
 import api from '../utils/api';
 
 import { getOptimizedImageUrl, getImageSrcSet, resolveImageUrl, handleImageError, DEFAULT_FALLBACK_IMAGE } from '../utils/imageOptimizer';
@@ -227,11 +228,16 @@ export default function ProductDetails() {
       const compiledVariants = getProductVariants(prod);
       setAllVariants(compiledVariants);
       
-      if (compiledVariants.length > 0) {
-        setSelectedVariant(compiledVariants[0]);
+      setSelectedVariant(compiledVariants[0]);
       } else {
         setSelectedVariant(null);
       }
+
+      // Update dynamic SEO tags using client-approved brand metadata
+      updateSEO({
+        title: prod.seoTitle || `${prod.name} | Suryodaya Farms`,
+        description: prod.seoDescription || prod.shortDescription || `${prod.name} by Suryodaya Farms. Pure, natural and nutritious superfood developed with scientific care.`
+      });
       
       // Fetch related products under same category - isolated error handling
       try {

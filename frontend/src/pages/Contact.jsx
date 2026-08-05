@@ -289,25 +289,25 @@ export default function Contact() {
               </div>
               <h3 className="font-serif text-xl sm:text-2xl font-bold text-[#2F3B0C]">Customer Support Hours</h3>
               
-              <div className="bg-[#FAF7F2] border border-[#EDE7D9]/80 p-5 sm:p-6 rounded-2xl space-y-4 font-sans">
+              <div className="bg-[#FAF7F2] border border-[#EDE7D9]/80 p-4.5 sm:p-6 rounded-2xl space-y-3.5 font-sans overflow-x-auto">
                 {/* Working Days */}
-                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-4">
-                  <span className="text-xs sm:text-sm font-medium text-stone-600">Working Days:</span>
-                  <span className="text-xs sm:text-sm font-bold text-[#2F3B0C]">Monday – Saturday</span>
+                <div className="flex items-center justify-between gap-3 min-w-0">
+                  <span className="text-[11px] sm:text-xs md:text-sm font-medium text-stone-600 shrink-0">Working Days:</span>
+                  <span className="text-[11px] sm:text-xs md:text-sm font-bold text-[#2F3B0C] whitespace-nowrap text-right">Monday – Saturday</span>
                 </div>
 
                 {/* Support Hours */}
-                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-4 pt-3 border-t border-[#EDE7D9]/60">
-                  <span className="text-xs sm:text-sm font-medium text-stone-600">Support Hours:</span>
-                  <span className="text-xs sm:text-sm font-bold text-[#4E641A]">9:00 AM – 6:00 PM (IST)</span>
+                <div className="flex items-center justify-between gap-3 pt-3 border-t border-[#EDE7D9]/60 min-w-0">
+                  <span className="text-[11px] sm:text-xs md:text-sm font-medium text-stone-600 shrink-0">Support Hours:</span>
+                  <span className="text-[11px] sm:text-xs md:text-sm font-bold text-[#4E641A] whitespace-nowrap text-right">9:00 AM – 6:00 PM (IST)</span>
                 </div>
 
                 {/* Sunday */}
-                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1 sm:gap-4 pt-3 border-t border-[#EDE7D9]/60">
-                  <span className="text-xs sm:text-sm font-medium text-stone-600">Sunday:</span>
-                  <div className="sm:text-right">
-                    <span className="text-xs sm:text-sm font-bold text-stone-700 block">Customer Support Closed</span>
-                    <span className="text-[11px] sm:text-xs text-stone-500 font-normal block mt-0.5">
+                <div className="flex items-start justify-between gap-3 pt-3 border-t border-[#EDE7D9]/60 min-w-0">
+                  <span className="text-[11px] sm:text-xs md:text-sm font-medium text-stone-600 shrink-0 mt-0.5">Sunday:</span>
+                  <div className="text-right whitespace-nowrap">
+                    <span className="text-[11px] sm:text-xs md:text-sm font-bold text-stone-700 block whitespace-nowrap">Customer Support Closed</span>
+                    <span className="text-[10px] sm:text-[11px] md:text-xs text-stone-500 font-normal block mt-0.5 whitespace-nowrap">
                       (Online Orders Accepted 24/7)
                     </span>
                   </div>

@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FiSearch, FiArrowRight, FiStar, FiShoppingBag, FiInfo } from 'react-icons/fi';
 import { GiSun } from 'react-icons/gi';
 import api from '../utils/api';
+import { updateSEO } from '../hooks/useSEO';
 import { useCartStore } from '../store/useCartStore';
 import { useAuthStore } from '../store/useAuthStore';
 import ProductCard from '../components/ProductCard';
@@ -151,12 +152,18 @@ export default function Products() {
     }
   }, [location.search, categories]);
 
-  // Update browser tab title
+  // Update browser tab title & meta tags dynamically
   useEffect(() => {
     if (selectedCategory && selectedCategory.id !== 'All') {
-      document.title = `Products > ${selectedCategory.name} | Suryodaya Farms`;
+      updateSEO({
+        title: `${selectedCategory.name} | Suryodaya Farms`,
+        description: `Explore pure, natural and nutritious ${selectedCategory.name} superfoods from Suryodaya Farms.`
+      });
     } else {
-      document.title = `Organic Marketplace | Suryodaya Farms`;
+      updateSEO({
+        title: `Our Natural Superfoods | Suryodaya Farms`,
+        description: `Explore pure, natural and nutritious superfoods from Suryodaya Farms. Developed with scientific care to support your family's daily wellness.`
+      });
     }
   }, [selectedCategory]);
 

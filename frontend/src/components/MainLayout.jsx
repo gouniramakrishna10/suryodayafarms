@@ -4,9 +4,13 @@ import Navbar from './Navbar';
 import Footer from './Footer';
 import { FaWhatsapp } from 'react-icons/fa';
 import { getWhatsAppUrl } from '../config/constants';
+import { useSEO } from '../hooks/useSEO';
 
 export default function MainLayout() {
   const { pathname } = useLocation();
+
+  // Dynamically sync client-approved SEO metadata on route navigation
+  useSEO();
 
   // Scroll to top instantly on any route change
   useEffect(() => {
@@ -14,7 +18,7 @@ export default function MainLayout() {
   }, [pathname]);
 
   const whatsappMessage = encodeURIComponent(
-    "Namaste Suryodaya Farms! I am visiting your premium website and would like to inquire about the available organic harvest packages and delivery schedules."
+    "Namaste Suryodaya Farms! I am visiting your website and would like to inquire about your natural superfoods and product availability."
   );
 
   return (
