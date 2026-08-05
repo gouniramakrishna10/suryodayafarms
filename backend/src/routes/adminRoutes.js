@@ -507,12 +507,33 @@ router.put('/categories/:id', async (req, res, next) => {
     if (homepageVisible !== undefined) updatedData.homepageVisible = Boolean(homepageVisible);
     if (isFeatured !== undefined) updatedData.isFeatured = Boolean(isFeatured);
 
-    if (name) {
+    if (name && name !== exists.name) {
       const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
       if (name.toLowerCase().trim() === 'uncategorized' || slug === 'uncategorized') {
         return res.status(400).json({ success: false, message: 'Renaming to "Uncategorized" category is not allowed.' });
       }
+      const nameConflict = await prisma.category.findFirst({
+        where: {
+          id: { not: id },
+          OR: [{ name }, { slug }]
+        }
+      });
+      if (nameConflict) {
+        return res.status(400).json({ success: false, message: 'A category with this name or slug already exists.' });
+      }
+      updatedData.name = name;
       updatedData.slug = slug;
+
+      if (exists.slug !== slug) {
+        try {
+          await prisma.homepageCollection.updateMany({
+            where: { categorySlug: exists.slug },
+            data: { categorySlug: slug, title: name }
+          });
+        } catch (syncErr) {
+          console.warn("Failed to auto-sync homepage collections for category slug:", syncErr);
+        }
+      }
     }
 
     const category = await prisma.category.update({

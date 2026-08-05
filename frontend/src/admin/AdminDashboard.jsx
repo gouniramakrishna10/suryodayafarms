@@ -3431,7 +3431,7 @@ Ensure confidence scores are numbers between 0 and 100. Always reply ONLY with r
     setCategoryFormErrors({});
 
     const isUpdating = !!categoryForm.id;
-    useFeedbackStore.getState().showLoader(isUpdating ? 'Saving category...' : 'Saving category...');
+    useFeedbackStore.getState().showLoader(isUpdating ? 'Saving category...' : 'Creating category...');
     try {
       if (categoryForm.id) {
         await api.put(`/admin/categories/${categoryForm.id}`, categoryForm);
@@ -3439,11 +3439,18 @@ Ensure confidence scores are numbers between 0 and 100. Always reply ONLY with r
         await api.post('/admin/categories', categoryForm);
       }
       setShowCategoryModal(false);
+      const savedCatId = categoryForm.id;
       setCategoryForm({ id: '', name: '', description: '', image: '', seoTitle: '', seoDescription: '', isVisible: true, homepageVisible: true, isFeatured: false });
-      fetchCategories();
-      fetchAnalytics();
-      if (selectedCategoryId) {
-        fetchCategoryDetails(selectedCategoryId);
+      
+      await Promise.all([
+        fetchCategories(),
+        fetchProducts(),
+        fetchHomepageCMSData(),
+        fetchAnalytics()
+      ]);
+
+      if (selectedCategoryId || savedCatId) {
+        await fetchCategoryDetails(selectedCategoryId || savedCatId);
       }
       useFeedbackStore.getState().hideLoader();
       useFeedbackStore.getState().showToast(isUpdating ? '✅ Category saved successfully' : '✅ Category created successfully', 'success');
