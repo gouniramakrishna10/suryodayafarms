@@ -223,15 +223,9 @@ export default function Home() {
   const [activeCategory, setActiveCategory] = useState({ id: 'All', name: 'All' });
   const [activeBenefit, setActiveBenefit] = useState('All');
 
-  const promoCategories = homepageCollections.filter(c => {
-    if (c.description && c.description.startsWith('{')) {
-      try {
-        const parsed = JSON.parse(c.description);
-        return !!parsed.isPromoCategory;
-      } catch (e) { }
-    }
-    return false;
-  });
+  const promoCategories = homepageCollections.length > 0
+    ? homepageCollections
+    : homepageCategories;
 
   const signatureCollections = homepageCollections.filter(c => {
     if (c.description && c.description.startsWith('{')) {
@@ -704,14 +698,17 @@ export default function Home() {
                   <motion.div
                     key={item.id}
                     variants={itemVariants}
-                    onClick={() => navigate(`/category/${item.categorySlug}`)}
+                    onClick={() => {
+                      const targetSlug = item.categorySlug || item.slug || getCategorySlugByName(item.title || item.name);
+                      navigate(`/category/${targetSlug}`);
+                    }}
                     className={`relative overflow-hidden group shadow-sm border border-[#EAE4D8] transition-all duration-500 cursor-pointer ${spanClass} ${roundClass}`}
                   >
                     <img
                       src={item.image}
                       srcSet={getImageSrcSet(item.image, { widths: [400, 800, 1500], cropMode: 'fill' })}
                       sizes={meta.isFeatured ? "(max-width: 640px) 100vw, 66vw" : "(max-width: 640px) 100vw, 33vw"}
-                      alt={item.title}
+                      alt={item.title || item.name}
                       loading="lazy"
                       className={`absolute inset-0 w-full h-full object-cover transition duration-700 ease-out ${hoverZoomClass} ${objectFocal}`}
                     />
@@ -725,7 +722,7 @@ export default function Home() {
                         </span>
                       )}
 
-                      <h3 className={`font-serif text-lg sm:text-xl md:text-2xl font-bold leading-tight max-w-[90%] ${isDark ? 'text-[#2F3B0C]' : 'text-white'}`}>{item.title}</h3>
+                      <h3 className={`font-serif text-lg sm:text-xl md:text-2xl font-bold leading-tight max-w-[90%] ${isDark ? 'text-[#2F3B0C]' : 'text-white'}`}>{item.title || item.name}</h3>
 
                       {item.ctaStyle === 'arrow' ? (
                         <div className={`absolute bottom-6 right-6 w-8 h-8 rounded-full flex items-center justify-center text-sm transition duration-300 ${isDark ? 'bg-[#2F3B0C]/10 text-[#2F3B0C] group-hover:bg-[#2F3B0C] group-hover:text-white' : 'bg-white/10 text-white backdrop-blur-xs group-hover:bg-white group-hover:text-[#2F3B0C]'
