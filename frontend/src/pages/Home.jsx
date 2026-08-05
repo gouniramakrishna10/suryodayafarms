@@ -1519,15 +1519,15 @@ export default function Home() {
   const renderBestSellersSection = () => {
     return (
       <section key="best-sellers" id="best-sellers-grid" className="py-20 px-6 md:px-12 max-w-7xl mx-auto border-b border-[#EAE4D8]">
-        <div className="text-center max-w-xl mx-auto space-y-4 mb-16">
+        <div className="text-center max-w-2xl lg:max-w-3xl mx-auto space-y-4 mb-16">
           <span className="text-xs font-bold uppercase tracking-widest text-[#C68A2B] bg-[#C68A2B]/10 px-3.5 py-1 rounded-full">
             {settings.homepage_section_badge_best_sellers || "Customer Favorites"}
           </span>
-          <h2 className="font-serif text-3xl md:text-5xl font-semibold text-[#2F3B0C]">
-            {settings.homepage_section_title_best_sellers || "Direct From Soil Best Sellers"}
+          <h2 className="font-serif text-3xl md:text-5xl font-semibold text-[#2F3B0C] leading-tight">
+            {settings.homepage_section_title_best_sellers || "Nourish Your Family with Nature's Finest Superfoods"}
           </h2>
-          <p className="text-xs md:text-sm text-stone-500 leading-relaxed font-medium">
-            {settings.homepage_section_subtitle_best_sellers || "Discover the daily organic essentials that nourish thousands of Indian families. Non-GMO, freshly batched, and absolute chemical-free."}
+          <p className="text-xs md:text-sm text-stone-500 leading-relaxed font-medium max-w-2xl mx-auto">
+            {settings.homepage_section_subtitle_best_sellers || "Discover our most-loved products, thoughtfully crafted with scientific expertise and uncompromising quality to support healthy living, natural vitality, and everyday wellness. Made from premium-quality natural ingredients and carefully processed to preserve their nutritional goodness."}
           </p>
         </div>
 

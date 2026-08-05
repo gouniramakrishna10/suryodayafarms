@@ -808,15 +808,15 @@ export default function LuxuryStorefrontPage() {
       <section ref={bestSellersRef} className="py-20 px-4 md:px-8 max-w-7xl mx-auto border-b border-[#EAE4D8]">
         
         {/* Section Header */}
-        <div className="text-center max-w-xl mx-auto space-y-4 mb-16">
+        <div className="text-center max-w-2xl lg:max-w-3xl mx-auto space-y-4 mb-16">
           <span className="text-xs font-bold uppercase tracking-widest text-[#C68A2B] bg-[#C68A2B]/10 px-3.5 py-1 rounded-full">
             Customer Favorites
           </span>
-          <h2 className="font-serif text-3xl md:text-5xl font-semibold text-[#2F3B0C]">
-            Direct From Soil Best Sellers
+          <h2 className="font-serif text-3xl md:text-5xl font-semibold text-[#2F3B0C] leading-tight">
+            Nourish Your Family with Nature's Finest Superfoods
           </h2>
-          <p className="text-xs md:text-sm text-stone-500 leading-relaxed font-medium">
-            Discover the daily organic essentials that nourish thousands of Indian families. Non-GMO, freshly batched, and absolute chemical-free.
+          <p className="text-xs md:text-sm text-stone-500 leading-relaxed font-medium max-w-2xl mx-auto">
+            Discover our most-loved products, thoughtfully crafted with scientific expertise and uncompromising quality to support healthy living, natural vitality, and everyday wellness. Made from premium-quality natural ingredients and carefully processed to preserve their nutritional goodness.
           </p>
         </div>
 
