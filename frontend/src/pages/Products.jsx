@@ -267,7 +267,7 @@ export default function Products() {
   const qvVariants = quickViewProduct ? getProductVariants(quickViewProduct) : [];
 
   return (
-    <div className="flex flex-col bg-cream-bg min-h-screen relative w-full pt-20 pb-24">
+    <div className="flex flex-col bg-cream-bg min-h-screen relative w-full pb-24">
       {/* 1. Page Header (Storytelling Banner) */}
       <div className="w-full bg-[#FAF7F2] border-b border-[#EAE4D8] py-12 md:py-16 px-4 sm:px-6 md:px-12 text-center flex flex-col items-center gap-4 select-none products-hero-banner">
         <div className="w-10 h-10 rounded-full bg-[#4E641A]/5 flex items-center justify-center text-sunrise-gold products-hero-badge">

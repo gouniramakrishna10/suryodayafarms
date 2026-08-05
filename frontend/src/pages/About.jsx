@@ -74,7 +74,7 @@ export default function About() {
     <div className="bg-[#F9F6F0] min-h-screen font-sans text-[#2F3B0C] selection:bg-[#4E641A] selection:text-white">
       
       {/* 1. A LETTER FROM SURYODAYA FARMS */}
-      <section className="relative pt-32 sm:pt-40 lg:pt-44 pb-24 sm:pb-32 px-4 sm:px-6 lg:px-12 bg-gradient-to-b from-[#F4EFE6] via-[#FAF7F2] to-[#F9F6F0] border-b border-[#EDE7D9]">
+      <section className="relative pt-10 sm:pt-14 lg:pt-16 pb-16 sm:pb-24 px-4 sm:px-6 lg:px-12 bg-gradient-to-b from-[#F4EFE6] via-[#FAF7F2] to-[#F9F6F0] border-b border-[#EDE7D9]">
         <div className="max-w-4xl mx-auto space-y-8 text-left">
           <h1 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">
             A Letter from Suryodaya Farms

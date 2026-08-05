@@ -283,7 +283,7 @@ export default function ShipmentDetails() {
   const isShipped = ['SHIPPED', 'IN_TRANSIT', 'IN TRANSIT', 'OUT_FOR_DELIVERY', 'DELIVERED'].includes(logisticsStatus);
 
   return (
-    <div className="min-h-screen bg-[#F9F6F0] pt-28 pb-20 px-4 md:px-8 relative text-[#1E1E1E]">
+    <div className="min-h-screen bg-[#F9F6F0] pt-6 pb-20 px-4 md:px-8 relative text-[#1E1E1E]">
       
       {/* Confetti celebration for delivered state */}
       {logisticsStatus === 'DELIVERED' && (

@@ -31,7 +31,7 @@ export default function Wishlist() {
   };
 
   return (
-    <div className="min-h-screen bg-cream-bg pt-28 pb-20 px-6 md:px-12">
+    <div className="min-h-screen bg-cream-bg pt-6 pb-20 px-6 md:px-12">
       <div className="max-w-7xl mx-auto">
         
         {/* Header Title */}

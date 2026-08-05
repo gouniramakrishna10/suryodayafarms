@@ -12,9 +12,14 @@
   --font-sans: "Poppins", "Inter", sans-serif;
 }
 
+:root {
+  --navbar-height: 80px;
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;
+    scroll-padding-top: var(--navbar-height, 80px);
     background-color: #F6F3ED;
     color: #1E1E1E;
   }
@@ -43,6 +48,11 @@
     font-family: var(--font-serif);
     color: var(--color-dark-olive);
   }
+}
+
+/* Global Navbar Header Offset Solution */
+.main-content-wrapper {
+  padding-top: var(--navbar-height, 80px);
 }
 
 /* ==========================================================================

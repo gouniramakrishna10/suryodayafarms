@@ -645,7 +645,7 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#F9F6F0] pt-32 md:pt-36 lg:pt-40 pb-20 px-4 md:px-8 relative overflow-x-hidden text-[#1E1E1E]">
+    <div className="bg-[#FAF8F5] min-h-screen pt-6 pb-20 px-4 sm:px-6 md:px-12 text-left">
       
       {/* Hide Scrollbars Global Inline Styles */}
       <style dangerouslySetInnerHTML={{__html: `
@@ -661,7 +661,7 @@ export default function Dashboard() {
       <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-10 items-start">
         
         {/* Sticky Left Navigation Sidebar with Premium Glassmorphism - Hidden on mobile */}
-        <aside className="hidden lg:block w-[300px] bg-white border border-[#EAE4D8] rounded-[32px] p-6 shrink-0 lg:sticky lg:top-28 shadow-sm text-left">
+        <aside className="hidden lg:block w-[300px] bg-white border border-[#EAE4D8] rounded-[32px] p-6 shrink-0 lg:sticky lg:top-[calc(var(--navbar-height,80px)+20px)] shadow-sm text-left">
           {/* Avatar Section */}
           <div className="flex flex-col items-center justify-center text-center pb-6 border-b border-[#EAE4D8] mb-6 w-full">
             <div className="flex flex-col items-center">

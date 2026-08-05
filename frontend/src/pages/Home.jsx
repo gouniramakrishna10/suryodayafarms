@@ -1088,7 +1088,7 @@ export default function Home() {
     return (
       <section
         key="hero"
-        className="home-hero-section relative overflow-hidden pt-20 pb-6 md:pt-32 md:pb-12 lg:pt-36 lg:pb-16 min-h-0 md:min-h-[700px] lg:min-h-[750px] flex items-center px-4 sm:px-6 md:px-12 lg:px-20 border-b border-[#EAE4D8]/50 bg-[#FAF8F5] text-left select-none animate-fade-in"
+        className="home-hero-section relative overflow-hidden py-8 md:py-14 min-h-0 md:min-h-[600px] flex items-center px-4 sm:px-6 md:px-12 lg:px-20 border-b border-[#EAE4D8]/50 bg-[#FAF8F5] text-left select-none animate-fade-in"
       >
         {/* Soft cream-green blurred background gradients */}
         <div className="absolute top-0 right-0 w-[450px] h-[450px] bg-[#EAF2DE]/50 rounded-full filter blur-3xl opacity-60 pointer-events-none -z-10" />
@@ -1100,7 +1100,7 @@ export default function Home() {
           <div className="hidden md:grid md:grid-cols-[45%_55%] gap-6 lg:gap-8 items-start w-full">
 
             {/* Left Content Area (45% width) */}
-            <div className="flex flex-col justify-start space-y-5 lg:space-y-6 -mt-[40px] md:-mt-[60px] lg:-mt-[80px]">
+            <div className="flex flex-col justify-start space-y-5 lg:space-y-6">
 
               {/* Badge */}
               {trustBadgeText ? (

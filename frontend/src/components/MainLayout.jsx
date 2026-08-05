@@ -26,8 +26,8 @@ export default function MainLayout() {
       {/* 1. Transparent-to-Solid Sticky Navbar */}
       <Navbar />
 
-      {/* 2. Fluid Content Area and Transition Engine */}
-      <main className="flex-grow">
+      {/* 2. Fluid Content Area and Transition Engine with Global Header Offset */}
+      <main className="flex-grow main-content-wrapper">
         <Outlet />
       </main>
 

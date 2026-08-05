@@ -126,7 +126,7 @@ export default function Contact() {
     <div className="bg-[#F9F6F0] min-h-screen font-sans text-[#2F3B0C]">
       
       {/* 1. HERO SECTION */}
-      <section className="relative pt-28 sm:pt-36 lg:pt-40 pb-20 sm:pb-28 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-[#F4EFE6] via-[#F9F6F0] to-[#F9F6F0] overflow-hidden border-b border-[#EDE7D9]/60">
+      <section className="relative pt-10 sm:pt-14 lg:pt-16 pb-16 sm:pb-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-[#F4EFE6] via-[#F9F6F0] to-[#F9F6F0] overflow-hidden border-b border-[#EDE7D9]/60">
         <div className="absolute -top-40 -left-40 w-[480px] h-[480px] bg-[#4E641A]/8 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute top-1/3 -right-40 w-[480px] h-[480px] bg-[#B8833E]/8 rounded-full blur-3xl pointer-events-none" />
 

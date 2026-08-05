@@ -71,20 +71,11 @@ export default function Privacy() {
     <div className="bg-[#F9F6F0] min-h-screen font-sans text-[#2F3B0C]">
       
       {/* 1. HERO SECTION */}
-      <section className="relative pt-28 sm:pt-36 lg:pt-40 pb-20 sm:pb-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-[#F4EFE6] via-[#F9F6F0] to-[#F9F6F0] overflow-hidden border-b border-[#EDE7D9]/60">
+      <section className="relative pt-10 sm:pt-14 lg:pt-16 pb-16 sm:pb-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-[#F4EFE6] via-[#F9F6F0] to-[#F9F6F0] overflow-hidden border-b border-[#EDE7D9]/60">
         <div className="absolute -top-40 -left-40 w-[480px] h-[480px] bg-[#4E641A]/8 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute top-1/3 -right-40 w-[480px] h-[480px] bg-[#B8833E]/8 rounded-full blur-3xl pointer-events-none" />
 
         <div className="max-w-4xl mx-auto text-center relative z-10 space-y-6">
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2.5 px-4.5 py-1.5 rounded-full bg-[#4E641A]/8 border border-[#4E641A]/20 backdrop-blur-md text-[#4E641A] text-xs font-semibold uppercase tracking-widest mx-auto"
-          >
-            <FiShield className="text-[#B8833E] text-base" />
-            <span>Transparency & Trust</span>
-          </motion.div>
-
           <motion.h1
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
@@ -120,7 +111,7 @@ export default function Privacy() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
           
           {/* DESKTOP STICKY SIDEBAR TABLE OF CONTENTS */}
-          <aside className="hidden lg:block lg:col-span-4 sticky top-28 space-y-4">
+          <aside className="hidden lg:block lg:col-span-4 sticky top-[calc(var(--navbar-height,80px)+20px)] space-y-4">
             <div className="bg-white border border-[#EDE7D9] rounded-[28px] p-6 shadow-xs text-left space-y-4">
               <div className="flex items-center gap-2 pb-3 border-b border-[#EDE7D9]">
                 <GiSprout className="text-[#4E641A] text-lg" />

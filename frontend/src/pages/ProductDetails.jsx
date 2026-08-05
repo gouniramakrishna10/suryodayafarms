@@ -448,10 +448,7 @@ export default function ProductDetails() {
 
   return (
     <Profiler id="ProductDetails" onRender={onRenderCallback}>
-      <div 
-        className="min-h-screen bg-[#FCFAF5] pb-32 lg:pb-20 px-4 sm:px-6 md:px-12"
-        style={{ paddingTop: `${navbarHeight + 20}px` }}
-      >
+      <div className="min-h-screen bg-[#FCFAF5] pb-32 lg:pb-20 pt-6 px-4 sm:px-6 md:px-12">
         <div className="max-w-7xl mx-auto flex flex-col gap-8 sm:gap-12">
           
           {/* Back navigation */}

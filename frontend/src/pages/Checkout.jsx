@@ -510,7 +510,7 @@ export default function Checkout() {
   }
 
   return (
-    <div className="min-h-screen bg-cream-bg pt-28 pb-24 md:pb-16 px-4 md:px-10 lg:px-16 w-full max-w-[1440px] mx-auto">
+    <div className="min-h-screen bg-cream-bg pt-6 pb-24 md:pb-16 px-4 md:px-10 lg:px-16 w-full max-w-[1440px] mx-auto">
       
       {/* 10. TOP BACK BUTTON - Left Aligned, Always Visible Below Navbar */}
       <div className="w-full mb-6 flex items-center justify-between">

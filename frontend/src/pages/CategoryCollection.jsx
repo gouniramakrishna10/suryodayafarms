@@ -101,7 +101,7 @@ export default function CategoryCollection() {
   };
 
   return (
-    <div className="flex flex-col bg-[#F9F6F0] overflow-hidden w-full pt-20 min-h-screen text-left">
+    <div className="flex flex-col bg-[#F9F6F0] overflow-hidden w-full min-h-screen text-left">
       {/* 1. Breadcrumbs */}
       <nav className="px-6 md:px-12 py-4 max-w-7xl mx-auto w-full flex items-center space-x-2 text-[10px] font-extrabold uppercase tracking-widest text-[#B8833E]/70 font-sans">
         <Link to="/" className="hover:text-[#4E641A] transition">Home</Link>

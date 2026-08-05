@@ -252,10 +252,10 @@ export default function Faq() {
   };
 
   return (
-    <div className="bg-[#F9F6F0] min-h-screen pt-24 pb-16 font-sans text-[#2F3B0C]">
+    <div className="bg-[#F9F6F0] min-h-screen pb-16 font-sans text-[#2F3B0C]">
       
       {/* HERO SECTION */}
-      <section className="relative py-16 sm:py-24 px-4 sm:px-6 lg:px-12 bg-gradient-to-b from-[#F4EFE6] via-[#F9F6F0] to-[#F9F6F0] overflow-hidden border-b border-[#EDE7D9]/60">
+      <section className="relative py-10 sm:py-14 px-4 sm:px-6 lg:px-12 bg-gradient-to-b from-[#F4EFE6] via-[#F9F6F0] to-[#F9F6F0] overflow-hidden border-b border-[#EDE7D9]/60">
         <div className="absolute -top-32 -left-32 w-96 h-96 bg-[#4E641A]/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute top-1/2 -right-32 w-96 h-96 bg-[#B8833E]/10 rounded-full blur-3xl pointer-events-none" />
 

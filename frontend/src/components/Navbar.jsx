@@ -1,4 +1,4 @@
-import React, { useState, useEffect, memo } from 'react';
+import React, { useState, useEffect, useRef, memo } from 'react';
 import { NavLink, Link, useNavigate, useLocation } from 'react-router-dom';
 import { FiMenu, FiX, FiChevronRight, FiShoppingBag, FiUser, FiTrash2, FiPlus, FiMinus, FiHeart } from 'react-icons/fi';
 import { GiSun } from 'react-icons/gi';
@@ -10,6 +10,7 @@ import { getOptimizedImageUrl, handleImageError, DEFAULT_FALLBACK_IMAGE } from '
 const Navbar = memo(function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
+  const navRef = useRef(null);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -18,6 +19,33 @@ const Navbar = memo(function Navbar() {
   const { user, isAuthenticated, setAuthModalOpen } = useAuthStore();
   const { cartItems, subtotal, updateQuantity, removeItem, fetchCart } = useCartStore();
   const wishlistItems = useWishlistStore(state => state.wishlistItems);
+
+  // Dynamically calculate and set current navbar height on root element
+  useEffect(() => {
+    const updateHeaderHeight = () => {
+      if (navRef.current) {
+        const height = navRef.current.offsetHeight;
+        document.documentElement.style.setProperty('--navbar-height', `${height}px`);
+      }
+    };
+
+    updateHeaderHeight();
+
+    let resizeObserver;
+    if (navRef.current && window.ResizeObserver) {
+      resizeObserver = new ResizeObserver(() => {
+        updateHeaderHeight();
+      });
+      resizeObserver.observe(navRef.current);
+    }
+
+    window.addEventListener('resize', updateHeaderHeight);
+
+    return () => {
+      if (resizeObserver) resizeObserver.disconnect();
+      window.removeEventListener('resize', updateHeaderHeight);
+    };
+  }, [isScrolled, isCartOpen, isMobileMenuOpen]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -65,6 +93,7 @@ const Navbar = memo(function Navbar() {
   return (
     <>
       <nav
+        ref={navRef}
         className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ease-in-out px-3 sm:px-6 md:px-12 app-header-nav ${
           isScrolled || isCartOpen || isMobileMenuOpen
             ? 'bg-cream-bg/95 backdrop-blur-md shadow-md border-b border-light-beige py-2 lg:py-3'
