@@ -62,13 +62,13 @@
   color: rgba(255, 255, 255, 0.92);
 }
 
-/* 1. All headings inside dark sections must be pure white (#FFFFFF) */
-.dark-section h1,
-.dark-section h2,
-.dark-section h3,
-.dark-section h4,
-.dark-section h5,
-.dark-section h6,
+/* 1. All headings inside dark sections must be pure white (#FFFFFF), EXCEPT inside light cards */
+.dark-section h1:not(.bg-white *):not(.light-container *),
+.dark-section h2:not(.bg-white *):not(.light-container *),
+.dark-section h3:not(.bg-white *):not(.light-container *),
+.dark-section h4:not(.bg-white *):not(.light-container *),
+.dark-section h5:not(.bg-white *):not(.light-container *),
+.dark-section h6:not(.bg-white *):not(.light-container *),
 .dark-section .dark-heading,
 .dark-section .card-heading,
 .dark-section .section-title,
@@ -76,11 +76,25 @@
   color: #ffffff !important;
 }
 
+.dark-section .bg-white h1,
+.dark-section .bg-white h2,
+.dark-section .bg-white h3,
+.dark-section .bg-white h4,
+.dark-section .bg-white h5,
+.dark-section .bg-white h6 {
+  color: #2F3B0C !important;
+}
+
 /* 2. Primary body text inside dark green sections */
-.dark-section p,
-.dark-section li,
+.dark-section p:not(.bg-white *):not(.light-container *),
+.dark-section li:not(.bg-white *):not(.light-container *),
 .dark-section .body-text {
   color: rgba(255, 255, 255, 0.92);
+}
+
+.dark-section .bg-white p,
+.dark-section .bg-white li {
+  color: #1C2607 !important;
 }
 
 /* 3. Secondary text inside dark green sections */

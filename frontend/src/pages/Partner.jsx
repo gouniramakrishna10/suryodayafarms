@@ -487,16 +487,16 @@ export default function Partner() {
           <div className="bg-white text-[#2F3B0C] border border-[#EDE7D9] rounded-[36px] p-8 sm:p-14 shadow-2xl text-left mt-8 sm:mt-10">
             {/* Header above form */}
             <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-12 space-y-4">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#2F3B0C]/10 border border-[#2F3B0C]/25 text-[#2F3B0C] text-xs font-extrabold uppercase tracking-widest shadow-2xs">
-                <GiSprout className="text-[#2F3B0C] text-sm" />
-                <span>Application Portal</span>
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#2F3B0C]/10 border border-[#2F3B0C]/25 !text-[#2F3B0C] text-xs font-extrabold uppercase tracking-widest shadow-2xs">
+                <GiSprout className="!text-[#2F3B0C] text-sm" />
+                <span className="!text-[#2F3B0C]">Application Portal</span>
               </div>
 
-              <h3 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1C2607] leading-tight">
+              <h3 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold !text-[#1C2607] leading-tight">
                 Join Our Partnership Network
               </h3>
 
-              <p className="text-stone-900 text-sm sm:text-base leading-relaxed font-sans font-medium max-w-2xl mx-auto">
+              <p className="!text-[#1C2607] text-sm sm:text-base leading-relaxed font-sans font-medium max-w-2xl mx-auto">
                 Complete the application below to explore partnership opportunities with Suryodaya Farms. Our team will carefully review your submission and get in touch with you to discuss the next steps.
               </p>
 
