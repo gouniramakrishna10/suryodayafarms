@@ -322,9 +322,16 @@ router.get('/homepage', async (req, res, next) => {
     // 5. Fetch active homepage collections sorted by sortOrder
     let collections = [];
     try {
-      collections = await prisma.homepageCollection.findMany({
+      const rawCollections = await prisma.homepageCollection.findMany({
         where: { isActive: true },
         orderBy: { sortOrder: 'asc' }
+      });
+      const seen = new Set();
+      collections = rawCollections.filter(c => {
+        const key = (c.categorySlug || c.title || '').toLowerCase().trim();
+        if (!key || seen.has(key)) return false;
+        seen.add(key);
+        return true;
       });
     } catch (collectionsErr) {
       console.error("Error fetching collections for homepage:", collectionsErr);

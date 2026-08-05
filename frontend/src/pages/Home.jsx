@@ -223,19 +223,32 @@ export default function Home() {
   const [activeCategory, setActiveCategory] = useState({ id: 'All', name: 'All' });
   const [activeBenefit, setActiveBenefit] = useState('All');
 
-  const promoCategories = homepageCollections.length > 0
-    ? homepageCollections
-    : homepageCategories;
+  const promoCategories = (() => {
+    const list = homepageCollections.length > 0 ? homepageCollections : homepageCategories;
+    const seen = new Set();
+    return list.filter(item => {
+      const key = (item.categorySlug || item.slug || item.title || item.name || '').toLowerCase().trim();
+      if (!key || seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  })();
 
-  const signatureCollections = homepageCollections.filter(c => {
-    if (c.description && c.description.startsWith('{')) {
-      try {
-        const parsed = JSON.parse(c.description);
-        return !parsed.isPromoCategory;
-      } catch (e) { }
-    }
-    return true;
-  });
+  const signatureCollections = (() => {
+    const seen = new Set();
+    return homepageCollections.filter(c => {
+      const key = (c.categorySlug || c.slug || c.title || c.name || '').toLowerCase().trim();
+      if (!key || seen.has(key)) return false;
+      seen.add(key);
+      if (c.description && c.description.startsWith('{')) {
+        try {
+          const parsed = JSON.parse(c.description);
+          return !parsed.isPromoCategory;
+        } catch (e) { }
+      }
+      return true;
+    });
+  })();
 
   useEffect(() => {
     setHasHydrated(true);
