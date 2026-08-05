@@ -601,7 +601,7 @@ export default function Contact() {
                     value={formData.subject}
                     onChange={handleInputChange}
                     required
-                    placeholder="e.g. Inquiry regarding organic cold pressed groundnut oil"
+                    placeholder="e.g. Inquiry regarding Sprouted Ragi Powder"
                     className="w-full px-5 py-3.5 bg-[#FAF8F5] border border-[#EDE7D9] rounded-2xl focus:bg-white focus:ring-2 focus:ring-[#4E641A] focus:border-transparent transition-all duration-200 text-sm text-[#2F3B0C] font-sans placeholder-stone-400 shadow-2xs"
                   />
                 </div>

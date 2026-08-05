@@ -510,7 +510,7 @@ export default function LuxuryStorefrontPage() {
                   >
                     <input 
                       type="text" 
-                      placeholder="Search organic staple..." 
+                      placeholder="Search natural superfood..." 
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       className="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:border-[#4E641A]"

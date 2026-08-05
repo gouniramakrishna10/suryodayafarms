@@ -89,16 +89,16 @@ export const products = [
   },
   {
     id: "p4",
-    name: "Wood Pressed Groundnut Oil",
-    category: "Cold Pressed Oils",
-    price: "₹420 / 1 Liter",
-    image: "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&q=80&w=800",
-    shortDesc: "Highly aromatic wood-pressed peanut oil with a smooth, sweet, nutty finish.",
-    longDesc: "Extracted carefully from naturally dried, sun-cured premium organic peanuts using wooden press cylinders. This oil captures the original flavor of peanuts with absolute purity. Because it is never heated artificially, it remains high in Vitamin E and antioxidants, boasting a high smoke point perfect for sautéing and deep frying.",
-    benefits: ["High smoke point for cooking", "Rich in natural Vitamin E", "Zero cholesterol, heart-healthy", "Sweet, authentic peanut aroma"],
-    origin: "Suryodaya Groundnut Fields, Wardha",
+    name: "Pure Wheatgrass Powder",
+    category: "Superfoods",
+    price: "₹349 / 100g",
+    image: "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&q=80&w=800",
+    shortDesc: "Nutrient-dense raw wheatgrass powder rich in chlorophyll and essential minerals.",
+    longDesc: "Cultivated with natural farm practices and harvested at peak nutritional vitality. Gently dehydrated and ground to preserve natural enzymes, chlorophyll, and vitamins for daily detox and immunity support.",
+    benefits: ["Rich in natural Chlorophyll", "Supports daily body detox", "High in Vitamins A, C & E", "Boosts immunity & vitality"],
+    origin: "Suryodaya Bio-Dynamic Farms",
     isComingSoon: false,
-    nutrients: "Vitamin E: 15.7mg, Monounsaturated Fats: 46.2g (per 100g)"
+    nutrients: "Chlorophyll: 42mg, Protein: 24g, Iron: 18mg (per 100g)"
   },
   {
     id: "p5",

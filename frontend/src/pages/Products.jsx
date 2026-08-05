@@ -307,7 +307,7 @@ export default function Products() {
               }}
               onFocus={() => setShowSuggestions(true)}
               onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-              placeholder="Search native grains, wood pressed oils..."
+              placeholder="Search sprouted ragi, wheatgrass, natural superfoods..."
               className="w-full bg-cream-bg border border-light-beige rounded-2xl py-3 pl-10 pr-5 font-sans text-xs placeholder-dark-text/45 focus:outline-none focus:border-sunrise-gold focus:ring-1 focus:ring-sunrise-gold transition-all duration-300 shadow-sm products-search-input"
             />
             {showSuggestions && suggestions.length > 0 && (

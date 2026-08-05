@@ -125,7 +125,7 @@ export default function Cart() {
             <div className="flex flex-col gap-2">
               <h2 className="font-serif text-2xl font-bold text-dark-olive">Your Cart is Empty</h2>
               <p className="font-sans text-xs md:text-sm text-dark-text/70 leading-relaxed font-light max-w-sm">
-                Explore our catalog of wood-pressed oils, bilona churned A2 ghee, and native heirloom millets to bless your family's health.
+                Explore our range of pure sprouted ragi powder, wheatgrass powder, and natural superfoods to support your family's health.
               </p>
             </div>
             <Link

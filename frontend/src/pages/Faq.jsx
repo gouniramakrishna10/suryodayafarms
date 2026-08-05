@@ -355,7 +355,7 @@ export default function Faq() {
             <FiSearch className="absolute left-4 top-1/2 translate-y-1 text-stone-400 text-lg" />
             <input
               type="text"
-              placeholder="Search questions (e.g. storage, natural, ghee, delivery)..."
+              placeholder="Search questions (e.g. storage, natural, superfood, delivery)..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-12 pr-10 py-4 bg-white border border-[#EDE7D9] rounded-2xl text-sm text-[#2F3B0C] shadow-sm focus:ring-2 focus:ring-[#4E641A] focus:outline-none"
@@ -643,7 +643,7 @@ export default function Faq() {
                       value={formData.subject}
                       onChange={handleInputChange}
                       required
-                      placeholder="e.g. Storage recommendations for A2 Ghee"
+                      placeholder="e.g. Storage recommendations for Sprouted Ragi Powder"
                       className="w-full px-4 py-3 bg-[#FAF8F5] border border-[#EDE7D9] rounded-xl focus:ring-2 focus:ring-[#4E641A] focus:outline-none text-sm text-[#2F3B0C]"
                     />
                   </div>

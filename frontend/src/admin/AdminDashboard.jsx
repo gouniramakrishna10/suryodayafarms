@@ -1926,7 +1926,7 @@ export default function AdminDashboard() {
           messages: [
             {
               role: "system",
-              content: `You are an expert product copywriter and SEO content optimizer for Suryodaya Farms (a premium, organic dryland farming brand that delivers items like traditional ghee, natural honey, cold-pressed wood-ghani oils, organic staples).
+              content: `You are an expert product copywriter and SEO content optimizer for Suryodaya Farms (a natural superfoods brand that delivers pure, natural and nutritious items like Sprouted Ragi Powder, Wheatgrass Powder, Moringa Leaf Powder, and natural superfood formulations).
 Analyze the input product copy and organize it into the following structured sections:
 - Hero Section
 - Product Description
@@ -7415,7 +7415,7 @@ Ensure confidence scores are numbers between 0 and 100. Always reply ONLY with r
                     <label className="text-[9px] font-extrabold uppercase tracking-wider text-stone-400">SEO Title Tag</label>
                     <input 
                       type="text" 
-                      placeholder="e.g. Traditional Gir Cow Desi Ghee | Suryodaya Farms" 
+                      placeholder="e.g. Sprouted Ragi Powder | Suryodaya Farms" 
                       value={categoryForm.seoTitle || ''}
                       onChange={(e) => setCategoryForm({ ...categoryForm, seoTitle: e.target.value })}
                       className="bg-[#FDFBF7] border border-[#EDE7D9] rounded-xl py-3 px-4 focus:outline-none focus:border-[#4E641A] text-[#37411A]"
@@ -7426,7 +7426,7 @@ Ensure confidence scores are numbers between 0 and 100. Always reply ONLY with r
                     <label className="text-[9px] font-extrabold uppercase tracking-wider text-stone-400">SEO Meta Description</label>
                     <input 
                       type="text" 
-                      placeholder="Traditional, wood-fired slow churned ghee..." 
+                      placeholder="Pure, natural and nutritious sprouted ragi powder..." 
                       value={categoryForm.seoDescription || ''}
                       onChange={(e) => setCategoryForm({ ...categoryForm, seoDescription: e.target.value })}
                       className="bg-[#FDFBF7] border border-[#EDE7D9] rounded-xl py-3 px-4 focus:outline-none focus:border-[#4E641A] text-[#37411A]"
@@ -10093,7 +10093,7 @@ Ensure confidence scores are numbers between 0 and 100. Always reply ONLY with r
                     <label className="text-[9px] font-extrabold uppercase tracking-wider text-stone-400">Product Purchased / Tag</label>
                     <input
                       type="text"
-                      placeholder="e.g. Traditional Village Ghee"
+                      placeholder="e.g. Sprouted Ragi Powder"
                       value={testimonialForm.productPurchased}
                       onChange={(e) => setTestimonialForm({ ...testimonialForm, productPurchased: e.target.value })}
                       className="bg-[#FDFBF7] border border-[#EDE7D9] rounded-xl py-3 px-4 focus:outline-none focus:border-[#4E641A] text-[#37411A]"
@@ -11481,7 +11481,7 @@ Ensure confidence scores are numbers between 0 and 100. Always reply ONLY with r
                                 type="text"
                                 value={hpCatForm.title}
                                 onChange={(e) => setHpCatForm({ ...hpCatForm, title: e.target.value })}
-                                placeholder="e.g. A2 Ghee"
+                                placeholder="e.g. Sprouted Ragi Powder"
                                 className="bg-[#FDFBF7] border border-[#EDE7D9] rounded-xl py-3 px-4 focus:outline-none focus:border-[#4E641A] text-[#37411A]"
                                 required
                               />
@@ -11494,7 +11494,7 @@ Ensure confidence scores are numbers between 0 and 100. Always reply ONLY with r
                                 type="text"
                                 value={hpCatForm.subtitle}
                                 onChange={(e) => setHpCatForm({ ...hpCatForm, subtitle: e.target.value })}
-                                placeholder="e.g. Traditional slow curd-churned Bilona Ghee"
+                                placeholder="e.g. Pure sprouted ragi powder for daily family nutrition"
                                 className="bg-[#FDFBF7] border border-[#EDE7D9] rounded-xl py-3 px-4 focus:outline-none focus:border-[#4E641A] text-[#37411A]"
                               />
                             </div>

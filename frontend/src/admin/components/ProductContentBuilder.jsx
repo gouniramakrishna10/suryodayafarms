@@ -803,7 +803,7 @@ function renderSectionEditor(sec, index, handleUpdateContent) {
                 type="text"
                 value={content.collectionName || ''}
                 onChange={(e) => handleUpdateContent(index, 'collectionName', e.target.value)}
-                placeholder="Organic Dryland Collection"
+                placeholder="Natural Superfoods Collection"
                 className="w-full bg-white border border-stone-300 rounded-xl py-2 px-3 text-xs focus:outline-none focus:border-[#4E641A]"
               />
             </div>
@@ -813,7 +813,7 @@ function renderSectionEditor(sec, index, handleUpdateContent) {
                 type="text"
                 value={content.tagline || ''}
                 onChange={(e) => handleUpdateContent(index, 'tagline', e.target.value)}
-                placeholder="100% Pure & Vedic"
+                placeholder="Pure • Natural • Nutritious"
                 className="w-full bg-white border border-stone-300 rounded-xl py-2 px-3 text-xs focus:outline-none focus:border-[#4E641A]"
               />
             </div>
