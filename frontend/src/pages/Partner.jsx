@@ -217,7 +217,7 @@ export default function Partner() {
       </section>
 
       {/* 2. INTRODUCTION */}
-      <section className="py-24 sm:py-32 lg:py-36 px-4 sm:px-6 lg:px-12 bg-white border-b border-[#EDE7D9]">
+      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 bg-white border-b border-[#EDE7D9]">
         <div className="max-w-4xl mx-auto space-y-8 text-left">
           <div className="w-16 h-1 bg-[#4E641A] rounded-full mb-8" />
           <div className="space-y-6 text-stone-700 text-base sm:text-lg lg:text-xl font-sans leading-[1.8] font-normal">
@@ -238,7 +238,7 @@ export default function Partner() {
       </section>
 
       {/* 3. PARTNERSHIP OPPORTUNITIES */}
-      <section className="py-24 sm:py-32 lg:py-36 px-4 sm:px-6 lg:px-12 bg-[#FAF7F2] border-b border-[#EDE7D9]">
+      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 bg-[#FAF7F2] border-b border-[#EDE7D9]">
         <div className="max-w-7xl mx-auto space-y-16">
           <div className="text-center max-w-3xl mx-auto space-y-4">
             <span className="font-sans text-xs font-bold text-[#B8833E] uppercase tracking-widest">Collaborative Avenues</span>
@@ -278,7 +278,7 @@ export default function Partner() {
       </section>
 
       {/* 4. WHY PARTNER WITH SURYODAYA FARMS? */}
-      <section className="py-24 sm:py-32 lg:py-36 px-4 sm:px-6 lg:px-12 bg-white border-b border-[#EDE7D9]">
+      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 bg-white border-b border-[#EDE7D9]">
         <div className="max-w-7xl mx-auto space-y-16">
           <div className="text-center max-w-5xl mx-auto space-y-4">
             <span className="font-sans text-xs font-bold text-[#B8833E] uppercase tracking-widest">Our Foundation</span>
@@ -312,7 +312,7 @@ export default function Partner() {
       </section>
 
       {/* 5. LET'S BEGIN THE JOURNEY TOGETHER */}
-      <section className="py-24 sm:py-32 lg:py-36 px-4 sm:px-6 lg:px-12 bg-[#F4EFE6] border-b border-[#EDE7D9]">
+      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 bg-[#F4EFE6] border-b border-[#EDE7D9]">
         <div className="max-w-4xl mx-auto">
           <div className="bg-white border border-[#EDE7D9] rounded-[40px] p-10 sm:p-16 shadow-lg text-center space-y-8 relative overflow-hidden">
             <div className="w-16 h-16 rounded-2xl bg-[#B8833E]/10 text-[#B8833E] flex items-center justify-center text-3xl mx-auto">
@@ -336,7 +336,7 @@ export default function Partner() {
       </section>
 
       {/* 6. OUR PARTNERSHIP PHILOSOPHY */}
-      <section className="py-28 sm:py-36 lg:py-40 px-4 sm:px-6 lg:px-12 bg-gradient-to-br from-[#2F3B0C] to-[#1E2707] text-white relative overflow-hidden dark-section">
+      <section className="py-14 sm:py-18 lg:py-22 px-4 sm:px-6 lg:px-12 bg-gradient-to-br from-[#2F3B0C] to-[#1E2707] text-white relative overflow-hidden dark-section">
         <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[radial-gradient(#ffffff_1.5px,transparent_1.5px)] [background-size:32px_32px] pointer-events-none" />
         <div className="max-w-5xl mx-auto text-center space-y-8 relative z-10">
           <span className="text-7xl font-serif text-[#B8833E]/50 leading-none block select-none">“</span>
@@ -352,7 +352,7 @@ export default function Partner() {
       </section>
 
       {/* 7. OUR SHARED VISION */}
-      <section className="py-24 sm:py-32 lg:py-36 px-4 sm:px-6 lg:px-12 bg-white border-b border-[#EDE7D9]">
+      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 bg-white border-b border-[#EDE7D9]">
         <div className="max-w-4xl mx-auto text-center space-y-8">
           <span className="font-sans text-xs font-bold text-[#4E641A] uppercase tracking-widest">Forward Together</span>
           <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">Our Shared Vision</h2>
@@ -369,7 +369,7 @@ export default function Partner() {
       </section>
 
       {/* 8. OUR PROMISE TO EVERY PARTNER (PREMIUM 2-COLUMN LAYOUT) */}
-      <section className="py-24 sm:py-32 lg:py-36 px-4 sm:px-6 lg:px-12 bg-[#FAF7F2] border-b border-[#EDE7D9]">
+      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 bg-[#FAF7F2] border-b border-[#EDE7D9]">
         <div className="max-w-7xl mx-auto space-y-16">
           <div className="text-center max-w-3xl mx-auto space-y-3">
             <span className="font-sans text-xs font-bold text-[#B8833E] uppercase tracking-widest">Unwavering Principles</span>
@@ -420,7 +420,7 @@ export default function Partner() {
       </section>
 
       {/* 9. WHAT YOU CAN EXPECT */}
-      <section className="py-24 sm:py-32 lg:py-36 px-4 sm:px-6 lg:px-12 bg-white border-b border-[#EDE7D9]">
+      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 bg-white border-b border-[#EDE7D9]">
         <div className="max-w-7xl mx-auto space-y-16">
           <div className="text-center max-w-3xl mx-auto space-y-4">
             <span className="font-sans text-xs font-bold text-[#4E641A] uppercase tracking-widest">Operational Excellence</span>
@@ -447,7 +447,7 @@ export default function Partner() {
       </section>
 
       {/* 10. OUR COMMITMENT */}
-      <section className="py-24 sm:py-32 lg:py-36 px-4 sm:px-6 lg:px-12 bg-[#F4EFE6] border-b border-[#EDE7D9]">
+      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 bg-[#F4EFE6] border-b border-[#EDE7D9]">
         <div className="max-w-4xl mx-auto">
           <div className="bg-white border border-[#EDE7D9] rounded-[40px] p-10 sm:p-16 shadow-lg text-center space-y-8">
             <span className="font-sans text-xs font-bold text-[#B8833E] uppercase tracking-widest">Our Promise</span>

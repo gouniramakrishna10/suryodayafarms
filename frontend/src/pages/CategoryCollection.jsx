@@ -112,12 +112,12 @@ export default function CategoryCollection() {
       </nav>
 
       {isLoading && !category ? (
-        <div className="text-center py-32 flex flex-col items-center gap-3 flex-1 justify-center">
+        <div className="text-center py-16 flex flex-col items-center gap-3 flex-1 justify-center">
           <GiSun className="text-[#4E641A] text-4xl animate-spin-slow" />
           <span className="font-sans text-xs text-stone-400 font-semibold uppercase tracking-wider">Unearthing Heritage Staples...</span>
         </div>
       ) : !category ? (
-        <div className="text-center py-32 flex flex-col items-center gap-4 flex-1 justify-center max-w-md mx-auto px-6">
+        <div className="text-center py-16 flex flex-col items-center gap-4 flex-1 justify-center max-w-md mx-auto px-6">
           <p className="font-serif text-xl text-[#37411A] font-bold">
             Collection Not Found
           </p>
@@ -162,7 +162,7 @@ export default function CategoryCollection() {
           </section>
 
           {/* 3. Interactive Filters Bar */}
-          <section className="px-6 md:px-12 mb-10 max-w-7xl mx-auto w-full">
+          <section className="px-6 md:px-12 mb-8 max-w-7xl mx-auto w-full">
             <div className="flex flex-col sm:flex-row gap-4 justify-between items-center bg-[#FDFBF7]/40 border border-[#EDE7D9] rounded-2xl p-4">
               <span className="font-sans text-[10px] text-stone-500 font-extrabold uppercase tracking-wider">
                 Showing {productsList.length} Dynamic Staples
@@ -185,9 +185,9 @@ export default function CategoryCollection() {
           </section>
 
           {/* 4. Category Grid List */}
-          <section className="px-6 md:px-12 pb-24 max-w-7xl mx-auto w-full flex-1">
+          <section className="px-6 md:px-12 pb-16 max-w-7xl mx-auto w-full flex-1">
             {isLoading ? (
-              <div className="text-center py-20 flex flex-col items-center gap-3">
+              <div className="text-center py-12 flex flex-col items-center gap-3">
                 <GiSun className="text-[#4E641A] text-4xl animate-spin-slow" />
                 <span className="font-sans text-xs text-stone-400 font-semibold uppercase tracking-wider">Loading dynamic collection items...</span>
               </div>

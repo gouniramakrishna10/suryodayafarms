@@ -116,7 +116,7 @@ export default function About() {
       </section>
 
       {/* 2. OUR STORY */}
-      <section className="py-24 sm:py-32 px-4 sm:px-6 lg:px-12 bg-white border-b border-[#EDE7D9]">
+      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 bg-white border-b border-[#EDE7D9]">
         <div className="max-w-4xl mx-auto space-y-8 text-left">
           <div className="space-y-3">
             <span className="font-sans text-xs font-bold text-[#B8833E] uppercase tracking-widest">Every Sunrise Brings New Hope</span>
@@ -153,7 +153,7 @@ export default function About() {
       </section>
 
       {/* 3. ABOUT SURYODAYA FARMS */}
-      <section className="py-24 sm:py-32 px-4 sm:px-6 lg:px-12 bg-[#FAF7F2] border-b border-[#EDE7D9]">
+      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 bg-[#FAF7F2] border-b border-[#EDE7D9]">
         <div className="max-w-4xl mx-auto space-y-8 text-left">
           <div className="space-y-3">
             <span className="font-sans text-xs font-bold text-[#4E641A] uppercase tracking-widest">Nature's Goodness. Guided by Science.</span>
@@ -191,7 +191,7 @@ export default function About() {
       </section>
 
       {/* 4. OUR PHILOSOPHY */}
-      <section className="py-24 sm:py-32 px-4 sm:px-6 lg:px-12 bg-white border-b border-[#EDE7D9]">
+      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 bg-white border-b border-[#EDE7D9]">
         <div className="max-w-4xl mx-auto space-y-8 text-left">
           <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">OUR PHILOSOPHY</h2>
 
@@ -213,7 +213,7 @@ export default function About() {
       </section>
 
       {/* 5. OUR PURPOSE */}
-      <section className="py-24 sm:py-32 px-4 sm:px-6 lg:px-12 bg-[#F4EFE6] border-b border-[#EDE7D9]">
+      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 bg-[#F4EFE6] border-b border-[#EDE7D9]">
         <div className="max-w-4xl mx-auto text-center space-y-6">
           <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">OUR PURPOSE</h2>
           <p className="font-serif text-xl sm:text-2xl lg:text-3xl font-light text-[#2F3B0C] leading-relaxed max-w-3xl mx-auto">
@@ -223,7 +223,7 @@ export default function About() {
       </section>
 
       {/* 6. OUR VISION */}
-      <section className="py-24 sm:py-32 px-4 sm:px-6 lg:px-12 bg-white border-b border-[#EDE7D9]">
+      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 bg-white border-b border-[#EDE7D9]">
         <div className="max-w-4xl mx-auto space-y-8 text-left">
           <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">OUR VISION</h2>
 
@@ -245,7 +245,7 @@ export default function About() {
       </section>
 
       {/* 7. OUR MISSION */}
-      <section className="py-24 sm:py-32 px-4 sm:px-6 lg:px-12 bg-[#FAF7F2] border-b border-[#EDE7D9]">
+      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 bg-[#FAF7F2] border-b border-[#EDE7D9]">
         <div className="max-w-4xl mx-auto space-y-8 text-left">
           <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">OUR MISSION</h2>
 
@@ -264,7 +264,7 @@ export default function About() {
       </section>
 
       {/* 8. OUR CORE VALUES */}
-      <section className="py-24 sm:py-32 px-4 sm:px-6 lg:px-12 bg-white border-b border-[#EDE7D9]">
+      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 bg-white border-b border-[#EDE7D9]">
         <div className="max-w-6xl mx-auto space-y-12 text-left">
           <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C] text-center">OUR CORE VALUES</h2>
 
@@ -280,7 +280,7 @@ export default function About() {
       </section>
 
       {/* 9. OUR QUALITY COMMITMENT */}
-      <section className="py-24 sm:py-32 px-4 sm:px-6 lg:px-12 bg-[#FAF7F2] border-b border-[#EDE7D9]">
+      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 bg-[#FAF7F2] border-b border-[#EDE7D9]">
         <div className="max-w-4xl mx-auto space-y-8 text-left">
           <div className="space-y-3">
             <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">OUR QUALITY COMMITMENT</h2>
@@ -308,7 +308,7 @@ export default function About() {
       </section>
 
       {/* 10. OUR PROMISE */}
-      <section className="py-24 sm:py-32 px-4 sm:px-6 lg:px-12 bg-white border-b border-[#EDE7D9]">
+      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 bg-white border-b border-[#EDE7D9]">
         <div className="max-w-4xl mx-auto space-y-6 text-left text-stone-700 text-base sm:text-lg leading-[1.8] font-sans">
           <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">OUR PROMISE</h2>
           <p>We promise to remain true to the values that define Suryodaya Farms.</p>
@@ -322,7 +322,7 @@ export default function About() {
       </section>
 
       {/* 11. OUR TAGLINE */}
-      <section className="py-20 sm:py-24 px-4 sm:px-6 lg:px-12 bg-[#F4EFE6] border-b border-[#EDE7D9]">
+      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 bg-[#F4EFE6] border-b border-[#EDE7D9]">
         <div className="max-w-4xl mx-auto text-center space-y-3">
           <span className="font-sans text-xs font-bold uppercase tracking-[0.3em] text-[#B8833E]">OUR TAGLINE</span>
           <h3 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#2F3B0C]">
@@ -332,7 +332,7 @@ export default function About() {
       </section>
 
       {/* 12. WHY CHOOSE SURYODAYA FARMS? */}
-      <section className="py-24 sm:py-32 px-4 sm:px-6 lg:px-12 bg-white border-b border-[#EDE7D9]">
+      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 bg-white border-b border-[#EDE7D9]">
         <div className="max-w-7xl mx-auto space-y-16">
           <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C] text-center">WHY CHOOSE SURYODAYA FARMS?</h2>
 
@@ -348,7 +348,7 @@ export default function About() {
       </section>
 
       {/* 13. RESEARCH & INNOVATION */}
-      <section className="py-24 sm:py-32 px-4 sm:px-6 lg:px-12 bg-[#FAF7F2] border-b border-[#EDE7D9]">
+      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 bg-[#FAF7F2] border-b border-[#EDE7D9]">
         <div className="max-w-4xl mx-auto space-y-8 text-left">
           <div className="space-y-3">
             <span className="font-sans text-xs font-bold text-[#B8833E] uppercase tracking-widest">Where Nature Meets Scientific Understanding</span>
@@ -401,7 +401,7 @@ export default function About() {
       </section>
 
       {/* 15. OUR RESEARCH PHILOSOPHY */}
-      <section className="py-24 sm:py-32 px-4 sm:px-6 lg:px-12 bg-[#FAF7F2] border-b border-[#EDE7D9]">
+      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 bg-[#FAF7F2] border-b border-[#EDE7D9]">
         <div className="max-w-4xl mx-auto space-y-8 text-left">
           <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">Our Research Philosophy</h2>
 
@@ -420,7 +420,7 @@ export default function About() {
       </section>
 
       {/* 16. OUR COMMITMENT */}
-      <section className="py-24 sm:py-32 px-4 sm:px-6 lg:px-12 bg-white border-b border-[#EDE7D9]">
+      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 bg-white border-b border-[#EDE7D9]">
         <div className="max-w-4xl mx-auto space-y-8 text-left">
           <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">Our Commitment</h2>
 
@@ -437,7 +437,7 @@ export default function About() {
       </section>
 
       {/* 17. OUR GUIDING PRINCIPLE */}
-      <section className="py-28 sm:py-36 px-4 sm:px-6 lg:px-12 bg-gradient-to-br from-[#2F3B0C] to-[#1E2707] text-white relative overflow-hidden dark-section">
+      <section className="py-14 sm:py-18 lg:py-22 px-4 sm:px-6 lg:px-12 bg-gradient-to-br from-[#2F3B0C] to-[#1E2707] text-white relative overflow-hidden dark-section">
         <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[radial-gradient(#ffffff_1.5px,transparent_1.5px)] [background-size:32px_32px] pointer-events-none" />
         <div className="max-w-5xl mx-auto text-center space-y-8 relative z-10">
           <span className="font-sans text-xs font-bold uppercase tracking-[0.25em] text-[#B8833E] block">Our Guiding Principle</span>

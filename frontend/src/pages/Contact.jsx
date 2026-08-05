@@ -183,7 +183,7 @@ export default function Contact() {
       </section>
 
       {/* 2. CONTACT INFORMATION CARDS */}
-      <section className="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-b border-[#EDE7D9]/80">
+      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-b border-[#EDE7D9]/80">
         <div className="text-center max-w-xl mx-auto mb-16 space-y-3">
           <span className="font-sans text-xs font-bold text-[#B8833E] uppercase tracking-widest">Connect Directly</span>
           <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#2F3B0C] tracking-tight">Contact Information</h2>
@@ -327,7 +327,7 @@ export default function Contact() {
       </section>
 
       {/* 3. GOOGLE MAP SECTION */}
-      <section className="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-b border-[#EDE7D9]/80">
+      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-b border-[#EDE7D9]/80">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 text-left">
           <div className="space-y-2 max-w-2xl">
             <span className="font-sans text-xs font-bold text-[#4E641A] uppercase tracking-widest">Our Location</span>
@@ -377,7 +377,7 @@ export default function Contact() {
       </section>
 
       {/* 4. SOCIAL MEDIA CARDS */}
-      <section className="py-20 sm:py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-b border-[#EDE7D9]/80">
+      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-b border-[#EDE7D9]/80">
         <div className="text-center max-w-xl mx-auto mb-12 space-y-3">
           <span className="font-sans text-xs font-bold text-[#B8833E] uppercase tracking-widest">Follow Our Journey</span>
           <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#2F3B0C] tracking-tight">Connect on Social Media</h2>
@@ -405,8 +405,8 @@ export default function Contact() {
         </div>
       </section>
 
-      {/* 5. BUSINESS ENQUIRIES & CUSTOMER FEEDBACK */}
-      <section className="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-b border-[#EDE7D9]/80">
+      {/* 5. BUSINESS HOURS & RESPONSE COMMITMENT */}
+      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-b border-[#EDE7D9]/80">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 items-stretch">
           
           {/* Business Enquiries Highlighted Section */}
@@ -484,7 +484,7 @@ export default function Contact() {
       </section>
 
       {/* 6. CONTACT FORM SECTION (FOCAL POINT) */}
-      <section id="contact-form-section" className="py-24 sm:py-32 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
+      <section id="contact-form-section" className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
         <div className="bg-white border border-[#EDE7D9] rounded-[44px] p-8 sm:p-14 lg:p-16 shadow-2xl text-left relative overflow-hidden">
           
           <div className="text-center max-w-xl mx-auto mb-12 space-y-3">
