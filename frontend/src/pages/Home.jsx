@@ -606,6 +606,10 @@ export default function Home() {
       return <CategoriesSkeleton />;
     }
 
+    if (categoriesToShow.length === 0) {
+      return null;
+    }
+
     const containerVariants = {
       hidden: { opacity: 0 },
       visible: {
@@ -632,141 +636,6 @@ export default function Home() {
       }
     };
 
-    if (promoCategories.length > 0) {
-      return (
-        <section
-          key="categories"
-          className="bg-gradient-to-b from-[#FDFBF7] via-[#FDFBF7] to-[#F5F2EA] border-b border-[#EAE4D8]/80 py-16 md:py-24 select-none shadow-[inset_0_-2px_10px_rgba(0,0,0,0.01)]"
-        >
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12">
-            {/* Section Header */}
-            <div className="text-center max-w-xl mx-auto space-y-4 mb-16">
-              <span className="text-xs font-bold uppercase tracking-widest text-[#C68A2B] bg-[#C68A2B]/10 px-3.5 py-1 rounded-full inline-block">
-                {settings.homepage_section_badge_categories || "PURE • NATURAL • NUTRITIOUS"}
-              </span>
-              <h2 className="font-serif text-3xl md:text-5xl font-semibold text-[#2F3B0C]">
-                {settings.homepage_section_title_categories || "Shop By Category"}
-              </h2>
-              <p className="text-xs md:text-sm text-stone-500 leading-relaxed font-medium">
-                {settings.homepage_section_subtitle_categories || "Explore our carefully curated farm-fresh collections."}
-              </p>
-            </div>
-
-            <motion.div
-              variants={containerVariants}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-50px" }}
-              className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-8"
-            >
-              {promoCategories.map((item) => {
-                let meta = {
-                  subtitle: item.badge || '',
-                  mobileImage: '',
-                  overlayPosition: 'bottom-left',
-                  overlayDarkness: 0.5,
-                  textColorTheme: 'light',
-                  isFeatured: false,
-                  imageFocalPoint: 'center',
-                  hoverZoom: true,
-                  ctaStyle: 'arrow',
-                  cornerRadius: '3xl'
-                };
-                if (item.description && item.description.startsWith('{')) {
-                  try { meta = { ...meta, ...JSON.parse(item.description) }; } catch (e) { }
-                }
-
-                const isDark = meta.textColorTheme === 'dark';
-                const dark = meta.overlayDarkness !== undefined ? parseFloat(meta.overlayDarkness) : 0.5;
-                const overlay = isDark
-                  ? `linear-gradient(to top, rgba(253,251,247,${dark}) 0%, rgba(253,251,247,${dark * 0.3}) 60%, transparent 100%)`
-                  : `linear-gradient(to top, rgba(0,0,0,${dark}) 0%, rgba(0,0,0,${dark * 0.3}) 60%, transparent 100%)`;
-
-                let alignClass = 'justify-end items-start text-left';
-                if (meta.overlayPosition === 'center') alignClass = 'justify-center items-center text-center';
-                else if (meta.overlayPosition === 'top-left') alignClass = 'justify-start items-start text-left';
-                else if (meta.overlayPosition === 'top-right') alignClass = 'justify-start items-end text-right';
-                else if (meta.overlayPosition === 'bottom-right') alignClass = 'justify-end items-end text-right';
-
-                let roundClass = 'rounded-[24px] md:rounded-[32px]';
-                if (meta.cornerRadius === 'none') roundClass = 'rounded-none';
-                else if (meta.cornerRadius === 'md') roundClass = 'rounded-md';
-                else if (meta.cornerRadius === 'lg') roundClass = 'rounded-lg';
-                else if (meta.cornerRadius === 'xl') roundClass = 'rounded-xl';
-                else if (meta.cornerRadius === 'full') roundClass = 'rounded-[32px] md:rounded-[40px]';
-
-                let objectFocal = 'object-center';
-                if (meta.imageFocalPoint === 'top') objectFocal = 'object-top';
-                else if (meta.imageFocalPoint === 'bottom') objectFocal = 'object-bottom';
-                else if (meta.imageFocalPoint === 'left') objectFocal = 'object-left';
-                else if (meta.imageFocalPoint === 'right') objectFocal = 'object-right';
-
-                const spanClass = meta.isFeatured
-                  ? 'col-span-2 sm:col-span-2 lg:col-span-2 h-[160px] sm:h-[220px] md:h-[320px]'
-                  : 'col-span-1 h-[160px] sm:h-[220px] md:h-[320px]';
-
-                const hoverZoomClass = meta.hoverZoom ? 'group-hover:scale-105' : '';
-
-                return (
-                  <motion.div
-                    key={item.id}
-                    variants={itemVariants}
-                    onClick={() => {
-                      const targetSlug = item.categorySlug || item.slug || getCategorySlugByName(item.title || item.name);
-                      navigate(`/category/${targetSlug}`);
-                    }}
-                    className={`relative overflow-hidden group shadow-sm border border-[#EAE4D8] transition-all duration-500 cursor-pointer ${spanClass} ${roundClass}`}
-                  >
-                    <img
-                      src={item.image}
-                      srcSet={getImageSrcSet(item.image, { widths: [400, 800, 1500], cropMode: 'fill' })}
-                      sizes={meta.isFeatured ? "(max-width: 640px) 100vw, 66vw" : "(max-width: 640px) 100vw, 33vw"}
-                      alt={item.title || item.name}
-                      loading="lazy"
-                      className={`absolute inset-0 w-full h-full object-cover transition duration-700 ease-out ${hoverZoomClass} ${objectFocal}`}
-                    />
-                    <div className="absolute inset-0 z-10 pointer-events-none" style={{ background: overlay }} />
-                    <div className={`absolute inset-0 z-20 flex flex-col p-6 md:p-8 ${alignClass}`} style={{ color: isDark ? '#2F3B0C' : '#fff' }}>
-
-                      {meta.subtitle && (
-                        <span className={`text-[10px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full inline-block w-fit mb-2 ${isDark ? 'bg-[#2F3B0C]/10 text-[#2F3B0C]' : 'bg-white/20 text-white backdrop-blur-xs'
-                          }`}>
-                          {meta.subtitle}
-                        </span>
-                      )}
-
-                      <h3 className={`font-serif text-lg sm:text-xl md:text-2xl font-bold leading-tight max-w-[90%] ${isDark ? 'text-[#2F3B0C]' : 'text-white'}`}>{item.title || item.name}</h3>
-
-                      {item.ctaStyle === 'arrow' ? (
-                        <div className={`absolute bottom-6 right-6 w-8 h-8 rounded-full flex items-center justify-center text-sm transition duration-300 ${isDark ? 'bg-[#2F3B0C]/10 text-[#2F3B0C] group-hover:bg-[#2F3B0C] group-hover:text-white' : 'bg-white/10 text-white backdrop-blur-xs group-hover:bg-white group-hover:text-[#2F3B0C]'
-                          }`}>
-                          →
-                        </div>
-                      ) : item.ctaStyle === 'button-outline' ? (
-                        <div className={`mt-3 text-[10px] font-bold uppercase tracking-wider px-3 py-1 border rounded select-none ${isDark ? 'border-[#2F3B0C] text-[#2F3B0C]' : 'border-white text-white'
-                          }`}>
-                          {item.ctaText || 'Explore'}
-                        </div>
-                      ) : (
-                        <div className="mt-3 text-[10px] font-bold uppercase tracking-wider px-3.5 py-1.5 rounded select-none shadow-sm" style={{ background: isDark ? '#4E641A' : '#fff', color: isDark ? '#fff' : '#2F3B0C' }}>
-                          {item.ctaText || 'Explore'}
-                        </div>
-                      )}
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </motion.div>
-          </div>
-        </section>
-      );
-    }
-
-    if (categoriesToShow.length === 0) {
-      return null;
-    }
-
-    // Default Fallback
     return (
       <section
         key="categories"
@@ -791,7 +660,7 @@ export default function Home() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-50px" }}
-            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8"
+            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 md:gap-8"
           >
             {categoriesToShow.map((cat) => {
               if (!cat || !cat.slug || !cat.name) return null;
@@ -802,7 +671,7 @@ export default function Home() {
                 <motion.div
                   key={cat.id || cat.slug}
                   variants={itemVariants}
-                  className="group bg-white border border-[#EAE4D8] rounded-[24px] overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between h-full cursor-pointer relative w-full text-left"
+                  className="group bg-white border border-[#EAE4D8] rounded-[24px] overflow-hidden shadow-sm hover:shadow-md transition-all duration-500 flex flex-col justify-between h-full cursor-pointer relative w-full text-left"
                   onClick={() => navigate(`/category/${cat.slug}`)}
                 >
                   <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#F8F5F0] border-b border-[#EAE4D8]/40 shrink-0">
@@ -810,7 +679,7 @@ export default function Home() {
                       <img
                         src={optimizedImageUrl}
                         srcSet={getImageSrcSet(cat.image, { widths: [400, 800], cropMode: 'fill' })}
-                        sizes="(max-width: 640px) 50vw, 25vw"
+                        sizes="(max-width: 640px) 50vw, 33vw"
                         alt={cat.name}
                         width={400}
                         height={300}
