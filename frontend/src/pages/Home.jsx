@@ -420,7 +420,7 @@ export default function Home() {
       let freshDuration = 5;
       let freshCategories = [];
       let freshCollections = [];
-      let freshOrder = ['hero', 'categories', 'best-sellers', 'trust', 'collections', 'benefits', 'footer-banner'];
+      let freshOrder = ['hero', 'categories', 'best-sellers', 'trust', 'benefits', 'footer-banner'];
 
       if (cmsRes.success) {
         if (cmsRes.campaign) freshCampaign = cmsRes.campaign;
@@ -445,7 +445,7 @@ export default function Home() {
         }
         if (cmsRes.collections && cmsRes.collections.length > 0) freshCollections = cmsRes.collections;
         if (cmsRes.sectionOrder) {
-          freshOrder = cmsRes.sectionOrder.split(',');
+          freshOrder = cmsRes.sectionOrder.split(',').filter(s => s !== 'collections');
         }
 
         setActiveCampaign(freshCampaign);
@@ -1844,7 +1844,7 @@ export default function Home() {
       case 'trust':
         return renderTrustSection();
       case 'collections':
-        return renderCollectionsSection();
+        return null;
       case 'benefits':
         return renderBenefitsSection();
       case 'reviews':

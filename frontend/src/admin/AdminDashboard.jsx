@@ -10477,7 +10477,6 @@ Ensure confidence scores are numbers between 0 and 100. Always reply ONLY with r
             <div className="flex space-x-6 border-b border-[#EDE7D9] pb-1 font-sans text-xs">
               {[
                 { id: 'hero', label: 'Hero Section' },
-                { id: 'collections', label: 'Signature Collections' },
                 { id: 'categories', label: 'Promo Categories' },
                 { id: 'sections', label: 'Section Ordering' }
               ].map((sub) => {
@@ -11881,13 +11880,12 @@ Ensure confidence scores are numbers between 0 and 100. Always reply ONLY with r
                     </p>
 
                     <div className="space-y-3 pt-2">
-                      {sectionOrder.split(',').map((sectName, index, arr) => {
+                      {sectionOrder.split(',').filter(s => s !== 'collections').map((sectName, index, arr) => {
                         const displayNameMap = {
                           'categories': '🌿 Category Quick Access Bar / Promo Categories',
                           'hero': '✨ Campaign Hero Banner',
                           'best-sellers': '🛍️ Best Sellers Catalog Grid',
                           'trust': '🛡️ Brand Purity Trust Indicators',
-                          'collections': '📦 Signature Farm Collections',
                           'benefits': '❤️ Shop By Health Benefits',
                           'reviews': '💬 Customer Testimonials Feed',
                           'footer-banner': '🏞️ Join Journey Footer Banner'
