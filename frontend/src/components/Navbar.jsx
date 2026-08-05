@@ -85,11 +85,14 @@ const Navbar = memo(function Navbar() {
               fetchPriority="high"
               className="h-10 sm:h-12 md:h-14 lg:h-16 w-auto object-contain transition duration-500 group-hover:scale-105"
             />
-            <div className="flex flex-col justify-center text-left">
-              <span className="font-serif text-base sm:text-lg md:text-xl font-bold tracking-wide text-dark-olive leading-tight group-hover:text-primary-green transition-colors duration-300 uppercase">
+            <div className="flex flex-col justify-center text-left space-y-0.5">
+              <span className="font-serif text-base sm:text-lg md:text-xl font-bold tracking-wide text-dark-olive leading-none group-hover:text-primary-green transition-colors duration-300 uppercase">
                 SURYODAYA FARMS
               </span>
-              <span className="font-sans text-[8px] sm:text-[9px] font-bold tracking-wider text-primary-green uppercase leading-none mt-1 hidden min-[360px]:flex items-center gap-1">
+              <span className="font-serif text-[9.5px] sm:text-[10.5px] md:text-[11.5px] font-medium text-stone-600 italic leading-none block">
+                Nature's Superfoods for Modern Living
+              </span>
+              <span className="font-sans text-[7.5px] sm:text-[8.5px] font-bold tracking-wider text-primary-green uppercase leading-none flex items-center gap-1">
                 <span>Pure</span>
                 <span className="text-sunrise-gold">•</span>
                 <span>Natural</span>
