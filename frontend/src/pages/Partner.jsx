@@ -469,8 +469,8 @@ export default function Partner() {
       </section>
 
       {/* 11. JOIN HANDS WITH SURYODAYA FARMS & APPLICATION FORM */}
-      <section id="partner-form-section" className="py-28 sm:py-36 lg:py-40 px-4 sm:px-6 lg:px-12 bg-[#2F3B0C] text-white relative overflow-hidden dark-section">
-        <div className="max-w-5xl mx-auto space-y-16 text-center relative z-10">
+      <section id="partner-form-section" className="py-16 sm:py-24 lg:py-28 px-4 sm:px-6 lg:px-12 bg-[#2F3B0C] text-white relative overflow-hidden dark-section">
+        <div className="max-w-5xl mx-auto space-y-10 sm:space-y-12 text-center relative z-10">
           <div className="space-y-6 max-w-5xl mx-auto">
             <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white leading-tight whitespace-nowrap">
               Join Hands with Suryodaya Farms
@@ -484,13 +484,23 @@ export default function Partner() {
           </div>
 
           {/* APPLICATION FORM INSIDE SECTION 11 */}
-          <div className="bg-white text-[#2F3B0C] border border-[#EDE7D9] rounded-[36px] p-8 sm:p-14 shadow-2xl text-left mt-12">
-            <div className="text-center max-w-2xl mx-auto mb-10 space-y-3">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#4E641A]/10 text-[#4E641A] text-xs font-semibold uppercase tracking-wider">
-                <GiHand />
+          <div className="bg-white text-[#2F3B0C] border border-[#EDE7D9] rounded-[36px] p-8 sm:p-14 shadow-2xl text-left mt-8 sm:mt-10">
+            {/* Header above form */}
+            <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-12 space-y-4">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#4E641A]/10 border border-[#4E641A]/20 text-[#4E641A] text-xs font-bold uppercase tracking-widest shadow-2xs">
+                <GiSprout className="text-[#4E641A] text-sm" />
                 <span>Application Portal</span>
               </div>
-              <h3 className="font-serif text-2xl sm:text-4xl font-bold text-[#2F3B0C]">Submit Partnership Request</h3>
+
+              <h3 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#2F3B0C] leading-tight">
+                Join Our Partnership Network
+              </h3>
+
+              <p className="text-stone-600 text-sm sm:text-base leading-relaxed font-sans font-normal max-w-2xl mx-auto">
+                Complete the application below to explore partnership opportunities with Suryodaya Farms. Our team will carefully review your submission and get in touch with you to discuss the next steps.
+              </p>
+
+              <div className="w-20 h-0.5 bg-gradient-to-r from-transparent via-[#C68A2B]/60 to-transparent mx-auto pt-1 rounded-full" />
             </div>
 
             <AnimatePresence mode="wait">
