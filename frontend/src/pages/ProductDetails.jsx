@@ -227,8 +227,9 @@ export default function ProductDetails() {
       
       const compiledVariants = getProductVariants(prod);
       setAllVariants(compiledVariants);
-      
-      setSelectedVariant(compiledVariants[0]);
+
+      if (compiledVariants.length > 0) {
+        setSelectedVariant(compiledVariants[0]);
       } else {
         setSelectedVariant(null);
       }
