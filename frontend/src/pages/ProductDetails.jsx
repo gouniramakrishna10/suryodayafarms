@@ -981,19 +981,11 @@ export default function ProductDetails() {
                       })}
                     </div>
 
-                    {/* Active Variant Specs */}
-                    {selectedVariant && (
-                      <div className="flex flex-wrap items-center gap-2 pt-1 text-[10px] font-mono text-stone-500 border-t border-stone-100">
-                        <span className="bg-stone-100 px-2.5 py-1 rounded-lg border border-stone-200">
-                          SKU: <strong className="text-stone-800">{selectedVariant.sku || product?.sku || 'N/A'}</strong>
-                        </span>
-                        <span className="bg-stone-100 px-2.5 py-1 rounded-lg border border-stone-200">
-                          Weight: <strong className="text-[#4E641A] font-bold">{selectedVariant.weight ? `${selectedVariant.weight}${selectedVariant.unit || 'g'}` : (selectedVariant.name || product?.weight)}</strong>
-                        </span>
-                        <span className={`px-2 py-1 rounded-lg border font-bold ${
-                          (selectedVariant.inventory ?? 10) > 0 ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-red-50 text-red-700 border-red-200'
-                        }`}>
-                          {(selectedVariant.inventory ?? 10) > 0 ? `Stock: ${selectedVariant.inventory ?? 'In Stock'}` : 'Sold Out'}
+                    {/* Active Variant Weight Display */}
+                    {(selectedVariant || product?.weight) && (
+                      <div className="flex items-center gap-2 pt-1 text-xs font-sans text-stone-600 border-t border-stone-100">
+                        <span className="bg-[#FCFAF5] px-3 py-1.5 rounded-xl border border-[#EDE7D9] font-medium">
+                          Weight: <strong className="text-[#4E641A] font-bold">{selectedVariant?.weight ? `${selectedVariant.weight}${selectedVariant.unit || 'g'}` : (selectedVariant?.name || product?.weight)}</strong>
                         </span>
                       </div>
                     )}
