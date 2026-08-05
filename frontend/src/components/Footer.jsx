@@ -60,14 +60,6 @@ const Footer = memo(function Footer() {
               </span>
             </div>
           </Link>
-          <div className="space-y-1">
-            <p className="font-serif text-sm font-medium text-light-beige/90 italic">
-              Nature's Superfoods for Modern Living
-            </p>
-            <p className="font-sans text-xs font-bold tracking-wider text-sunrise-gold uppercase">
-              Pure • Natural • Nutritious
-            </p>
-          </div>
           <p className="font-sans text-xs sm:text-sm text-light-beige/80 leading-relaxed font-normal">
             Rooted in nature and guided by science, we produce pure, nutrient-rich superfoods with uncompromising quality. Carefully crafted to support healthier lives and promote natural wellness.
           </p>
