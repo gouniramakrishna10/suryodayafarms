@@ -37,12 +37,12 @@ const Footer = memo(function Footer() {
   };
 
   const quickLinks = [
-    { label: 'Home Story', path: '/' },
-    { label: 'Our Heritage', path: '/about' },
-    { label: 'Organic Harvest', path: '/products' },
+    { label: 'Home', path: '/' },
+    { label: 'About Us', path: '/about' },
+    { label: 'Products', path: '/products' },
     { label: 'Become a Partner', path: '/become-a-partner' },
-    { label: 'FAQs & Support', path: '/faq' },
-    { label: 'Contact Us', path: '/contact' },
+    { label: 'FAQs', path: '/faq' },
+    { label: 'Contact', path: '/contact' },
     { label: 'Privacy Policy', path: '/privacy' },
   ];
 
