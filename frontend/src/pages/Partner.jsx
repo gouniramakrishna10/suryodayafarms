@@ -281,12 +281,12 @@ export default function Partner() {
       <section className="py-24 sm:py-32 lg:py-36 px-4 sm:px-6 lg:px-12 bg-white border-b border-[#EDE7D9]">
         <div className="max-w-7xl mx-auto space-y-16">
           <div className="text-center max-w-5xl mx-auto space-y-4">
-            <span className="font-sans text-xs font-bold text-[#4E641A] uppercase tracking-widest">Our Foundation</span>
-            <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#2F3B0C] whitespace-nowrap">Why Partner with Suryodaya Farms?</h2>
-            <p className="text-stone-700 text-base sm:text-lg leading-relaxed font-sans font-normal">
+            <span className="font-sans text-xs font-bold text-[#B8833E] uppercase tracking-widest">Our Foundation</span>
+            <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#1C2607] whitespace-nowrap">Why Partner with Suryodaya Farms?</h2>
+            <p className="text-stone-900 text-base sm:text-lg leading-relaxed font-sans font-medium">
               When you choose Suryodaya Farms, you gain more than a supplier—you gain a reliable business partner committed to long-term success.
             </p>
-            <p className="text-[#4E641A] text-sm sm:text-base font-bold uppercase tracking-wider pt-2">
+            <p className="text-[#2F3B0C] text-sm sm:text-base font-extrabold uppercase tracking-wider pt-2">
               We are committed to providing:
             </p>
           </div>
@@ -487,20 +487,20 @@ export default function Partner() {
           <div className="bg-white text-[#2F3B0C] border border-[#EDE7D9] rounded-[36px] p-8 sm:p-14 shadow-2xl text-left mt-8 sm:mt-10">
             {/* Header above form */}
             <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-12 space-y-4">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#4E641A]/10 border border-[#4E641A]/20 text-[#4E641A] text-xs font-bold uppercase tracking-widest shadow-2xs">
-                <GiSprout className="text-[#4E641A] text-sm" />
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#2F3B0C]/10 border border-[#2F3B0C]/25 text-[#2F3B0C] text-xs font-extrabold uppercase tracking-widest shadow-2xs">
+                <GiSprout className="text-[#2F3B0C] text-sm" />
                 <span>Application Portal</span>
               </div>
 
-              <h3 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#2F3B0C] leading-tight">
+              <h3 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1C2607] leading-tight">
                 Join Our Partnership Network
               </h3>
 
-              <p className="text-stone-600 text-sm sm:text-base leading-relaxed font-sans font-normal max-w-2xl mx-auto">
+              <p className="text-stone-900 text-sm sm:text-base leading-relaxed font-sans font-medium max-w-2xl mx-auto">
                 Complete the application below to explore partnership opportunities with Suryodaya Farms. Our team will carefully review your submission and get in touch with you to discuss the next steps.
               </p>
 
-              <div className="w-20 h-0.5 bg-gradient-to-r from-transparent via-[#C68A2B]/60 to-transparent mx-auto pt-1 rounded-full" />
+              <div className="w-20 h-0.5 bg-gradient-to-r from-transparent via-[#C68A2B]/80 to-transparent mx-auto pt-1 rounded-full" />
             </div>
 
             <AnimatePresence mode="wait">
