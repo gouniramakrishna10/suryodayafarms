@@ -280,9 +280,9 @@ export default function Partner() {
       {/* 4. WHY PARTNER WITH SURYODAYA FARMS? */}
       <section className="py-24 sm:py-32 lg:py-36 px-4 sm:px-6 lg:px-12 bg-white border-b border-[#EDE7D9]">
         <div className="max-w-7xl mx-auto space-y-16">
-          <div className="text-center max-w-3xl mx-auto space-y-4">
+          <div className="text-center max-w-5xl mx-auto space-y-4">
             <span className="font-sans text-xs font-bold text-[#4E641A] uppercase tracking-widest">Our Foundation</span>
-            <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">Why Partner with Suryodaya Farms?</h2>
+            <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#2F3B0C] whitespace-nowrap">Why Partner with Suryodaya Farms?</h2>
             <p className="text-stone-700 text-base sm:text-lg leading-relaxed font-sans font-normal">
               When you choose Suryodaya Farms, you gain more than a supplier—you gain a reliable business partner committed to long-term success.
             </p>
