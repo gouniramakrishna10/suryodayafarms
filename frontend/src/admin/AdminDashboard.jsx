@@ -3356,10 +3356,14 @@ Ensure confidence scores are numbers between 0 and 100. Always reply ONLY with r
       }
       setShowProductModal(false);
       resetProductForm();
-      fetchProducts();
-      fetchAnalytics();
+      await Promise.all([
+        fetchProducts(),
+        fetchAllAdminProducts(),
+        fetchCategories(),
+        fetchAnalytics()
+      ]);
       useFeedbackStore.getState().hideLoader();
-      useFeedbackStore.getState().showToast('✅ Product saved successfully', 'success');
+      useFeedbackStore.getState().showToast(isUpdating ? '✅ Product updated successfully' : '✅ Product created successfully', 'success');
     } catch (err) {
       useFeedbackStore.getState().hideLoader();
       useFeedbackStore.getState().showToast(`❌ Failed to save product: ${err.message}`, 'error');
@@ -3375,18 +3379,20 @@ Ensure confidence scores are numbers between 0 and 100. Always reply ONLY with r
       'Delete Product',
       'Cancel'
     );
-    if (confirmed) {
-      useFeedbackStore.getState().showLoader('Deleting product...');
-      try {
-        await api.delete(`/admin/products/${id}`);
-        fetchProducts();
-        fetchAnalytics();
-        useFeedbackStore.getState().hideLoader();
-        useFeedbackStore.getState().showToast('✅ Product deleted successfully', 'success');
-      } catch (err) {
-        useFeedbackStore.getState().hideLoader();
-        useFeedbackStore.getState().showToast(`❌ Failed to delete product: ${err.message}`, 'error');
-      }
+    if (!confirmed) return;
+    useFeedbackStore.getState().showLoader('Deleting product...');
+    try {
+      await api.delete(`/admin/products/${id}`);
+      await Promise.all([
+        fetchProducts(),
+        fetchAllAdminProducts(),
+        fetchAnalytics()
+      ]);
+      useFeedbackStore.getState().hideLoader();
+      useFeedbackStore.getState().showToast('✅ Product deleted successfully', 'success');
+    } catch (err) {
+      useFeedbackStore.getState().hideLoader();
+      useFeedbackStore.getState().showToast(`❌ Failed to delete product: ${err.message}`, 'error');
     }
   };
 
