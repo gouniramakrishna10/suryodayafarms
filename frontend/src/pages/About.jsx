@@ -11,7 +11,9 @@ import {
   FiBookOpen,
   FiTarget,
   FiEye,
-  FiGlobe
+  FiGlobe,
+  FiUsers,
+  FiZap
 } from 'react-icons/fi';
 import { GiSprout, GiSun, GiWheat } from 'react-icons/gi';
 import SectionBadge from '../components/SectionBadge';
@@ -25,12 +27,12 @@ export default function About() {
   ];
 
   const coreValues = [
-    { title: 'Integrity', desc: 'We believe honesty is the strongest foundation of lasting customer relationships.' },
-    { title: 'Quality', desc: 'Quality is built into every process—not added at the end.' },
-    { title: 'Science', desc: 'Scientific knowledge guides our product development and quality standards.' },
-    { title: 'Customer Trust', desc: 'Trust is earned through consistency, transparency, and responsibility.' },
-    { title: 'Innovation', desc: 'Research helps us continuously improve our products and processes.' },
-    { title: 'Sustainability', desc: 'We value responsible practices that support people, agriculture, and the environment.' }
+    { title: 'Integrity', desc: 'We believe honesty is the strongest foundation of lasting customer relationships.', icon: FiShield },
+    { title: 'Quality', desc: 'Quality is built into every process—not added at the end.', icon: FiAward },
+    { title: 'Science', desc: 'Scientific knowledge guides our product development and quality standards.', icon: FiCheckCircle },
+    { title: 'Customer Trust', desc: 'Trust is earned through consistency, transparency, and responsibility.', icon: FiUsers },
+    { title: 'Innovation', desc: 'Research helps us continuously improve our products and processes.', icon: FiZap },
+    { title: 'Sustainability', desc: 'We value responsible practices that support people, agriculture, and the environment.', icon: GiSprout }
   ];
 
   const qualityBullets = [
@@ -72,20 +74,25 @@ export default function About() {
   ];
 
   return (
-    <div className="bg-[#F9F6F0] min-h-screen font-sans text-[#2F3B0C] selection:bg-[#4E641A] selection:text-white">
+    <div className="bg-[#FBF9F4] min-h-screen font-sans text-[#2F3B0C] selection:bg-[#4E641A] selection:text-white">
       
       {/* 1. A LETTER FROM SURYODAYA FARMS */}
-      <section className="relative py-12 md:py-16 px-4 sm:px-6 lg:px-12 bg-gradient-to-b from-[#F4EFE6] via-[#FAF7F2] to-[#F9F6F0] border-b border-[#EDE7D9]">
-        <div className="max-w-4xl mx-auto space-y-6 text-left">
-          <h1 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">
-            A Letter from Suryodaya Farms
-          </h1>
+      <section className="relative py-8 sm:py-12 md:py-14 px-4 sm:px-6 lg:px-12 bg-gradient-to-b from-[#F4EFE6] via-[#FAF7F2] to-[#FBF9F4] border-b border-[#EDE7D9]">
+        <div className="max-w-5xl mx-auto space-y-6 text-left">
+          
+          <div className="space-y-3 flex flex-col items-start">
+            <SectionBadge text="Welcome to Suryodaya Farms" align="left" />
+            <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#2F3B0C] tracking-tight">
+              A Letter from Suryodaya Farms
+            </h1>
+            <div className="w-24 h-1 bg-gradient-to-r from-[#4E641A] via-[#C68A2B] to-[#4E641A] rounded-full" />
+          </div>
 
-          <div className="bg-white border border-[#EDE7D9] rounded-[36px] p-8 sm:p-14 shadow-sm space-y-6 text-stone-700 text-base sm:text-lg leading-[1.8] font-sans">
+          <div className="bg-white border border-[#EDE7D9] rounded-[28px] p-7 sm:p-12 shadow-sm space-y-5 text-stone-700 text-base sm:text-lg leading-[1.75] font-sans">
             <p className="font-serif text-lg sm:text-xl text-[#2F3B0C] font-semibold">Dear Customer,</p>
             <p>Welcome to <strong className="font-serif font-bold text-[#4E641A] text-lg sm:text-xl">Suryodaya Farms</strong>.</p>
             <p>Thank you for placing your trust in us.</p>
-            <p className="font-serif italic text-lg sm:text-xl text-[#4E641A] border-l-4 border-[#B8833E] pl-6 my-4">
+            <p className="font-serif italic text-lg sm:text-xl text-[#4E641A] border-l-4 border-[#C68A2B] pl-6 my-4 bg-[#F0F5E6]/40 py-3 rounded-r-xl">
               Every product we create begins with a simple belief:<br />
               Nature has the power to nourish. Science has the responsibility to preserve it.
             </p>
@@ -108,16 +115,20 @@ export default function About() {
             <p>We will continue to improve.</p>
             <p className="font-semibold text-[#2F3B0C]">We will continue to earn your trust—one product at a time.</p>
             <p>Thank you for being a part of the <strong className="font-serif font-bold text-[#4E641A]">Suryodaya Farms</strong> family.</p>
-            <div className="pt-6 border-t border-[#EDE7D9]">
-              <p className="font-serif text-base font-bold text-[#2F3B0C]">With gratitude,</p>
-              <p className="font-serif text-lg font-bold text-[#4E641A]">Team Suryodaya Farms</p>
+            <div className="pt-5 border-t border-[#EDE7D9] flex items-center justify-between">
+              <div>
+                <p className="font-serif text-base font-bold text-[#2F3B0C]">With gratitude,</p>
+                <p className="font-serif text-lg font-bold text-[#4E641A]">Team Suryodaya Farms</p>
+              </div>
+              <GiSprout className="w-8 h-8 text-[#4E641A]/30" />
             </div>
           </div>
+
         </div>
       </section>
 
       {/* 2. OUR STORY (Redesigned Editorial 2-Column Luxury Layout) */}
-      <section className="py-12 md:py-16 px-4 sm:px-6 lg:px-12 bg-[#FCFAF4] border-b border-[#EDE7D9] relative overflow-hidden select-none">
+      <section className="py-12 md:py-16 px-4 sm:px-6 lg:px-12 bg-[#F7F8F2] border-b border-[#EDE7D9] relative overflow-hidden select-none">
         
         {/* Subtle Background Organic Watermark */}
         <div className="absolute top-10 right-10 opacity-5 text-[#4E641A] pointer-events-none">
@@ -127,7 +138,7 @@ export default function About() {
         <div className="max-w-7xl mx-auto relative z-10">
           
           {/* Main Section Header */}
-          <div className="space-y-4 flex flex-col items-start mb-10 lg:mb-14 text-left">
+          <div className="space-y-3 flex flex-col items-start mb-8 lg:mb-10 text-left">
             <SectionBadge text="Every Sunrise Brings New Hope" align="left" />
             <div className="flex items-center gap-3">
               <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#2F3B0C] tracking-tight">
@@ -139,7 +150,7 @@ export default function About() {
           </div>
 
           {/* Grid Layout: Desktop 2 Columns / Mobile Stacked */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
             
             {/* Mobile-Only Image Placement (Shown under Header on Mobile/Tablet) */}
             <div className="block lg:hidden w-full">
@@ -161,7 +172,7 @@ export default function About() {
             </div>
 
             {/* Left Column: Textual Story & Feature Cards (lg:col-span-7) */}
-            <div className="lg:col-span-7 space-y-7 text-left text-stone-700 text-base sm:text-lg leading-[1.75] font-sans max-w-[68ch]">
+            <div className="lg:col-span-7 space-y-6 text-left text-stone-700 text-base sm:text-lg leading-[1.75] font-sans max-w-[68ch]">
               
               {/* Feature Card 1: The Name Suryodaya */}
               <div className="bg-[#F7F4EB] border border-[#E4DDCB] p-6 rounded-2xl shadow-2xs flex items-start gap-4 hover:border-[#4E641A]/40 transition-all duration-300 group">
@@ -247,7 +258,7 @@ export default function About() {
                   src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=1200&auto=format&fit=crop" 
                   alt="Suryodaya Farms Organic Sunrise Fields" 
                   loading="lazy"
-                  className="w-full h-[540px] object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="w-full h-[460px] object-cover transition-transform duration-700 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#2F3B0C]/80 via-transparent to-transparent" />
                 
@@ -280,7 +291,7 @@ export default function About() {
       </section>
 
       {/* 3. ABOUT SURYODAYA FARMS (Redesigned Editorial 2-Column Luxury Presentation) */}
-      <section className="py-12 md:py-16 px-4 sm:px-6 lg:px-12 bg-[#FAF7F2] border-b border-[#EDE7D9] relative overflow-hidden select-none">
+      <section className="py-12 md:py-16 px-4 sm:px-6 lg:px-12 bg-[#FBF9F4] border-b border-[#EDE7D9] relative overflow-hidden select-none">
         
         {/* Subtle Background Organic Leaf Watermark */}
         <div className="absolute -bottom-10 -left-10 opacity-5 text-[#4E641A] pointer-events-none">
@@ -290,7 +301,7 @@ export default function About() {
         <div className="max-w-7xl mx-auto relative z-10">
           
           {/* Main Section Header */}
-          <div className="space-y-4 flex flex-col items-start mb-8 lg:mb-10 text-left">
+          <div className="space-y-3 flex flex-col items-start mb-8 lg:mb-10 text-left">
             <SectionBadge text="Nature's Goodness. Guided by Science." align="left" />
             <div className="flex items-center gap-3">
               <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#2F3B0C] tracking-tight">
@@ -426,13 +437,18 @@ export default function About() {
       </section>
 
       {/* 4. OUR PHILOSOPHY */}
-      <section className="py-12 md:py-16 px-4 sm:px-6 lg:px-12 bg-white border-b border-[#EDE7D9]">
-        <div className="max-w-4xl mx-auto space-y-6 text-left">
-          <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">OUR PHILOSOPHY</h2>
+      <section className="py-12 md:py-16 px-4 sm:px-6 lg:px-12 bg-[#F7F8F2] border-b border-[#EDE7D9]">
+        <div className="max-w-5xl mx-auto space-y-6 text-left">
+          
+          <div className="space-y-3 flex flex-col items-start">
+            <SectionBadge text="Four Guiding Principles" align="left" />
+            <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">OUR PHILOSOPHY</h2>
+            <div className="w-20 h-1 bg-gradient-to-r from-[#4E641A] to-[#C68A2B] rounded-full" />
+          </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {philosophyList.map((item, idx) => (
-              <div key={idx} className="bg-[#FAF7F2] border border-[#EDE7D9] p-6 rounded-2xl flex items-center gap-4">
+              <div key={idx} className="bg-white border border-[#EDE7D9] p-6 rounded-2xl flex items-center gap-4 shadow-2xs hover:shadow-sm hover:border-[#4E641A]/40 transition-all duration-300">
                 <span className="w-9 h-9 rounded-full bg-[#4E641A] text-white font-serif font-bold text-lg flex items-center justify-center shrink-0 shadow-xs">
                   <GiSprout className="w-5 h-5 text-[#C68A2B]" />
                 </span>
@@ -504,7 +520,7 @@ export default function About() {
       </div>
 
       {/* 6. OUR VISION (Redesigned Split Layout Presentation) */}
-      <section className="py-12 md:py-16 px-4 sm:px-6 lg:px-12 bg-[#FCFAF4] border-b border-[#EDE7D9] relative overflow-hidden select-none">
+      <section className="py-12 md:py-16 px-4 sm:px-6 lg:px-12 bg-[#F7F8F2] border-b border-[#EDE7D9] relative overflow-hidden select-none">
         
         {/* Subtle Background Organic Watermark */}
         <div className="absolute -top-10 -right-10 opacity-5 text-[#4E641A] pointer-events-none">
@@ -514,7 +530,7 @@ export default function About() {
         <div className="max-w-7xl mx-auto relative z-10">
           
           {/* Main Section Header */}
-          <div className="space-y-4 flex flex-col items-start mb-8 lg:mb-10 text-left">
+          <div className="space-y-3 flex flex-col items-start mb-8 lg:mb-10 text-left">
             <SectionBadge text="Future Roadmap & Aspirations" align="left" />
             <div className="flex items-center gap-3">
               <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#2F3B0C] tracking-tight">
@@ -625,44 +641,75 @@ export default function About() {
       </section>
 
       {/* 7. OUR MISSION */}
-      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 bg-[#FAF7F2] border-b border-[#EDE7D9]">
-        <div className="max-w-4xl mx-auto space-y-8 text-left">
-          <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">OUR MISSION</h2>
+      <section className="py-12 md:py-16 px-4 sm:px-6 lg:px-12 bg-[#FBF9F4] border-b border-[#EDE7D9]">
+        <div className="max-w-5xl mx-auto space-y-6 text-left">
+          
+          <div className="space-y-3 flex flex-col items-start">
+            <SectionBadge text="Guiding Everyday Purpose" align="left" />
+            <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">OUR MISSION</h2>
+            <div className="w-20 h-1 bg-gradient-to-r from-[#4E641A] to-[#C68A2B] rounded-full" />
+          </div>
 
-          <div className="space-y-6 text-stone-700 text-base sm:text-lg leading-[1.8] font-sans">
+          <div className="space-y-6 text-stone-700 text-base sm:text-lg leading-[1.75] font-sans">
             <p>
               At Suryodaya Farms, our mission is to develop and deliver premium-quality natural nutrition products by combining the goodness of nature with scientific expertise, responsible sourcing, hygienic processing, rigorous quality standards, and continuous innovation.
             </p>
             <p>
               We are committed to preserving the natural integrity of every ingredient while ensuring consistency, safety, and quality through disciplined processes and responsible practices.
             </p>
-            <p className="font-bold text-[#2F3B0C]">
-              By fostering a culture of research, continuous improvement, and customer-focused innovation, we strive to earn lasting trust and inspire healthier lifestyles for individuals and families.
-            </p>
+            <div className="bg-[#F0F5E6] border-l-4 border-l-[#4E641A] border border-[#DCE8C8] p-6 rounded-2xl shadow-2xs">
+              <p className="font-bold text-[#2F3B0C] text-lg sm:text-xl font-serif leading-snug">
+                By fostering a culture of research, continuous improvement, and customer-focused innovation, we strive to earn lasting trust and inspire healthier lifestyles for individuals and families.
+              </p>
+            </div>
           </div>
+
         </div>
       </section>
 
       {/* 8. OUR CORE VALUES */}
-      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 bg-white border-b border-[#EDE7D9]">
-        <div className="max-w-6xl mx-auto space-y-12 text-left">
-          <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C] text-center">OUR CORE VALUES</h2>
+      <section className="py-12 md:py-16 px-4 sm:px-6 lg:px-12 bg-[#F7F8F2] border-b border-[#EDE7D9]">
+        <div className="max-w-6xl mx-auto space-y-10 text-left">
+          
+          <div className="space-y-3 flex flex-col items-center text-center">
+            <SectionBadge text="Foundational Pillars" align="center" />
+            <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">OUR CORE VALUES</h2>
+            <div className="w-24 h-1 bg-gradient-to-r from-[#4E641A] via-[#C68A2B] to-[#4E641A] rounded-full mt-1" />
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {coreValues.map((val, idx) => (
-              <div key={idx} className="bg-[#FAF7F2] border border-[#EDE7D9] p-8 rounded-[24px] space-y-3">
-                <h3 className="font-serif text-xl font-bold text-[#4E641A]">{val.title}</h3>
-                <p className="text-stone-600 text-sm leading-relaxed font-sans">{val.desc}</p>
-              </div>
-            ))}
+            {coreValues.map((val, idx) => {
+              const IconComp = val.icon || FiShield;
+              return (
+                <div 
+                  key={idx} 
+                  className="bg-white border border-[#EDE7D9] hover:border-[#4E641A]/40 p-7 rounded-[20px] space-y-4 shadow-xs hover:shadow-md hover:-translate-y-1.5 transition-all duration-300 h-full flex flex-col justify-between group"
+                >
+                  <div className="space-y-4">
+                    <div className="w-12 h-12 rounded-xl bg-[#F0F5E6] border border-[#4E641A]/20 flex items-center justify-center text-[#4E641A] group-hover:bg-[#4E641A] group-hover:text-white transition-colors duration-300">
+                      <IconComp className="w-6 h-6 stroke-[2px]" />
+                    </div>
+                    <h3 className="font-serif text-xl font-bold text-[#2F3B0C] group-hover:text-[#4E641A] transition-colors duration-300">
+                      {val.title}
+                    </h3>
+                  </div>
+                  <p className="text-stone-600 text-sm sm:text-base leading-relaxed font-sans pt-2 border-t border-[#EDE7D9]/60">
+                    {val.desc}
+                  </p>
+                </div>
+              );
+            })}
           </div>
+
         </div>
       </section>
 
       {/* 9. OUR QUALITY COMMITMENT */}
-      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 bg-[#FAF7F2] border-b border-[#EDE7D9]">
-        <div className="max-w-4xl mx-auto space-y-8 text-left">
-          <div className="space-y-3">
+      <section className="py-12 md:py-16 px-4 sm:px-6 lg:px-12 bg-[#FBF9F4] border-b border-[#EDE7D9]">
+        <div className="max-w-5xl mx-auto space-y-8 text-left">
+          
+          <div className="space-y-3 flex flex-col items-start">
+            <SectionBadge text="Uncompromising Excellence" align="left" />
             <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">OUR QUALITY COMMITMENT</h2>
             <p className="font-serif text-lg sm:text-xl font-bold text-[#4E641A]">
               Quality is not simply our objective—it is our responsibility.
@@ -674,8 +721,10 @@ export default function About() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {qualityBullets.map((bullet, idx) => (
-              <div key={idx} className="bg-white border border-[#EDE7D9] p-4 rounded-xl flex items-center gap-3">
-                <FiCheckCircle className="text-[#4E641A] text-lg shrink-0" />
+              <div key={idx} className="bg-white border border-[#EDE7D9] p-4.5 rounded-xl flex items-center gap-3.5 shadow-2xs hover:shadow-sm hover:border-[#4E641A]/30 transition-all duration-300">
+                <div className="w-6 h-6 rounded-full bg-[#F0F5E6] border border-[#4E641A]/20 flex items-center justify-center text-[#4E641A] shrink-0">
+                  <FiCheckCircle className="w-4 h-4 text-[#4E641A]" />
+                </div>
                 <span className="font-sans text-sm sm:text-base font-semibold text-[#2F3B0C]">{bullet}</span>
               </div>
             ))}
@@ -688,54 +737,71 @@ export default function About() {
       </section>
 
       {/* 10. OUR PROMISE */}
-      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 bg-white border-b border-[#EDE7D9]">
-        <div className="max-w-4xl mx-auto space-y-6 text-left text-stone-700 text-base sm:text-lg leading-[1.8] font-sans">
-          <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">OUR PROMISE</h2>
-          <p>We promise to remain true to the values that define Suryodaya Farms.</p>
-          <p className="font-bold text-[#2F3B0C]">We will never compromise on quality for convenience.</p>
-          <p className="font-bold text-[#2F3B0C]">We will never compromise on integrity for growth.</p>
-          <p>We will continue learning, improving, and serving with responsibility.</p>
-          <p className="font-serif text-xl font-bold text-[#4E641A] italic pt-2">
-            Because trust is something that must be earned—every single day.
-          </p>
+      <section className="py-12 md:py-16 px-4 sm:px-6 lg:px-12 bg-[#F7F8F2] border-b border-[#EDE7D9]">
+        <div className="max-w-5xl mx-auto space-y-6 text-left text-stone-700 text-base sm:text-lg leading-[1.75] font-sans">
+          
+          <div className="space-y-3 flex flex-col items-start">
+            <SectionBadge text="Unwavering Values" align="left" />
+            <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">OUR PROMISE</h2>
+            <div className="w-20 h-1 bg-gradient-to-r from-[#4E641A] to-[#C68A2B] rounded-full" />
+          </div>
+
+          <div className="bg-white border border-[#EDE7D9] p-7 sm:p-10 rounded-2xl shadow-2xs space-y-4">
+            <p className="text-stone-800">We promise to remain true to the values that define Suryodaya Farms.</p>
+            <p className="font-bold text-[#2F3B0C] text-lg font-serif">We will never compromise on quality for convenience.</p>
+            <p className="font-bold text-[#2F3B0C] text-lg font-serif">We will never compromise on integrity for growth.</p>
+            <p className="text-stone-700">We will continue learning, improving, and serving with responsibility.</p>
+            <p className="font-serif text-xl font-bold text-[#4E641A] italic pt-3 border-t border-[#EDE7D9]">
+              Because trust is something that must be earned—every single day.
+            </p>
+          </div>
+
         </div>
       </section>
 
       {/* 11. OUR TAGLINE */}
-      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 bg-[#F4EFE6] border-b border-[#EDE7D9]">
+      <section className="py-14 md:py-16 px-4 sm:px-6 lg:px-12 bg-gradient-to-r from-[#2F3B0C] via-[#3F4F16] to-[#4E641A] text-white border-b border-[#EDE7D9]">
         <div className="max-w-6xl mx-auto text-center space-y-3">
-          <span className="font-sans text-xs font-bold uppercase tracking-[0.3em] text-[#B8833E]">OUR TAGLINE</span>
-          <h3 className="font-serif text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-[#2F3B0C] whitespace-nowrap">
+          <span className="font-sans text-xs font-bold uppercase tracking-[0.3em] text-[#C68A2B]">OUR TAGLINE</span>
+          <h3 className="font-serif text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-white tracking-wide">
             Pure Nature. Scientific Quality. Trusted Nutrition.
           </h3>
         </div>
       </section>
 
       {/* 12. WHY CHOOSE SURYODAYA FARMS? */}
-      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 bg-white border-b border-[#EDE7D9]">
-        <div className="max-w-7xl mx-auto space-y-16">
-          <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C] text-center">WHY CHOOSE SURYODAYA FARMS?</h2>
+      <section className="py-12 md:py-16 px-4 sm:px-6 lg:px-12 bg-[#FBF9F4] border-b border-[#EDE7D9]">
+        <div className="max-w-7xl mx-auto space-y-12">
+          
+          <div className="space-y-3 text-center flex flex-col items-center">
+            <SectionBadge text="The Suryodaya Advantage" align="center" />
+            <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">WHY CHOOSE SURYODAYA FARMS?</h2>
+            <div className="w-24 h-1 bg-gradient-to-r from-[#4E641A] via-[#C68A2B] to-[#4E641A] rounded-full mt-1" />
+          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-left">
             {whyChooseItems.map((item, idx) => (
-              <div key={idx} className="bg-[#FAF7F2] border border-[#EDE7D9] p-8 rounded-[28px] space-y-4 hover:shadow-md transition">
+              <div key={idx} className="bg-white border border-[#EDE7D9] p-7 rounded-[20px] space-y-3 shadow-2xs hover:shadow-md hover:border-[#4E641A]/40 transition-all duration-300">
                 <h3 className="font-serif text-xl font-bold text-[#2F3B0C]">{item.title}</h3>
-                <p className="text-stone-600 text-sm leading-relaxed font-sans">{item.desc}</p>
+                <p className="text-stone-600 text-sm sm:text-base leading-relaxed font-sans">{item.desc}</p>
               </div>
             ))}
           </div>
+
         </div>
       </section>
 
       {/* 13. RESEARCH & INNOVATION */}
-      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 bg-[#FAF7F2] border-b border-[#EDE7D9]">
-        <div className="max-w-4xl mx-auto space-y-8 text-left">
-          <div className="space-y-3">
-            <span className="font-sans text-xs font-bold text-[#B8833E] uppercase tracking-widest">Where Nature Meets Scientific Understanding</span>
+      <section className="py-12 md:py-16 px-4 sm:px-6 lg:px-12 bg-[#F7F8F2] border-b border-[#EDE7D9]">
+        <div className="max-w-5xl mx-auto space-y-6 text-left">
+          
+          <div className="space-y-3 flex flex-col items-start">
+            <SectionBadge text="Where Nature Meets Scientific Understanding" align="left" />
             <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">RESEARCH & INNOVATION</h2>
+            <div className="w-20 h-1 bg-gradient-to-r from-[#4E641A] to-[#C68A2B] rounded-full" />
           </div>
 
-          <div className="space-y-6 text-stone-700 text-base sm:text-lg leading-[1.8] font-sans">
+          <div className="space-y-6 text-stone-700 text-base sm:text-lg leading-[1.75] font-sans">
             <p>
               At Suryodaya Farms, research and innovation are not separate activities—they are part of everything we do.
             </p>
@@ -745,22 +811,30 @@ export default function About() {
             <p>
               Every product is thoughtfully developed through careful ingredient selection, scientific understanding, quality-focused practices, hygienic processing, and continuous improvement.
             </p>
-            <p>Our goal is not simply to create products.</p>
-            <p className="font-serif text-xl font-bold text-[#4E641A]">
-              Our goal is to create products that customers can choose with confidence.
-            </p>
+            <p className="text-stone-800 font-medium">Our goal is not simply to create products.</p>
+            <div className="bg-[#F0F5E6] border-l-4 border-l-[#4E641A] border border-[#DCE8C8] p-6 rounded-2xl shadow-2xs">
+              <p className="font-serif text-xl font-bold text-[#4E641A]">
+                Our goal is to create products that customers can choose with confidence.
+              </p>
+            </div>
           </div>
+
         </div>
       </section>
 
       {/* 14. OUR RESEARCH, TECHNICAL & PRODUCT DEVELOPMENT TEAM */}
-      <section className="py-20 sm:py-28 px-4 sm:px-6 lg:px-12 bg-white border-b border-[#EDE7D9]">
+      <section className="py-14 md:py-18 px-4 sm:px-6 lg:px-12 bg-[#FBF9F4] border-b border-[#EDE7D9]">
         <div className="max-w-6xl mx-auto space-y-8 text-left">
-          <h2 className="font-serif text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-[#2F3B0C] whitespace-nowrap">
-            Our Research, Technical & Product Development Team
-          </h2>
+          
+          <div className="space-y-3 flex flex-col items-start">
+            <SectionBadge text="Botany Doctorates & Research Professionals" align="left" />
+            <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#2F3B0C]">
+              Our Research, Technical & Product Development Team
+            </h2>
+            <div className="w-24 h-1 bg-gradient-to-r from-[#4E641A] via-[#C68A2B] to-[#4E641A] rounded-full mt-1" />
+          </div>
 
-          <div className="space-y-6 text-stone-700 text-base sm:text-lg leading-[1.8] font-sans">
+          <div className="space-y-6 text-stone-700 text-base sm:text-lg leading-[1.75] font-sans">
             <p>
               Behind every Suryodaya Farms product is a dedicated Research, Technical & Product Development Team comprising highly experienced researchers, qualified professionals, and Ph.D.-qualified experts in Botany, working together with scientific responsibility and a shared commitment to excellence.
             </p>
@@ -770,41 +844,53 @@ export default function About() {
             <p>
               Rather than seeking recognition, our team works quietly behind every product—transforming knowledge, research, and experience into products that customers can trust.
             </p>
-            <div className="bg-[#FAF7F2] border border-[#EDE7D9] p-8 rounded-[28px] space-y-2 mt-6">
-              <p className="font-sans text-xs font-bold text-[#B8833E] uppercase tracking-wider">Every decision is guided by one simple question:</p>
+            <div className="bg-white border border-[#EDE7D9] p-7 sm:p-8 rounded-[24px] shadow-sm space-y-2 mt-6">
+              <p className="font-sans text-xs font-bold text-[#4E641A] uppercase tracking-wider">Every decision is guided by one simple question:</p>
               <blockquote className="font-serif text-xl sm:text-2xl font-bold italic text-[#2F3B0C]">
                 "How can we develop better products while earning and preserving our customers' trust?"
               </blockquote>
             </div>
           </div>
+
         </div>
       </section>
 
       {/* 15. OUR RESEARCH PHILOSOPHY */}
-      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 bg-[#FAF7F2] border-b border-[#EDE7D9]">
-        <div className="max-w-4xl mx-auto space-y-8 text-left">
-          <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">Our Research Philosophy</h2>
+      <section className="py-12 md:py-16 px-4 sm:px-6 lg:px-12 bg-[#F7F8F2] border-b border-[#EDE7D9]">
+        <div className="max-w-5xl mx-auto space-y-6 text-left">
+          
+          <div className="space-y-3 flex flex-col items-start">
+            <SectionBadge text="Scientific Integrity" align="left" />
+            <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">Our Research Philosophy</h2>
+            <div className="w-20 h-1 bg-gradient-to-r from-[#4E641A] to-[#C68A2B] rounded-full" />
+          </div>
 
-          <div className="space-y-6 text-stone-700 text-base sm:text-lg leading-[1.8] font-sans">
-            <p className="font-semibold text-[#2F3B0C]">
+          <div className="space-y-5 text-stone-700 text-base sm:text-lg leading-[1.75] font-sans">
+            <p className="font-semibold text-[#2F3B0C] text-lg font-serif">
               We believe that true innovation is not about changing nature—it is about understanding nature better and using scientific knowledge responsibly.
             </p>
             <p>Research is meaningful only when it improves quality.</p>
             <p>Innovation is valuable only when it benefits people.</p>
             <p>Knowledge has purpose only when it serves society.</p>
-            <p className="font-serif text-xl font-bold text-[#4E641A] italic pt-2">
+            <p className="font-serif text-xl font-bold text-[#4E641A] italic pt-3 border-t border-[#EDE7D9]">
               That philosophy inspires every product we develop.
             </p>
           </div>
+
         </div>
       </section>
 
       {/* 16. OUR COMMITMENT */}
-      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 bg-white border-b border-[#EDE7D9]">
-        <div className="max-w-4xl mx-auto space-y-8 text-left">
-          <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">Our Commitment</h2>
+      <section className="py-12 md:py-16 px-4 sm:px-6 lg:px-12 bg-[#FBF9F4] border-b border-[#EDE7D9]">
+        <div className="max-w-5xl mx-auto space-y-6 text-left">
+          
+          <div className="space-y-3 flex flex-col items-start">
+            <SectionBadge text="Dedicated to Progress" align="left" />
+            <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">Our Commitment</h2>
+            <div className="w-20 h-1 bg-gradient-to-r from-[#4E641A] to-[#C68A2B] rounded-full" />
+          </div>
 
-          <div className="space-y-6 text-stone-700 text-base sm:text-lg leading-[1.8] font-sans">
+          <div className="space-y-5 text-stone-700 text-base sm:text-lg leading-[1.75] font-sans">
             <p className="font-serif text-2xl font-bold text-[#4E641A]">At Suryodaya Farms, research never stops.</p>
             <p>
               We continuously learn, improve, innovate, and refine our products because we believe every customer deserves our very best.
@@ -813,20 +899,21 @@ export default function About() {
               Every improvement we make is dedicated to delivering better quality, greater consistency, and lasting customer confidence.
             </p>
           </div>
+
         </div>
       </section>
 
       {/* 17. OUR GUIDING PRINCIPLE */}
-      <section className="py-14 sm:py-18 lg:py-22 px-4 sm:px-6 lg:px-12 bg-gradient-to-br from-[#2F3B0C] to-[#1E2707] text-white relative overflow-hidden dark-section">
+      <section className="py-14 sm:py-18 lg:py-22 px-4 sm:px-6 lg:px-12 bg-gradient-to-br from-[#2F3B0C] via-[#3F4F16] to-[#1E2707] text-white relative overflow-hidden dark-section">
         <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[radial-gradient(#ffffff_1.5px,transparent_1.5px)] [background-size:32px_32px] pointer-events-none" />
-        <div className="max-w-5xl mx-auto text-center space-y-8 relative z-10">
-          <span className="font-sans text-xs font-bold uppercase tracking-[0.25em] text-[#B8833E] block">Our Guiding Principle</span>
+        <div className="max-w-5xl mx-auto text-center space-y-6 relative z-10">
+          <span className="font-sans text-xs font-bold uppercase tracking-[0.25em] text-[#C68A2B] block">Our Guiding Principle</span>
 
           <blockquote className="font-serif text-2xl sm:text-3xl lg:text-4xl font-light italic leading-relaxed text-[#F9F6F0] max-w-4xl mx-auto">
             "Nature inspires us. Science guides us. Innovation strengthens us. Quality defines us. Customer trust is our greatest achievement."
           </blockquote>
 
-          <div className="w-24 h-1 bg-[#B8833E] mx-auto rounded-full mt-8" />
+          <div className="w-24 h-1 bg-[#C68A2B] mx-auto rounded-full mt-6" />
         </div>
       </section>
 
