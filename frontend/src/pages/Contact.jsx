@@ -479,8 +479,8 @@ export default function Contact() {
         <div className="absolute inset-0 bg-[radial-gradient(#4E641A_1px,transparent_1px)] [background-size:32px_32px] opacity-10 pointer-events-none" />
 
         <div className="max-w-7xl mx-auto relative z-10 space-y-8">
-          <div className="text-center max-w-xl mx-auto space-y-2 flex flex-col items-center">
-            <span className="font-sans text-xs font-bold text-[#B8833E] uppercase tracking-widest">Follow Our Journey</span>
+          <div className="text-center max-w-xl mx-auto space-y-3 flex flex-col items-center">
+            <SectionBadge text="Follow Our Journey" align="center" />
             <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#2F3B0C] tracking-tight">Connect on Social Media</h2>
           </div>
 
