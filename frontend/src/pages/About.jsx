@@ -861,33 +861,52 @@ export default function About() {
       </section>
 
       {/* 14. OUR RESEARCH, TECHNICAL & PRODUCT DEVELOPMENT TEAM */}
-      <section className="py-14 md:py-18 px-4 sm:px-6 lg:px-12 bg-[#FBF9F4] border-b border-[#EDE7D9] select-none">
-        <div className="max-w-7xl mx-auto space-y-8 text-left">
+      <section className="py-16 md:py-20 px-4 sm:px-6 lg:px-12 bg-[#FAF7F2] border-b border-[#EDE7D9] relative overflow-hidden select-none">
+        {/* Subtle background botanical watermarks */}
+        <div className="absolute top-10 right-10 w-72 h-72 opacity-[0.025] pointer-events-none text-[#2F3B0C]">
+          <GiSprout className="w-full h-full" />
+        </div>
+        <div className="absolute bottom-10 left-10 w-72 h-72 opacity-[0.025] pointer-events-none text-[#2F3B0C]">
+          <GiSun className="w-full h-full" />
+        </div>
+
+        <div className="max-w-[820px] mx-auto space-y-8 text-left relative z-10 animate-fade-in">
           
+          {/* Header */}
           <div className="space-y-3 flex flex-col items-start w-full">
             <SectionBadge text="Botany Doctorates & Research Professionals" align="left" />
-            <h2 className="font-serif text-xl sm:text-2xl md:text-3xl lg:text-[32px] xl:text-[38px] 2xl:text-[42px] font-bold text-[#2F3B0C] tracking-tight md:whitespace-nowrap leading-tight">
+            <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl lg:text-[40px] font-bold text-[#2F3B0C] tracking-tight leading-tight">
               Our Research, Technical & Product Development Team
             </h2>
             <div className="w-24 h-1 bg-gradient-to-r from-[#4E641A] via-[#C68A2B] to-[#4E641A] rounded-full mt-1" />
           </div>
 
-          <div className="space-y-6 text-stone-700 text-base sm:text-lg leading-[1.75] font-sans">
-            <p>
+          {/* Grouped Intro Paragraphs Card */}
+          <div className="bg-white border border-[#EDE7D9] rounded-[24px] p-6 sm:p-8 shadow-xs space-y-5 text-stone-700 text-base sm:text-lg leading-[1.8] font-sans">
+            <p className="font-medium text-stone-700">
               Behind every Suryodaya Farms product is a dedicated Research, Technical & Product Development Team comprising highly experienced researchers, qualified professionals, and Ph.D.-qualified experts in Botany, working together with scientific responsibility and a shared commitment to excellence.
             </p>
-            <p>
+            <div className="h-px bg-gradient-to-r from-transparent via-[#EDE7D9] to-transparent" />
+            <p className="text-stone-600">
               Our team continuously studies natural ingredients, evaluates scientific developments, improves product quality, and refines manufacturing practices to ensure that every product reflects the values of Suryodaya Farms.
             </p>
-            <p>
+            <div className="h-px bg-gradient-to-r from-transparent via-[#EDE7D9] to-transparent" />
+            <p className="text-stone-600 font-normal">
               Rather than seeking recognition, our team works quietly behind every product—transforming knowledge, research, and experience into products that customers can trust.
             </p>
-            <div className="bg-white border border-[#EDE7D9] p-7 sm:p-8 rounded-[24px] shadow-sm space-y-2 mt-6">
-              <p className="font-sans text-xs font-bold text-[#4E641A] uppercase tracking-wider">Every decision is guided by one simple question:</p>
-              <blockquote className="font-serif text-xl sm:text-2xl font-bold italic text-[#2F3B0C]">
-                "How can we develop better products while earning and preserving our customers' trust?"
-              </blockquote>
+          </div>
+
+          {/* Featured Quote Card */}
+          <div className="bg-[#FAF7F2] border border-[#EDE7D9] hover:border-[#4E641A]/40 p-7 sm:p-9 rounded-[24px] shadow-sm hover:shadow-md transition-all duration-300 space-y-3 relative overflow-hidden group">
+            <div className="absolute top-4 right-6 text-5xl text-[#C68A2B]/15 font-serif select-none pointer-events-none">
+              “
             </div>
+            <p className="font-sans text-xs font-extrabold text-[#4E641A] uppercase tracking-wider block">
+              Every decision is guided by one simple question:
+            </p>
+            <blockquote className="font-serif text-xl sm:text-2xl font-bold italic text-[#2F3B0C] leading-snug relative z-10">
+              "How can we develop better products while earning and preserving our customers' trust?"
+            </blockquote>
           </div>
 
         </div>
