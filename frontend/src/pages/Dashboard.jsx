@@ -40,7 +40,13 @@ import {
   FiAward,
   FiSearch,
   FiArrowRight,
-  FiArrowLeft
+  FiArrowLeft,
+  FiEdit2,
+  FiZap,
+  FiHome,
+  FiBriefcase,
+  FiCheckCircle,
+  FiPhone
 } from 'react-icons/fi';
 import { GiSun, GiSprout } from 'react-icons/gi';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -641,7 +647,7 @@ export default function Dashboard() {
     { id: 'overview', label: 'Dashboard', icon: FiSliders },
     { id: 'orders', label: 'My Shipments', icon: FiShoppingBag, badge: orders.length },
     { id: 'wishlist', label: 'Wishlist', icon: FiHeart, badge: wishlistItems.length },
-    { id: 'addresses', label: 'Saved Coordinates', icon: FiMapPin },
+    { id: 'addresses', label: 'Saved Addresses', icon: FiMapPin },
     { id: 'notifications', label: 'Notifications', icon: FiBell, badge: notifications.filter(n => !n.isRead).length || undefined },
     { id: 'viewed', label: 'Recently Browsed', icon: FiClock },
     { id: 'settings', label: 'Preferences', icon: FiSettings },
@@ -1381,21 +1387,30 @@ export default function Dashboard() {
             </div>
           )}
           {activeTab === 'addresses' && (
-            <div className="space-y-6 w-full text-left">
-              <div className="flex justify-between items-center flex-wrap gap-4 pb-4 border-b border-[#EDE7D9]">
-                <div className="flex flex-col gap-1">
-                  <h3 className="font-serif text-2xl font-bold text-[#2F3B0C] flex items-center gap-2">
-                    <FiMapPin className="text-[#C68A2B]" /> Saved Coordinates
-                  </h3>
-                  <p className="text-xs text-stone-600 font-medium">Manage coordinates for fast shipping logs routing.</p>
+            <div className="space-y-6 w-full text-left font-sans">
+              {/* 1. Header Section */}
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-5 border-b border-[#EAE4D8]">
+                <div className="flex items-center gap-3">
+                  <div className="w-11 h-11 rounded-2xl bg-[#4E641A]/10 text-[#4E641A] flex items-center justify-center shrink-0">
+                    <FiMapPin className="w-5 h-5 text-[#4E641A]" />
+                  </div>
+                  <div>
+                    <h3 className="font-serif text-2xl font-bold text-[#2F3B0C] tracking-tight">
+                      Saved Addresses
+                    </h3>
+                    <p className="text-xs text-stone-500 font-medium mt-0.5">
+                      Manage your delivery addresses for faster, secure, and hassle-free checkout.
+                    </p>
+                  </div>
                 </div>
-                <div className="flex gap-2 items-center flex-wrap">
+
+                <div className="flex items-center gap-2.5 flex-wrap w-full sm:w-auto">
                   {new URLSearchParams(location.search).get('from') === 'checkout' && (
                     <button 
                       onClick={() => navigate('/checkout')} 
-                      className="px-5 py-3 border border-[#4E641A] text-[#4E641A] hover:bg-[#4E641A]/5 text-xs font-bold uppercase rounded-2xl flex items-center gap-1.5 cursor-pointer transition duration-300 font-sans select-none"
+                      className="px-4 py-2.5 border border-[#4E641A] text-[#4E641A] hover:bg-[#4E641A]/5 text-xs font-bold rounded-xl flex items-center gap-2 cursor-pointer transition duration-200 select-none"
                     >
-                      Return to Checkout
+                      <FiArrowLeft className="w-3.5 h-3.5" /> Return to Checkout
                     </button>
                   )}
                   {!showAddressForm && (
@@ -1417,181 +1432,186 @@ export default function Dashboard() {
                         });
                         setShowAddressForm(true);
                       }} 
-                      className="px-5 py-3 bg-[#4E641A] hover:bg-[#37411A] text-white text-xs font-bold uppercase rounded-2xl flex items-center gap-1.5 cursor-pointer font-sans transition select-none shadow-xxs border-none"
+                      className="px-5 py-2.5 bg-[#4E641A] hover:bg-[#37411A] text-white text-xs font-bold rounded-xl flex items-center gap-2 cursor-pointer transition duration-200 shadow-sm border-none select-none"
                     >
-                      <FiPlus />Add Coordinates
+                      <FiPlus className="w-4 h-4" /> Add New Address
                     </button>
                   )}
                 </div>
               </div>
 
-              {/* Two Column Grid layout to reduce empty whitespace and organize content */}
-              <div className="flex flex-col lg:flex-row gap-8 items-start w-full">
+              {/* 2. Main Two Column Grid Layout */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start w-full">
                 
-                {/* Left Side: Dynamic Form or Saved Cards */}
-                <div className="flex-grow w-full space-y-6">
+                {/* Left Column: Address Form / List / Empty State (8 Cols) */}
+                <div className="lg:col-span-8 space-y-6 w-full">
                   {showAddressForm && (
-                    <form onSubmit={handleSaveAddress} className="bg-white border border-[#EAE4D8] rounded-[28px] p-6 shadow-xxs flex flex-col gap-5">
-                      <div className="border-b pb-2 border-stone-100 flex justify-between items-center">
-                        <h4 className="font-serif text-base font-bold text-[#2F3B0C]">
-                          {addressForm.id ? 'Modify Shipping Address' : 'Register Delivery Coordinates'}
+                    <form onSubmit={handleSaveAddress} className="bg-white border border-[#EAE4D8] rounded-3xl p-6 sm:p-7 shadow-xs flex flex-col gap-5 text-left">
+                      <div className="border-b pb-3 border-[#EAE4D8] flex justify-between items-center">
+                        <h4 className="font-serif text-lg font-bold text-[#2F3B0C]">
+                          {addressForm.id ? 'Modify Shipping Address' : 'Add New Delivery Address'}
                         </h4>
-                        <span className="text-[8px] font-extrabold uppercase bg-[#4E641A]/10 text-[#4E641A] px-2.5 py-0.5 rounded-full">
-                          Indian Standards
+                        <span className="text-[9px] font-extrabold uppercase tracking-wider bg-[#4E641A]/10 text-[#4E641A] px-3 py-1 rounded-full">
+                          Indian Shipping Standard
                         </span>
                       </div>
 
                       {addressError && (
-                        <div className="text-xs font-bold text-red-655 bg-red-50 border border-red-200/50 rounded-xl p-3 select-none">
+                        <div className="text-xs font-bold text-red-650 bg-red-50 border border-red-200 rounded-xl p-3.5 select-none">
                           ⚠️ {addressError}
                         </div>
                       )}
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                         {/* Recipient Name */}
-                        <div className="flex flex-col gap-1">
-                          <label className="text-[9px] font-extrabold uppercase tracking-wider text-stone-400">Recipient Name</label>
+                        <div className="flex flex-col gap-1.5">
+                          <label className="text-[10px] font-extrabold uppercase tracking-wider text-stone-500">Recipient Name</label>
                           <input 
                             type="text" 
                             placeholder="e.g. Srujan Reddy" 
                             value={addressForm.recipientName} 
                             onChange={e => setAddressForm({ ...addressForm, recipientName: e.target.value })} 
-                            className="w-full bg-[#FDFBF7] border border-[#EAE4D8] focus:border-[#4E641A] rounded-xl py-3 px-4 text-xs font-sans focus:outline-none text-[#37411A]" 
+                            className="w-full bg-[#FAF8F5] border border-[#EAE4D8] focus:border-[#4E641A] focus:bg-white rounded-xl py-3 px-4 text-xs font-sans focus:outline-none text-[#2F3B0C] font-medium transition" 
                             required 
                           />
                         </div>
 
                         {/* Mobile Number */}
-                        <div className="flex flex-col gap-1">
-                          <label className="text-[9px] font-extrabold uppercase tracking-wider text-stone-400">Primary Mobile</label>
+                        <div className="flex flex-col gap-1.5">
+                          <label className="text-[10px] font-extrabold uppercase tracking-wider text-stone-500">Primary Phone</label>
                           <input 
                             type="tel" 
                             placeholder="e.g. 9876543210" 
                             value={addressForm.phone} 
                             onChange={e => setAddressForm({ ...addressForm, phone: e.target.value })} 
-                            className="w-full bg-[#FDFBF7] border border-[#EAE4D8] focus:border-[#4E641A] rounded-xl py-3 px-4 text-xs font-sans focus:outline-none text-[#37411A]" 
+                            className="w-full bg-[#FAF8F5] border border-[#EAE4D8] focus:border-[#4E641A] focus:bg-white rounded-xl py-3 px-4 text-xs font-sans focus:outline-none text-[#2F3B0C] font-medium transition" 
                             required 
                           />
                         </div>
 
                         {/* Alternate Mobile */}
-                        <div className="flex flex-col gap-1">
-                          <label className="text-[9px] font-extrabold uppercase tracking-wider text-stone-400">Alternate Mobile (Optional)</label>
+                        <div className="flex flex-col gap-1.5">
+                          <label className="text-[10px] font-extrabold uppercase tracking-wider text-stone-500">Alternate Phone (Optional)</label>
                           <input 
                             type="tel" 
-                            placeholder="Alternative phone contact" 
+                            placeholder="Alternative contact number" 
                             value={addressForm.altPhone} 
                             onChange={e => setAddressForm({ ...addressForm, altPhone: e.target.value })} 
-                            className="w-full bg-[#FDFBF7] border border-[#EAE4D8] focus:border-[#4E641A] rounded-xl py-3 px-4 text-xs font-sans focus:outline-none text-[#37411A]" 
+                            className="w-full bg-[#FAF8F5] border border-[#EAE4D8] focus:border-[#4E641A] focus:bg-white rounded-xl py-3 px-4 text-xs font-sans focus:outline-none text-[#2F3B0C] font-medium transition" 
                           />
                         </div>
 
                         {/* PIN Code */}
-                        <div className="flex flex-col gap-1">
-                          <label className="text-[9px] font-extrabold uppercase tracking-wider text-stone-400">PIN Code</label>
+                        <div className="flex flex-col gap-1.5">
+                          <label className="text-[10px] font-extrabold uppercase tracking-wider text-stone-500">PIN Code</label>
                           <input 
                             type="text" 
                             placeholder="6-digit PIN code" 
                             value={addressForm.postalCode} 
                             onChange={e => setAddressForm({ ...addressForm, postalCode: e.target.value })} 
-                            className="w-full bg-[#FDFBF7] border border-[#EAE4D8] focus:border-[#4E641A] rounded-xl py-3 px-4 text-xs font-sans focus:outline-none text-[#37411A]" 
+                            className="w-full bg-[#FAF8F5] border border-[#EAE4D8] focus:border-[#4E641A] focus:bg-white rounded-xl py-3 px-4 text-xs font-sans focus:outline-none text-[#2F3B0C] font-medium transition" 
                             required 
                           />
                         </div>
 
                         {/* House/Flat No */}
-                        <div className="flex flex-col gap-1 col-span-1 sm:col-span-2">
-                          <label className="text-[9px] font-extrabold uppercase tracking-wider text-stone-400">House / Flat / Plot Number</label>
+                        <div className="flex flex-col gap-1.5 col-span-1 sm:col-span-2">
+                          <label className="text-[10px] font-extrabold uppercase tracking-wider text-stone-500">Flat / House No. / Building / Apartment</label>
                           <input 
                             type="text" 
                             placeholder="e.g. Flat 302, Sunrise Towers, Block A" 
                             value={addressForm.houseFlat} 
                             onChange={e => setAddressForm({ ...addressForm, houseFlat: e.target.value })} 
-                            className="w-full bg-[#FDFBF7] border border-[#EAE4D8] focus:border-[#4E641A] rounded-xl py-3 px-4 text-xs font-sans focus:outline-none text-[#37411A]" 
+                            className="w-full bg-[#FAF8F5] border border-[#EAE4D8] focus:border-[#4E641A] focus:bg-white rounded-xl py-3 px-4 text-xs font-sans focus:outline-none text-[#2F3B0C] font-medium transition" 
                             required 
                           />
                         </div>
 
                         {/* Street details & landmarks */}
-                        <div className="flex flex-col gap-1 col-span-1 sm:col-span-2">
-                          <label className="text-[9px] font-extrabold uppercase tracking-wider text-stone-400">Street / Area / Landmark</label>
+                        <div className="flex flex-col gap-1.5 col-span-1 sm:col-span-2">
+                          <label className="text-[10px] font-extrabold uppercase tracking-wider text-stone-500">Street Address / Colony / Area / Landmark</label>
                           <input 
                             type="text" 
                             placeholder="e.g. Near Jubilee Hills Public School, Road No 5" 
                             value={addressForm.areaLandmark} 
                             onChange={e => setAddressForm({ ...addressForm, areaLandmark: e.target.value })} 
-                            className="w-full bg-[#FDFBF7] border border-[#EAE4D8] focus:border-[#4E641A] rounded-xl py-3 px-4 text-xs font-sans focus:outline-none text-[#37411A]" 
+                            className="w-full bg-[#FAF8F5] border border-[#EAE4D8] focus:border-[#4E641A] focus:bg-white rounded-xl py-3 px-4 text-xs font-sans focus:outline-none text-[#2F3B0C] font-medium transition" 
                             required 
                           />
                         </div>
 
                         {/* City */}
-                        <div className="flex flex-col gap-1">
-                          <label className="text-[9px] font-extrabold uppercase tracking-wider text-stone-400">City</label>
+                        <div className="flex flex-col gap-1.5">
+                          <label className="text-[10px] font-extrabold uppercase tracking-wider text-stone-500">City</label>
                           <input 
                             type="text" 
                             placeholder="e.g. Hyderabad" 
                             value={addressForm.city} 
                             onChange={e => setAddressForm({ ...addressForm, city: e.target.value })} 
-                            className="w-full bg-[#FDFBF7] border border-[#EAE4D8] focus:border-[#4E641A] rounded-xl py-3 px-4 text-xs font-sans focus:outline-none text-[#37411A]" 
+                            className="w-full bg-[#FAF8F5] border border-[#EAE4D8] focus:border-[#4E641A] focus:bg-white rounded-xl py-3 px-4 text-xs font-sans focus:outline-none text-[#2F3B0C] font-medium transition" 
                             required 
                           />
                         </div>
 
                         {/* District */}
-                        <div className="flex flex-col gap-1">
-                          <label className="text-[9px] font-extrabold uppercase tracking-wider text-stone-400">District</label>
+                        <div className="flex flex-col gap-1.5">
+                          <label className="text-[10px] font-extrabold uppercase tracking-wider text-stone-500">District</label>
                           <input 
                             type="text" 
                             placeholder="e.g. Rangareddy" 
                             value={addressForm.district} 
                             onChange={e => setAddressForm({ ...addressForm, district: e.target.value })} 
-                            className="w-full bg-[#FDFBF7] border border-[#EAE4D8] focus:border-[#4E641A] rounded-xl py-3 px-4 text-xs font-sans focus:outline-none text-[#37411A]" 
+                            className="w-full bg-[#FAF8F5] border border-[#EAE4D8] focus:border-[#4E641A] focus:bg-white rounded-xl py-3 px-4 text-xs font-sans focus:outline-none text-[#2F3B0C] font-medium transition" 
                             required 
                           />
                         </div>
 
                         {/* State Selection */}
-                        <div className="flex flex-col gap-1">
-                          <label className="text-[9px] font-extrabold uppercase tracking-wider text-stone-400">State / Union Territory</label>
+                        <div className="flex flex-col gap-1.5">
+                          <label className="text-[10px] font-extrabold uppercase tracking-wider text-stone-500">State / Union Territory</label>
                           <select 
                             value={addressForm.state} 
                             onChange={e => setAddressForm({ ...addressForm, state: e.target.value })} 
-                            className="w-full bg-[#FDFBF7] border border-[#EAE4D8] focus:border-[#4E641A] rounded-xl py-3 px-4 text-xs font-sans focus:outline-none text-[#37411A] font-medium cursor-pointer"
+                            className="w-full bg-[#FAF8F5] border border-[#EAE4D8] focus:border-[#4E641A] focus:bg-white rounded-xl py-3 px-4 text-xs font-sans focus:outline-none text-[#2F3B0C] font-medium transition cursor-pointer"
                             required
                           >
-                            <option value="">-- Choose State / UT --</option>
+                            <option value="">-- Select State --</option>
                             {INDIAN_STATES.map(st => (
                               <option key={st} value={st}>{st}</option>
                             ))}
                           </select>
                         </div>
 
-                        {/* Address Type pills */}
-                        <div className="flex flex-col gap-1">
-                          <label className="text-[9px] font-extrabold uppercase tracking-wider text-stone-400">Address Label</label>
+                        {/* Address Label Pills */}
+                        <div className="flex flex-col gap-1.5">
+                          <label className="text-[10px] font-extrabold uppercase tracking-wider text-stone-500">Address Label</label>
                           <div className="flex gap-2">
-                            {['Home', 'Work', 'Other'].map(type => {
+                            {[
+                              { type: 'Home', icon: FiHome },
+                              { type: 'Work', icon: FiBriefcase },
+                              { type: 'Other', icon: FiMapPin }
+                            ].map(({ type, icon: IconComponent }) => {
                               const isSelected = addressForm.title === type;
                               return (
                                 <button
                                   key={type}
                                   type="button"
                                   onClick={() => setAddressForm({ ...addressForm, title: type })}
-                                  className={`flex-1 py-3 px-2 text-[9px] font-extrabold uppercase tracking-wider rounded-xl border transition-all duration-300 cursor-pointer select-none ${
+                                  className={`flex-1 py-2.5 px-3 text-xs font-bold rounded-xl border transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer select-none ${
                                     isSelected 
-                                      ? 'bg-[#4E641A] border-[#4E641A] text-white shadow-xxs' 
-                                      : 'bg-white border-[#EAE4D8] text-stone-500 hover:bg-stone-50 hover:text-stone-700'
+                                      ? 'bg-[#4E641A] border-[#4E641A] text-white shadow-xs' 
+                                      : 'bg-white border-[#EAE4D8] text-stone-600 hover:bg-[#FAF8F5] hover:border-stone-300'
                                   }`}
                                 >
-                                  {type}
+                                  <IconComponent className="w-3.5 h-3.5" />
+                                  <span>{type}</span>
                                 </button>
                               );
                             })}
                           </div>
                         </div>
 
-                        {/* Default Checkbox */}
+                        {/* Default Address Checkbox */}
                         <div className="flex items-center gap-2.5 col-span-1 sm:col-span-2 pt-2 select-none cursor-pointer">
                           <input 
                             type="checkbox" 
@@ -1600,23 +1620,23 @@ export default function Dashboard() {
                             onChange={e => setAddressForm({ ...addressForm, isDefault: e.target.checked })} 
                             className="w-4 h-4 text-[#4E641A] border-[#EAE4D8] rounded focus:ring-[#4E641A] cursor-pointer accent-[#4E641A]" 
                           />
-                          <label htmlFor="addr-isDefault" className="text-[9px] font-extrabold uppercase tracking-wider text-[#37411A] cursor-pointer">
-                            Mark this as my primary default delivery address
+                          <label htmlFor="addr-isDefault" className="text-xs font-medium text-[#2F3B0C] cursor-pointer">
+                            Set as default delivery address
                           </label>
                         </div>
                       </div>
 
-                      <div className="border-t pt-4 mt-2 flex justify-end gap-3">
+                      <div className="border-t pt-4 border-[#EAE4D8] flex justify-end gap-3">
                         <button 
                           type="button" 
                           onClick={() => setShowAddressForm(false)} 
-                          className="px-5 py-3 border border-stone-200 text-stone-450 hover:bg-stone-50 text-[10px] font-bold uppercase tracking-wider rounded-xl transition cursor-pointer select-none bg-white"
+                          className="px-5 py-2.5 border border-stone-200 text-stone-600 hover:bg-stone-50 text-xs font-bold rounded-xl transition cursor-pointer select-none bg-white"
                         >
                           Cancel
                         </button>
                         <button 
                           type="submit" 
-                          className="px-6 py-3 bg-[#4E641A] hover:bg-[#37411A] text-white text-[10px] font-bold uppercase tracking-wider rounded-xl transition cursor-pointer select-none border-none shadow-xxs"
+                          className="px-6 py-2.5 bg-[#4E641A] hover:bg-[#37411A] text-white text-xs font-bold rounded-xl transition cursor-pointer select-none border-none shadow-xs"
                         >
                           Save Address
                         </button>
@@ -1630,72 +1650,85 @@ export default function Dashboard() {
                         const sParsed = parseStreet(addr.street);
                         const cParsed = parseCity(addr.city);
                         
-                        // Human-readable formatted details with commas
                         const displayStreet = `${sParsed.houseFlat}, ${sParsed.areaLandmark}`;
                         const displayCity = `${cParsed.city}${cParsed.district ? ', ' + cParsed.district : ''}`;
+
+                        const LabelIcon = addr.title === 'Home' ? FiHome : addr.title === 'Work' ? FiBriefcase : FiMapPin;
 
                         return (
                           <div 
                             key={addr.id} 
-                            className={`bg-white border rounded-[24px] p-5 flex flex-col justify-between min-h-[190px] shadow-xxs transition duration-300 text-left relative overflow-hidden ${
-                              addr.isDefault ? 'border-[#4E641A] ring-1 ring-[#4E641A]/20' : 'border-[#EAE4D8] hover:border-[#EDE7D9]'
+                            className={`bg-white border rounded-3xl p-6 flex flex-col justify-between min-h-[220px] transition-all duration-300 text-left relative overflow-hidden group ${
+                              addr.isDefault 
+                                ? 'border-2 border-[#4E641A] bg-[#4E641A]/[0.02] shadow-xs' 
+                                : 'border-[#EAE4D8] hover:border-[#4E641A]/40 hover:shadow-md'
                             }`}
                           >
-                            <div className="space-y-4">
-                              <div className="flex items-center justify-between">
-                                <span className="font-serif text-sm font-extrabold text-[#2F3B0C] flex items-center gap-1.5">
-                                  <span>📍</span>
-                                  <span>{addr.title || 'Delivery Address'}</span>
+                            <div className="space-y-3.5">
+                              {/* Header: Label & Default Badge */}
+                              <div className="flex items-center justify-between gap-2">
+                                <span className="inline-flex items-center gap-1.5 bg-[#4E641A]/10 text-[#4E641A] px-3 py-1 rounded-full text-xs font-bold">
+                                  <LabelIcon className="w-3.5 h-3.5" />
+                                  <span>{addr.title || 'Home'}</span>
                                 </span>
-                                <div className="flex items-center gap-1.5">
-                                  {addr.isDefault && (
-                                    <span className="text-[7px] font-extrabold bg-[#4E641A]/10 text-[#4E641A] border border-[#4E641A]/20 px-2 py-0.5 rounded-full uppercase tracking-wider">
-                                      Default
-                                    </span>
-                                  )}
-                                </div>
+
+                                {addr.isDefault && (
+                                  <span className="inline-flex items-center gap-1 bg-[#C68A2B]/15 text-[#8C5D14] border border-[#C68A2B]/30 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider">
+                                    <FiCheckCircle className="w-3 h-3 text-[#C68A2B]" /> Default
+                                  </span>
+                                )}
                               </div>
 
-                              <div className="text-xs text-stone-600 space-y-1.5 leading-relaxed">
-                                <p className="font-bold text-[#37411A] text-xs leading-none">
+                              {/* Details */}
+                              <div className="space-y-1.5">
+                                <h4 className="font-bold text-sm text-[#2F3B0C] leading-snug">
                                   {addr.recipientName}
-                                </p>
-                                <p className="font-light text-stone-500">
+                                </h4>
+                                <p className="text-xs text-stone-600 font-normal leading-relaxed">
                                   {displayStreet} <br />
-                                  {displayCity}, {addr.state} – <span className="font-mono">{addr.postalCode}</span>
+                                  {displayCity}, {addr.state} – <span className="font-semibold text-stone-800">{addr.postalCode}</span>
                                 </p>
-                                <p className="text-[10px] text-[#B8833E] font-medium flex items-center gap-3">
-                                  <span>📞 {addr.phone}</span>
-                                  {sParsed.altPhone && <span>📞 Alt: {sParsed.altPhone}</span>}
-                                </p>
+                              </div>
+
+                              {/* Phone */}
+                              <div className="flex items-center gap-3 text-xs text-stone-500 font-medium pt-2.5 border-t border-[#EAE4D8]/60">
+                                <span className="flex items-center gap-1.5">
+                                  <FiPhone className="w-3.5 h-3.5 text-[#4E641A]" />
+                                  <span>{addr.phone}</span>
+                                </span>
+                                {sParsed.altPhone && (
+                                  <span className="flex items-center gap-1.5 text-stone-400">
+                                    <FiPhone className="w-3.5 h-3.5 text-[#C68A2B]" />
+                                    <span>Alt: {sParsed.altPhone}</span>
+                                  </span>
+                                )}
                               </div>
                             </div>
 
-                            <div className="flex justify-between items-center pt-3 border-t mt-4 border-stone-100 text-[8.5px] font-extrabold uppercase tracking-widest text-stone-500">
-                              {/* Left Actions */}
-                              <div className="flex items-center gap-3.5">
+                            {/* Action Buttons */}
+                            <div className="flex items-center justify-between pt-4 mt-4 border-t border-[#EAE4D8] gap-2 flex-wrap">
+                              <div className="flex items-center gap-2">
                                 <button 
                                   onClick={() => populateAddressFormForEdit(addr)} 
-                                  className="text-stone-400 hover:text-[#4E641A] transition cursor-pointer bg-transparent border-none p-0 font-extrabold text-[8.5px] uppercase tracking-widest select-none"
+                                  className="px-3 py-1.5 text-xs font-bold text-[#4E641A] hover:bg-[#4E641A]/10 bg-[#4E641A]/5 rounded-xl transition duration-200 flex items-center gap-1 border-none cursor-pointer select-none"
                                 >
-                                  Edit
+                                  <FiEdit2 className="w-3.5 h-3.5" /> Edit Address
                                 </button>
                                 <button 
                                   onClick={() => handleDeleteAddress(addr.id)} 
-                                  className="text-stone-400 hover:text-red-655 transition cursor-pointer bg-transparent border-none p-0 font-extrabold text-[8.5px] uppercase tracking-widest select-none"
+                                  className="px-3 py-1.5 text-xs font-bold text-rose-600 hover:bg-rose-100 bg-rose-50 rounded-xl transition duration-200 flex items-center gap-1 border-none cursor-pointer select-none"
                                 >
-                                  Delete
+                                  <FiTrash2 className="w-3.5 h-3.5" /> Remove
                                 </button>
                               </div>
 
-                              {/* Right context actions */}
                               <div className="flex items-center gap-2">
                                 {!addr.isDefault && (
                                   <button
                                     onClick={() => handleSetAddressDefault(addr)}
-                                    className="px-2.5 py-1 bg-stone-50 hover:bg-[#EDE7D9] text-[#2F3B0C] border border-[#EAE4D8] rounded-lg transition cursor-pointer select-none"
+                                    className="px-3 py-1.5 text-xs font-bold text-stone-700 hover:bg-stone-200 bg-stone-100 rounded-xl transition duration-200 flex items-center gap-1 border border-stone-200 cursor-pointer select-none"
                                   >
-                                    Set Default
+                                    <FiStar className="w-3.5 h-3.5 text-[#C68A2B]" /> Set Default
                                   </button>
                                 )}
                                 {new URLSearchParams(location.search).get('from') === 'checkout' && (
@@ -1706,9 +1739,9 @@ export default function Dashboard() {
                                       }
                                       navigate('/checkout');
                                     }}
-                                    className="px-2.5 py-1 bg-[#4E641A] hover:bg-[#37411A] text-white rounded-lg transition cursor-pointer shadow-xxs border-none select-none"
+                                    className="px-3.5 py-1.5 bg-[#4E641A] hover:bg-[#37411A] text-white text-xs font-bold rounded-xl transition duration-200 flex items-center gap-1 shadow-xs border-none cursor-pointer select-none"
                                   >
-                                    Select & Deliver
+                                    <FiTruck className="w-3.5 h-3.5" /> Deliver Here
                                   </button>
                                 )}
                               </div>
@@ -1719,18 +1752,15 @@ export default function Dashboard() {
                     </div>
                   ) : (
                     !showAddressForm && (
-                      /* Premium empty state card */
-                      <div className="bg-white border border-[#EAE4D8] rounded-[32px] py-16 px-6 text-center flex flex-col items-center gap-6 shadow-sm w-full mx-auto relative overflow-hidden">
-                        <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-[#C68A2B]/5 blur-2xl pointer-events-none" />
-                        <div className="absolute -bottom-10 -left-10 w-32 h-32 rounded-full bg-[#4E641A]/5 blur-2xl pointer-events-none" />
-                        
-                        <div className="w-20 h-20 rounded-full bg-[#4E641A]/5 border border-[#4E641A]/10 flex items-center justify-center text-4xl shadow-inner shrink-0 relative">
-                          <FiMapPin className="text-[#4E641A]" />
+                      /* 7. Empty State */
+                      <div className="bg-white border border-[#EAE4D8] rounded-3xl py-14 px-8 text-center flex flex-col items-center gap-5 shadow-xs w-full">
+                        <div className="w-16 h-16 rounded-full bg-[#4E641A]/10 text-[#4E641A] flex items-center justify-center shadow-inner shrink-0">
+                          <FiMapPin className="w-7 h-7 text-[#4E641A]" />
                         </div>
-                        <div className="space-y-2 max-w-xs mx-auto">
-                          <h3 className="font-serif text-xl font-bold text-[#2F3B0C]">No saved addresses</h3>
-                          <p className="text-stone-500 font-sans text-xs leading-relaxed font-light">
-                            Add your shipping coordinates to enjoy fast and hassle-free native harvest deliveries.
+                        <div className="space-y-2 max-w-sm mx-auto">
+                          <h3 className="font-serif text-xl font-bold text-[#2F3B0C]">No Saved Addresses</h3>
+                          <p className="text-stone-500 font-sans text-xs leading-relaxed font-normal">
+                            Add your first delivery address to enjoy faster checkout and seamless ordering across India.
                           </p>
                         </div>
                         <button 
@@ -1751,46 +1781,64 @@ export default function Dashboard() {
                             });
                             setShowAddressForm(true);
                           }} 
-                          className="px-6 py-3.5 bg-[#4E641A] hover:bg-[#2F3B0C] text-white text-xs font-bold uppercase tracking-widest rounded-xl shadow-md transition-all duration-300 flex items-center gap-2 cursor-pointer border-none scale-100 hover:scale-[1.02] active:scale-[0.98]"
+                          className="px-6 py-3 bg-[#4E641A] hover:bg-[#37411A] text-white text-xs font-bold rounded-xl shadow-xs transition duration-200 flex items-center gap-2 cursor-pointer border-none mt-2 select-none"
                         >
-                          <span>Add Address</span>
+                          <FiPlus className="w-4 h-4" /> Add New Address
                         </button>
                       </div>
                     )
                   )}
                 </div>
 
-                {/* Right Side: Delivery policy trust card */}
-                <div className="w-full lg:w-[280px] shrink-0">
-                  <div className="bg-[#FAF7F2] border border-[#EDE7D9] rounded-3xl p-5 space-y-4 text-left font-sans shadow-xxs sticky top-28">
-                    <h4 className="font-serif text-xs font-extrabold uppercase text-[#2F3B0C] border-b pb-2 border-[#EDE7D9] tracking-wider">
-                      Delivery Policy 🌾
+                {/* Right Column: 4. Service Information Panel (4 Cols) */}
+                <aside className="lg:col-span-4 w-full sticky top-28 space-y-4">
+                  <div className="bg-white border border-[#EAE4D8] rounded-3xl p-5 shadow-xs text-left">
+                    <h4 className="font-serif text-sm font-bold text-[#2F3B0C] border-b border-[#EAE4D8] pb-3 mb-4 flex items-center gap-2">
+                      <FiShield className="text-[#C68A2B] w-4 h-4" /> Service Guarantees
                     </h4>
-                    <div className="space-y-3.5 text-xs text-stone-600 leading-normal">
-                      <div className="flex items-start gap-3">
-                        <span className="text-base shrink-0 mt-0.5">🚚</span>
-                        <div className="leading-tight">
-                          <strong className="block text-[#37411A] text-[9px] font-extrabold uppercase tracking-wider">Fast Shipping</strong>
-                          <span className="text-[8px] text-stone-500 font-light block mt-0.5">Estimated transit: 3–5 business days.</span>
+                    <div className="grid grid-cols-1 gap-3.5">
+                      <div className="flex items-start gap-3 p-3.5 rounded-2xl bg-[#FAF8F5] border border-[#EAE4D8]/60 hover:border-[#4E641A]/30 transition duration-200">
+                        <div className="w-9 h-9 rounded-xl bg-[#4E641A]/10 text-[#4E641A] flex items-center justify-center shrink-0">
+                          <FiTruck className="w-4.5 h-4.5" />
+                        </div>
+                        <div>
+                          <h5 className="text-xs font-bold text-[#2F3B0C]">PAN India Delivery</h5>
+                          <p className="text-[11px] text-stone-500 leading-snug mt-0.5 font-normal">We deliver across India with trusted shipping partners.</p>
                         </div>
                       </div>
-                      <div className="flex items-start gap-3">
-                        <span className="text-base shrink-0 mt-0.5">📦</span>
-                        <div className="leading-tight">
-                          <strong className="block text-[#37411A] text-[9px] font-extrabold uppercase tracking-wider">Free Delivery</strong>
-                          <span className="text-[8px] text-stone-500 font-light block mt-0.5">Unlocked automatically for total order weights of 2 KG or above.</span>
+
+                      <div className="flex items-start gap-3 p-3.5 rounded-2xl bg-[#FAF8F5] border border-[#EAE4D8]/60 hover:border-[#4E641A]/30 transition duration-200">
+                        <div className="w-9 h-9 rounded-xl bg-[#C68A2B]/10 text-[#C68A2B] flex items-center justify-center shrink-0">
+                          <FiZap className="w-4.5 h-4.5" />
+                        </div>
+                        <div>
+                          <h5 className="text-xs font-bold text-[#2F3B0C]">Fast Dispatch</h5>
+                          <p className="text-[11px] text-stone-500 leading-snug mt-0.5 font-normal">Orders are processed quickly for timely delivery.</p>
                         </div>
                       </div>
-                      <div className="flex items-start gap-3">
-                        <span className="text-base shrink-0 mt-0.5">🌍</span>
-                        <div className="leading-tight">
-                          <strong className="block text-[#37411A] text-[9px] font-extrabold uppercase tracking-wider">PAN INDIA DELIVERY</strong>
-                          <span className="text-[8px] text-stone-500 font-light block mt-0.5">We currently deliver across India. Delivery timelines may vary depending on your location and service availability.</span>
+
+                      <div className="flex items-start gap-3 p-3.5 rounded-2xl bg-[#FAF8F5] border border-[#EAE4D8]/60 hover:border-[#4E641A]/30 transition duration-200">
+                        <div className="w-9 h-9 rounded-xl bg-[#4E641A]/10 text-[#4E641A] flex items-center justify-center shrink-0">
+                          <FiPackage className="w-4.5 h-4.5" />
+                        </div>
+                        <div>
+                          <h5 className="text-xs font-bold text-[#2F3B0C]">Order Tracking</h5>
+                          <p className="text-[11px] text-stone-500 leading-snug mt-0.5 font-normal">Track your order from dispatch to delivery.</p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-start gap-3 p-3.5 rounded-2xl bg-[#FAF8F5] border border-[#EAE4D8]/60 hover:border-[#4E641A]/30 transition duration-200">
+                        <div className="w-9 h-9 rounded-xl bg-[#C68A2B]/10 text-[#C68A2B] flex items-center justify-center shrink-0">
+                          <FiLock className="w-4.5 h-4.5" />
+                        </div>
+                        <div>
+                          <h5 className="text-xs font-bold text-[#2F3B0C]">Secure Checkout</h5>
+                          <p className="text-[11px] text-stone-500 leading-snug mt-0.5 font-normal">Safe and secure payment experience.</p>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
+                </aside>
 
               </div>
             </div>
