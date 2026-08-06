@@ -1755,11 +1755,11 @@ export default function Home() {
               className="bg-white border border-[#EDE7D9] hover:border-[#4E641A] rounded-[24px] p-6 shadow-xs hover:shadow-md hover:-translate-y-1 transition-all duration-300 group cursor-pointer benefits-card flex flex-col justify-between h-full"
             >
               <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="w-12 h-12 rounded-full bg-[#FAF7F2] border border-[#EDE7D9] shadow-inner text-[#4E641A] group-hover:bg-[#4E641A] group-hover:text-white group-hover:border-[#4E641A] group-hover:scale-110 flex items-center justify-center transition-all duration-300 shrink-0">
+                <div className="flex items-center justify-center w-full relative">
+                  <div className="w-12 h-12 rounded-full bg-[#FAF7F2] border border-[#EDE7D9] shadow-inner text-[#4E641A] group-hover:bg-[#4E641A] group-hover:text-white group-hover:border-[#4E641A] group-hover:scale-110 flex items-center justify-center transition-all duration-300 shrink-0 mx-auto">
                     {card.icon}
                   </div>
-                  <FiArrowRight className="w-4 h-4 text-[#4E641A] opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 shrink-0" />
+                  <FiArrowRight className="w-4 h-4 text-[#4E641A] opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 shrink-0 absolute right-0 top-1/2 -translate-y-1/2" />
                 </div>
                 <div className="space-y-1.5">
                   <h4 className="font-serif text-base md:text-lg font-bold text-[#2F3B0C] group-hover:text-[#4E641A] transition-colors">{card.title}</h4>
