@@ -133,7 +133,7 @@ export default function GstInvoiceModal({ order, onClose }) {
                 </tr>
               </thead>
               <tbody className="divide-y divide-stone-150">
-                {gstBreakdown.items.map((item, idx) => {
+                {(gstBreakdown?.items || []).map((item, idx) => {
                   const name = item.product?.name || item.name || 'Product';
                   const weight = item.variant?.name || item.product?.weight || '';
                   return (

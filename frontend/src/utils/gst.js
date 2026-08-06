@@ -111,32 +111,13 @@ export const calculateOrderGst = ({
 }) => {
   const isIntrastate = (shippingState || '').trim().toLowerCase() === INTRASTATE_STATE;
 
-  // If order object has stored GST amounts from DB, prefer DB amounts for consistency
-  if (storedGst && storedGst.taxableAmount !== undefined && storedGst.taxableAmount !== null && storedGst.taxableAmount > 0) {
-    const isStoredIntrastate = storedGst.gstType === 'CGST_SGST';
-    return {
-      gstType: storedGst.gstType || (isIntrastate ? 'CGST_SGST' : 'IGST'),
-      taxableAmount: Number(storedGst.taxableAmount) || 0,
-      cgstAmount: Number(storedGst.cgstAmount) || 0,
-      sgstAmount: Number(storedGst.sgstAmount) || 0,
-      igstAmount: Number(storedGst.igstAmount) || 0,
-      totalGst: (Number(storedGst.cgstAmount) || 0) + (Number(storedGst.sgstAmount) || 0) + (Number(storedGst.igstAmount) || 0),
-      gstRate: storedGst.gstRate || 5.0,
-      stateCode: getStateCode(shippingState),
-      isIntrastate: isStoredIntrastate,
-      cgstRate: isStoredIntrastate ? 2.5 : 0,
-      sgstRate: isStoredIntrastate ? 2.5 : 0,
-      igstRate: isStoredIntrastate ? 0 : 5.0
-    };
-  }
-
   let totalTaxable = 0;
   let totalCgst = 0;
   let totalSgst = 0;
   let totalIgst = 0;
   let totalGstSum = 0;
 
-  const processedItems = orderItems.map((item) => {
+  const processedItems = (orderItems || []).map((item) => {
     const price = item.price !== undefined ? item.price : (item.variant ? item.variant.price : (item.product ? item.product.price : 0));
     const qty = item.quantity || 1;
     const lineGst = calculateLineGst(price, qty, shippingState);
@@ -153,6 +134,26 @@ export const calculateOrderGst = ({
       hsnCode: item.product?.hsnCode || item.hsnCode || '1106'
     };
   });
+
+  // If order object has stored GST amounts from DB, prefer DB amounts for consistency
+  if (storedGst && storedGst.taxableAmount !== undefined && storedGst.taxableAmount !== null && storedGst.taxableAmount > 0) {
+    const isStoredIntrastate = storedGst.gstType === 'CGST_SGST';
+    return {
+      gstType: storedGst.gstType || (isIntrastate ? 'CGST_SGST' : 'IGST'),
+      taxableAmount: Number(storedGst.taxableAmount) || 0,
+      cgstAmount: Number(storedGst.cgstAmount) || 0,
+      sgstAmount: Number(storedGst.sgstAmount) || 0,
+      igstAmount: Number(storedGst.igstAmount) || 0,
+      totalGst: (Number(storedGst.cgstAmount) || 0) + (Number(storedGst.sgstAmount) || 0) + (Number(storedGst.igstAmount) || 0),
+      gstRate: storedGst.gstRate || 5.0,
+      stateCode: getStateCode(shippingState),
+      isIntrastate: isStoredIntrastate,
+      cgstRate: isStoredIntrastate ? 2.5 : 0,
+      sgstRate: isStoredIntrastate ? 2.5 : 0,
+      igstRate: isStoredIntrastate ? 0 : 5.0,
+      items: processedItems
+    };
+  }
 
   return {
     gstType: isIntrastate ? 'CGST_SGST' : 'IGST',
