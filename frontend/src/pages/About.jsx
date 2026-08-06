@@ -116,49 +116,166 @@ export default function About() {
         </div>
       </section>
 
-      {/* 2. OUR STORY */}
-      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 bg-white border-b border-[#EDE7D9]">
-        <div className="max-w-4xl mx-auto space-y-8 text-left">
-          <div className="space-y-3 flex flex-col items-start">
+      {/* 2. OUR STORY (Redesigned Editorial 2-Column Luxury Layout) */}
+      <section className="py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-12 bg-[#FCFAF4] border-b border-[#EDE7D9] relative overflow-hidden select-none">
+        
+        {/* Subtle Background Organic Watermark */}
+        <div className="absolute top-10 right-10 opacity-5 text-[#4E641A] pointer-events-none">
+          <GiSprout size={320} />
+        </div>
+
+        <div className="max-w-7xl mx-auto relative z-10">
+          
+          {/* Main Section Header */}
+          <div className="space-y-4 flex flex-col items-start mb-10 lg:mb-14 text-left">
             <SectionBadge text="Every Sunrise Brings New Hope" align="left" />
-            <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">OUR STORY</h2>
+            <div className="flex items-center gap-3">
+              <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#2F3B0C] tracking-tight">
+                OUR STORY
+              </h2>
+              <GiSun className="w-8 h-8 text-[#C68A2B] animate-pulse" />
+            </div>
+            <div className="w-24 h-1 bg-gradient-to-r from-[#4E641A] to-[#C68A2B] rounded-full mt-1" />
           </div>
 
-          <div className="space-y-6 text-stone-700 text-base sm:text-lg leading-[1.8] font-sans">
-            <p>
-              The name <strong className="font-serif text-lg sm:text-xl font-bold text-[#4E641A]">Suryodaya</strong> means Sunrise—a symbol of hope, energy, renewal, and the beginning of a healthier tomorrow.
-            </p>
-            <p>
-              Suryodaya Farms was established with a simple yet meaningful vision:<br />
-              <strong className="text-[#2F3B0C]">To reconnect people with the goodness of nature through products they can genuinely trust.</strong>
-            </p>
-            <p>
-              As awareness of healthy living grows, so does the need for natural foods that are prepared responsibly and backed by scientific understanding. We recognized that customers are not only looking for nutrition—they are looking for confidence in what they consume.
-            </p>
-            <p className="font-serif text-xl sm:text-2xl font-bold text-[#4E641A] py-2">
-              This belief inspired us to build Suryodaya Farms on three enduring pillars: Nature. Science. Trust.
-            </p>
-            <p>
-              By combining carefully selected natural ingredients with scientific knowledge and rigorous quality standards, we strive to deliver products that preserve nature's goodness while meeting the expectations of today's health-conscious consumers.
-            </p>
-            <p>
-              For us, quality is not a final checkpoint—it is a responsibility carried through every stage of our work.
-            </p>
-            <div className="bg-[#FAF7F2] border border-[#EDE7D9] p-6 rounded-2xl space-y-3 font-semibold text-[#2F3B0C]">
-              <p className="flex items-start gap-3">
-                <FiCheckCircle className="text-[#4E641A] w-5 h-5 shrink-0 mt-0.5" />
-                <span>Every product reflects our commitment to purity, consistency, and integrity.</span>
-              </p>
-              <p className="flex items-start gap-3">
-                <FiCheckCircle className="text-[#4E641A] w-5 h-5 shrink-0 mt-0.5" />
-                <span>Every customer inspires us to improve.</span>
-              </p>
-              <p className="flex items-start gap-3">
-                <FiCheckCircle className="text-[#4E641A] w-5 h-5 shrink-0 mt-0.5" />
-                <span>Every sunrise reminds us that healthy living begins with better choices.</span>
-              </p>
+          {/* Grid Layout: Desktop 2 Columns / Mobile Stacked */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+            
+            {/* Mobile-Only Image Placement (Shown under Header on Mobile/Tablet) */}
+            <div className="block lg:hidden w-full">
+              <div className="relative rounded-[28px] overflow-hidden border-4 border-white shadow-lg bg-stone-100">
+                <img 
+                  src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=1000&auto=format&fit=crop" 
+                  alt="Suryodaya Farms Organic Sunrise Fields" 
+                  loading="lazy"
+                  className="w-full h-[260px] sm:h-[320px] object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                <div className="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-md p-3.5 rounded-2xl border border-white/60 shadow-sm flex items-center gap-3 text-left">
+                  <GiSprout className="w-6 h-6 text-[#4E641A] shrink-0" />
+                  <span className="font-serif text-xs font-bold text-[#2F3B0C] italic">
+                    Every sunrise reminds us that healthy living begins with better choices.
+                  </span>
+                </div>
+              </div>
             </div>
+
+            {/* Left Column: Textual Story & Feature Cards (lg:col-span-7) */}
+            <div className="lg:col-span-7 space-y-7 text-left text-stone-700 text-base sm:text-lg leading-[1.75] font-sans max-w-[68ch]">
+              
+              {/* Feature Card 1: The Name Suryodaya */}
+              <div className="bg-[#F7F4EB] border border-[#E4DDCB] p-6 rounded-2xl shadow-2xs flex items-start gap-4 hover:border-[#4E641A]/40 transition-all duration-300 group">
+                <div className="w-10 h-10 rounded-full bg-[#4E641A]/10 border border-[#4E641A]/20 flex items-center justify-center text-[#4E641A] shrink-0 group-hover:bg-[#4E641A] group-hover:text-white transition-colors duration-300">
+                  <GiSun className="w-5 h-5 text-[#C68A2B] group-hover:text-white transition-colors duration-300" />
+                </div>
+                <p className="font-sans text-stone-800 leading-relaxed">
+                  The name <strong className="font-serif text-lg font-bold text-[#4E641A] hover:underline cursor-pointer">Suryodaya</strong> means Sunrise—a symbol of hope, energy, renewal, and the beginning of a healthier tomorrow.
+                </p>
+              </div>
+
+              {/* Callout Card 2: Vision Statement */}
+              <div className="bg-[#F0F5E6] border-l-4 border-l-[#4E641A] border border-[#DCE8C8] p-6 sm:p-7 rounded-2xl shadow-2xs space-y-2 hover:shadow-md transition-all duration-300">
+                <p className="font-sans text-stone-800">
+                  <strong className="font-serif font-bold text-[#4E641A]">Suryodaya Farms</strong> was established with a simple yet meaningful vision:
+                </p>
+                <p className="font-serif text-lg sm:text-xl font-bold text-[#2F3B0C] leading-snug">
+                  To reconnect people with the goodness of nature through products they can genuinely trust.
+                </p>
+              </div>
+
+              {/* Standard Paragraph 1 */}
+              <p className="text-stone-700">
+                As awareness of healthy living grows, so does the need for natural foods that are prepared responsibly and backed by scientific understanding. We recognized that customers are not only looking for nutrition—they are looking for confidence in what they consume.
+              </p>
+
+              {/* Banner Card 3: Nature. Science. Trust. */}
+              <div className="bg-gradient-to-r from-[#2F3B0C] via-[#3F4F16] to-[#4E641A] text-white p-6 sm:p-7 rounded-2xl shadow-md flex items-center gap-4 border border-[#4E641A]/30 transform hover:-translate-y-0.5 transition-all duration-300">
+                <div className="w-12 h-12 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white shrink-0">
+                  <GiSprout className="w-6 h-6 text-[#C68A2B]" />
+                </div>
+                <p className="font-serif text-lg sm:text-xl font-bold tracking-wide text-white leading-snug">
+                  This belief inspired us to build <strong className="underline decoration-[#C68A2B] decoration-2 underline-offset-4">Suryodaya Farms</strong> on three enduring pillars: Nature. Science. Trust.
+                </p>
+              </div>
+
+              {/* Standard Paragraph 2 */}
+              <p className="text-stone-700">
+                By combining carefully selected natural ingredients with scientific knowledge and rigorous quality standards, we strive to deliver products that preserve nature's goodness while meeting the expectations of today's health-conscious consumers.
+              </p>
+
+              {/* Standard Paragraph 3 */}
+              <p className="text-stone-700 font-medium">
+                For us, quality is not a final checkpoint—it is a responsibility carried through every stage of our work.
+              </p>
+
+              {/* Premium Checklist Rows */}
+              <div className="space-y-3 pt-2">
+                <div className="bg-white border border-[#EDE7D9] p-4.5 px-5 rounded-xl shadow-2xs flex items-center gap-4 hover:shadow-sm hover:border-[#4E641A]/40 hover:-translate-y-0.5 transition-all duration-300">
+                  <div className="w-7 h-7 rounded-full bg-[#F0F5E6] border border-[#4E641A]/20 flex items-center justify-center text-[#4E641A] shrink-0">
+                    <FiCheck className="w-4 h-4 text-[#4E641A] stroke-[3px]" />
+                  </div>
+                  <span className="font-sans text-sm sm:text-base font-semibold text-[#2F3B0C]">
+                    Every product reflects our commitment to purity, consistency, and integrity.
+                  </span>
+                </div>
+
+                <div className="bg-white border border-[#EDE7D9] p-4.5 px-5 rounded-xl shadow-2xs flex items-center gap-4 hover:shadow-sm hover:border-[#4E641A]/40 hover:-translate-y-0.5 transition-all duration-300">
+                  <div className="w-7 h-7 rounded-full bg-[#F0F5E6] border border-[#4E641A]/20 flex items-center justify-center text-[#4E641A] shrink-0">
+                    <FiCheck className="w-4 h-4 text-[#4E641A] stroke-[3px]" />
+                  </div>
+                  <span className="font-sans text-sm sm:text-base font-semibold text-[#2F3B0C]">
+                    Every customer inspires us to improve.
+                  </span>
+                </div>
+
+                <div className="bg-white border border-[#EDE7D9] p-4.5 px-5 rounded-xl shadow-2xs flex items-center gap-4 hover:shadow-sm hover:border-[#4E641A]/40 hover:-translate-y-0.5 transition-all duration-300">
+                  <div className="w-7 h-7 rounded-full bg-[#F0F5E6] border border-[#4E641A]/20 flex items-center justify-center text-[#4E641A] shrink-0">
+                    <FiCheck className="w-4 h-4 text-[#4E641A] stroke-[3px]" />
+                  </div>
+                  <span className="font-sans text-sm sm:text-base font-semibold text-[#2F3B0C]">
+                    Every sunrise reminds us that healthy living begins with better choices.
+                  </span>
+                </div>
+              </div>
+
+            </div>
+
+            {/* Right Column: Desktop Organic Visual Image (lg:col-span-5) */}
+            <div className="hidden lg:block lg:col-span-5 sticky top-28">
+              <div className="relative rounded-[32px] overflow-hidden border-4 border-white shadow-xl bg-stone-100 group">
+                <img 
+                  src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=1200&auto=format&fit=crop" 
+                  alt="Suryodaya Farms Organic Sunrise Fields" 
+                  loading="lazy"
+                  className="w-full h-[540px] object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#2F3B0C]/80 via-transparent to-transparent" />
+                
+                {/* Floating Top Badge */}
+                <div className="absolute top-6 left-6 bg-white/90 backdrop-blur-md px-4 py-2 rounded-full border border-white/80 shadow-sm flex items-center gap-2">
+                  <GiSprout className="w-4 h-4 text-[#4E641A]" />
+                  <span className="font-sans text-xs font-bold text-[#2F3B0C] tracking-wide uppercase">
+                    Purity • Science • Trust
+                  </span>
+                </div>
+
+                {/* Floating Bottom Card Overlay */}
+                <div className="absolute bottom-6 left-6 right-6 bg-white/95 backdrop-blur-md p-5 rounded-2xl border border-white/90 shadow-lg space-y-1.5 text-left">
+                  <div className="flex items-center gap-2">
+                    <GiSun className="w-5 h-5 text-[#C68A2B]" />
+                    <span className="font-serif text-sm font-bold text-[#4E641A] uppercase tracking-wider">
+                      SURYODAYA FARMS
+                    </span>
+                  </div>
+                  <p className="font-serif text-sm font-bold text-[#2F3B0C] italic leading-snug">
+                    "Every sunrise reminds us that healthy living begins with better choices."
+                  </p>
+                </div>
+              </div>
+            </div>
+
           </div>
+
         </div>
       </section>
 
