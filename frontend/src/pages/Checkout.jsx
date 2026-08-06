@@ -4,7 +4,7 @@ import { useAuthStore } from '../store/useAuthStore';
 import { useCartStore } from '../store/useCartStore';
 import { useFeedbackStore } from '../store/useFeedbackStore';
 import { useSettingsStore } from '../store/useSettingsStore';
-import { FiArrowLeft, FiTrash2, FiCheckCircle, FiShield, FiLock, FiMapPin, FiTruck, FiAlertCircle } from 'react-icons/fi';
+import { FiArrowLeft, FiTrash2, FiCheckCircle, FiShield, FiLock, FiMapPin, FiTruck, FiAlertCircle, FiHome, FiBriefcase } from 'react-icons/fi';
 import { GiSun } from 'react-icons/gi';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../utils/api';
@@ -20,6 +20,8 @@ export default function Checkout() {
 
   const [addresses, setAddresses] = useState([]);
   const [selectedAddressId, setSelectedAddressId] = useState('');
+  const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
+  const [tempSelectedAddressId, setTempSelectedAddressId] = useState('');
   const [couponCode, setCouponCode] = useState('');
   const [couponError, setCouponError] = useState(null);
   const [couponSuccess, setCouponSuccess] = useState(false);
@@ -627,72 +629,80 @@ export default function Checkout() {
               })}
             </div>
 
-            {/* 4. ADDRESS SECTION WITH GENEROUS PADDING */}
+                 {/* 4. ADDRESS SECTION WITH MODAL EXPERIENCE */}
             <div className="flex flex-col gap-3">
               <div className="flex justify-between items-center px-1">
                 <span className="font-serif text-lg font-bold text-dark-olive flex items-center gap-2">
                   <FiMapPin className="text-[#C68A2B]" /> Deliver To
                 </span>
-                {addresses.length > 0 && (
+                {addresses.length > 0 ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setTempSelectedAddressId(selectedAddressId);
+                      setIsAddressModalOpen(true);
+                    }}
+                    className="text-xs font-bold text-[#4E641A] hover:underline cursor-pointer bg-transparent border-none"
+                  >
+                    Change
+                  </button>
+                ) : (
                   <button
                     type="button"
                     onClick={() => navigate('/profile?tab=saved-coordinates&from=checkout')}
-                    className="text-xs font-semibold text-primary-green hover:underline cursor-pointer"
+                    className="text-xs font-bold text-[#4E641A] hover:underline cursor-pointer bg-transparent border-none"
                   >
-                    Change
+                    + Add Address
                   </button>
                 )}
               </div>
 
               <div className="bg-white border border-stone-200/80 rounded-3xl p-6 md:p-7 flex flex-col gap-4 shadow-xs">
                 {selectedAddress ? (
-                  <div className="flex flex-col gap-1 text-sm font-sans text-stone-700 leading-relaxed">
-                    <div className="flex items-center gap-2 mb-1">
-                      <strong className="font-serif text-base font-bold text-dark-olive">
-                        {selectedAddress.recipientName || user?.name}
-                      </strong>
-                      <span className="text-xs text-stone-500 font-medium">
-                        • {selectedAddress.phone}
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex flex-col gap-1.5 text-sm font-sans text-stone-700 leading-relaxed text-left">
+                      <div className="flex items-center gap-2">
+                        <strong className="font-serif text-base font-bold text-dark-olive">
+                          {selectedAddress.recipientName || user?.name}
+                        </strong>
+                        {selectedAddress.title && (
+                          <span className="text-[10px] font-bold bg-[#4E641A]/10 text-[#4E641A] px-2.5 py-0.5 rounded-full">
+                            {selectedAddress.title}
+                          </span>
+                        )}
+                        <span className="text-xs text-stone-500 font-medium">
+                          • {selectedAddress.phone}
+                        </span>
+                      </div>
+                      <span className="text-stone-600 text-xs md:text-sm">
+                        {selectedAddress.street ? selectedAddress.street.replace(/\s*\|\s*/g, ', ') : ''}, {selectedAddress.city ? selectedAddress.city.replace(/\s*\|\s*/g, ', ') : ''}, {selectedAddress.state} – <strong className="font-semibold text-dark-olive">{selectedAddress.postalCode}</strong>
                       </span>
                     </div>
-                    <span className="text-stone-600 text-xs md:text-sm">
-                      {selectedAddress.street ? selectedAddress.street.replace(/\s*\|\s*/g, ', ') : ''}, {selectedAddress.city ? selectedAddress.city.replace(/\s*\|\s*/g, ', ') : ''}, {selectedAddress.state} – <strong className="font-semibold text-dark-olive">{selectedAddress.postalCode}</strong>
-                    </span>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setTempSelectedAddressId(selectedAddressId);
+                        setIsAddressModalOpen(true);
+                      }}
+                      className="px-3.5 py-1.5 text-xs font-bold text-[#4E641A] bg-[#4E641A]/5 hover:bg-[#4E641A]/10 rounded-xl transition border-none cursor-pointer shrink-0 select-none"
+                    >
+                      Change
+                    </button>
                   </div>
                 ) : (
                   <div className="flex justify-between items-center">
                     <span className="text-xs text-stone-400">No address selected</span>
                     <button
                       onClick={() => navigate('/profile?tab=saved-coordinates&from=checkout')}
-                      className="text-xs font-semibold text-primary-green"
+                      className="text-xs font-bold text-primary-green hover:underline cursor-pointer border-none bg-transparent"
                     >
-                      Add Address
+                      + Add Address
                     </button>
                   </div>
                 )}
-
-                {/* Multiple address switcher if user has more than 1 address */}
-                {addresses.length > 1 && (
-                  <div className="pt-3 border-t border-stone-100 flex flex-col gap-2">
-                    <span className="text-[11px] font-semibold text-stone-400 uppercase tracking-wider">Select Saved Address</span>
-                    <div className="flex flex-col gap-2">
-                      {addresses.map((addr) => (
-                        <label key={addr.id} className="flex items-center gap-2.5 text-xs text-stone-700 cursor-pointer py-1.5 px-3 rounded-xl hover:bg-stone-50 transition">
-                          <input
-                            type="radio"
-                            name="checkoutAddress"
-                            value={addr.id}
-                            checked={selectedAddressId === addr.id}
-                            onChange={() => setSelectedAddressId(addr.id)}
-                            className="accent-primary-green cursor-pointer"
-                          />
-          <span className="truncate font-medium">{addr.recipientName}: {addr.street?.split('|')[0]}, {addr.city}</span>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </div>
+            </div>
 
               {/* PREMIUM ORGANIC SHIPROCKET DELIVERY CARD */}
               {selectedAddress && (
@@ -834,7 +844,6 @@ export default function Checkout() {
                   </div>
                 )}
               </div>
-            </div>
 
             {/* 8. PAYMENT SECTION WITH ONE-ROW METHOD BADGES */}
             <div className="flex flex-col gap-3">
@@ -1015,6 +1024,180 @@ export default function Checkout() {
           {isProcessing ? 'Processing...' : isCalculatingShipping ? 'Calculating...' : isNonServiceable ? 'Not Deliverable' : 'Pay Now'}
         </button>
       </div>
+
+      {/* ADDRESS SELECTION MODAL & BOTTOM SHEET */}
+      <AnimatePresence>
+        {isAddressModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center p-0 md:p-4 font-sans select-none">
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              onClick={() => setIsAddressModalOpen(false)}
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+            />
+
+            {/* Modal / Bottom Sheet Panel */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ duration: 0.25, ease: "easeOut" }}
+              className="relative w-full max-w-[650px] bg-white rounded-t-3xl md:rounded-3xl shadow-2xl z-10 overflow-hidden flex flex-col max-h-[85vh] md:max-h-[80vh] border border-[#EAE4D8]"
+            >
+              {/* Modal Header */}
+              <div className="p-5 sm:p-6 border-b border-[#EAE4D8] flex items-center justify-between bg-white shrink-0">
+                <div className="text-left">
+                  <h3 className="font-serif text-xl font-bold text-[#2F3B0C] flex items-center gap-2">
+                    <FiMapPin className="text-[#C68A2B]" /> Choose Delivery Address
+                  </h3>
+                  <p className="text-xs text-stone-500 font-medium mt-0.5">
+                    Select where you want your order delivered.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsAddressModalOpen(false)}
+                  className="w-8 h-8 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-600 flex items-center justify-center transition cursor-pointer border-none font-bold text-sm"
+                >
+                  ✕
+                </button>
+              </div>
+
+              {/* Scrollable Address Cards List */}
+              <div className="p-5 sm:p-6 overflow-y-auto space-y-3.5 flex-grow bg-[#FAF8F5]">
+                {addresses.length > 0 ? (
+                  <div className="grid grid-cols-1 gap-3.5">
+                    {addresses.map((addr) => {
+                      const isSelected = tempSelectedAddressId === addr.id;
+                      const LabelIcon = addr.title === 'Home' ? FiHome : addr.title === 'Work' ? FiBriefcase : FiMapPin;
+
+                      return (
+                        <div
+                          key={addr.id}
+                          onClick={() => setTempSelectedAddressId(addr.id)}
+                          className={`p-4 sm:p-5 rounded-2xl border-2 transition-all duration-200 cursor-pointer text-left relative flex items-start gap-4 ${
+                            isSelected
+                              ? 'border-[#4E641A] bg-[#4E641A]/[0.03] shadow-xs'
+                              : 'border-[#EAE4D8] bg-white hover:border-[#4E641A]/30 hover:shadow-xs'
+                          }`}
+                        >
+                          {/* Radio Selector */}
+                          <div className="mt-1 shrink-0">
+                            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
+                              isSelected ? 'border-[#4E641A] bg-[#4E641A]' : 'border-stone-300 bg-white'
+                            }`}>
+                              {isSelected && <div className="w-2 h-2 rounded-full bg-white" />}
+                            </div>
+                          </div>
+
+                          {/* Address Details */}
+                          <div className="flex-grow space-y-1.5">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="inline-flex items-center gap-1 bg-[#4E641A]/10 text-[#4E641A] px-2.5 py-0.5 rounded-full text-[11px] font-bold">
+                                <LabelIcon className="w-3 h-3" />
+                                <span>{addr.title || 'Home'}</span>
+                              </span>
+                              {addr.isDefault && (
+                                <span className="inline-flex items-center gap-1 bg-[#C68A2B]/15 text-[#8C5D14] border border-[#C68A2B]/30 px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider">
+                                  Default
+                                </span>
+                              )}
+                            </div>
+
+                            <div className="font-bold text-sm text-[#2F3B0C] leading-snug">
+                              {addr.recipientName || user?.name}
+                            </div>
+
+                            <div className="text-xs text-stone-600 font-normal leading-relaxed">
+                              {addr.street ? addr.street.replace(/\s*\|\s*/g, ', ') : ''}, {addr.city ? addr.city.replace(/\s*\|\s*/g, ', ') : ''}, {addr.state} – <span className="font-semibold text-stone-800">{addr.postalCode}</span>
+                            </div>
+
+                            <div className="text-xs font-medium text-stone-500 pt-0.5">
+                              📞 Phone: {addr.phone}
+                            </div>
+                          </div>
+
+                          {/* Check Indicator */}
+                          {isSelected && (
+                            <FiCheckCircle className="w-5 h-5 text-[#4E641A] shrink-0 mt-0.5" />
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  /* Empty State */
+                  <div className="bg-white border border-[#EAE4D8] rounded-2xl py-10 px-6 text-center flex flex-col items-center gap-4 shadow-xs">
+                    <div className="w-14 h-14 rounded-full bg-[#4E641A]/10 text-[#4E641A] flex items-center justify-center shrink-0">
+                      <FiMapPin className="w-6 h-6 text-[#4E641A]" />
+                    </div>
+                    <div className="space-y-1 max-w-xs mx-auto">
+                      <h4 className="font-serif text-lg font-bold text-[#2F3B0C]">No Saved Addresses</h4>
+                      <p className="text-stone-500 text-xs leading-relaxed font-normal">
+                        You don't have any saved delivery addresses yet.
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsAddressModalOpen(false);
+                        navigate('/profile?tab=saved-coordinates&from=checkout');
+                      }}
+                      className="px-5 py-2.5 bg-[#4E641A] hover:bg-[#37411A] text-white text-xs font-bold rounded-xl shadow-xs transition border-none cursor-pointer mt-1"
+                    >
+                      + Add New Address
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* Modal Footer */}
+              <div className="p-4 sm:p-5 bg-white border-t border-[#EAE4D8] flex items-center justify-between gap-3 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsAddressModalOpen(false);
+                    navigate('/profile?tab=saved-coordinates&from=checkout');
+                  }}
+                  className="text-xs font-bold text-[#4E641A] hover:underline cursor-pointer bg-transparent border-none p-0 flex items-center gap-1"
+                >
+                  + Add New Address
+                </button>
+
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setIsAddressModalOpen(false)}
+                    className="px-4 py-2.5 border border-stone-200 text-stone-600 hover:bg-stone-50 text-xs font-bold rounded-xl transition cursor-pointer bg-white"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    disabled={!tempSelectedAddressId}
+                    onClick={() => {
+                      if (tempSelectedAddressId) {
+                        setSelectedAddressId(tempSelectedAddressId);
+                        setIsAddressModalOpen(false);
+                      }
+                    }}
+                    className={`px-6 py-2.5 text-xs font-bold rounded-xl transition border-none cursor-pointer shadow-xs ${
+                      tempSelectedAddressId
+                        ? 'bg-[#4E641A] hover:bg-[#37411A] text-white'
+                        : 'bg-stone-200 text-stone-400 cursor-not-allowed'
+                    }`}
+                  >
+                    Deliver Here
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
     </div>
   );
