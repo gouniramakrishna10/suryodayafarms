@@ -400,8 +400,6 @@ router.get('/settings', async (req, res, next) => {
   }
 });
 
-import { generateSitemapContent } from '../utils/sitemapGenerator.js';
-
 // 12. DYNAMIC SITEMAP.XML GENERATOR FOR SEO
 // GET /api/public/sitemap.xml & /sitemap.xml
 router.get('/sitemap.xml', async (req, res, next) => {
