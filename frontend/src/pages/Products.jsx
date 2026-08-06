@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiSearch, FiArrowRight, FiStar, FiShoppingBag, FiInfo } from 'react-icons/fi';
-import { GiSun } from 'react-icons/gi';
+import { FiSearch, FiArrowRight, FiStar, FiShoppingBag, FiInfo, FiShield, FiCheckCircle, FiCpu, FiAward, FiHeart } from 'react-icons/fi';
+import { GiSun, GiSprout } from 'react-icons/gi';
 import api from '../utils/api';
 import { updateSEO } from '../hooks/useSEO';
 import { useCartStore } from '../store/useCartStore';
@@ -250,24 +250,55 @@ export default function Products() {
 
   return (
     <div className="flex flex-col bg-cream-bg min-h-screen relative w-full pb-24">
-      {/* 1. Page Header (Storytelling Banner) */}
-      <div className="w-full bg-[#FAF7F2] border-b border-[#EAE4D8] py-12 md:py-16 px-4 sm:px-6 md:px-12 text-center flex flex-col items-center gap-4 select-none products-hero-banner">
-        <div className="w-10 h-10 rounded-full bg-[#4E641A]/5 flex items-center justify-center text-sunrise-gold products-hero-badge">
-          <GiSun className="w-5 h-5 animate-spin-slow" />
+      {/* 1. Page Header (Client Approved Storytelling Banner) */}
+      <div className="w-full bg-[#FAF7F2] border-b border-[#EAE4D8] py-14 md:py-20 px-4 sm:px-6 md:px-12 text-center flex flex-col items-center gap-6 select-none products-hero-banner">
+        <div className="w-11 h-11 rounded-full bg-[#4E641A]/10 border border-[#4E641A]/20 flex items-center justify-center text-[#4E641A] products-hero-badge shadow-2xs">
+          <GiSprout className="w-6 h-6 text-[#4E641A]" />
         </div>
-        <SectionBadge text={selectedCategory.id !== 'All' ? `Marketplace > ${selectedCategory.name}` : 'Vedic Biodynamic Farming • Wardha'} align="center" />
-        <h1 className="font-serif text-3xl md:text-5xl font-extrabold text-[#2F3B0C] leading-tight products-hero-heading">
-          Nurturing Soil, Nourishing Souls
-        </h1>
-        <p className="font-sans text-xs md:text-sm text-stone-600 leading-relaxed font-light max-w-2xl products-hero-description">
-          At Suryodaya Farms, we practice ancient Vedic agricultural techniques combined with modern regenerative sciences. 
-          Every seed is sown with positive intention, irrigated with fresh river water, and processed without chemicals 
-          to deliver high-vibrational, nutrient-dense organic staples directly from our soil to your family.
-        </p>
-        <div className="flex flex-wrap gap-2.5 justify-center mt-2 products-hero-chips">
-          <span className="text-[9px] uppercase font-bold text-[#4E641A] tracking-wider bg-[#4E641A]/5 px-3 py-1 rounded-full border border-[#4E641A]/10">🌱 100% Pure & Natural</span>
-          <span className="text-[9px] uppercase font-bold text-[#C68A2B] tracking-wider bg-[#C68A2B]/5 px-3 py-1 rounded-full border border-[#C68A2B]/10">☀️ Solar Dried</span>
-          <span className="text-[9px] uppercase font-bold text-stone-600 tracking-wider bg-stone-100 px-3 py-1 rounded-full border border-stone-200">🤝 Fair Price to Farmers</span>
+
+        <SectionBadge text="PURE • NATURAL • NUTRITIOUS" align="center" />
+
+        <div className="space-y-3 max-w-3xl mx-auto">
+          <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[#2F3B0C] leading-tight products-hero-heading">
+            Nourishing Families, Naturally
+          </h1>
+          <p className="font-serif italic text-lg sm:text-xl font-bold text-[#4E641A] tracking-wide">
+            Pure Nutrition. Scientific Quality. Trusted Care.
+          </p>
+        </div>
+
+        <div className="space-y-4 max-w-3xl mx-auto text-stone-700 text-sm sm:text-base leading-[1.8] font-sans font-normal products-hero-description">
+          <p>
+            At Suryodaya Farms, we believe that good health begins with good food. We carefully select quality ingredients and process them under hygienic, scientifically guided conditions to help preserve their natural goodness, purity, freshness, and nutritional value.
+          </p>
+          <p>
+            Every product is crafted with a commitment to quality, transparency, and customer trust. By combining nature's goodness with scientific expertise, we strive to deliver safe, wholesome, and nutrient-rich foods that support healthier lifestyles for you and your family.
+          </p>
+        </div>
+
+        <div className="pt-2 max-w-2xl mx-auto">
+          <p className="font-serif text-base sm:text-lg font-bold text-[#2F3B0C] italic py-3 px-6 bg-white/70 border-y border-[#EDE7D9] rounded-2xl">
+            From Nature's Fields to Your Family's Table — Pure, Honest, and Nutritious.
+          </p>
+        </div>
+
+        <div className="flex flex-wrap gap-3 justify-center items-center mt-2 max-w-4xl mx-auto products-hero-chips">
+          <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#2F3B0C] bg-[#F0F5E6] border border-[#4E641A]/20 px-4 py-2 rounded-full shadow-2xs">
+            <GiSprout className="w-4 h-4 text-[#4E641A]" />
+            <span>100% Pure & Natural</span>
+          </div>
+          <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#2F3B0C] bg-[#F0F5E6] border border-[#4E641A]/20 px-4 py-2 rounded-full shadow-2xs">
+            <FiCpu className="w-4 h-4 text-[#4E641A]" />
+            <span>Science-Guided</span>
+          </div>
+          <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#2F3B0C] bg-[#F0F5E6] border border-[#4E641A]/20 px-4 py-2 rounded-full shadow-2xs">
+            <FiShield className="w-4 h-4 text-[#4E641A]" />
+            <span>Hygienically Processed</span>
+          </div>
+          <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#2F3B0C] bg-[#F0F5E6] border border-[#4E641A]/20 px-4 py-2 rounded-full shadow-2xs">
+            <FiCheckCircle className="w-4 h-4 text-[#4E641A]" />
+            <span>Trusted by Families</span>
+          </div>
         </div>
       </div>
 
