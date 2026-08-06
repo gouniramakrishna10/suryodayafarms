@@ -263,9 +263,6 @@ export default function Products() {
           <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl lg:text-[44px] font-bold text-[#2F3B0C] leading-[1.08] tracking-tight products-hero-heading">
             Nourishing Families, Naturally
           </h1>
-          <p className="font-serif italic text-base sm:text-lg font-bold text-[#4E641A] tracking-wide">
-            Pure Nutrition. Scientific Quality. Trusted Care.
-          </p>
         </div>
 
         <div className="space-y-2.5 max-w-[740px] mx-auto text-stone-600 text-xs sm:text-sm leading-[1.65] font-sans font-normal products-hero-description">
@@ -277,20 +274,10 @@ export default function Products() {
           </p>
         </div>
 
-        <div className="w-full max-w-[740px] mx-auto">
-          <p className="font-serif text-xs sm:text-sm md:text-base font-bold text-[#2F3B0C] italic py-2 px-5 bg-[#F0F5E6]/80 border border-[#4E641A]/20 rounded-xl shadow-2xs inline-block">
-            From Nature's Fields to Your Family's Table — Pure, Honest, and Nutritious.
-          </p>
-        </div>
-
         <div className="flex flex-wrap gap-2.5 justify-center items-center max-w-3xl mx-auto products-hero-chips mt-0.5">
           <div className="inline-flex items-center gap-1.5 text-[11px] sm:text-xs font-bold uppercase tracking-wider text-[#2F3B0C] bg-[#F0F5E6] border border-[#4E641A]/20 px-3.5 py-1.5 rounded-full shadow-2xs">
             <GiSprout className="w-3.5 h-3.5 text-[#4E641A]" />
             <span>Pure & Natural</span>
-          </div>
-          <div className="inline-flex items-center gap-1.5 text-[11px] sm:text-xs font-bold uppercase tracking-wider text-[#2F3B0C] bg-[#F0F5E6] border border-[#4E641A]/20 px-3.5 py-1.5 rounded-full shadow-2xs">
-            <FiCpu className="w-3.5 h-3.5 text-[#4E641A]" />
-            <span>Science-Guided</span>
           </div>
           <div className="inline-flex items-center gap-1.5 text-[11px] sm:text-xs font-bold uppercase tracking-wider text-[#2F3B0C] bg-[#F0F5E6] border border-[#4E641A]/20 px-3.5 py-1.5 rounded-full shadow-2xs">
             <FiShield className="w-3.5 h-3.5 text-[#4E641A]" />
