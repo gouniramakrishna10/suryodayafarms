@@ -614,24 +614,26 @@ export default function Partner() {
             <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">Our Promise to Every Partner</h2>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch">
             {/* Left Column: Intro Paragraphs */}
-            <div className="lg:col-span-6 space-y-6 text-left text-stone-700 text-base sm:text-lg leading-relaxed font-sans">
-              <div className="bg-white border border-[#EDE7D9] rounded-[32px] p-8 sm:p-10 shadow-xs space-y-6">
-                <p>
-                  When you partner with Suryodaya Farms, you become more than a business associate.
-                </p>
-                <p>
-                  You become part of a relationship built on trust, shared growth, professional excellence, and a common commitment to delivering premium-quality natural products with integrity.
-                </p>
-                <p className="font-bold text-[#4E641A] text-lg pt-2 border-t border-[#EDE7D9]">
+            <div className="lg:col-span-6 flex flex-col">
+              <div className="bg-white border border-[#EDE7D9] rounded-[32px] p-8 sm:p-10 shadow-xs space-y-6 flex flex-col justify-between h-full text-left text-stone-700 text-base sm:text-lg leading-relaxed font-sans">
+                <div className="space-y-6">
+                  <p>
+                    When you partner with Suryodaya Farms, you become more than a business associate.
+                  </p>
+                  <p>
+                    You become part of a relationship built on trust, shared growth, professional excellence, and a common commitment to delivering premium-quality natural products with integrity.
+                  </p>
+                </div>
+                <p className="font-bold text-[#4E641A] text-lg pt-4 border-t border-[#EDE7D9] mt-auto">
                   Every partnership is guided by our core values:
                 </p>
               </div>
             </div>
 
             {/* Right Column: Values Grid */}
-            <div className="lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
+            <div className="lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-4 text-left h-full">
               {promiseValues.map((val, idx) => (
                 <motion.div
                   key={idx}
@@ -639,10 +641,10 @@ export default function Partner() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.3, delay: idx * 0.04 }}
-                  className="bg-white border border-[#EDE7D9] p-6 rounded-2xl shadow-xs flex items-center gap-3.5 hover:border-[#4E641A] hover:shadow-md transition duration-200"
+                  className="bg-white border border-[#EDE7D9] p-5 sm:p-6 rounded-2xl shadow-xs flex items-center gap-3.5 hover:border-[#4E641A] hover:shadow-md transition duration-200 h-full flex-1"
                 >
                   <div className="w-3 h-3 rounded-full bg-[#4E641A] shrink-0" />
-                  <span className="font-serif text-base font-bold text-[#2F3B0C]">{val}</span>
+                  <span className="font-serif text-base font-bold text-[#2F3B0C] leading-snug">{val}</span>
                 </motion.div>
               ))}
             </div>
