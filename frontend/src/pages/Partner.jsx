@@ -172,63 +172,130 @@ export default function Partner() {
     <div className="bg-[#F9F6F0] min-h-screen font-sans text-[#2F3B0C] selection:bg-[#4E641A] selection:text-white">
       
       {/* 1. HERO SECTION */}
-      <section className="relative pt-10 sm:pt-14 lg:pt-16 pb-16 sm:pb-24 lg:pb-28 px-4 sm:px-6 lg:px-12 bg-gradient-to-b from-[#F4EFE6] via-[#FAF7F2] to-[#F9F6F0] overflow-hidden border-b border-[#EDE7D9]">
+      <section className="relative py-12 sm:py-16 lg:py-16 px-4 sm:px-6 lg:px-12 bg-gradient-to-b from-[#F5EFE6] via-[#FAF7F2] to-[#F9F6F0] overflow-hidden border-b border-[#EDE7D9]">
+        {/* Soft Organic Atmospheric Glows */}
         <div className="absolute -top-48 -left-48 w-[540px] h-[540px] bg-[#4E641A]/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute top-1/2 -right-48 w-[540px] h-[540px] bg-[#B8833E]/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute inset-0 bg-[radial-gradient(#4E641A_1px,transparent_1px)] [background-size:32px_32px] opacity-10 pointer-events-none" />
 
-        <div className="max-w-5xl mx-auto text-center relative z-10 space-y-8">
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex justify-center"
-          >
-            <SectionBadge text="Growing Together. Building a Healthier Future." align="center" />
-          </motion.div>
+        <div className="max-w-7xl mx-auto relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+            
+            {/* LEFT COLUMN: TEXT CONTENT (55% = 7 cols on 12-col grid) */}
+            <div className="lg:col-span-7 space-y-6 sm:space-y-7 text-left order-2 lg:order-1">
+              <motion.div
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex justify-start"
+              >
+                <SectionBadge text="Growing Together. Building a Healthier Future." align="left" />
+              </motion.div>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="font-serif text-2xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-[#2F3B0C] leading-[1.12] tracking-tight max-w-6xl mx-auto whitespace-nowrap"
-          >
-            Partner with <span className="text-[#4E641A]">Suryodaya Farms</span>
-          </motion.h1>
+              <motion.div
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                className="space-y-3"
+              >
+                <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[#2F3B0C] leading-[1.12] tracking-tight">
+                  Partner with <span className="text-[#4E641A]">Suryodaya Farms</span>
+                </h1>
+                
+                {/* Decorative Line & Leaf Accent */}
+                <div className="flex items-center gap-3 pt-1">
+                  <div className="w-12 h-1 bg-[#4E641A] rounded-full" />
+                  <GiSprout className="text-[#4E641A] text-lg" />
+                  <div className="w-8 h-0.5 bg-[#4E641A]/40 rounded-full" />
+                </div>
+              </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="flex items-center justify-center pt-4"
-          >
-            <button
-              onClick={scrollToForm}
-              className="inline-flex items-center gap-3.5 bg-[#4E641A] hover:bg-[#2F3B0C] text-white font-sans text-xs sm:text-sm font-bold tracking-widest uppercase px-10 py-5 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 active:scale-[0.99] cursor-pointer"
-            >
-              <span>Submit Partnership Request</span>
-              <FiArrowRight className="text-lg" />
-            </button>
-          </motion.div>
-        </div>
-      </section>
+              {/* Text Paragraphs */}
+              <motion.div
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.15 }}
+                className="space-y-5 text-stone-700 text-sm sm:text-base lg:text-lg font-sans leading-relaxed font-normal"
+              >
+                <p className="font-serif text-lg sm:text-xl lg:text-2xl text-[#2F3B0C] font-semibold leading-relaxed">
+                  At Suryodaya Farms, we believe that the strongest partnerships are built on trust, shared values, mutual respect, integrity, and a common purpose.
+                </p>
+                <p>
+                  We warmly welcome distributors, retailers, wholesalers, exporters, institutions, corporate buyers, entrepreneurs, and strategic business partners to join us on our journey.
+                </p>
+                <p>
+                  Together, we can achieve more than business success. We can make premium-quality natural nutrition more accessible, inspire healthier lifestyles, strengthen healthier communities, and create lasting value for future generations.
+                </p>
+              </motion.div>
 
-      {/* 2. INTRODUCTION */}
-      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 bg-white border-b border-[#EDE7D9]">
-        <div className="max-w-4xl mx-auto space-y-8 text-left">
-          <div className="w-16 h-1 bg-[#4E641A] rounded-full mb-8" />
-          <div className="space-y-6 text-stone-700 text-base sm:text-lg lg:text-xl font-sans leading-[1.8] font-normal">
-            <p className="font-serif text-xl sm:text-2xl lg:text-3xl text-[#2F3B0C] font-semibold leading-relaxed">
-              At Suryodaya Farms, we believe that the strongest partnerships are built on trust, shared values, mutual respect, integrity, and a common purpose.
-            </p>
-            <p>
-              We warmly welcome distributors, retailers, wholesalers, exporters, institutions, corporate buyers, entrepreneurs, and strategic business partners to join us on our journey.
-            </p>
-            <p>
-              Together, we can achieve more than business success. We can make premium-quality natural nutrition more accessible, inspire healthier lifestyles, strengthen healthier communities, and create lasting value for future generations.
-            </p>
-            <p className="font-bold text-[#2F3B0C] pt-2 border-l-4 border-[#B8833E] pl-6 italic">
-              We believe that when people work together with honesty, responsibility, and a shared vision, everyone grows—our partners, our customers, our communities, and our future.
-            </p>
+              {/* Highlighted Statement: Premium Trust Card */}
+              <motion.div
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="bg-[#FAF6F0] border border-[#EDE7D9] border-l-4 border-l-[#4E641A] p-5 sm:p-6 rounded-2xl shadow-xs hover:shadow-md transition-shadow relative space-y-2.5"
+              >
+                <div className="flex items-center gap-2 text-[#4E641A]">
+                  <GiSprout className="text-xl" />
+                  <span className="text-xs font-bold uppercase tracking-wider text-[#4E641A]">Our Partnership Vision</span>
+                </div>
+                <p className="font-bold text-[#2F3B0C] italic text-base sm:text-lg font-sans leading-relaxed">
+                  We believe that when people work together with honesty, responsibility, and a shared vision, everyone grows—our partners, our customers, our communities, and our future.
+                </p>
+              </motion.div>
+
+              {/* CTA Action */}
+              <motion.div
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.25 }}
+                className="pt-2"
+              >
+                <button
+                  onClick={scrollToForm}
+                  className="inline-flex items-center gap-3.5 bg-[#4E641A] hover:bg-[#2F3B0C] text-white font-sans text-xs sm:text-sm font-bold tracking-widest uppercase px-8 sm:px-10 py-4 sm:py-4.5 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 active:scale-[0.99] cursor-pointer"
+                >
+                  <span>Submit Partnership Request</span>
+                  <FiArrowRight className="text-lg" />
+                </button>
+              </motion.div>
+            </div>
+
+            {/* RIGHT COLUMN: PREMIUM PARTNERSHIP VISUAL (45% = 5 cols on 12-col grid) */}
+            <div className="lg:col-span-5 order-1 lg:order-2">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.96 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="relative group w-full"
+              >
+                <div className="relative rounded-[24px] overflow-hidden border border-[#4E641A]/20 shadow-2xl bg-stone-100">
+                  <img
+                    src="/images/partner_hero_visual.png"
+                    alt="Suryodaya Farms B2B Partnership Collaboration"
+                    className="w-full h-[380px] sm:h-[460px] lg:h-[540px] object-cover object-center transform transition-transform duration-700 group-hover:scale-[1.03]"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-stone-950/70 via-stone-950/20 to-transparent" />
+                  
+                  {/* Floating B2B Trust Badge */}
+                  <div className="absolute bottom-5 left-5 right-5 bg-white/95 backdrop-blur-md border border-[#EDE7D9] rounded-2xl p-4 shadow-xl flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-[#4E641A]/10 text-[#4E641A] flex items-center justify-center text-xl font-bold">
+                        <GiSprout />
+                      </div>
+                      <div className="text-left">
+                        <div className="text-[10px] font-bold uppercase tracking-wider text-[#4E641A]">B2B Partnership & Growth</div>
+                        <div className="text-xs sm:text-sm font-serif font-bold text-[#2F3B0C]">Nature • Science • Trust</div>
+                      </div>
+                    </div>
+                    <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-[#4E641A]/10 text-[#4E641A] rounded-full text-xs font-bold">
+                      <FiCheckCircle />
+                      <span>Verified Network</span>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+
           </div>
         </div>
       </section>
