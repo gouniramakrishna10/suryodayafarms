@@ -519,45 +519,76 @@ export default function Faq() {
         </div>
       </section>
 
-      {/* STILL NEED HELP CTA SECTION */}
-      <section className="py-16 px-4 sm:px-6 lg:px-12 max-w-5xl mx-auto my-8">
-        <div className="dark-section bg-[#2F3B0C] text-white rounded-[36px] p-8 sm:p-14 shadow-xl text-center space-y-6 relative overflow-hidden">
-          <div className="absolute -right-24 -bottom-24 w-80 h-80 bg-[#4E641A]/30 rounded-full blur-3xl pointer-events-none" />
+      {/* STILL NEED HELP CTA SECTION (REDESIGNED LUXURY SUPPORT CTA) */}
+      <section className="py-10 md:py-12 px-4 sm:px-6 lg:px-12 max-w-5xl mx-auto my-4">
+        <div className="dark-section bg-gradient-to-br from-[#2F3B0C] via-[#394713] to-[#232C09] text-white rounded-[32px] sm:rounded-[36px] p-6 sm:p-10 lg:p-12 shadow-xl text-center space-y-5 relative overflow-hidden group">
+          {/* Subtle Background Radial Dots & Glow */}
+          <div className="absolute inset-0 bg-[radial-gradient(#C68A2B_1px,transparent_1px)] [background-size:24px_24px] opacity-10 pointer-events-none" />
+          <div className="absolute -right-24 -bottom-24 w-80 h-80 bg-[#4E641A]/25 rounded-full blur-3xl pointer-events-none" />
           
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-sunrise-gold text-xs font-semibold uppercase tracking-wider mx-auto">
-            <FiHelpCircle />
-            <span>Dedicated Support</span>
+          <div className="space-y-3 relative z-10 flex flex-col items-center">
+            {/* Decorative Botanical Accent Divider Above Heading */}
+            <div className="flex items-center gap-3 text-[#C68A2B]/60 justify-center mb-1">
+              <div className="h-px bg-gradient-to-r from-transparent to-[#C68A2B]/40 w-12" />
+              <GiSprout className="w-4 h-4 text-[#C68A2B]" />
+              <div className="h-px bg-gradient-to-l from-transparent to-[#C68A2B]/40 w-12" />
+            </div>
+
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/10 text-[#C68A2B] text-xs font-semibold uppercase tracking-wider mx-auto border border-white/15">
+              <FiHelpCircle className="text-sm" />
+              <span>Dedicated Support</span>
+            </div>
+
+            <h2 className="font-serif text-2xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight leading-snug">
+              Didn't find your answer?
+            </h2>
+
+            <p className="text-stone-200 text-xs sm:text-base max-w-xl mx-auto leading-relaxed font-sans font-light">
+              Our Customer Support Team will be happy to assist you with any questions or order inquiries.
+            </p>
           </div>
 
-          <h2 className="font-serif text-3xl sm:text-4xl font-bold">Didn't find your answer?</h2>
-          <p className="text-stone-300 text-sm sm:text-base max-w-xl mx-auto">
-            Our Customer Support Team will be happy to assist you with any questions or order inquiries.
-          </p>
-
-          <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
+          {/* Button Group with Clear Visual Hierarchy */}
+          <div className="flex flex-wrap items-center justify-center gap-3.5 pt-2 relative z-10">
+            {/* Primary Button */}
             <button
               onClick={scrollToSupportForm}
-              className="bg-[#4E641A] hover:bg-white hover:text-[#2F3B0C] text-white font-sans text-xs sm:text-sm font-bold tracking-widest uppercase px-8 py-4 rounded-2xl shadow-lg transition duration-300 cursor-pointer"
+              className="bg-[#4E641A] hover:bg-[#37411A] text-white font-sans text-xs sm:text-sm font-bold tracking-widest uppercase px-8 py-3.5 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 cursor-pointer border-none"
             >
               Contact Support
             </button>
 
+            {/* Secondary Button 1 */}
             <a
               href="mailto:care@suryodayafarms.com"
-              className="bg-transparent hover:bg-white/10 text-white border border-white/30 font-sans text-xs sm:text-sm font-bold tracking-widest uppercase px-8 py-4 rounded-2xl transition duration-300 flex items-center gap-2"
+              className="bg-transparent hover:bg-[#4E641A] text-white hover:text-white border border-white/30 hover:border-[#4E641A] font-sans text-xs sm:text-sm font-bold tracking-widest uppercase px-7 py-3.5 rounded-xl transition-all duration-300 flex items-center gap-2 shadow-2xs group/btn"
             >
-              <FiMail />
+              <FiMail className="text-base group-hover/btn:text-white transition-colors" />
               <span>Email Us</span>
             </a>
 
+            {/* Secondary Button 2 */}
             <a
               href="tel:+919100422140"
-              className="bg-transparent hover:bg-white/10 text-white border border-white/30 font-sans text-xs sm:text-sm font-bold tracking-widest uppercase px-8 py-4 rounded-2xl transition duration-300 flex items-center gap-2"
+              className="bg-transparent hover:bg-[#4E641A] text-white hover:text-white border border-white/30 hover:border-[#4E641A] font-sans text-xs sm:text-sm font-bold tracking-widest uppercase px-7 py-3.5 rounded-xl transition-all duration-300 flex items-center gap-2 shadow-2xs group/btn"
             >
-              <FiPhone />
+              <FiPhone className="text-base group-hover/btn:text-white transition-colors" />
               <span>Call Us</span>
             </a>
           </div>
+
+          {/* Subtle Approved Support Assurance Footer */}
+          <div className="pt-2 flex items-center justify-center gap-6 text-[11px] font-sans text-stone-300/80 relative z-10 border-t border-white/10 max-w-md mx-auto">
+            <div className="flex items-center gap-1.5">
+              <FiShield className="w-3.5 h-3.5 text-[#C68A2B]" />
+              <span>Verified Direct Support</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <FiCheckCircle className="w-3.5 h-3.5 text-[#C68A2B]" />
+              <span>Response in 24–48 Hours</span>
+            </div>
+          </div>
+
         </div>
       </section>
 
