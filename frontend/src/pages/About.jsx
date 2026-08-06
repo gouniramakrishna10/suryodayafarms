@@ -82,7 +82,7 @@ export default function About() {
 
           <div className="bg-white border border-[#EDE7D9] rounded-[36px] p-8 sm:p-14 shadow-sm space-y-6 text-stone-700 text-base sm:text-lg leading-[1.8] font-sans">
             <p className="font-serif text-lg sm:text-xl text-[#2F3B0C] font-semibold">Dear Customer,</p>
-            <p>Welcome to Suryodaya Farms.</p>
+            <p>Welcome to <strong className="font-serif font-bold text-[#4E641A] text-lg sm:text-xl">Suryodaya Farms</strong>.</p>
             <p>Thank you for placing your trust in us.</p>
             <p className="font-serif italic text-lg sm:text-xl text-[#4E641A] border-l-4 border-[#B8833E] pl-6 my-4">
               Every product we create begins with a simple belief:<br />
@@ -91,7 +91,7 @@ export default function About() {
             <p>
               In today's fast-moving world, people deserve natural foods they can trust—products that are prepared with care, guided by science, and delivered with honesty.
             </p>
-            <p>That belief is the foundation of Suryodaya Farms.</p>
+            <p>That belief is the foundation of <strong className="font-serif font-bold text-[#4E641A]">Suryodaya Farms</strong>.</p>
             <p>
               We are committed to developing premium natural superfoods through responsible sourcing, scientific product development, hygienic processing, and uncompromising quality standards.
             </p>
@@ -106,7 +106,7 @@ export default function About() {
             <p>We will continue to listen.</p>
             <p>We will continue to improve.</p>
             <p className="font-semibold text-[#2F3B0C]">We will continue to earn your trust—one product at a time.</p>
-            <p>Thank you for being a part of the Suryodaya Farms family.</p>
+            <p>Thank you for being a part of the <strong className="font-serif font-bold text-[#4E641A]">Suryodaya Farms</strong> family.</p>
             <div className="pt-6 border-t border-[#EDE7D9]">
               <p className="font-serif text-base font-bold text-[#2F3B0C]">With gratitude,</p>
               <p className="font-serif text-lg font-bold text-[#4E641A]">Team Suryodaya Farms</p>

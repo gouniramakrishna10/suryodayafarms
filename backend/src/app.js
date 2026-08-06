@@ -112,10 +112,7 @@ app.use('/api/auth', fast2smsAuthRoutes);     // Fast2SMS OTP Auth & WhatsApp en
 app.use('/', fast2smsAuthRoutes);            // Fast2SMS Direct Endpoints (/dev/otp/send, /dev/otp/verify, /dev/otp/resend, /dev/whatsapp, etc.)
 app.use('/api/products', productRoutes);     // Products catalog, reviews, category lists
 app.use('/api/categories', productRoutes);   // Double-bind categories fetching
-app.use('/api/cart', orderRoutes);           // Cart item CRUD
-app.use('/api/wishlist', orderRoutes);       // Wishlist toggles
-app.use('/api/coupons', orderRoutes);        // Coupon validate actions
-app.use('/api/orders', orderRoutes);         // Order checkouts, payments, and histories
+app.use('/api/orders', orderRoutes);         // Order checkouts, cart, wishlist, coupons, payments, and histories
 app.use('/api/admin', adminRoutes);          // Dashboard metrics and administrative edits
 app.use('/api/public', publicRoutes);        // Blog chronicle lists, testimonials, contact submit
 app.use('/sitemap.xml', publicRoutes);         // Dynamic SEO Sitemap endpoint
