@@ -215,12 +215,13 @@ export async function sendTemplate({
  * 1. sendOtp ({ mobile, otp, purpose, expiry, supportNumber })
  * Approved Message ID: 27533
  */
-export async function sendOtp({ mobile, otp, purpose = 'Registration', expiry = '10 Minutes', supportNumber = '1800123456' }) {
+export async function sendOtp({ mobile, otp, purpose = 'Registration', expiry = '10 Minutes', supportNumber = '9100422140' }) {
+  const officialSupportPhone = process.env.SUPPORT_PHONE || supportNumber || '9100422140';
   return sendTemplate({
     messageId: APPROVED_MESSAGE_IDS.OTP,
     templateName: 'otp_authentication',
     mobile,
-    variables: [otp, purpose, expiry, supportNumber]
+    variables: [otp, purpose, expiry, officialSupportPhone]
   });
 }
 

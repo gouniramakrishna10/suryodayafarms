@@ -22,7 +22,7 @@ async function runFast2SmsTestSuite() {
     otp: '482193',
     purpose: 'Registration',
     expiry: '10 Minutes',
-    supportNumber: '1800123456'
+    supportNumber: '9100422140'
   });
   console.log('Result:', JSON.stringify(otpRes, null, 2));
 

@@ -29,8 +29,9 @@ export async function sendWhatsappOtp({ mobile, otp }) {
   // {{1}} = OTP code (e.g. 482193)
   // {{2}} = Service / Brand ("Suryodaya Farms")
   // {{3}} = Validity duration ("10 minutes")
-  // {{4}} = Helpline / Support number ("1800123456")
-  const variablesValues = `${otp}|Suryodaya Farms|10 minutes|1800123456`;
+  // {{4}} = Helpline / Support number ("9100422140")
+  const supportNumber = process.env.SUPPORT_PHONE || '9100422140';
+  const variablesValues = `${otp}|Suryodaya Farms|10 minutes|${supportNumber}`;
 
   const url = `${BASE_URL}/dev/whatsapp`;
   const method = 'GET';
