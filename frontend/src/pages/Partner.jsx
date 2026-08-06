@@ -133,17 +133,67 @@ export default function Partner() {
     { title: 'Export Opportunities', icon: FiGlobe }
   ];
 
-  const whyPartnerItems = [
-    'Premium-Quality Natural Products',
-    'Science-Guided Product Development',
-    'Carefully Selected Ingredients',
-    'Hygienic Processing & Quality-Focused Manufacturing',
-    'Food-Grade Packaging',
-    'Ethical & Transparent Business Practices',
-    'Reliable Customer Service',
-    'Continuous Product Improvement',
-    'Long-Term Business Relationships',
-    'Sustainable Growth through Mutual Success'
+  const whyPartnerFeatures = [
+    {
+      title: 'Premium-Quality Natural Products',
+      icon: FiAward,
+      watermark: GiSprout,
+      bgClass: 'bg-white border-[#EDE7D9]'
+    },
+    {
+      title: 'Science-Guided Product Development',
+      icon: FiHeart,
+      watermark: GiSun,
+      bgClass: 'bg-[#F7F8F2] border-[#DCE4CD]'
+    },
+    {
+      title: 'Carefully Selected Ingredients',
+      icon: GiWheat,
+      watermark: GiWheat,
+      bgClass: 'bg-[#FAF7F2] border-[#EDE7D9]'
+    },
+    {
+      title: 'Hygienic Processing & Quality-Focused Manufacturing',
+      icon: FiShield,
+      watermark: FiShield,
+      bgClass: 'bg-[#F5F2EA] border-[#E8E2D5]'
+    },
+    {
+      title: 'Food-Grade Packaging',
+      icon: FiBox,
+      watermark: FiBox,
+      bgClass: 'bg-white border-[#EDE7D9]'
+    },
+    {
+      title: 'Ethical & Transparent Business Practices',
+      icon: FiCheckCircle,
+      watermark: FiCheckCircle,
+      bgClass: 'bg-[#F7F8F2] border-[#DCE4CD]'
+    },
+    {
+      title: 'Reliable Customer Service',
+      icon: FiPhoneCall,
+      watermark: FiPhoneCall,
+      bgClass: 'bg-[#FAF7F2] border-[#EDE7D9]'
+    },
+    {
+      title: 'Continuous Product Improvement',
+      icon: FiTrendingUp,
+      watermark: FiTrendingUp,
+      bgClass: 'bg-[#F5F2EA] border-[#E8E2D5]'
+    },
+    {
+      title: 'Long-Term Business Relationships',
+      icon: FiBriefcase,
+      watermark: FiUsers,
+      bgClass: 'bg-white border-[#EDE7D9]'
+    },
+    {
+      title: 'Sustainable Growth through Mutual Success',
+      icon: FiGlobe,
+      watermark: GiSprout,
+      bgClass: 'bg-[#F7F8F2] border-[#DCE4CD]'
+    }
   ];
 
   const promiseValues = [
@@ -356,36 +406,65 @@ export default function Partner() {
         </div>
       </section>
 
-      {/* 4. WHY PARTNER WITH SURYODAYA FARMS? */}
-      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 bg-white border-b border-[#EDE7D9]">
-        <div className="max-w-7xl mx-auto space-y-16">
-          <div className="text-center max-w-5xl mx-auto space-y-4 flex flex-col items-center">
+      {/* 4. WHY PARTNER WITH SURYODAYA FARMS? (PREMIUM BENEFIT GRID) */}
+      <section className="py-12 sm:py-16 lg:py-16 px-4 sm:px-6 lg:px-12 bg-[#FAF7F2] border-b border-[#EDE7D9] relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(#4E641A_1px,transparent_1px)] [background-size:32px_32px] opacity-10 pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto space-y-10 lg:space-y-12 relative z-10">
+          <div className="text-center max-w-4xl mx-auto space-y-3 flex flex-col items-center">
             <SectionBadge text="Our Foundation" align="center" />
-            <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#1C2607] whitespace-nowrap">Why Partner with Suryodaya Farms?</h2>
-            <p className="text-stone-900 text-base sm:text-lg leading-relaxed font-sans font-medium">
+            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1C2607]">Why Partner with Suryodaya Farms?</h2>
+            <p className="text-stone-700 text-sm sm:text-base lg:text-lg leading-relaxed font-sans font-normal max-w-3xl">
               When you choose Suryodaya Farms, you gain more than a supplier—you gain a reliable business partner committed to long-term success.
             </p>
-            <p className="text-[#2F3B0C] text-sm sm:text-base font-extrabold uppercase tracking-wider pt-2">
-              We are committed to providing:
-            </p>
+            <div className="pt-2 flex items-center gap-3">
+              <div className="w-8 h-0.5 bg-[#4E641A]/30 rounded-full" />
+              <p className="text-[#4E641A] text-xs sm:text-sm font-extrabold uppercase tracking-widest">
+                We are committed to providing:
+              </p>
+              <div className="w-8 h-0.5 bg-[#4E641A]/30 rounded-full" />
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left max-w-5xl mx-auto">
-            {whyPartnerItems.map((item, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, scale: 0.98 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.3, delay: idx * 0.03 }}
-                className="bg-[#FAF7F2] border border-[#EDE7D9] p-6 sm:p-8 rounded-[24px] shadow-xs flex items-center gap-4 hover:border-[#4E641A] hover:bg-white hover:shadow-md transition-all duration-300"
-              >
-                <div className="w-9 h-9 rounded-full bg-[#4E641A]/10 text-[#4E641A] flex items-center justify-center text-base font-bold shrink-0 shadow-inner">
-                  ✔
-                </div>
-                <span className="font-serif text-base sm:text-lg font-bold text-[#2F3B0C]">{item}</span>
-              </motion.div>
-            ))}
+          {/* 2 Columns x 5 Rows Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 text-left max-w-6xl mx-auto">
+            {whyPartnerFeatures.map((item, idx) => {
+              const Icon = item.icon;
+              const Watermark = item.watermark;
+              return (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 15 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.3, delay: idx * 0.03 }}
+                  className={`${item.bgClass} p-5 sm:p-6 rounded-[22px] shadow-xs hover:shadow-md hover:border-[#4E641A] transition-all duration-300 group flex items-center gap-4 relative overflow-hidden transform hover:-translate-y-0.5`}
+                >
+                  {/* Subtle 5-8% Opacity Watermark Icon */}
+                  <div className="absolute right-3 bottom-2 text-[#4E641A]/5 group-hover:text-[#4E641A]/10 text-6xl pointer-events-none select-none transition-colors duration-300">
+                    <Watermark />
+                  </div>
+
+                  {/* Prominent Circular Icon Badge */}
+                  <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[#4E641A]/10 text-[#4E641A] flex items-center justify-center text-lg sm:text-xl font-bold group-hover:bg-[#4E641A] group-hover:text-white transition-colors duration-300 shadow-xs shrink-0 relative z-10">
+                    <Icon />
+                  </div>
+
+                  {/* Feature Title */}
+                  <span className="font-serif text-base sm:text-lg font-bold text-[#2F3B0C] group-hover:text-[#4E641A] transition-colors leading-snug relative z-10">
+                    {item.title}
+                  </span>
+                </motion.div>
+              );
+            })}
+          </div>
+
+          {/* Ecosystem Trust Banner */}
+          <div className="pt-4 flex items-center justify-center">
+            <div className="bg-white/80 backdrop-blur-md border border-[#EDE7D9] rounded-full px-6 py-2.5 shadow-xs flex items-center gap-3 text-xs font-bold text-[#4E641A] uppercase tracking-wider">
+              <GiSprout className="text-base" />
+              <span>Ecosystem of Trust • Excellence • Long-Term Growth</span>
+            </div>
           </div>
         </div>
       </section>
