@@ -1013,7 +1013,7 @@ import { syncAllPendingRefunds } from '../services/razorpay.service.js';
 // GET ALL ORDERS WITH USER DETAILS (Excludes temporary pending checkouts by default)
 // GET /api/admin/orders
 router.get('/orders', async (req, res, next) => {
-  const { showAbandoned } = req.query;
+  const { showAbandoned, status } = req.query;
 
   try {
     // Trigger refund sync for any pending refunds
