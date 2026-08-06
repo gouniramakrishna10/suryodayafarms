@@ -40,7 +40,7 @@ const getProductBenefits = (prod) => {
   if (cat.includes('grain') || cat.includes('rice')) return 'Naturally Grown • Heritage';
   if (cat.includes('spice')) return 'Stone Ground • Pure Spice';
   if (cat.includes('honey')) return 'Naturally Sourced • Pure Honey';
-  return '100% Pure & Natural';
+  return 'Pure & Natural';
 };
 
 const getDynamicBadge = (prod) => {

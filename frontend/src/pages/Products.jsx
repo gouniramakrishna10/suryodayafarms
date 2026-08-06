@@ -286,7 +286,7 @@ export default function Products() {
         <div className="flex flex-wrap gap-2.5 justify-center items-center max-w-3xl mx-auto products-hero-chips mt-0.5">
           <div className="inline-flex items-center gap-1.5 text-[11px] sm:text-xs font-bold uppercase tracking-wider text-[#2F3B0C] bg-[#F0F5E6] border border-[#4E641A]/20 px-3.5 py-1.5 rounded-full shadow-2xs">
             <GiSprout className="w-3.5 h-3.5 text-[#4E641A]" />
-            <span>100% Pure & Natural</span>
+            <span>Pure & Natural</span>
           </div>
           <div className="inline-flex items-center gap-1.5 text-[11px] sm:text-xs font-bold uppercase tracking-wider text-[#2F3B0C] bg-[#F0F5E6] border border-[#4E641A]/20 px-3.5 py-1.5 rounded-full shadow-2xs">
             <FiCpu className="w-3.5 h-3.5 text-[#4E641A]" />

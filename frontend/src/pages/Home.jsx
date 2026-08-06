@@ -744,7 +744,7 @@ export default function Home() {
 
     // Resolve content dynamically: Use CMS values if matched, otherwise defaults
     const headingLine1 = activeHero?.headingLine1 || "Pristine Organic Staples";
-    const headingHighlight = activeHero?.headingHighlight || "100% Pure & Natural";
+    const headingHighlight = activeHero?.headingHighlight || "Pure & Natural";
     const headingLine2 = activeHero?.headingLine2 || "Daily Superfood Nourishment";
     const description = activeHero?.description || activeProduct?.description || "Carefully processed to preserve natural vitamins, minerals, and enzymes.";
 
@@ -769,7 +769,7 @@ export default function Home() {
 
     const trustBadgeText = activeHero
       ? activeHero.trustBadgeText?.trim()
-      : "🌿 100% Pure & Natural";
+      : "🌿 Pure & Natural";
 
     const handleFeaturedProductAction = () => {
       const targetProduct = resolvedFeaturedProduct;
