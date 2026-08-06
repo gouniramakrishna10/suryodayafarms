@@ -649,6 +649,7 @@ router.post('/categories/:id/assign', async (req, res, next) => {
     );
 
     await prisma.$transaction(updates);
+    generateAndSaveSitemapXML().catch(e => console.error("Sitemap sync error:", e));
     res.status(200).json({ success: true, message: 'Products successfully assigned.' });
   } catch (error) {
     next(error);
@@ -683,11 +684,31 @@ router.post('/categories/:id/remove', async (req, res, next) => {
       }
     });
 
+    generateAndSaveSitemapXML().catch(e => console.error("Sitemap sync error:", e));
     res.status(200).json({ 
       success: true, 
       message: 'Product removed from category.', 
       product: updatedProduct 
     });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// MANUAL REGENERATE SITEMAP
+// POST /api/admin/sitemap/regenerate
+router.post('/sitemap/regenerate', async (req, res, next) => {
+  try {
+    const result = await generateAndSaveSitemapXML();
+    if (result) {
+      res.status(200).json({
+        success: true,
+        message: 'Sitemap XML successfully regenerated and synced.',
+        details: result
+      });
+    } else {
+      res.status(500).json({ success: false, message: 'Failed to generate sitemap.' });
+    }
   } catch (error) {
     next(error);
   }
