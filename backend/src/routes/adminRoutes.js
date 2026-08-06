@@ -29,14 +29,14 @@ router.get('/analytics', async (req, res, next) => {
     ] = await Promise.all([
       prisma.order.count({
         where: {
-          paymentStatus: 'COMPLETED'
+          paymentStatus: { in: ['COMPLETED', 'PAID'] }
         }
       }),
       prisma.user.count({ where: { role: 'CUSTOMER' } }),
       prisma.product.count(),
       prisma.order.findMany({
         where: {
-          paymentStatus: 'COMPLETED'
+          paymentStatus: { in: ['COMPLETED', 'PAID'] }
         },
         select: { totalAmount: true }
       }),
@@ -56,14 +56,16 @@ router.get('/analytics', async (req, res, next) => {
 
     const totalRevenue = orders.reduce((acc, order) => acc + order.totalAmount, 0);
 
-    // Fetch recent 5 valid orders (excluding temporary pending & payment timeout abandoned checkouts)
+    // Fetch recent 5 valid orders
     const recentOrders = await prisma.order.findMany({
       where: {
-        paymentStatus: { not: 'PENDING' },
         OR: [
-          { cancelReason: null },
-          { cancelReason: { not: 'Payment Timeout' } }
-        ]
+          { paymentStatus: { in: ['COMPLETED', 'PAID', 'REFUNDED'] } },
+          { status: { in: ['PAID', 'CONFIRMED', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'REFUNDED'] } }
+        ],
+        NOT: {
+          cancelReason: 'Payment Timeout'
+        }
       },
       take: 5,
       orderBy: { createdAt: 'desc' },
@@ -1018,11 +1020,13 @@ router.get('/orders', async (req, res, next) => {
     await syncAllPendingRefunds().catch(() => null);
 
     let filter = {
-      paymentStatus: { not: 'PENDING' },
       OR: [
-        { cancelReason: null },
-        { cancelReason: { not: 'Payment Timeout' } }
-      ]
+        { paymentStatus: { in: ['COMPLETED', 'PAID', 'REFUNDED'] } },
+        { status: { in: ['PAID', 'CONFIRMED', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'REFUNDED'] } }
+      ],
+      NOT: {
+        cancelReason: 'Payment Timeout'
+      }
     };
 
     if (showAbandoned === 'true') {
@@ -1032,6 +1036,8 @@ router.get('/orders', async (req, res, next) => {
           { cancelReason: 'Payment Timeout' }
         ]
       };
+    } else if (status && status !== 'ALL') {
+      filter.status = status;
     }
 
     const orders = await prisma.order.findMany({
