@@ -469,26 +469,85 @@ export default function Partner() {
         </div>
       </section>
 
-      {/* 5. LET'S BEGIN THE JOURNEY TOGETHER */}
-      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 bg-[#F4EFE6] border-b border-[#EDE7D9]">
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-white border border-[#EDE7D9] rounded-[40px] p-10 sm:p-16 shadow-lg text-center space-y-8 relative overflow-hidden">
-            <div className="w-16 h-16 rounded-2xl bg-[#B8833E]/10 text-[#B8833E] flex items-center justify-center text-3xl mx-auto">
-              <GiSprout />
+      {/* 5. LET'S BEGIN THE JOURNEY TOGETHER (PREMIUM SPLIT CTA SECTION) */}
+      <section className="py-12 sm:py-16 lg:py-16 px-4 sm:px-6 lg:px-12 bg-gradient-to-br from-[#FAF7F2] via-[#F4EFE6] to-[#FAF7F2] border-b border-[#EDE7D9] relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(#4E641A_1px,transparent_1px)] [background-size:32px_32px] opacity-10 pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+
+            {/* MOBILE: IMAGE FIRST | DESKTOP: RIGHT (45% = 5 cols) */}
+            <div className="lg:col-span-5 order-1 lg:order-2">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.96 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5 }}
+                className="relative group w-full"
+              >
+                <div className="relative rounded-[24px] overflow-hidden border border-[#4E641A]/20 shadow-xl bg-stone-100">
+                  <img
+                    src="/images/partner_hero_visual.png"
+                    alt="Suryodaya Farms Business Partnership & Collaboration"
+                    className="w-full h-[320px] sm:h-[400px] lg:h-[460px] object-cover object-center transform transition-transform duration-700 group-hover:scale-[1.03]"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-stone-950/60 via-stone-950/10 to-transparent" />
+                  
+                  {/* Floating Closing Handshake Badge */}
+                  <div className="absolute bottom-5 left-5 right-5 bg-white/95 backdrop-blur-md border border-[#EDE7D9] rounded-2xl p-4 shadow-lg flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-[#4E641A]/10 text-[#4E641A] flex items-center justify-center text-xl font-bold">
+                        <GiSprout />
+                      </div>
+                      <div className="text-left">
+                        <div className="text-[10px] font-bold uppercase tracking-wider text-[#4E641A]">Closing Handshake</div>
+                        <div className="text-xs sm:text-sm font-serif font-bold text-[#2F3B0C]">Build • Scale • Flourish</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-[#4E641A]/10 text-[#4E641A] rounded-full text-xs font-bold">
+                      <FiCheckCircle />
+                      <span>Trusted Network</span>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
             </div>
-            <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">Let's Begin the Journey Together</h2>
-            
-            <div className="space-y-6 text-stone-700 text-base sm:text-lg leading-relaxed font-sans max-w-2xl mx-auto">
-              <p>
-                Whether you are an established organization or an emerging entrepreneur, we would be delighted to explore opportunities to work with you.
-              </p>
-              <p>
-                If our values align with yours, let us build a partnership founded on trust, quality, innovation, responsibility, and long-term success.
-              </p>
-              <p className="font-bold text-[#2F3B0C] text-lg sm:text-xl pt-2">
-                Our team looks forward to understanding your business goals and exploring opportunities to grow together.
-              </p>
+
+            {/* LEFT (55% = 7 cols) - CONTENT AREA */}
+            <div className="lg:col-span-7 order-2 lg:order-1 space-y-6 text-left">
+              <SectionBadge text="Collaborative Invitation" align="left" />
+              
+              <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#2F3B0C] leading-tight">
+                Let's Begin the Journey Together
+              </h2>
+              
+              <div className="space-y-5 text-stone-700 text-sm sm:text-base lg:text-lg leading-relaxed font-sans font-normal">
+                <p>
+                  Whether you are an established organization or an emerging entrepreneur, we would be delighted to explore opportunities to work with you.
+                </p>
+                <p>
+                  If our values align with yours, let us build a partnership founded on trust, quality, innovation, responsibility, and long-term success.
+                </p>
+              </div>
+
+              {/* PREMIUM TRUST BANNER (HIGHLIGHTED STATEMENT) */}
+              <motion.div
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: 0.1 }}
+                className="bg-white border border-[#EDE7D9] border-l-4 border-l-[#4E641A] p-5 sm:p-6 rounded-2xl shadow-sm space-y-2 mt-4"
+              >
+                <div className="flex items-center gap-2 text-[#4E641A]">
+                  <GiSprout className="text-lg" />
+                  <span className="text-xs font-extrabold uppercase tracking-wider text-[#4E641A]">Our Commitment to You</span>
+                </div>
+                <p className="font-serif text-base sm:text-lg lg:text-xl font-bold text-[#2F3B0C] leading-snug">
+                  Our team looks forward to understanding your business goals and exploring opportunities to grow together.
+                </p>
+              </motion.div>
             </div>
+
           </div>
         </div>
       </section>
