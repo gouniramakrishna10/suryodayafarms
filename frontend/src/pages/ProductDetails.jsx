@@ -418,7 +418,7 @@ export default function ProductDetails() {
   const renderProductTitle = () => (
     <div className="space-y-3 flex flex-col items-start">
       <SectionBadge text={(product.categories && product.categories.length > 0) ? product.categories[0].name : (product.category?.name || 'Vedic Staples')} align="left" />
-      <h1 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C] leading-tight">
+      <h1 className="font-serif text-2xl sm:text-3xl lg:text-3xl xl:text-4xl font-bold text-[#2F3B0C] leading-tight whitespace-nowrap">
         {product.name}
       </h1>
       
