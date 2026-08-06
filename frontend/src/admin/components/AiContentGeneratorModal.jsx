@@ -9,19 +9,19 @@ import { processAiDocumentPipeline } from '../utils/aiProductPipeline';
 
 const SAMPLE_DOCUMENT = `SPROUTED RAGI FLOUR
 Collection: Organic Vedic Harvest
-Tagline: 100% Pure, Sprouted & Traditional Dryland Harvest
+Tagline: Pure, Sprouted & Traditional Dryland Harvest
 Intro: Cultivated on rainfed organic drylands of Rajasthan. Sprouted traditionally to multiply bio-available iron, calcium, and digestion ease.
 
 ABOUT PRODUCT
 Our Sprouted Ragi Flour is made from whole finger millet grains that undergo a meticulous 48-hour soaking, sprouting, and sun-drying process. This ancient Vedic method unlocks maximum nutrients, neutralizes anti-nutrients, and provides a rich nutty flavor suitable for all ages.
 
 WHY CHOOSE US
-- 100% Sprouted Grains: Sprouting activates enzymes and quadruples bio-available iron.
+- Sprouted Grains: Sprouting activates enzymes and quadruples bio-available iron.
 - Rainfed Dryland Harvest: Grown naturally with rainwater on rich native soils without chemicals.
 - Traditional Stone Ground: Slow-milled at low temperatures to preserve delicate vitamins and dietary fiber.
 
 PRODUCT HIGHLIGHTS
-- 100% Organic & Non-GMO Verified
+- Organic & Non-GMO Verified
 - Zero Added Sugar, Preservatives or Artificial Flavors
 - Rich Source of Calcium, Dietary Fiber and Iron
 - Easy to Digest & Ideal for Baby Porridge & Rotis
@@ -43,7 +43,7 @@ STORAGE INSTRUCTIONS
 - Best before 9 months from the date of packaging.
 
 INGREDIENTS
-100% Pure Organic Sprouted Finger Millet (Ragi / Nachni) Flour.
+Pure Organic Sprouted Finger Millet (Ragi / Nachni) Flour.
 
 SPECIFICATIONS
 Weight: 500g
@@ -57,10 +57,10 @@ Q: Is this suitable for babies and toddlers?
 A: Yes! Sprouted ragi flour is naturally easy to digest and is one of the most recommended traditional first foods for babies over 6 months.
 
 Q: Does it contain any added wheat or preservatives?
-A: No. It is 100% pure sprouted ragi with zero wheat, gluten, preservatives, or added additives.
+A: No. It is pure sprouted ragi with zero wheat, gluten, preservatives, or added additives.
 
 OUR PROMISE
-At Suryodaya Farms, we pledge 100% transparency and fair-trade partnerships with native dryland farmers. Every batch is lab-tested for purity and crafted with Vedic reverence.`;
+At Suryodaya Farms, we pledge complete transparency and fair-trade partnerships with native dryland farmers. Every batch is lab-tested for purity and crafted with Vedic reverence.`;
 
 export default function AiContentGeneratorModal({ isOpen, onClose, onGenerate, categories = [], registry = [] }) {
   const [activeTab, setActiveTab] = useState('paste');

@@ -791,13 +791,13 @@ Available Native Section Types & Schemas:
 2. ABOUT_PRODUCT: { "title": "About Product", "html": "<p>...</p>" }
 3. ABOUT_INGREDIENT: { "title": "...", "ingredientName": "...", "html": "<p>...</p>" }
 4. WHY_CHOOSE_US: { "title": "Why Choose Us", "cards": [{ "icon": "🏆", "title": "...", "description": "..." }] }
-5. HIGHLIGHTS: { "title": "Product Highlights", "items": ["100% Organic", "Zero Additives"] }
+5. HIGHLIGHTS: { "title": "Product Highlights", "items": ["Organic", "Zero Additives"] }
 6. NUTRIENTS: { "title": "Naturally Occurring Nutrients", "items": [{ "name": "Calcium", "value": "344mg" }] }
 7. BENEFITS: { "title": "Health Benefits", "cards": [{ "icon": "💚", "title": "...", "description": "..." }] }
 8. WAYS_TO_ENJOY: { "title": "Ways to Enjoy", "recipes": [{ "icon": "🥤", "title": "...", "description": "..." }] }
 9. SUGGESTED_SERVING: { "title": "Suggested Serving", "items": ["Mix 1-2 tbsp with warm milk"], "servingSize": "1-2 tbsp" }
 10. STORAGE: { "title": "Storage Instructions", "items": ["Store in a cool dry place", "Keep airtight"] }
-11. INGREDIENTS: { "title": "Ingredients Breakdown", "html": "<p>100% Organic Sprouted Ragi</p>" }
+11. INGREDIENTS: { "title": "Ingredients Breakdown", "html": "<p>Organic Sprouted Ragi</p>" }
 12. PACKAGING: { "title": "Packaging Info", "items": ["Recyclable BPA-Free Pack"] }
 13. CERTIFICATIONS: { "title": "Certifications", "seals": [{ "name": "Organic India", "badge": "Organic" }] }
 14. QUALITY: { "title": "Quality Commitment", "items": ["Lab Tested for Heavy Metals", "Vedic Processing"] }
@@ -813,7 +813,7 @@ Return ONLY valid JSON matching this exact schema:
   "productName": "Exact Product Name",
   "shortDescription": "Compelling 1-2 sentence tagline",
   "description": "Rich detailed product overview HTML paragraphs",
-  "ingredients": "100% Organic Ingredients list",
+  "ingredients": "Organic Ingredients list",
   "nutrition": "Key nutrient composition (e.g. Calcium 344mg, Iron 3.9mg)",
   "origin": "Rajasthan, India",
   "shelfLife": "12 Months",
@@ -875,7 +875,7 @@ Ensure the output is strictly valid JSON without markdown formatting or surround
 function parseCleanTextToServerData(extractedText, fileName) {
   const lines = extractedText.split('\n').map(l => l.trim()).filter(Boolean);
   const productName = lines[0]?.replace(/^[#*=-]+\s*/, '') || 'Sprouted Ragi Flour';
-  const shortDescription = lines.find(l => l.length > 15 && l.length < 160) || '100% Pure Organic & Vedic Harvest';
+  const shortDescription = lines.find(l => l.length > 15 && l.length < 160) || 'Pure Organic & Vedic Harvest';
   const description = lines.filter(l => l.length > 30).map(l => `<p>${l}</p>`).join('');
 
   const sections = [];
@@ -903,7 +903,7 @@ function parseCleanTextToServerData(extractedText, fileName) {
     productName,
     shortDescription,
     description,
-    ingredients: '100% Organic Sprouted Finger Millet (Ragi) Flour',
+    ingredients: 'Organic Sprouted Finger Millet (Ragi) Flour',
     nutrition: 'Calcium: 344mg, Iron: 3.9mg, Dietary Fiber: 11.5g per 100g',
     origin: 'Rajasthan, India',
     shelfLife: '12 Months',
@@ -942,7 +942,7 @@ function buildSectionFromLines(title, lines, orderIndex) {
 
   let content = {};
   if (secType === 'HERO') {
-    content = { collectionName: 'Organic Harvest', tagline: '100% Pure', intro: lines.join(' ') };
+    content = { collectionName: 'Organic Harvest', tagline: 'Pure & Natural', intro: lines.join(' ') };
   } else if (secType === 'ABOUT_PRODUCT' || secType === 'ABOUT_INGREDIENT' || secType === 'INGREDIENTS' || secType === 'OUR_PROMISE' || secType === 'BRAND_STORY') {
     content = { title, html: lines.map(l => `<p>${l}</p>`).join('') };
   } else if (secType === 'WHY_CHOOSE_US' || secType === 'BENEFITS') {

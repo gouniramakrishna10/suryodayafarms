@@ -98,7 +98,7 @@ async function enrichBanana() {
       content: {
         title: 'Product Highlights',
         items: [
-          '100% Banana Powder',
+          ' Banana Powder',
           'Carefully Selected Ripe Bananas',
           'Naturally Sweet Taste',
           'Hygienically Processed',
@@ -185,7 +185,7 @@ async function enrichBanana() {
       title: 'Ingredients Breakdown',
       content: {
         title: 'Ingredients Breakdown',
-        html: '<p><strong>100% Banana Powder</strong></p><p>Nothing Added. Nothing Removed. Just Carefully Prepared Ripe Bananas.</p>'
+        html: '<p><strong> Banana Powder</strong></p><p>Nothing Added. Nothing Removed. Just Carefully Prepared Ripe Bananas.</p>'
       },
       orderIndex: 8,
       isVisible: true
@@ -231,8 +231,8 @@ async function enrichBanana() {
         title: 'Frequently Asked Questions',
         items: [
           {
-            question: 'Is this made from 100% bananas?',
-            answer: 'Yes. Our product contains only 100% Banana Powder.'
+            question: 'Is this made from  bananas?',
+            answer: 'Yes. Our product contains only  Banana Powder.'
           },
           {
             question: 'Can I use it in baking?',
@@ -280,7 +280,7 @@ async function enrichBanana() {
   ];
 
   // 3. Selective Product Enrichment in PostgreSQL
-  const shortDescription = '100% Pure Ripe Banana (Musa spp.) Powder. Science-guided dried & processed, naturally sweet taste, rich in potassium, B6, fibre & natural carbohydrates.';
+  const shortDescription = 'Pure Ripe Banana (Musa spp.) Powder. Science-guided dried & processed, naturally sweet taste, rich in potassium, B6, fibre & natural carbohydrates.';
   const detailedDescription = 'At Suryodaya Farms, we believe that everyday nutrition should be simple, wholesome, and naturally delicious. Our Banana Powder is prepared from carefully selected ripe bananas using science-guided quality practices designed to help preserve their natural flavour, colour, and nutritional value. Thoughtfully processed and carefully packed, it offers a convenient way to enjoy the natural goodness of bananas in beverages, breakfast recipes, baking, desserts, and everyday meals.';
 
   const updatedProduct = await prisma.product.update({
@@ -294,8 +294,8 @@ async function enrichBanana() {
       brand: 'Suryodaya Farms',
       nutrients: 'Potassium, Vitamin B6, Vitamin C, Magnesium, Dietary Fibre, Natural Carbohydrates',
       shelfLife: '12 Months from packaging',
-      seoTitle: 'Banana Powder (100% Pure Ripe Fruit Powder) | Suryodaya Farms',
-      seoDescription: 'Buy 100% Pure Ripe Banana Powder. Gently dried, naturally sweet fruit powder rich in potassium & B6 for smoothies, milk, porridge, baking & baby food.',
+      seoTitle: 'Banana Powder (Pure Ripe Fruit Powder) | Suryodaya Farms',
+      seoDescription: 'Buy Pure Ripe Banana Powder. Gently dried, naturally sweet fruit powder rich in potassium & B6 for smoothies, milk, porridge, baking & baby food.',
       seoKeywords: 'banana powder, ripe banana powder, organic banana powder, potassium rich fruit powder, banana powder for baking, baby banana porridge, suryodaya farms',
       productContent: contentSections
     },

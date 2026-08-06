@@ -22,7 +22,7 @@ export const SECTION_TYPES = [
   { id: 'WAYS_TO_ENJOY', label: 'Ways to Enjoy (Recipes)', category: 'Guides', icon: '🥤', desc: 'Serving suggestions and recipe ideas' },
   { id: 'SUGGESTED_SERVING', label: 'Suggested Serving', category: 'Guides', icon: '🥄', desc: 'Recommended daily intake & serving steps' },
   { id: 'STORAGE', label: 'Storage Instructions', category: 'Guides', icon: '📦', desc: 'Care and preservation instructions' },
-  { id: 'INGREDIENTS', label: 'Ingredients Breakdown', category: 'Nutrition', icon: '🌱', desc: 'Clean 100% natural ingredient breakdown' },
+  { id: 'INGREDIENTS', label: 'Ingredients Breakdown', category: 'Nutrition', icon: '🌱', desc: 'Clean natural ingredient breakdown' },
   { id: 'PACKAGING', label: 'Packaging Info', category: 'Info', icon: '🛍️', desc: 'Eco-packaging details & bottle preservation' },
   { id: 'CERTIFICATIONS', label: 'Certifications & Seals', category: 'Trust', icon: '🛡️', desc: 'Organic, Vedic & ISO certification badges' },
   { id: 'QUALITY', label: 'Quality Commitment', category: 'Trust', icon: '💎', desc: 'Checklist of lab testing & quality standards' },
@@ -722,7 +722,7 @@ export default function ProductContentBuilder({
 function getDefaultContentForType(type) {
   switch (type) {
     case 'HERO':
-      return { collectionName: 'Organic Dryland Collection', tagline: '100% Pure & Vedic Handcrafted', intro: 'Cultivated in native rainfed drylands with traditional care.' };
+      return { collectionName: 'Organic Dryland Collection', tagline: 'Pure & Vedic Handcrafted', intro: 'Cultivated in native rainfed drylands with traditional care.' };
     case 'RICH_TEXT':
     case 'ABOUT_PRODUCT':
     case 'ABOUT_INGREDIENT':
@@ -736,7 +736,7 @@ function getDefaultContentForType(type) {
     case 'BENEFITS':
       return {
         cards: [
-          { icon: '🌾', title: '100% Dryland Harvest', description: 'Grown with natural rainfall producing rich nutrients and authentic taste.' },
+          { icon: '🌾', title: 'Native Dryland Harvest', description: 'Grown with natural rainfall producing rich nutrients and authentic taste.' },
           { icon: '🌱', title: 'Vedic Handcrafted', description: 'Small batch traditional processing preserving natural goodness.' },
           { icon: '🤝', title: 'Farmer Enrichment', description: 'Direct farmer partnership ensuring fair trade wages.' }
         ]
@@ -745,7 +745,7 @@ function getDefaultContentForType(type) {
     case 'STORAGE':
     case 'QUALITY':
     case 'SUGGESTED_SERVING':
-      return { items: ['100% Pure Vedic Quality', 'No Added Preservatives or Chemicals', 'Eco-friendly Glass Packaging'] };
+      return { items: ['Pure Vedic Quality', 'No Added Preservatives or Chemicals', 'Eco-friendly Glass Packaging'] };
     case 'NUTRIENTS':
       return { items: [{ name: 'Vitamin C', value: '4x of Orange' }, { name: 'Calcium', value: '17x of Milk' }, { name: 'Iron', value: '25x of Spinach' }] };
     case 'WAYS_TO_ENJOY':
@@ -1075,7 +1075,7 @@ function renderSectionEditor(sec, index, handleUpdateContent) {
             <button
               type="button"
               onClick={() => {
-                const next = [...itemsList, { question: 'Is this 100% organic?', answer: 'Yes, certified 100% organic.' }];
+                const next = [...itemsList, { question: 'Is this product organic?', answer: 'Yes, certified organic.' }];
                 handleUpdateContent(index, 'items', next);
               }}
               className="px-3.5 py-1.5 bg-[#4E641A] hover:bg-[#2F3B0C] text-white text-xs font-bold rounded-xl transition cursor-pointer border-none flex items-center gap-1 shadow-2xs"

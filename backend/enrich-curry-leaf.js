@@ -99,7 +99,7 @@ async function enrichCurryLeaf() {
       content: {
         title: 'Product Highlights',
         items: [
-          '100% Curry Leaf Powder',
+          ' Curry Leaf Powder',
           'Carefully Selected Leaves',
           'Hygienically Processed',
           'Premium Quality',
@@ -184,7 +184,7 @@ async function enrichCurryLeaf() {
       title: 'Ingredients Breakdown',
       content: {
         title: 'Ingredients Breakdown',
-        html: '<p><strong>100% Curry Leaf Powder</strong></p><p>Nothing Added. Nothing Removed. Just Carefully Prepared Curry Leaves.</p>'
+        html: '<p><strong> Curry Leaf Powder</strong></p><p>Nothing Added. Nothing Removed. Just Carefully Prepared Curry Leaves.</p>'
       },
       orderIndex: 8,
       isVisible: true
@@ -230,8 +230,8 @@ async function enrichCurryLeaf() {
         title: 'Frequently Asked Questions',
         items: [
           {
-            question: 'Is this made from 100% curry leaves?',
-            answer: 'Yes. It contains only 100% curry leaf powder.'
+            question: 'Is this made from  curry leaves?',
+            answer: 'Yes. It contains only  curry leaf powder.'
           },
           {
             question: 'How can I use it?',
@@ -275,7 +275,7 @@ async function enrichCurryLeaf() {
   ];
 
   // 3. Selective Product Enrichment in PostgreSQL
-  const shortDescription = '100% Pure Curry Leaf (Murraya koenigii) Powder. Science-guided dried & processed, rich in natural aroma, iron, hair-vitality nutrients & antioxidants.';
+  const shortDescription = 'Pure Curry Leaf (Murraya koenigii) Powder. Science-guided dried & processed, rich in natural aroma, iron, hair-vitality nutrients & antioxidants.';
   const detailedDescription = 'At Suryodaya Farms, we believe that some of nature\'s finest ingredients are those treasured in traditional kitchens for generations. Our Curry Leaf Powder is prepared from carefully selected curry leaves using quality-focused processing practices designed to help preserve their natural aroma, vibrant colour, and nutritional value. Thoughtfully processed and carefully packed, it offers a simple and convenient way to enjoy the natural goodness of curry leaves as part of your everyday meals.';
 
   const updatedProduct = await prisma.product.update({
@@ -289,8 +289,8 @@ async function enrichCurryLeaf() {
       brand: 'Suryodaya Farms',
       nutrients: 'Vitamins A/B/C/E, Iron, Calcium, Dietary Fibre, Carbazole Alkaloids, Antioxidants',
       shelfLife: '12 Months from packaging',
-      seoTitle: 'Curry Leaf Powder (100% Pure Kadi Patta Powder) | Suryodaya Farms',
-      seoDescription: 'Buy 100% Pure Curry Leaf (Kadi Patta) Powder. Gently dried, aromatic curry leaves rich in iron & antioxidants for rice, curries, dals & hair wellness routines.',
+      seoTitle: 'Curry Leaf Powder (Pure Kadi Patta Powder) | Suryodaya Farms',
+      seoDescription: 'Buy Pure Curry Leaf (Kadi Patta) Powder. Gently dried, aromatic curry leaves rich in iron & antioxidants for rice, curries, dals & hair wellness routines.',
       seoKeywords: 'curry leaf powder, kadi patta powder, karivepaku powder, organic curry leaf, curry leaf for hair, Indian culinary herb, suryodaya farms',
       productContent: contentSections
     },

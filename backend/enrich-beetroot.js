@@ -99,7 +99,7 @@ async function enrichBeetroot() {
       content: {
         title: 'Product Highlights',
         items: [
-          '100% Beetroot Powder',
+          ' Beetroot Powder',
           'Carefully Selected Ingredients',
           'Hygienically Processed',
           'Premium Quality',
@@ -186,7 +186,7 @@ async function enrichBeetroot() {
       title: 'Ingredients Breakdown',
       content: {
         title: 'Ingredients Breakdown',
-        html: '<p><strong>100% Beetroot Powder</strong></p><p>Nothing Added. Nothing Removed. Just Carefully Prepared Beetroot.</p>'
+        html: '<p><strong> Beetroot Powder</strong></p><p>Nothing Added. Nothing Removed. Just Carefully Prepared Beetroot.</p>'
       },
       orderIndex: 8,
       isVisible: true
@@ -232,8 +232,8 @@ async function enrichBeetroot() {
         title: 'Frequently Asked Questions',
         items: [
           {
-            question: 'Is this made from 100% beetroot?',
-            answer: 'Yes. Our product contains only 100% Beetroot Powder.'
+            question: 'Is this made from  beetroot?',
+            answer: 'Yes. Our product contains only  Beetroot Powder.'
           },
           {
             question: 'How can I use it?',
@@ -281,7 +281,7 @@ async function enrichBeetroot() {
   ];
 
   // 3. Selective Product Enrichment in PostgreSQL
-  const shortDescription = '100% Pure Beetroot (Beta vulgaris) Powder. Gently dried, science-guided processed, naturally vibrant red-pink colour, rich in nitrates, folate, iron & betalain antioxidants.';
+  const shortDescription = 'Pure Beetroot (Beta vulgaris) Powder. Gently dried, science-guided processed, naturally vibrant red-pink colour, rich in nitrates, folate, iron & betalain antioxidants.';
   const detailedDescription = 'At Suryodaya Farms, we believe that vibrant nutrition begins with nature. Our Beetroot Powder is prepared from carefully selected beetroot using science-guided quality practices designed to help preserve its natural colour, flavour, and nutritional value. Thoughtfully processed and carefully packed, it offers a convenient way to enjoy the natural goodness of beetroot in your everyday meals, beverages, and recipes.';
 
   const updatedProduct = await prisma.product.update({
@@ -295,8 +295,8 @@ async function enrichBeetroot() {
       brand: 'Suryodaya Farms',
       nutrients: 'Folate (B9), Potassium, Iron, Betalains, Natural Nitrates, Dietary Fibre, Antioxidants',
       shelfLife: '12 Months from packaging',
-      seoTitle: 'Beetroot Powder (100% Pure Dehydrated Root) | Suryodaya Farms',
-      seoDescription: 'Buy 100% Pure Beetroot Powder. Vibrant natural pink-red colour powder rich in nitrates, iron & antioxidants for smoothies, juices, baking & natural food colouring.',
+      seoTitle: 'Beetroot Powder (Pure Dehydrated Root) | Suryodaya Farms',
+      seoDescription: 'Buy Pure Beetroot Powder. Vibrant natural pink-red colour powder rich in nitrates, iron & antioxidants for smoothies, juices, baking & natural food colouring.',
       seoKeywords: 'beetroot powder, organic beetroot powder, natural red food color, nitrate powder, beet juice powder, pre workout beet powder, suryodaya farms',
       productContent: contentSections
     },

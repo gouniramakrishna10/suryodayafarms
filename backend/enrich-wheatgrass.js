@@ -99,7 +99,7 @@ async function enrichWheatgrass() {
       content: {
         title: 'Product Highlights',
         items: [
-          '100% Wheatgrass Powder',
+          ' Wheatgrass Powder',
           'Carefully Harvested Young Wheatgrass',
           'Hygienically Processed',
           'Premium Quality',
@@ -184,7 +184,7 @@ async function enrichWheatgrass() {
       title: 'Ingredients Breakdown',
       content: {
         title: 'Ingredients Breakdown',
-        html: '<p><strong>100% Wheatgrass Powder</strong></p><p>Nothing Added. Nothing Removed. Just Carefully Prepared Young Wheatgrass.</p>'
+        html: '<p><strong> Wheatgrass Powder</strong></p><p>Nothing Added. Nothing Removed. Just Carefully Prepared Young Wheatgrass.</p>'
       },
       orderIndex: 8,
       isVisible: true
@@ -230,8 +230,8 @@ async function enrichWheatgrass() {
         title: 'Frequently Asked Questions',
         items: [
           {
-            question: 'Is this made from 100% wheatgrass?',
-            answer: 'Yes. Our product contains only 100% Wheatgrass Powder.'
+            question: 'Is this made from  wheatgrass?',
+            answer: 'Yes. Our product contains only  Wheatgrass Powder.'
           },
           {
             question: 'How can I use it?',
@@ -243,7 +243,7 @@ async function enrichWheatgrass() {
           },
           {
             question: 'Does it contain additives?',
-            answer: 'No. It is 100% pure wheatgrass powder with zero added artificial colours, flavours, or preservatives.'
+            answer: 'No. It is Pure wheatgrass powder with zero added artificial colours, flavours, or preservatives.'
           }
         ]
       },
@@ -275,7 +275,7 @@ async function enrichWheatgrass() {
   ];
 
   // 3. Selective Product Enrichment in PostgreSQL
-  const shortDescription = '100% Pure Wheatgrass (Triticum aestivum) Powder. Carefully harvested at early growth, science-guided processed, rich in chlorophyll, vitamins & antioxidants.';
+  const shortDescription = 'Pure Wheatgrass (Triticum aestivum) Powder. Carefully harvested at early growth, science-guided processed, rich in chlorophyll, vitamins & antioxidants.';
   const detailedDescription = 'At Suryodaya Farms, we believe that nature\'s simplest ingredients can make a meaningful contribution to everyday nutrition. Our Wheatgrass Powder is prepared from carefully harvested young wheatgrass using science-guided quality practices designed to help preserve its natural colour, freshness, and nutritional value. Thoughtfully processed and carefully packed, it offers a convenient way to enjoy the natural goodness of wheatgrass as part of your daily routine. Every pack reflects our commitment to Purity • Quality • Integrity • Customer Trust.';
 
   const updatedProduct = await prisma.product.update({
@@ -290,7 +290,7 @@ async function enrichWheatgrass() {
       nutrients: 'Vitamins, Minerals, Dietary Fibre, Plant-Based Nutrients, Antioxidants',
       shelfLife: '12 Months from packaging',
       seoTitle: 'Wheatgrass Powder (Young Green Leaves) | Suryodaya Farms',
-      seoDescription: 'Buy 100% Pure Organic Wheatgrass Powder. Carefully harvested young wheatgrass leaves, rich in chlorophyll, antioxidants & vitamins. Pure green nutrition.',
+      seoDescription: 'Buy Pure Organic Wheatgrass Powder. Carefully harvested young wheatgrass leaves, rich in chlorophyll, antioxidants & vitamins. Pure green nutrition.',
       seoKeywords: 'wheatgrass powder, organic wheatgrass, green superfood, chlorophyll powder, wheatgrass juice, suryodaya farms',
       productContent: contentSections
     },

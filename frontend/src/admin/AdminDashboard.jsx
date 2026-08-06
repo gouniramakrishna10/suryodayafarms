@@ -2619,7 +2619,7 @@ Ensure confidence scores are numbers between 0 and 100. Always reply ONLY with r
         heroImage: "https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?auto=format&fit=crop&q=80&w=800",
         featuredProductId: "",
         offerBadgeText: "15% OFF",
-        floatingBadgeTitle: "100% Heirloom",
+        floatingBadgeTitle: "Heirloom Purity",
         floatingBadgeSubtitle: "Non-Hybrid seeds"
       },
       premium: {
@@ -10881,7 +10881,7 @@ Ensure confidence scores are numbers between 0 and 100. Always reply ONLY with r
                               type="text"
                               value={heroForm.floatingBadgeTitle}
                               onChange={(e) => setHeroForm({ ...heroForm, floatingBadgeTitle: e.target.value })}
-                              placeholder="e.g. 100% Heirloom"
+                              placeholder="e.g. Heirloom Purity"
                               className="bg-[#FDFBF7] border border-[#EDE7D9] rounded-xl py-3 px-4 focus:outline-none focus:border-[#4E641A] text-[#37411A]"
                             />
                           </div>

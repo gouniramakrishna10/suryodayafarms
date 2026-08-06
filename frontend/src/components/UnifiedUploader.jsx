@@ -128,7 +128,7 @@ export default function UnifiedUploader({
         onChange(response.url);
         saveToHistory(response.url);
         setProgress(100);
-        useFeedbackStore.getState().showLoader('Uploading image... 100%');
+        useFeedbackStore.getState().showLoader('Uploading image... Complete');
         setTimeout(() => setProgress(0), 1500);
         useFeedbackStore.getState().hideLoader();
         useFeedbackStore.getState().showToast('✅ Image uploaded successfully', 'success');

@@ -260,7 +260,7 @@ router.get('/homepage', async (req, res, next) => {
       heroImage: "https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?auto=format&fit=crop&q=80&w=800",
       featuredProductId: null,
       offerBadgeText: "15% OFF",
-      floatingBadgeTitle: "100% Heirloom",
+      floatingBadgeTitle: "Heirloom Purity",
       floatingBadgeSubtitle: "Non-Hybrid seeds",
       isActive: true,
       slideOrder: 0,

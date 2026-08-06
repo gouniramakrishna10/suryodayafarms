@@ -98,7 +98,7 @@ async function enrichMoringa() {
       content: {
         title: 'Product Highlights',
         items: [
-          '100% Moringa Leaf Powder',
+          ' Moringa Leaf Powder',
           'Carefully Selected Leaves',
           'Hygienically Processed',
           'Premium Quality',
@@ -183,7 +183,7 @@ async function enrichMoringa() {
       title: 'Ingredients Breakdown',
       content: {
         title: 'Ingredients Breakdown',
-        html: '<p><strong>100% Moringa Leaf Powder</strong></p><p>Nothing Added. Nothing Removed. Just Carefully Prepared Moringa Leaves.</p>'
+        html: '<p><strong> Moringa Leaf Powder</strong></p><p>Nothing Added. Nothing Removed. Just Carefully Prepared Moringa Leaves.</p>'
       },
       orderIndex: 8,
       isVisible: true
@@ -229,8 +229,8 @@ async function enrichMoringa() {
         title: 'Frequently Asked Questions',
         items: [
           {
-            question: 'Is this made from 100% moringa leaves?',
-            answer: 'Yes. It contains only 100% moringa leaf powder.'
+            question: 'Is this made from  moringa leaves?',
+            answer: 'Yes. It contains only  moringa leaf powder.'
           },
           {
             question: 'Can it be added to everyday foods?',
@@ -274,7 +274,7 @@ async function enrichMoringa() {
   ];
 
   // 3. Selective Product Enrichment in PostgreSQL
-  const shortDescription = '100% Pure Moringa Leaf (Moringa oleifera) Powder. Science-guided dried & processed, rich in natural plant protein, vitamins, minerals & antioxidants.';
+  const shortDescription = 'Pure Moringa Leaf (Moringa oleifera) Powder. Science-guided dried & processed, rich in natural plant protein, vitamins, minerals & antioxidants.';
   const detailedDescription = 'At Suryodaya Farms, we believe that nature offers some of the finest ingredients for a balanced lifestyle. Our Moringa Leaf Powder is prepared from carefully selected moringa leaves using quality-focused processing practices designed to help preserve their natural colour, freshness, and nutritional value. Developed through science-guided product development and prepared with care, every pack reflects our commitment to purity, consistency, responsible quality practices, and customer trust.';
 
   const updatedProduct = await prisma.product.update({
@@ -288,8 +288,8 @@ async function enrichMoringa() {
       brand: 'Suryodaya Farms',
       nutrients: 'Vitamins, Minerals, Plant Protein, Dietary Fibre, Antioxidants',
       shelfLife: '12 Months from packaging',
-      seoTitle: 'Moringa Leaf Powder (100% Pure Organic Drumstick Leaf) | Suryodaya Farms',
-      seoDescription: 'Buy 100% Pure Moringa Leaf Powder. Gently dried, nutrient-rich drumstick leaves packed with plant protein, iron, calcium & antioxidants for smoothies & warm drinks.',
+      seoTitle: 'Moringa Leaf Powder (Pure Organic Drumstick Leaf) | Suryodaya Farms',
+      seoDescription: 'Buy Pure Moringa Leaf Powder. Gently dried, nutrient-rich drumstick leaves packed with plant protein, iron, calcium & antioxidants for smoothies & warm drinks.',
       seoKeywords: 'moringa leaf powder, drumstick leaf powder, organic moringa, moringa oleifera, plant protein powder, green superfood, suryodaya farms',
       productContent: contentSections
     },

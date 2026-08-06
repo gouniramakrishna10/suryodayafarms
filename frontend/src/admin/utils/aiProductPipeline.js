@@ -33,9 +33,9 @@ export function processAiDocumentPipeline(documentText, categories = [], section
 
   // Extract Core Product Fields
   const extractedProductName = extractFieldByKeywords(rawTextOrBlocks(rawBlocks), ['product name', 'title', 'name']) || rawBlocks[0]?.title || 'Organic Product';
-  const extractedShortDesc = extractFieldByKeywords(rawTextOrBlocks(rawBlocks), ['tagline', 'summary', 'intro', 'short description']) || '100% Pure Organic & Vedic Harvest';
+  const extractedShortDesc = extractFieldByKeywords(rawTextOrBlocks(rawBlocks), ['tagline', 'summary', 'intro', 'short description']) || 'Pure Organic & Vedic Harvest';
   const extractedDetailedDesc = extractDetailedDescriptionHtml(rawBlocks);
-  const extractedIngredients = extractFieldByKeywords(rawTextOrBlocks(rawBlocks), ['ingredients', 'composition', 'content']) || '100% Organic Dryland Harvest';
+  const extractedIngredients = extractFieldByKeywords(rawTextOrBlocks(rawBlocks), ['ingredients', 'composition', 'content']) || 'Organic Dryland Harvest';
   const extractedNutrition = extractFieldByKeywords(rawTextOrBlocks(rawBlocks), ['nutrients', 'nutrition', 'vitamins', 'minerals']) || 'Rich in Iron, Calcium & Dietary Fiber';
   const extractedOrigin = extractFieldByKeywords(rawTextOrBlocks(rawBlocks), ['origin', 'country', 'farm location']) || 'Rajasthan, India';
   const extractedShelfLife = extractFieldByKeywords(rawTextOrBlocks(rawBlocks), ['shelf life', 'best before', 'expiry']) || '12 Months';
@@ -231,7 +231,7 @@ function buildCmsSectionsFromBlocks(blocks, registry) {
 
     let content = {};
     if (secType === 'HERO') {
-      content = { collectionName: 'Organic Harvest', tagline: '100% Pure', intro: b.lines.join(' ') };
+      content = { collectionName: 'Organic Harvest', tagline: 'Pure & Natural', intro: b.lines.join(' ') };
     } else if (secType === 'ABOUT_PRODUCT' || secType === 'ABOUT_INGREDIENT' || secType === 'INGREDIENTS' || secType === 'OUR_PROMISE' || secType === 'BRAND_STORY') {
       content = { title: b.title, html: b.lines.map(l => `<p>${l}</p>`).join('') };
     } else if (secType === 'WHY_CHOOSE_US' || secType === 'BENEFITS') {

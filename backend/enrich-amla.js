@@ -98,7 +98,7 @@ async function enrichAmla() {
       content: {
         title: 'Product Highlights',
         items: [
-          '100% Amla Powder',
+          ' Amla Powder',
           'Carefully Selected Amla Fruits',
           'Naturally Rich in Vitamin C',
           'Hygienically Processed',
@@ -184,7 +184,7 @@ async function enrichAmla() {
       title: 'Ingredients Breakdown',
       content: {
         title: 'Ingredients Breakdown',
-        html: '<p><strong>100% Amla Powder</strong></p><p>Nothing Added. Nothing Removed. Just Carefully Prepared Indian Gooseberries.</p>'
+        html: '<p><strong> Amla Powder</strong></p><p>Nothing Added. Nothing Removed. Just Carefully Prepared Indian Gooseberries.</p>'
       },
       orderIndex: 8,
       isVisible: true
@@ -230,8 +230,8 @@ async function enrichAmla() {
         title: 'Frequently Asked Questions',
         items: [
           {
-            question: 'Is this made from 100% amla?',
-            answer: 'Yes. Our product contains only 100% Amla Powder (Indian Gooseberry).'
+            question: 'Is this made from  amla?',
+            answer: 'Yes. Our product contains only  Amla Powder (Indian Gooseberry).'
           },
           {
             question: 'Can I mix it with water or juice?',
@@ -275,7 +275,7 @@ async function enrichAmla() {
   ];
 
   // 3. Selective Product Enrichment in PostgreSQL
-  const shortDescription = '100% Pure Indian Gooseberry (Phyllanthus emblica) Amla Powder. Science-guided dried & processed, naturally rich in Vitamin C, polyphenols, iron & immunity antioxidants.';
+  const shortDescription = 'Pure Indian Gooseberry (Phyllanthus emblica) Amla Powder. Science-guided dried & processed, naturally rich in Vitamin C, polyphenols, iron & immunity antioxidants.';
   const detailedDescription = 'At Suryodaya Farms, we believe that some of nature\'s most valued ingredients have stood the test of time. Our Amla Powder is prepared from carefully selected Indian gooseberries using science-guided quality practices designed to help preserve their natural flavour, colour, and nutritional value. Thoughtfully processed and carefully packed, it offers a convenient way to enjoy the natural goodness of amla as part of your everyday diet.';
 
   const updatedProduct = await prisma.product.update({
@@ -289,8 +289,8 @@ async function enrichAmla() {
       brand: 'Suryodaya Farms',
       nutrients: 'Vitamin C (Ascorbic Acid), Polyphenols, Tannins, Chromium, Iron, Dietary Fibre, Antioxidants',
       shelfLife: '12 Months from packaging',
-      seoTitle: 'Amla Powder (100% Pure Indian Gooseberry) | Suryodaya Farms',
-      seoDescription: 'Buy 100% Pure Organic Amla Powder (Indian Gooseberry). Naturally rich in Vitamin C, polyphenols & immunity antioxidants for honey mixes, juices & hair wellness.',
+      seoTitle: 'Amla Powder (Pure Indian Gooseberry) | Suryodaya Farms',
+      seoDescription: 'Buy Pure Organic Amla Powder (Indian Gooseberry). Naturally rich in Vitamin C, polyphenols & immunity antioxidants for honey mixes, juices & hair wellness.',
       seoKeywords: 'amla powder, organic amla powder, indian gooseberry, vitamin c powder, amla powder with honey, amla for hair, immunity superfood, suryodaya farms',
       productContent: contentSections
     },

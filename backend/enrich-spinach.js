@@ -98,7 +98,7 @@ async function enrichSpinach() {
       content: {
         title: 'Product Highlights',
         items: [
-          '100% Spinach Powder',
+          ' Spinach Powder',
           'Carefully Selected Ingredients',
           'Hygienically Processed',
           'Premium Quality',
@@ -183,7 +183,7 @@ async function enrichSpinach() {
       title: 'Ingredients Breakdown',
       content: {
         title: 'Ingredients Breakdown',
-        html: '<p><strong>100% Spinach Powder</strong></p><p>Nothing Added. Nothing Removed. Just Carefully Prepared Spinach Leaves.</p>'
+        html: '<p><strong> Spinach Powder</strong></p><p>Nothing Added. Nothing Removed. Just Carefully Prepared Spinach Leaves.</p>'
       },
       orderIndex: 8,
       isVisible: true
@@ -229,8 +229,8 @@ async function enrichSpinach() {
         title: 'Frequently Asked Questions',
         items: [
           {
-            question: 'Is this made from 100% spinach leaves?',
-            answer: 'Yes. Our product contains only 100% Spinach Powder.'
+            question: 'Is this made from  spinach leaves?',
+            answer: 'Yes. Our product contains only  Spinach Powder.'
           },
           {
             question: 'How can I use it?',
@@ -242,7 +242,7 @@ async function enrichSpinach() {
           },
           {
             question: 'Does it contain additives?',
-            answer: 'No. It is 100% pure spinach powder with zero added artificial colours, flavours, or preservatives.'
+            answer: 'No. It is Pure spinach powder with zero added artificial colours, flavours, or preservatives.'
           }
         ]
       },
@@ -274,7 +274,7 @@ async function enrichSpinach() {
   ];
 
   // 3. Selective Product Enrichment in PostgreSQL
-  const shortDescription = '100% Pure Spinach (Spinacia oleracea) Leaf Powder. Science-guided dried & processed, rich in natural iron, vitamins, fibre & antioxidants.';
+  const shortDescription = 'Pure Spinach (Spinacia oleracea) Leaf Powder. Science-guided dried & processed, rich in natural iron, vitamins, fibre & antioxidants.';
   const detailedDescription = 'At Suryodaya Farms, we believe that healthy living begins with simple, wholesome foods from nature. Our Spinach Powder is prepared from carefully selected spinach leaves using science-guided quality practices designed to help preserve their natural colour, freshness, and nutritional value. Thoughtfully processed and carefully packed, it offers a convenient way to enjoy the natural goodness of spinach as part of your everyday meals.';
 
   const updatedProduct = await prisma.product.update({
@@ -288,8 +288,8 @@ async function enrichSpinach() {
       brand: 'Suryodaya Farms',
       nutrients: 'Vitamins A/C/K, Iron, Potassium, Magnesium, Dietary Fibre, Antioxidants',
       shelfLife: '12 Months from packaging',
-      seoTitle: 'Spinach Powder (100% Pure Dehydrated Leaf) | Suryodaya Farms',
-      seoDescription: 'Buy 100% Pure Spinach Leaf Powder. Gently dried, hygienically milled spinach leaves rich in iron, vitamins & antioxidants for soups, smoothies & parathas.',
+      seoTitle: 'Spinach Powder (Pure Dehydrated Leaf) | Suryodaya Farms',
+      seoDescription: 'Buy Pure Spinach Leaf Powder. Gently dried, hygienically milled spinach leaves rich in iron, vitamins & antioxidants for soups, smoothies & parathas.',
       seoKeywords: 'spinach powder, palak powder, dehydrated spinach, iron rich vegetable powder, green smoothie powder, suryodaya farms',
       productContent: contentSections
     },

@@ -98,7 +98,7 @@ async function enrichCarrot() {
       content: {
         title: 'Product Highlights',
         items: [
-          '100% Carrot Powder',
+          ' Carrot Powder',
           'Carefully Selected Carrots',
           'Hygienically Processed',
           'Premium Quality',
@@ -185,7 +185,7 @@ async function enrichCarrot() {
       title: 'Ingredients Breakdown',
       content: {
         title: 'Ingredients Breakdown',
-        html: '<p><strong>100% Carrot Powder</strong></p><p>Nothing Added. Nothing Removed. Just Carefully Prepared Carrots.</p>'
+        html: '<p><strong> Carrot Powder</strong></p><p>Nothing Added. Nothing Removed. Just Carefully Prepared Carrots.</p>'
       },
       orderIndex: 8,
       isVisible: true
@@ -231,8 +231,8 @@ async function enrichCarrot() {
         title: 'Frequently Asked Questions',
         items: [
           {
-            question: 'Is this made from 100% carrots?',
-            answer: 'Yes. Our product contains only 100% Carrot Powder.'
+            question: 'Is this made from  carrots?',
+            answer: 'Yes. Our product contains only  Carrot Powder.'
           },
           {
             question: 'Can I use it in baking?',
@@ -276,7 +276,7 @@ async function enrichCarrot() {
   ];
 
   // 3. Selective Product Enrichment in PostgreSQL
-  const shortDescription = '100% Pure Carrot (Daucus carota) Powder. Gently dried, science-guided processed, naturally rich in beta-carotene (provitamin A), fibre & antioxidants.';
+  const shortDescription = 'Pure Carrot (Daucus carota) Powder. Gently dried, science-guided processed, naturally rich in beta-carotene (provitamin A), fibre & antioxidants.';
   const detailedDescription = 'At Suryodaya Farms, we believe that everyday nutrition should be wholesome, convenient, and inspired by nature. Our Carrot Powder is prepared from carefully selected carrots using science-guided quality practices designed to help preserve their natural colour, flavour, and nutritional value. Thoughtfully processed and carefully packed, it provides a convenient way to include the natural goodness of carrots in beverages, soups, baking, snacks, and everyday recipes.';
 
   const updatedProduct = await prisma.product.update({
@@ -290,8 +290,8 @@ async function enrichCarrot() {
       brand: 'Suryodaya Farms',
       nutrients: 'Beta-carotene (Provitamin A), Dietary Fibre, Vitamins C/K1/B6, Potassium, Antioxidants',
       shelfLife: '12 Months from packaging',
-      seoTitle: 'Carrot Powder (100% Pure Dehydrated Root) | Suryodaya Farms',
-      seoDescription: 'Buy 100% Pure Dehydrated Carrot Powder. Gently dried, beta-carotene rich carrot powder for smoothies, soups, baking, cakes, halwa & baby porridge.',
+      seoTitle: 'Carrot Powder (Pure Dehydrated Root) | Suryodaya Farms',
+      seoDescription: 'Buy Pure Dehydrated Carrot Powder. Gently dried, beta-carotene rich carrot powder for smoothies, soups, baking, cakes, halwa & baby porridge.',
       seoKeywords: 'carrot powder, dehydrated carrot powder, organic carrot powder, beta carotene powder, carrot powder for baking, carrot halwa powder, suryodaya farms',
       productContent: contentSections
     },

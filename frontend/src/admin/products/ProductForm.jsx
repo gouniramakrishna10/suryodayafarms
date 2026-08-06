@@ -589,7 +589,7 @@ export default function ProductForm({
               <label className="text-xs font-semibold text-stone-700">Ingredients</label>
               <input
                 type="text"
-                placeholder="e.g. 100% Organic Raw Moringa Leaves"
+                placeholder="e.g. Pure Organic Raw Moringa Leaves"
                 value={productForm.ingredients || productForm.productContent?.ingredients || ''}
                 onChange={(e) => setProductForm(prev => ({
                   ...prev,
@@ -736,7 +736,7 @@ export default function ProductForm({
             <div className="flex flex-col gap-1.5">
               <label className="text-xs font-semibold text-stone-700">SEO Meta Description</label>
               <textarea
-                placeholder="Buy 100% pure organic moringa powder direct from Suryodaya Farms..."
+                placeholder="Buy pure organic moringa powder direct from Suryodaya Farms..."
                 value={productForm.seoDescription || ''}
                 onChange={(e) => setProductForm({ ...productForm, seoDescription: e.target.value })}
                 className="w-full bg-white border border-stone-300 rounded-xl py-2.5 px-3.5 text-xs text-stone-900 h-20 focus:outline-none focus:border-[#4E641A] resize-none"

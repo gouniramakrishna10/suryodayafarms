@@ -131,7 +131,7 @@ export default function Testimonials() {
               We do not purchase farmlands to create corporate monocultures. Suryodaya operates on an indigenous farmer-first cooperative model, empowering traditional dryland families to return to their organic roots.
             </p>
             <p className="font-sans text-xs md:text-sm text-dark-text/75 leading-relaxed font-light">
-              We supply composting microorganisms, organic seeds, and agronomic support at zero cost. By purchasing 100% of their harvests at stable premium price agreements, we ensure absolute financial independence and dignity for local communities.
+              We supply composting microorganisms, organic seeds, and agronomic support at zero cost. By purchasing all of their harvests at stable premium price agreements, we ensure absolute financial independence and dignity for local communities.
             </p>
           </div>
 

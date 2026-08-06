@@ -138,7 +138,7 @@ export default function Faq() {
     {
       id: 9,
       category: 'Products',
-      question: 'Are your products 100% natural?',
+      question: 'Are your products natural?',
       answer: 'Many of our products are made using carefully selected natural ingredients. Please refer to the ingredient list on each product for complete information regarding its composition.'
     },
     {

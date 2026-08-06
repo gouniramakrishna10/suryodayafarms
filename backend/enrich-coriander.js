@@ -98,7 +98,7 @@ async function enrichCoriander() {
       content: {
         title: 'Product Highlights',
         items: [
-          '100% Coriander Leaf Powder',
+          ' Coriander Leaf Powder',
           'Carefully Selected Ingredients',
           'Hygienically Processed',
           'Premium Quality',
@@ -184,7 +184,7 @@ async function enrichCoriander() {
       title: 'Ingredients Breakdown',
       content: {
         title: 'Ingredients Breakdown',
-        html: '<p><strong>100% Coriander Leaf Powder</strong></p><p>Nothing Added. Nothing Removed. Just Carefully Prepared Coriander Leaves.</p>'
+        html: '<p><strong> Coriander Leaf Powder</strong></p><p>Nothing Added. Nothing Removed. Just Carefully Prepared Coriander Leaves.</p>'
       },
       orderIndex: 8,
       isVisible: true
@@ -230,8 +230,8 @@ async function enrichCoriander() {
         title: 'Frequently Asked Questions',
         items: [
           {
-            question: 'Is this made from 100% coriander leaves?',
-            answer: 'Yes. Our product contains only 100% Coriander Leaf Powder.'
+            question: 'Is this made from  coriander leaves?',
+            answer: 'Yes. Our product contains only  Coriander Leaf Powder.'
           },
           {
             question: 'How can I use it?',
@@ -275,7 +275,7 @@ async function enrichCoriander() {
   ];
 
   // 3. Selective Product Enrichment in PostgreSQL
-  const shortDescription = '100% Pure Coriander Leaf (Coriandrum sativum) Powder. Science-guided dried & processed, rich in fresh cilantro aroma, vitamins A/C/K & antioxidants.';
+  const shortDescription = 'Pure Coriander Leaf (Coriandrum sativum) Powder. Science-guided dried & processed, rich in fresh cilantro aroma, vitamins A/C/K & antioxidants.';
   const detailedDescription = 'At Suryodaya Farms, we believe that the finest flavours begin with nature. Our Coriander Leaf Powder is prepared from carefully selected coriander leaves using science-guided quality practices designed to help preserve their natural aroma, vibrant green colour, and nutritional value. Thoughtfully processed and carefully packed, it provides a convenient way to enjoy the fresh taste and natural goodness of coriander throughout the year.';
 
   const updatedProduct = await prisma.product.update({
@@ -289,8 +289,8 @@ async function enrichCoriander() {
       brand: 'Suryodaya Farms',
       nutrients: 'Vitamins A/C/K, Potassium, Manganese, Iron, Dietary Fibre, Antioxidants',
       shelfLife: '12 Months from packaging',
-      seoTitle: 'Coriander Leaf Powder (100% Pure Dhaniya Leaf) | Suryodaya Farms',
-      seoDescription: 'Buy 100% Pure Coriander Leaf (Dhaniya Patta) Powder. Gently dried, aromatic cilantro leaves rich in antioxidants for curries, dals, chutneys & soups.',
+      seoTitle: 'Coriander Leaf Powder (Pure Dhaniya Leaf) | Suryodaya Farms',
+      seoDescription: 'Buy Pure Coriander Leaf (Dhaniya Patta) Powder. Gently dried, aromatic cilantro leaves rich in antioxidants for curries, dals, chutneys & soups.',
       seoKeywords: 'coriander leaf powder, dhaniya patta powder, dried cilantro leaves, organic coriander, cilantro powder, Indian culinary herb, suryodaya farms',
       productContent: contentSections
     },

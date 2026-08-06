@@ -106,7 +106,7 @@ async function enrichSproutedRagi() {
       content: {
         title: 'Product Highlights',
         items: [
-          '100% Sprouted Ragi Flour',
+          ' Sprouted Ragi Flour',
           'Carefully Selected Finger Millet',
           'Naturally Sprouted',
           'Hygienically Processed',
@@ -192,7 +192,7 @@ async function enrichSproutedRagi() {
       title: 'Ingredients Breakdown',
       content: {
         title: 'Ingredients Breakdown',
-        html: '<p><strong>100% Sprouted Ragi (Finger Millet) Flour</strong></p><p>Nothing Added. Nothing Removed. Just Carefully Prepared Sprouted Ragi.</p>'
+        html: '<p><strong> Sprouted Ragi (Finger Millet) Flour</strong></p><p>Nothing Added. Nothing Removed. Just Carefully Prepared Sprouted Ragi.</p>'
       },
       orderIndex: 8,
       isVisible: true
@@ -238,8 +238,8 @@ async function enrichSproutedRagi() {
         title: 'Frequently Asked Questions',
         items: [
           {
-            question: 'Is this made from 100% sprouted ragi?',
-            answer: 'Yes. Our product contains only 100% Sprouted Ragi (Finger Millet) Flour.'
+            question: 'Is this made from  sprouted ragi?',
+            answer: 'Yes. Our product contains only  Sprouted Ragi (Finger Millet) Flour.'
           },
           {
             question: 'How can I use Sprouted Ragi Flour?',
@@ -283,7 +283,7 @@ async function enrichSproutedRagi() {
   ];
 
   // 3. Perform Selective Product Enrichment in PostgreSQL
-  const shortDescription = '100% Sprouted Finger Millet (Eleusine coracana) Flour. Naturally sprouted, gently dried, and hygienically milled under science-guided quality practices.';
+  const shortDescription = ' Sprouted Finger Millet (Eleusine coracana) Flour. Naturally sprouted, gently dried, and hygienically milled under science-guided quality practices.';
   const detailedDescription = 'At Suryodaya Farms, we believe that nature and traditional food wisdom provide some of the best foundations for everyday nutrition. Our Sprouted Ragi Flour is prepared from carefully selected finger millet (Eleusine coracana). The grains are naturally sprouted under carefully controlled conditions, gently dried, and hygienically milled using science-guided quality practices designed to help preserve their natural goodness and nutritional value. Thoughtfully prepared and carefully packed, it offers a convenient and wholesome ingredient for a wide variety of everyday recipes. Every pack reflects our commitment to Nature • Science • Quality • Trust.';
   
   // Update Product fields
@@ -299,7 +299,7 @@ async function enrichSproutedRagi() {
       nutrients: 'Complex Carbohydrates, Dietary Fibre, Plant-Based Protein, Calcium, Iron',
       shelfLife: '9 Months from packaging',
       seoTitle: 'Sprouted Ragi Flour (Finger Millet) | Suryodaya Farms',
-      seoDescription: 'Buy 100% Pure Sprouted Ragi Flour (Finger Millet). Naturally sprouted, hygienically milled, rich in calcium, iron & fibre. Wholesome everyday nutrition.',
+      seoDescription: 'Buy Pure Sprouted Ragi Flour (Finger Millet). Naturally sprouted, hygienically milled, rich in calcium, iron & fibre. Wholesome everyday nutrition.',
       seoKeywords: 'sprouted ragi flour, finger millet, nachni flour, organic ragi flour, calcium rich millet, baby ragi porridge, suryodaya farms',
       productContent: contentSections
     },

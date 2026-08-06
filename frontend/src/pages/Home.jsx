@@ -821,7 +821,7 @@ export default function Home() {
       if (lower.includes('farm') || lower.includes('fresh') || lower.includes('direct')) {
         return "Directly sourced from our farms";
       }
-      return "100% natural superfoods";
+      return "Pure natural superfoods";
     };
 
     const renderFloatingIngredients = (type) => {

@@ -124,7 +124,7 @@ export default function ProductModal({ product, onClose }) {
             {/* Origin */}
             <div className="flex justify-between items-center text-[11px] font-sans text-dark-text/50 font-medium">
               <span>Farm Plot: <strong className="text-primary-green">{product.origin}</strong></span>
-              <span>100% Certified Organic</span>
+              <span>Certified Organic</span>
             </div>
           </div>
 
