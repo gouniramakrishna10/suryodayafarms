@@ -300,38 +300,54 @@ export default function Partner() {
         </div>
       </section>
 
-      {/* 3. PARTNERSHIP OPPORTUNITIES */}
-      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 bg-[#FAF7F2] border-b border-[#EDE7D9]">
-        <div className="max-w-7xl mx-auto space-y-16">
-          <div className="text-center max-w-3xl mx-auto space-y-4 flex flex-col items-center">
+      {/* 3. PARTNERSHIP OPPORTUNITIES (COMPACT INTERACTIVE B2B OPPORTUNITY CARDS) */}
+      <section className="py-10 sm:py-14 lg:py-16 px-4 sm:px-6 lg:px-12 bg-[#FAF7F2] border-b border-[#EDE7D9] relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(#4E641A_1px,transparent_1px)] [background-size:32px_32px] opacity-10 pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto space-y-8 lg:space-y-10 relative z-10">
+          <div className="text-center max-w-3xl mx-auto space-y-3 flex flex-col items-center">
             <SectionBadge text="Collaborative Avenues" align="center" />
-            <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">Partnership Opportunities</h2>
-            <p className="text-stone-600 text-base sm:text-lg font-sans">We welcome collaborations in the following areas:</p>
+            <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#2F3B0C]">Partnership Opportunities</h2>
+            <p className="text-stone-600 text-sm sm:text-base lg:text-lg font-sans font-normal">We welcome collaborations in the following areas:</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
             {partnershipOpportunities.map((opp, idx) => {
               const Icon = opp.icon;
               return (
                 <motion.div
                   key={idx}
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 15 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: idx * 0.05 }}
-                  className="bg-white border border-[#EDE7D9] p-8 sm:p-10 rounded-[28px] shadow-xs hover:shadow-xl hover:border-[#4E641A]/50 transition-all duration-300 group flex flex-col justify-between"
+                  transition={{ duration: 0.35, delay: idx * 0.05 }}
+                  onClick={scrollToForm}
+                  className="bg-white border border-[#EDE7D9] p-6 sm:p-7 rounded-[24px] shadow-xs hover:shadow-xl hover:border-[#4E641A] transition-all duration-300 group cursor-pointer flex flex-col justify-between relative overflow-hidden transform hover:-translate-y-1"
                 >
-                  <div className="space-y-6">
-                    <div className="w-14 h-14 rounded-2xl bg-[#4E641A]/10 text-[#4E641A] flex items-center justify-center text-2xl group-hover:bg-[#4E641A] group-hover:text-white transition-colors duration-300 shadow-inner">
+                  {/* Subtle Corner Botanical Watermark */}
+                  <div className="absolute -right-6 -bottom-6 text-[#4E641A]/5 group-hover:text-[#4E641A]/10 text-8xl pointer-events-none transition-colors duration-300 select-none">
+                    <GiSprout />
+                  </div>
+
+                  {/* Top Row: Icon Badge + Partnership Title */}
+                  <div className="flex items-center gap-4.5 relative z-10">
+                    <div className="w-12 h-12 sm:w-13 sm:h-13 rounded-2xl bg-[#4E641A]/10 text-[#4E641A] flex items-center justify-center text-xl sm:text-2xl group-hover:bg-[#4E641A] group-hover:text-white transition-colors duration-300 shadow-inner shrink-0">
                       <Icon />
                     </div>
-                    <h3 className="font-serif text-xl sm:text-2xl font-bold text-[#2F3B0C] group-hover:text-[#4E641A] transition-colors leading-snug">
+                    <h3 className="font-serif text-lg sm:text-xl font-bold text-[#2F3B0C] group-hover:text-[#4E641A] transition-colors leading-snug">
                       {opp.title}
                     </h3>
                   </div>
-                  <div className="pt-8 border-t border-[#EDE7D9]/60 mt-8 flex items-center gap-2 text-xs font-bold text-[#4E641A] uppercase tracking-wider">
-                    <span>Explore Collaboration</span>
-                    <FiArrowRight className="group-hover:translate-x-1.5 transition-transform" />
+
+                  {/* Middle: Thin Decorative Divider */}
+                  <div className="border-b border-[#EDE7D9]/80 my-4 sm:my-5 relative z-10" />
+
+                  {/* Bottom Row: Animated Link + Sliding Arrow */}
+                  <div className="flex items-center justify-between text-xs font-bold text-[#4E641A] uppercase tracking-wider relative z-10">
+                    <span className="relative inline-block after:content-[''] after:absolute after:w-0 after:h-[1.5px] after:bg-[#4E641A] after:left-0 after:-bottom-0.5 group-hover:after:w-full after:transition-all after:duration-300">
+                      Explore Collaboration
+                    </span>
+                    <FiArrowRight className="text-base transform group-hover:translate-x-2 transition-transform duration-300" />
                   </div>
                 </motion.div>
               );
