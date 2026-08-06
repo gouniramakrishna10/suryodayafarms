@@ -669,7 +669,9 @@ export default function ProductDetails() {
                       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                         {features.map((feat, idx) => (
                           <div key={idx} className="flex flex-col gap-2 bg-[#FCFAF5] border border-[#EDE7D9] rounded-2xl p-5 hover:border-[#C68A2B]/40 hover:shadow-sm transition-all duration-300">
-                            <span className="text-2xl">{feat.icon}</span>
+                            <div className="flex justify-center w-full text-center">
+                              <span className="text-2xl sm:text-3xl text-center block">{feat.icon}</span>
+                            </div>
                             <h4 className="font-serif text-sm font-bold text-[#2F3B0C]">{feat.heading}</h4>
                             {feat.description && <p className="font-sans text-xs text-stone-500 leading-relaxed font-light">{feat.description}</p>}
                           </div>

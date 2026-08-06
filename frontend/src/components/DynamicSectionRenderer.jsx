@@ -75,7 +75,9 @@ function renderSingleSection(sec, idx, activeFaqIndex, setActiveFaqIndex) {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {cardList.map((c, cIdx) => (
               <div key={cIdx} className="flex flex-col gap-2 bg-[#FCFAF5] border border-[#EDE7D9] rounded-2xl p-5 hover:border-[#C68A2B]/40 hover:shadow-sm transition duration-300">
-                <span className="text-2xl">{c.icon || '✦'}</span>
+                <div className="flex justify-center w-full text-center">
+                  <span className="text-2xl sm:text-3xl text-center block">{c.icon || '✦'}</span>
+                </div>
                 <h4 className="font-serif text-sm font-bold text-[#2F3B0C]">{c.title}</h4>
                 {c.description && <p className="font-sans text-xs text-stone-500 leading-relaxed font-light">{c.description}</p>}
               </div>
@@ -99,7 +101,9 @@ function renderSingleSection(sec, idx, activeFaqIndex, setActiveFaqIndex) {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {recipesList.map((r, rIdx) => (
               <div key={rIdx} className="flex flex-col gap-2 bg-[#FCFAF5] border border-[#EDE7D9] rounded-2xl p-5 hover:border-[#C68A2B]/40 hover:shadow-sm transition duration-300">
-                <span className="text-3xl">{r.icon || '🥤'}</span>
+                <div className="flex justify-center w-full text-center">
+                  <span className="text-3xl text-center block">{r.icon || '🥤'}</span>
+                </div>
                 <h4 className="font-serif text-sm font-bold text-[#2F3B0C]">{r.title}</h4>
                 {r.description && <p className="font-sans text-xs text-stone-500 leading-relaxed font-light">{r.description}</p>}
               </div>
