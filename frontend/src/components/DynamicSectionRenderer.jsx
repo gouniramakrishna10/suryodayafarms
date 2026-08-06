@@ -227,12 +227,12 @@ function renderSingleSection(sec, idx, activeFaqIndex, setActiveFaqIndex) {
                     onClick={() => setActiveFaqIndex(isOpen ? null : `${idx}-${fIdx}`)}
                     className="w-full p-4 flex justify-between items-center text-left font-serif text-sm font-bold text-[#2F3B0C] cursor-pointer border-none bg-transparent"
                   >
-                    <span>{faq.question}</span>
+                    <span>{cleanText(faq.question)}</span>
                     <FiChevronDown className={`text-stone-400 transition-transform duration-200 ${isOpen ? 'rotate-180 text-[#4E641A]' : ''}`} />
                   </button>
                   {isOpen && (
                     <div className="px-4 pb-4 pt-1 text-xs sm:text-sm text-stone-600 font-sans leading-relaxed border-t border-[#EDE7D9]/50">
-                      {faq.answer}
+                      {cleanText(faq.answer)}
                     </div>
                   )}
                 </div>
@@ -339,7 +339,7 @@ function renderSingleSection(sec, idx, activeFaqIndex, setActiveFaqIndex) {
           )}
           <div 
             className="detailed-product-description prose max-w-none text-left select-text"
-            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content.html) }}
+            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(cleanText(content.html)) }}
           />
         </div>
       );

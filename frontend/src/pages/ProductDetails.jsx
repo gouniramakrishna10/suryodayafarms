@@ -624,7 +624,7 @@ export default function ProductDetails() {
                     </div>
                     <div 
                       className="detailed-product-description prose max-w-none text-left select-text"
-                      dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product.detailedDescription) }}
+                      dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(cleanText(product.detailedDescription)) }}
                     />
                   </div>
                 )}
@@ -640,10 +640,10 @@ export default function ProductDetails() {
                       </div>
                     </div>
                     {product.shortDescription && (
-                      <p className="font-sans text-sm text-stone-700 leading-relaxed font-semibold italic border-l-2 border-[#C68A2B] pl-4 py-1 mb-5">{product.shortDescription}</p>
+                      <p className="font-sans text-sm text-stone-700 leading-relaxed font-semibold italic border-l-2 border-[#C68A2B] pl-4 py-1 mb-5">{cleanText(product.shortDescription)}</p>
                     )}
                     <div className="font-sans text-sm text-stone-600 leading-relaxed prose max-w-none">
-                      <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product.productContent?.about || product.description || '') }} />
+                      <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(cleanText(product.productContent?.about || product.description || '')) }} />
                     </div>
                   </div>
                 )}

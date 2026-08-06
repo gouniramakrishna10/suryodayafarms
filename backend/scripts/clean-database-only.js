@@ -16,6 +16,18 @@ function sanitizeText(str) {
     .replace(/100%\s*Fresh/gi, 'Fresh')
     .replace(/100%\s*Quality/gi, 'Quality')
     .replace(/100%\s*Heirloom/gi, 'Heirloom')
+    .replace(/100%\s*bananas\b/gi, 'pure bananas')
+    .replace(/100%\s*banana\b/gi, 'pure banana')
+    .replace(/100%\s*moringa\b/gi, 'pure moringa')
+    .replace(/100%\s*amla\b/gi, 'pure amla')
+    .replace(/100%\s*wheatgrass\b/gi, 'pure wheatgrass')
+    .replace(/100%\s*sprouted\s*ragi\b/gi, 'pure sprouted ragi')
+    .replace(/100%\s*coriander\b/gi, 'pure coriander')
+    .replace(/100%\s*curry\b/gi, 'pure curry')
+    .replace(/100%\s*mint\b/gi, 'pure mint')
+    .replace(/100%\s*spinach\b/gi, 'pure spinach')
+    .replace(/100%\s*beetroot\b/gi, 'pure beetroot')
+    .replace(/100%\s*carrot\b/gi, 'pure carrot')
     .replace(/100%\s*/gi, 'Pure ')
     .replace(/\b100%\b/g, 'Pure');
 
@@ -77,6 +89,22 @@ async function main() {
     });
     console.log(`  ✅ Cleaned DB product: ${newName} (${p.id})`);
   }
+
+  // Also clean ProductContent table records directly
+  if (prisma.productContent) {
+    const pcRecords = await prisma.productContent.findMany();
+    for (const pc of pcRecords) {
+      if (pc.content) {
+        const cleanedContent = cleanObject(pc.content);
+        await prisma.productContent.update({
+          where: { id: pc.id },
+          data: { content: cleanedContent }
+        });
+      }
+    }
+    console.log(`  ✅ Cleaned ${pcRecords.length} ProductContent section records in DB`);
+  }
+
   console.log('🎉 Database cleanup complete!');
 }
 
