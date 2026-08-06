@@ -202,7 +202,6 @@ export default function Partner() {
     'Quality without Compromise',
     'Honest & Transparent Relationships',
     'Continuous Innovation',
-    'Sustainable Growth',
     'Shared Success'
   ];
 
