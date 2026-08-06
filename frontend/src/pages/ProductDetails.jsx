@@ -603,28 +603,7 @@ export default function ProductDetails() {
                 </div>
               </div>
 
-              {/* Quick Highlights (6-8 feature badges) */}
-              <div className="bg-white border border-[#EDE7D9] rounded-[32px] p-6 shadow-xs space-y-4">
-                <h4 className="font-serif text-sm font-bold text-[#2F3B0C] uppercase tracking-wider border-b border-stone-100 pb-2">Harvest Highlights</h4>
-                <div className="grid grid-cols-2 gap-y-4 gap-x-6">
-                  {[
-                    { label: 'Certified Organic', desc: 'Cultivated without chemical additives' },
-                    { label: 'Traditional Vedic Methods', desc: 'Slow, handcrafted small batches' },
-                    { label: 'Desi Seed Cultivation', desc: 'Native crop variety preservation' },
-                    { label: 'Direct Dryland Sourcing', desc: 'Concentrated natural flavors' },
-                    { label: 'Eco-Packaging Preserve', desc: 'Glass & cotton preservation' },
-                    { label: 'Direct Farmer Support', desc: 'Ensuring fair dryland wages' }
-                  ].map((badge, idx) => (
-                    <div key={idx} className="flex gap-3 items-start">
-                      <span className="text-[#C68A2B] text-sm shrink-0">✓</span>
-                      <div className="space-y-0.5">
-                        <span className="font-sans text-xs font-bold text-stone-850 block">{badge.label}</span>
-                        <span className="font-sans text-[10px] text-stone-400 font-light block">{badge.desc}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+
 
               {/* ===== MODULAR CONTENT SECTIONS ===== */}
               <div className="space-y-6">
