@@ -742,60 +742,49 @@ export default function Partner() {
         </div>
       </section>
 
-      {/* 12. PREMIUM APPLICATION CARD (2-COLUMN SPLIT FORM PORTAL) */}
-      <section id="partner-form-section" className="py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-12 bg-[#F9F6F0] border-b border-[#EDE7D9] relative">
-        <div className="max-w-7xl mx-auto">
-          <div className="bg-white border border-[#EDE7D9] rounded-[32px] sm:rounded-[40px] p-6 sm:p-10 lg:p-14 shadow-xl relative overflow-hidden">
+      {/* 12. PREMIUM APPLICATION CARD (CENTERED FORM PORTAL - ZERO EMPTY SPACE) */}
+      <section id="partner-form-section" className="py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-12 bg-[#FAF7F2] border-b border-[#EDE7D9] relative select-none">
+        <div className="max-w-4xl mx-auto space-y-10">
+          
+          {/* Centered Section Header */}
+          <div className="text-center max-w-2xl mx-auto space-y-3 flex flex-col items-center">
+            <SectionBadge text="Application Portal" align="center" />
+            <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#2F3B0C] tracking-tight">
+              Join Our Partnership Network
+            </h2>
+            <p className="text-stone-600 text-sm sm:text-base leading-relaxed font-sans font-normal">
+              Complete the application below to explore partnership opportunities with Suryodaya Farms. Our team will carefully review your submission and get in touch with you to discuss the next steps.
+            </p>
+          </div>
+
+          {/* Form Card Container */}
+          <div className="bg-white border border-[#EDE7D9] rounded-[28px] sm:rounded-[36px] p-6 sm:p-10 lg:p-12 shadow-xl relative overflow-hidden text-left">
             
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
-              
-              {/* [ LEFT COLUMN ] - HEADING & DESCRIPTION */}
-              <div className="lg:col-span-5 space-y-6 text-left relative z-10 lg:sticky lg:top-28">
-                <SectionBadge text="Application Portal" align="left" />
-
-                <h3 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#2F3B0C] leading-tight">
-                  Join Our Partnership Network
-                </h3>
-
-                <p className="text-stone-600 text-sm sm:text-base leading-relaxed font-sans font-normal">
-                  Complete the application below to explore partnership opportunities with Suryodaya Farms. Our team will carefully review your submission and get in touch with you to discuss the next steps.
-                </p>
-
-                <div className="w-16 h-0.5 bg-[#4E641A]/30 rounded-full" />
-
-                {/* TRUST & ASSURANCE CHECKLIST */}
-                <div className="space-y-4 pt-2">
-                  <div className="flex items-start gap-3 text-xs sm:text-sm font-sans font-medium text-stone-700">
-                    <FiCheckCircle className="text-[#4E641A] text-lg shrink-0 mt-0.5" />
-                    <span>Verified B2B Commercial Partner Network</span>
-                  </div>
-                  <div className="flex items-start gap-3 text-xs sm:text-sm font-sans font-medium text-stone-700">
-                    <FiCheckCircle className="text-[#4E641A] text-lg shrink-0 mt-0.5" />
-                    <span>Response within 24–48 Business Hours</span>
-                  </div>
-                  <div className="flex items-start gap-3 text-xs sm:text-sm font-sans font-medium text-stone-700">
-                    <FiCheckCircle className="text-[#4E641A] text-lg shrink-0 mt-0.5" />
-                    <span>Dedicated Relationship Manager Support</span>
-                  </div>
-                </div>
-
-                {/* Corner Botanical Watermark */}
-                <div className="hidden lg:block absolute -left-12 -bottom-12 text-[#4E641A]/5 text-9xl pointer-events-none select-none">
-                  <GiSprout />
-                </div>
+            {/* Top Trust Checklist Bar */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8 p-4 bg-[#FAF7F2] border border-[#EDE7D9] rounded-2xl">
+              <div className="flex items-center justify-center sm:justify-start gap-2.5 text-xs font-semibold text-[#2F3B0C]">
+                <FiCheckCircle className="text-[#4E641A] text-base shrink-0" />
+                <span>Verified B2B Partner Network</span>
               </div>
+              <div className="flex items-center justify-center sm:justify-start gap-2.5 text-xs font-semibold text-[#2F3B0C]">
+                <FiCheckCircle className="text-[#4E641A] text-base shrink-0" />
+                <span>Response in 24–48 Hours</span>
+              </div>
+              <div className="flex items-center justify-center sm:justify-start gap-2.5 text-xs font-semibold text-[#2F3B0C]">
+                <FiCheckCircle className="text-[#4E641A] text-base shrink-0" />
+                <span>Dedicated Account Manager</span>
+              </div>
+            </div>
 
-              {/* [ RIGHT COLUMN ] - FORM AREA */}
-              <div className="lg:col-span-7 bg-[#FAF8F5] border border-[#EDE7D9] rounded-[24px] sm:rounded-[28px] p-6 sm:p-8 lg:p-10 shadow-xs text-left relative z-10">
-                <AnimatePresence mode="wait">
-                  {submitSuccess ? (
-                    <motion.div
-                      key="success"
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
-                      className="py-16 text-center space-y-6"
-                    >
+            <AnimatePresence mode="wait">
+              {submitSuccess ? (
+                <motion.div
+                  key="success"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  className="py-16 text-center space-y-6"
+                >
                   <div className="w-20 h-20 bg-[#4E641A]/10 text-[#4E641A] rounded-full flex items-center justify-center mx-auto text-4xl shadow-inner">
                     <FiCheckCircle className="animate-bounce" />
                   </div>
@@ -1003,8 +992,6 @@ export default function Partner() {
                 </motion.form>
               )}
             </AnimatePresence>
-              </div>
-            </div>
           </div>
         </div>
       </section>
