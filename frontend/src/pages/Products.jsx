@@ -250,24 +250,25 @@ export default function Products() {
 
   return (
     <div className="flex flex-col bg-cream-bg min-h-screen relative w-full pb-24">
-      {/* 1. Page Header (Client Approved Storytelling Banner) */}
-      <div className="w-full bg-[#FAF7F2] border-b border-[#EAE4D8] py-14 md:py-20 px-4 sm:px-6 md:px-12 text-center flex flex-col items-center gap-6 select-none products-hero-banner">
-        <div className="w-11 h-11 rounded-full bg-[#4E641A]/10 border border-[#4E641A]/20 flex items-center justify-center text-[#4E641A] products-hero-badge shadow-2xs">
-          <GiSprout className="w-6 h-6 text-[#4E641A]" />
+      {/* 1. Page Header (Client Approved Storytelling Banner - Compact & Premium) */}
+      <div className="w-full bg-[#FAF7F2] border-b border-[#EAE4D8] py-8 sm:py-10 md:py-12 px-4 sm:px-6 md:px-12 text-center flex flex-col items-center gap-3.5 select-none products-hero-banner">
+        <div className="flex flex-col items-center gap-2">
+          <div className="w-9 h-9 rounded-full bg-[#4E641A]/10 border border-[#4E641A]/20 flex items-center justify-center text-[#4E641A] products-hero-badge shadow-2xs">
+            <GiSprout className="w-5 h-5 text-[#4E641A]" />
+          </div>
+          <SectionBadge text="PURE • NATURAL • NUTRITIOUS" align="center" />
         </div>
 
-        <SectionBadge text="PURE • NATURAL • NUTRITIOUS" align="center" />
-
-        <div className="space-y-3 max-w-3xl mx-auto">
-          <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[#2F3B0C] leading-tight products-hero-heading">
+        <div className="space-y-1.5 max-w-3xl mx-auto">
+          <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl lg:text-[44px] font-bold text-[#2F3B0C] leading-[1.08] tracking-tight products-hero-heading">
             Nourishing Families, Naturally
           </h1>
-          <p className="font-serif italic text-lg sm:text-xl font-bold text-[#4E641A] tracking-wide">
+          <p className="font-serif italic text-base sm:text-lg font-bold text-[#4E641A] tracking-wide">
             Pure Nutrition. Scientific Quality. Trusted Care.
           </p>
         </div>
 
-        <div className="space-y-4 max-w-3xl mx-auto text-stone-700 text-sm sm:text-base leading-[1.8] font-sans font-normal products-hero-description">
+        <div className="space-y-2.5 max-w-[740px] mx-auto text-stone-600 text-xs sm:text-sm leading-[1.65] font-sans font-normal products-hero-description">
           <p>
             At Suryodaya Farms, we believe that good health begins with good food. We carefully select quality ingredients and process them under hygienic, scientifically guided conditions to help preserve their natural goodness, purity, freshness, and nutritional value.
           </p>
@@ -276,27 +277,27 @@ export default function Products() {
           </p>
         </div>
 
-        <div className="pt-2 max-w-2xl mx-auto">
-          <p className="font-serif text-base sm:text-lg font-bold text-[#2F3B0C] italic py-3 px-6 bg-white/70 border-y border-[#EDE7D9] rounded-2xl">
+        <div className="w-full max-w-[740px] mx-auto">
+          <p className="font-serif text-xs sm:text-sm md:text-base font-bold text-[#2F3B0C] italic py-2 px-5 bg-[#F0F5E6]/80 border border-[#4E641A]/20 rounded-xl shadow-2xs inline-block">
             From Nature's Fields to Your Family's Table — Pure, Honest, and Nutritious.
           </p>
         </div>
 
-        <div className="flex flex-wrap gap-3 justify-center items-center mt-2 max-w-4xl mx-auto products-hero-chips">
-          <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#2F3B0C] bg-[#F0F5E6] border border-[#4E641A]/20 px-4 py-2 rounded-full shadow-2xs">
-            <GiSprout className="w-4 h-4 text-[#4E641A]" />
+        <div className="flex flex-wrap gap-2.5 justify-center items-center max-w-3xl mx-auto products-hero-chips mt-0.5">
+          <div className="inline-flex items-center gap-1.5 text-[11px] sm:text-xs font-bold uppercase tracking-wider text-[#2F3B0C] bg-[#F0F5E6] border border-[#4E641A]/20 px-3.5 py-1.5 rounded-full shadow-2xs">
+            <GiSprout className="w-3.5 h-3.5 text-[#4E641A]" />
             <span>100% Pure & Natural</span>
           </div>
-          <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#2F3B0C] bg-[#F0F5E6] border border-[#4E641A]/20 px-4 py-2 rounded-full shadow-2xs">
-            <FiCpu className="w-4 h-4 text-[#4E641A]" />
+          <div className="inline-flex items-center gap-1.5 text-[11px] sm:text-xs font-bold uppercase tracking-wider text-[#2F3B0C] bg-[#F0F5E6] border border-[#4E641A]/20 px-3.5 py-1.5 rounded-full shadow-2xs">
+            <FiCpu className="w-3.5 h-3.5 text-[#4E641A]" />
             <span>Science-Guided</span>
           </div>
-          <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#2F3B0C] bg-[#F0F5E6] border border-[#4E641A]/20 px-4 py-2 rounded-full shadow-2xs">
-            <FiShield className="w-4 h-4 text-[#4E641A]" />
+          <div className="inline-flex items-center gap-1.5 text-[11px] sm:text-xs font-bold uppercase tracking-wider text-[#2F3B0C] bg-[#F0F5E6] border border-[#4E641A]/20 px-3.5 py-1.5 rounded-full shadow-2xs">
+            <FiShield className="w-3.5 h-3.5 text-[#4E641A]" />
             <span>Hygienically Processed</span>
           </div>
-          <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#2F3B0C] bg-[#F0F5E6] border border-[#4E641A]/20 px-4 py-2 rounded-full shadow-2xs">
-            <FiCheckCircle className="w-4 h-4 text-[#4E641A]" />
+          <div className="inline-flex items-center gap-1.5 text-[11px] sm:text-xs font-bold uppercase tracking-wider text-[#2F3B0C] bg-[#F0F5E6] border border-[#4E641A]/20 px-3.5 py-1.5 rounded-full shadow-2xs">
+            <FiCheckCircle className="w-3.5 h-3.5 text-[#4E641A]" />
             <span>Trusted by Families</span>
           </div>
         </div>
