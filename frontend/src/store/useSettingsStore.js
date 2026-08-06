@@ -8,7 +8,7 @@ export const useSettingsStore = create((set, get) => ({
     brandName: 'Suryodaya Farms',
     email: 'care@suryodayafarms.com',
     phone: WHATSAPP_FORMATTED_PHONE,
-    address: 'Plot No-20 NP, Kuruma Nagar, Peerzadiguda Mandal, Medchal (Malkajgiri), Telangana – 500039',
+    address: 'Plot No-20 NP, Kuruma Nagar, Peerzadiguda Mandal, Medchal (Malkajgiri), Telangana – 500039, India',
     websiteUrl: 'https://suryodayafarms.com',
     gstNumber: '36AAAAA0000A1Z5',
     registrationDetails: 'FSSAI Licence No: 11524999000342 | Soil Bio-Dynamic System ISO 14001',
@@ -18,7 +18,7 @@ export const useSettingsStore = create((set, get) => ({
     socialYoutube: 'https://youtube.com/suryodayafarms',
     freeDeliveryThreshold: '2',
     shippingCharge: '80',
-    serviceableStates: 'Telangana, Andhra Pradesh'
+    serviceableStates: 'PAN India'
   },
   settingsLoaded: false,
   isLoading: false,

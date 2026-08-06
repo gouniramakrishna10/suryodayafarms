@@ -268,7 +268,7 @@ export default function Contact() {
             </div>
 
             {/* Website Card */}
-            <div className="bg-white border border-[#EDE7D9] rounded-[28px] p-7 shadow-xs hover:shadow-md transition-all duration-300 flex items-center gap-4">
+            <div className="bg-white border border-[#EDE7D9] rounded-[24px] p-5.5 sm:p-6 shadow-xs hover:shadow-md transition-all duration-300 flex items-center gap-4">
               <div className="w-11 h-11 rounded-2xl bg-[#4E641A]/10 text-[#4E641A] flex items-center justify-center text-xl shrink-0">
                 <FiGlobe />
               </div>
@@ -414,14 +414,9 @@ export default function Contact() {
             <div className="absolute top-0 right-0 w-32 h-32 bg-[#4E641A]/8 rounded-bl-full pointer-events-none" />
             
             <div className="space-y-4 relative z-10">
-              <div className="space-y-1">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-[#4E641A] block">
-                  TIMELY RESPONSE PROMISE
-                </span>
-                <div className="flex items-center gap-2.5 text-[#4E641A]">
-                  <FiShield className="text-2xl shrink-0" />
-                  <h3 className="font-serif text-2xl sm:text-3xl font-bold text-[#2F3B0C]">Timely Response Promise</h3>
-                </div>
+              <div className="flex items-center gap-2.5 text-[#4E641A]">
+                <FiShield className="text-2xl shrink-0" />
+                <h3 className="font-serif text-2xl sm:text-3xl font-bold text-[#2F3B0C]">Timely Response Promise</h3>
               </div>
 
               <div className="space-y-3.5 text-stone-600 text-xs sm:text-sm font-sans leading-[1.75] font-normal pt-1">

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, memo } from 'react';
 import { Link } from 'react-router-dom';
 import { FiMail, FiPhone, FiMapPin, FiInstagram, FiFacebook, FiYoutube, FiArrowRight } from 'react-icons/fi';
+import { FaWhatsapp } from 'react-icons/fa';
 import { GiSun } from 'react-icons/gi';
 import { useSettingsStore } from '../store/useSettingsStore';
 
@@ -113,24 +114,38 @@ const Footer = memo(function Footer() {
               {activeAccordion.contact ? '−' : '+'}
             </span>
           </button>
-          <ul className={`flex flex-col gap-4 text-left transition-all duration-300 md:flex ${activeAccordion.contact ? 'flex' : 'hidden'}`}>
+          <ul className={`flex flex-col gap-3.5 text-left transition-all duration-300 md:flex ${activeAccordion.contact ? 'flex' : 'hidden'}`}>
             <li className="flex gap-3 items-start">
               <FiMapPin className="text-sunrise-gold text-base mt-0.5 shrink-0" />
               <span className="font-sans text-xs sm:text-sm text-light-beige/75 leading-relaxed font-light">
-                {settings.address}
+                {settings.address?.includes('India') ? settings.address : `${settings.address}, India`}
               </span>
             </li>
             <li className="flex gap-3 items-center">
               <FiPhone className="text-sunrise-gold text-sm shrink-0" />
-              <span className="font-sans text-xs sm:text-sm text-light-beige/75 font-light">
-                {settings.phone}
-              </span>
+              <a href={`tel:${settings.phone?.replace(/\s/g, '') || '+919100422140'}`} className="font-sans text-xs sm:text-sm text-light-beige/75 hover:text-sunrise-gold transition-colors font-light">
+                {settings.phone || '+91 9100422140'}
+              </a>
+            </li>
+            <li className="flex gap-3 items-center">
+              <FaWhatsapp className="text-[#25D366] text-base shrink-0" />
+              <a
+                href="https://wa.me/919100422140"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-sans text-xs sm:text-sm text-light-beige/75 hover:text-[#25D366] transition-colors font-light flex items-center gap-2"
+              >
+                <span>+91 9100422140</span>
+                <span className="text-[10px] font-bold text-[#25D366] bg-[#25D366]/10 border border-[#25D366]/30 px-2 py-0.5 rounded-full">
+                  WhatsApp
+                </span>
+              </a>
             </li>
             <li className="flex gap-3 items-center">
               <FiMail className="text-sunrise-gold text-sm shrink-0" />
-              <span className="font-sans text-xs sm:text-sm text-light-beige/75 font-light">
-                {settings.email}
-              </span>
+              <a href={`mailto:${settings.email || 'care@suryodayafarms.com'}`} className="font-sans text-xs sm:text-sm text-light-beige/75 hover:text-sunrise-gold transition-colors font-light">
+                {settings.email || 'care@suryodayafarms.com'}
+              </a>
             </li>
           </ul>
         </div>

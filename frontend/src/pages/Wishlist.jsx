@@ -5,6 +5,7 @@ import { useWishlistStore } from '../store/useWishlistStore';
 import { useCartStore } from '../store/useCartStore';
 import { useAuthStore } from '../store/useAuthStore';
 import { getOptimizedImageUrl, getImageSrcSet } from '../utils/imageOptimizer';
+import { formatCurrency } from '../utils/currency';
 
 export default function Wishlist() {
   const navigate = useNavigate();
@@ -146,11 +147,11 @@ export default function Wishlist() {
                       
                       <div className="flex items-baseline gap-2 mt-1">
                         <span className="font-serif text-base font-bold text-primary-green">
-                          ₹{productPrice}
+                          {formatCurrency(productPrice)}
                         </span>
                         {product.compareAtPrice && (
                           <span className="font-sans text-xs text-dark-text/40 line-through">
-                            ₹{product.compareAtPrice}
+                            {formatCurrency(product.compareAtPrice)}
                           </span>
                         )}
                       </div>

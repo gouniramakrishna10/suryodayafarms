@@ -13,6 +13,12 @@ import {
   FiX,
   FiTrendingUp,
   FiActivity,
+  FiShield,
+  FiZap,
+  FiUsers,
+  FiSun,
+  FiFeather,
+  FiAward,
   FiCpu,
   FiShoppingBag as CartIcon
 } from 'react-icons/fi';
@@ -23,6 +29,7 @@ import { useAuthStore } from '../store/useAuthStore';
 import { useSettingsStore } from '../store/useSettingsStore';
 import api from '../utils/api';
 import ProductCard from '../components/ProductCard';
+import { formatCurrency } from '../utils/currency';
 import { getOptimizedImageUrl, getImageSrcSet } from '../utils/imageOptimizer';
 
 // Module & LocalStorage cache for instant SWR loading
@@ -1139,9 +1146,9 @@ export default function Home() {
                       <span className="block text-[7.5px] font-bold text-stone-400 uppercase tracking-widest leading-none">Featured Product</span>
                       <span className="block text-[9.5px] font-bold text-[#2F3B0C] truncate mt-0.5 leading-tight">{resolvedFeaturedProduct.name}</span>
                       <span className="block text-[8px] font-bold text-[#4E641A] mt-0.5 font-sans">
-                        ₹{resolvedFeaturedProduct.price}
+                        {formatCurrency(resolvedFeaturedProduct.price)}
                         {resolvedFeaturedProduct.compareAtPrice && (
-                          <span className="line-through text-stone-400 font-medium ml-1">₹{resolvedFeaturedProduct.compareAtPrice}</span>
+                          <span className="line-through text-stone-400 font-medium ml-1">{formatCurrency(resolvedFeaturedProduct.compareAtPrice)}</span>
                         )}
                       </span>
                     </div>
@@ -1156,59 +1163,87 @@ export default function Home() {
 
             </div>
 
-            {/* Product Selector Strip (Desktop) */}
-            <div className="md:col-span-2 mt-6 md:mt-[84px] lg:mt-[104px] border-t border-[#EAE4D8]/60 pt-4 flex flex-col items-center">
-              {/* Header */}
-              <div className="flex items-center space-x-2 mb-2">
-                <span className="text-[#C68A2B] text-xs">🍃</span>
-                <h3 className="font-serif text-[#2F3B0C] text-[10px] font-bold uppercase tracking-wider text-center">
-                  Our Superfood Range
+            {/* Product Selector Strip (Desktop Luxury Cards) */}
+            <div className="md:col-span-2 mt-4 md:mt-8 lg:mt-10 border-t border-[#EAE4D8]/60 pt-6 flex flex-col items-center w-full">
+              {/* Heading */}
+              <div className="flex items-center justify-center gap-3 mb-6">
+                <span className="h-[1px] w-12 bg-gradient-to-r from-transparent via-[#C68A2B]/40 to-[#C68A2B]" />
+                <span className="text-[#C68A2B] text-xs">🌿</span>
+                <h3 className="font-serif text-[#2F3B0C] text-xs sm:text-sm font-bold uppercase tracking-[0.25em] text-center">
+                  OUR SUPERFOOD RANGE
                 </h3>
                 <span className="text-[#C68A2B] text-xs">🌿</span>
+                <span className="h-[1px] w-12 bg-gradient-to-l from-transparent via-[#C68A2B]/40 to-[#C68A2B]" />
               </div>
 
-              {/* Selectors flex row */}
-              <div className="flex flex-row justify-center gap-2 md:gap-2.5 w-full select-none">
-                {sortedHeroes.map((hr, idx) => {
-                  const isActive = idx === activeHeroIndex;
-                  const featuredProd = hr.featuredProduct || (hr.featuredProductId ? productsList.find(p => p.id === hr.featuredProductId) : null);
-                  const imageSrc = hr.showcaseImage || hr.heroImage || featuredProd?.image || featuredProd?.images?.[0]?.url || "";
-                  const displayName = featuredProd?.name
-                    ? featuredProd.name.replace(' Leaf Powder', '').replace(' Powder', '').replace(' Flour', '')
-                    : hr.headingLine1 || 'Staple';
+              {/* Selector Cards Grid */}
+              <div className="w-full max-w-5xl mx-auto px-2">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5 lg:gap-4.5 justify-center select-none w-full">
+                  {sortedHeroes.map((hr, idx) => {
+                    const isSelected = idx === activeHeroIndex;
+                    const featuredProd = hr.featuredProduct || (hr.featuredProductId ? productsList.find(p => p.id === hr.featuredProductId) : null);
+                    const imageSrc = hr.showcaseImage || hr.heroImage || featuredProd?.image || featuredProd?.images?.[0]?.url || "";
+                    const displayName = featuredProd?.name
+                      ? featuredProd.name.replace(' Leaf Powder', '').replace(' Powder', '').replace(' Flour', '')
+                      : hr.headingLine1 || 'Superfood';
+                    const weightTag = featuredProd?.weight || hr.headingHighlight || '100% Organic';
 
-                  return (
-                    <button
-                      key={hr.id || idx}
-                      onClick={() => setSelectedProductIndex(idx)}
-                      className={`flex flex-row items-center space-x-2 p-1.5 w-[95px] xs:w-[105px] sm:w-[115px] md:w-[140px] h-[44px] sm:h-[48px] border rounded-xl transition-all duration-300 cursor-pointer bg-white text-left ${isActive
-                        ? 'border-[#2F3B0C] shadow-md bg-stone-50/50 scale-[1.02] ring-1 ring-[#2F3B0C]'
-                        : 'border-[#EAE4D8] shadow-sm hover:border-stone-400/80 hover:scale-[1.01]'
+                    return (
+                      <button
+                        key={hr.id || idx}
+                        type="button"
+                        onClick={() => setSelectedProductIndex(idx)}
+                        className={`group relative flex items-center gap-3 p-3 rounded-[16px] transition-all duration-300 transform-gpu cursor-pointer text-left w-full select-none ${
+                          isSelected
+                            ? 'bg-gradient-to-br from-white via-white to-[#F6F9F2] border-2 border-[#2F3B0C] shadow-[0_8px_22px_rgba(47,59,12,0.15)] scale-[1.03] z-10'
+                            : 'bg-white border border-[#EAE4D8] shadow-xs hover:border-[#4E641A]/50 hover:shadow-md hover:-translate-y-1'
                         }`}
-                    >
-                      {/* Thumbnail Packet */}
-                      <div className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center shrink-0 overflow-hidden relative">
-                        {imageSrc ? (
-                          <img
-                            src={getOptimizedImageUrl(imageSrc, { width: 400, cropMode: 'limit' })}
-                            alt={displayName}
-                            loading="lazy"
-                            className="w-full h-full object-contain filter drop-shadow-sm"
-                          />
-                        ) : (
-                          <div className="w-7 h-7 rounded bg-stone-100 flex items-center justify-center text-[7px] text-stone-400">
-                            {displayName.substring(0, 8)}
-                          </div>
-                        )}
-                      </div>
+                      >
+                        {/* Thumbnail Container */}
+                        <div className={`w-12 h-12 sm:w-13 sm:h-13 rounded-xl flex items-center justify-center shrink-0 p-1 transition-all duration-300 ${
+                          isSelected ? 'bg-[#F0F5E8] scale-105' : 'bg-[#FAF8F5] group-hover:bg-[#F0F5E8]'
+                        }`}>
+                          {imageSrc ? (
+                            <img
+                              src={getOptimizedImageUrl(imageSrc, { width: 300, cropMode: 'limit' })}
+                              alt={displayName}
+                              loading="lazy"
+                              className="w-full h-full object-contain filter drop-shadow-sm transition-transform duration-300 group-hover:scale-110"
+                            />
+                          ) : (
+                            <div className="w-full h-full rounded-lg bg-stone-100 flex items-center justify-center text-xs font-serif text-stone-400">
+                              🌱
+                            </div>
+                          )}
+                        </div>
 
-                      {/* Selector title */}
-                      <span className="font-serif text-[9px] sm:text-[10px] font-bold text-[#2F3B0C] block tracking-tight line-clamp-1">
-                        {displayName}
-                      </span>
-                    </button>
-                  );
-                })}
+                        {/* Product Title & Subtitle */}
+                        <div className="flex flex-col min-w-0 flex-grow pr-3">
+                          <span className={`font-serif text-xs sm:text-sm font-bold truncate leading-snug transition-colors ${
+                            isSelected ? 'text-[#2F3B0C]' : 'text-stone-700 group-hover:text-[#2F3B0C]'
+                          }`}>
+                            {displayName}
+                          </span>
+                          <span className="text-[10px] text-stone-400 font-medium truncate mt-0.5 font-sans">
+                            {weightTag}
+                          </span>
+                        </div>
+
+                        {/* Active Indicator Badge */}
+                        {isSelected && (
+                          <span className="absolute top-2.5 right-2.5 w-4.5 h-4.5 rounded-full bg-[#4E641A] text-white flex items-center justify-center text-[10px] font-bold shadow-xs">
+                            ✓
+                          </span>
+                        )}
+
+                        {/* Dark Green Accent Line at Bottom */}
+                        {isSelected && (
+                          <div className="absolute bottom-0 left-4 right-4 h-[3px] bg-[#2F3B0C] rounded-full" />
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
             </div>
           </div>
@@ -1251,39 +1286,79 @@ export default function Home() {
                 )}
               </motion.div>
             </div>
+            
+            {/* 2. Product Selector Strip (Mobile Luxury Swipe Carousel) */}
+            <div className="w-full mt-2 flex flex-col items-center select-none">
+              <div className="flex items-center justify-center gap-2 mb-2.5">
+                <span className="text-[#C68A2B] text-[10px]">🌿</span>
+                <h3 className="font-serif text-[#2F3B0C] text-[10px] font-bold uppercase tracking-[0.2em] text-center">
+                  OUR SUPERFOOD RANGE
+                </h3>
+                <span className="text-[#C68A2B] text-[10px]">🌿</span>
+              </div>
 
-            {/* 2. Product Selector Strip (placed directly below the image for touch control) */}
-            <div className="w-full mt-0.5 flex flex-col items-center">
-              <div className="flex flex-row gap-1.5 overflow-x-auto no-scrollbar py-1 w-full justify-start xs:justify-center px-4 select-none">
+              <div className="flex flex-row gap-3 overflow-x-auto no-scrollbar py-2 w-full snap-x snap-mandatory px-4 justify-start select-none">
                 {sortedHeroes.map((hr, idx) => {
-                  const isActive = idx === activeHeroIndex;
+                  const isSelected = idx === activeHeroIndex;
                   const featuredProd = hr.featuredProduct || (hr.featuredProductId ? productsList.find(p => p.id === hr.featuredProductId) : null);
                   const imageSrc = hr.showcaseImage || hr.heroImage || featuredProd?.image || featuredProd?.images?.[0]?.url || "";
                   const displayName = featuredProd?.name
                     ? featuredProd.name.replace(' Leaf Powder', '').replace(' Powder', '').replace(' Flour', '')
-                    : hr.headingLine1 || 'Staple';
+                    : hr.headingLine1 || 'Superfood';
+                  const weightTag = featuredProd?.weight || hr.headingHighlight || 'Organic';
 
                   return (
                     <button
                       key={hr.id || idx}
+                      type="button"
                       onClick={() => setSelectedProductIndex(idx)}
-                      className={`flex flex-row items-center space-x-1 p-1 min-w-[84px] h-[34px] border rounded-lg transition-all duration-300 bg-white text-left ${isActive
-                        ? 'border-[#2F3B0C] shadow-md bg-stone-50 ring-1 ring-[#2F3B0C]'
-                        : 'border-[#EAE4D8] shadow-sm'
-                        }`}
+                      className={`group relative flex items-center gap-2.5 p-2.5 rounded-[14px] transition-all duration-300 transform-gpu cursor-pointer bg-white text-left min-w-[165px] xs:min-w-[185px] shrink-0 snap-center select-none ${
+                        isSelected
+                          ? 'bg-gradient-to-br from-white via-white to-[#F6F9F2] border-2 border-[#2F3B0C] shadow-md scale-[1.02]'
+                          : 'border border-[#EAE4D8] shadow-xs active:scale-98'
+                      }`}
                     >
-                      <div className="w-5 h-5 flex items-center justify-center shrink-0">
+                      {/* Thumbnail Container */}
+                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 p-0.5 ${
+                        isSelected ? 'bg-[#F0F5E8]' : 'bg-[#FAF8F5]'
+                      }`}>
                         {imageSrc ? (
-                          <img src={getOptimizedImageUrl(imageSrc, { width: 400, cropMode: 'limit' })} alt={displayName} className="w-full h-full object-contain" />
+                          <img
+                            src={getOptimizedImageUrl(imageSrc, { width: 300, cropMode: 'limit' })}
+                            alt={displayName}
+                            loading="lazy"
+                            className="w-full h-full object-contain filter drop-shadow-sm"
+                          />
                         ) : (
-                          <div className="w-5 h-5 rounded bg-stone-100 flex items-center justify-center text-[6px]">
-                            {displayName[0]}
+                          <div className="w-full h-full rounded bg-stone-100 flex items-center justify-center text-[9px] text-stone-400">
+                            🌱
                           </div>
                         )}
                       </div>
-                      <span className="font-serif text-[8.5px] font-bold text-[#2F3B0C] truncate">
-                        {displayName}
-                      </span>
+
+                      {/* Product Name & Subtitle */}
+                      <div className="flex flex-col min-w-0 flex-grow pr-2">
+                        <span className={`font-serif text-xs font-bold truncate leading-tight ${
+                          isSelected ? 'text-[#2F3B0C]' : 'text-stone-700'
+                        }`}>
+                          {displayName}
+                        </span>
+                        <span className="text-[9px] text-stone-400 font-medium truncate mt-0.5 font-sans">
+                          {weightTag}
+                        </span>
+                      </div>
+
+                      {/* Active Checkmark Badge */}
+                      {isSelected && (
+                        <span className="absolute top-2 right-2 w-3.5 h-3.5 rounded-full bg-[#4E641A] text-white flex items-center justify-center text-[8px] font-bold">
+                          ✓
+                        </span>
+                      )}
+
+                      {/* Accent Line at Bottom */}
+                      {isSelected && (
+                        <div className="absolute bottom-0 left-3 right-3 h-[2.5px] bg-[#2F3B0C] rounded-full" />
+                      )}
                     </button>
                   );
                 })}
@@ -1374,9 +1449,9 @@ export default function Home() {
                       <span className="block text-[7.5px] font-bold text-stone-400 uppercase tracking-widest leading-none font-sans">Featured Product</span>
                       <span className="block text-[10.5px] font-bold text-[#2F3B0C] truncate mt-1 leading-tight">{resolvedFeaturedProduct.name}</span>
                       <span className="block text-[9.5px] font-bold text-[#4E641A] mt-1 font-sans">
-                        ₹{resolvedFeaturedProduct.price}
+                        {formatCurrency(resolvedFeaturedProduct.price)}
                         {resolvedFeaturedProduct.compareAtPrice && (
-                          <span className="line-through text-stone-400 font-medium ml-1.5">₹{resolvedFeaturedProduct.compareAtPrice}</span>
+                          <span className="line-through text-stone-400 font-medium ml-1.5">{formatCurrency(resolvedFeaturedProduct.compareAtPrice)}</span>
                         )}
                       </span>
                     </div>
@@ -1450,67 +1525,56 @@ export default function Home() {
   };
 
   const renderTrustSection = () => {
+    const standardCards = [
+      {
+        icon: <FiAward className="text-xl sm:text-2xl" />,
+        title: "Premium Quality Ingredients",
+        desc: "We carefully select high-quality ingredients to ensure purity, freshness, and nutritional value."
+      },
+      {
+        icon: <FiCpu className="text-xl sm:text-2xl" />,
+        title: "Science-Guided Quality",
+        desc: "Every product is developed and monitored with scientific expertise to maintain consistent quality and safety."
+      },
+      {
+        icon: <FiShield className="text-xl sm:text-2xl" />,
+        title: "Hygienic Processing",
+        desc: "Prepared and packed under strict hygiene standards to preserve freshness and product integrity."
+      },
+      {
+        icon: <GiSprout className="text-xl sm:text-2xl" />,
+        title: "Freshness You Can Trust",
+        desc: "Carefully processed and packed to help retain quality, freshness, and nutritional goodness."
+      }
+    ];
+
     return (
       <section key="trust" className="dark-section bg-[#2F3B0C] text-[#F9F6F0] py-16 px-6 md:px-12 relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(#4E641A_1.5px,transparent_1.5px)] [background-size:24px_24px] opacity-15" />
         <div className="max-w-7xl mx-auto relative z-10">
-          <div className="text-center max-w-2xl mx-auto space-y-3 mb-12">
-            <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#C68A2B]">
-              {settings.homepage_section_badge_trust || "The Suryodaya Standard"}
-            </span>
-            <h2 className="font-serif text-2xl md:text-4xl font-semibold leading-tight text-white">
-              {settings.homepage_section_title_trust || "Purity Certified at Every Step of the Soil"}
+          <div className="text-center max-w-4xl mx-auto space-y-3 mb-12">
+            <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl lg:text-[44px] xl:text-5xl font-semibold leading-tight text-white whitespace-nowrap">
+              {settings.homepage_section_title_trust || "The Suryodaya Farms Standard"}
             </h2>
+            <p className="text-xs md:text-sm text-[#C68A2B] font-bold tracking-wide leading-relaxed uppercase">
+              {settings.homepage_section_subtitle_trust || "Pure Ingredients. Scientific Standards. Trusted Nutrition."}
+            </p>
           </div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-6 text-center">
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-3.5 sm:p-6 space-y-2.5 sm:space-y-4 hover:bg-white/10 transition duration-300">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[#C68A2B]/20 text-[#C68A2B] flex items-center justify-center mx-auto text-lg sm:text-xl shadow-inner shrink-0">
-                🧪
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 text-center">
+            {standardCards.map((card, idx) => (
+              <div key={idx} className="bg-white/5 border border-white/10 rounded-2xl p-5 sm:p-6 space-y-3 hover:bg-white/10 transition duration-300 flex flex-col items-center justify-between text-center group">
+                <div className="w-12 h-12 rounded-xl bg-[#C68A2B]/20 text-[#C68A2B] group-hover:bg-[#C68A2B] group-hover:text-[#2F3B0C] flex items-center justify-center mx-auto shadow-inner shrink-0 transition-all duration-300 mb-1">
+                  {card.icon}
+                </div>
+                <div className="space-y-1.5">
+                  <h4 className="font-serif text-sm sm:text-base font-bold uppercase tracking-wider text-white">{card.title}</h4>
+                  <p className="text-xs text-white/85 leading-relaxed font-light">
+                    {card.desc}
+                  </p>
+                </div>
               </div>
-              <div className="space-y-1">
-                <h4 className="font-serif text-xs sm:text-sm font-bold uppercase tracking-wider text-white">Chemical Free</h4>
-                <p className="text-[9px] sm:text-[10px] text-white/85 leading-relaxed font-light line-clamp-2">
-                  Strictly zero chemical pesticides, artificial urea, or hormone growth catalysts used.
-                </p>
-              </div>
-            </div>
-
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-3.5 sm:p-6 space-y-2.5 sm:space-y-4 hover:bg-white/10 transition duration-300">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[#C68A2B]/20 text-[#C68A2B] flex items-center justify-center mx-auto text-lg sm:text-xl shadow-inner shrink-0">
-                🚜
-              </div>
-              <div className="space-y-1">
-                <h4 className="font-serif text-xs sm:text-sm font-bold uppercase tracking-wider text-white">Farm Fresh</h4>
-                <p className="text-[9px] sm:text-[10px] text-white/85 leading-relaxed font-light line-clamp-2">
-                  Harvested and batched in limited runs, bypassing rotting warehouse delays.
-                </p>
-              </div>
-            </div>
-
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-3.5 sm:p-6 space-y-2.5 sm:space-y-4 hover:bg-white/10 transition duration-300">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[#C68A2B]/20 text-[#C68A2B] flex items-center justify-center mx-auto text-lg sm:text-xl shadow-inner shrink-0">
-                🏺
-              </div>
-              <div className="space-y-1">
-                <h4 className="font-serif text-xs sm:text-sm font-bold uppercase tracking-wider text-white">Traditional Methods</h4>
-                <p className="text-[9px] sm:text-[10px] text-white/85 leading-relaxed font-light line-clamp-2">
-                  Wood Ghanis cold-press, and Bilona curd churns maintain ancient biological structures.
-                </p>
-              </div>
-            </div>
-
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-3.5 sm:p-6 space-y-2.5 sm:space-y-4 hover:bg-white/10 transition duration-300">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[#C68A2B]/20 text-[#C68A2B] flex items-center justify-center mx-auto text-lg sm:text-xl shadow-inner shrink-0">
-                🚫
-              </div>
-              <div className="space-y-1">
-                <h4 className="font-serif text-xs sm:text-sm font-bold uppercase tracking-wider text-white">No Preservatives</h4>
-                <p className="text-[9px] sm:text-[10px] text-white/85 leading-relaxed font-light line-clamp-2">
-                  Absolutely no color stabilizers, bleach refinements, or added artificial flavorings.
-                </p>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
@@ -1641,32 +1705,32 @@ export default function Home() {
   const renderBenefitsSection = () => {
     const cards = [
       {
-        icon: "🌱",
+        icon: <FiActivity className="text-2xl" />,
         title: "Daily Wellness",
         desc: "Nutrient-rich superfoods for balanced nutrition and everyday well-being."
       },
       {
-        icon: "🛡️",
+        icon: <FiShield className="text-2xl" />,
         title: "Immunity Support",
         desc: "Carefully selected natural foods rich in essential nutrients and antioxidants."
       },
       {
-        icon: "⚡",
+        icon: <FiZap className="text-2xl" />,
         title: "Energy & Vitality",
         desc: "Wholesome nutrition to help you stay active, energized, and refreshed."
       },
       {
-        icon: "🥗",
+        icon: <FiHeart className="text-2xl" />,
         title: "Healthy Lifestyle",
         desc: "Pure and nourishing foods designed to support overall wellness and vitality."
       },
       {
-        icon: "👨‍👩‍👧‍👦",
+        icon: <FiUsers className="text-2xl" />,
         title: "Family Nutrition",
         desc: "Thoughtfully crafted products to meet the nutritional needs of every family member."
       },
       {
-        icon: "🔬",
+        icon: <GiSprout className="text-2xl" />,
         title: "Natural Nutrition",
         desc: "Pure, high-quality superfoods guided by nature and backed by science."
       }
@@ -1690,13 +1754,17 @@ export default function Home() {
           {cards.map((card, idx) => (
             <div
               key={idx}
-              className="bg-white border border-[#EAE4D8] hover:border-[#4E641A] rounded-2xl p-5 sm:p-6 shadow-xs hover:shadow-sm transition duration-300 group cursor-default benefits-card"
+              className="bg-white border border-[#EAE4D8] hover:border-[#4E641A] rounded-2xl p-6 shadow-xs hover:shadow-md transition duration-300 group cursor-default benefits-card flex flex-col justify-between"
             >
-              <span className="text-2xl mb-3 block">{card.icon}</span>
-              <h4 className="font-serif text-base font-bold text-[#2F3B0C] group-hover:text-[#4E641A] transition-colors">{card.title}</h4>
-              <p className="text-xs text-stone-500 leading-relaxed font-light mt-1.5">
-                {card.desc}
-              </p>
+              <div>
+                <div className="w-12 h-12 rounded-2xl bg-[#4E641A]/10 border border-[#4E641A]/20 text-[#4E641A] group-hover:bg-[#4E641A] group-hover:text-white flex items-center justify-center transition-all duration-300 mb-4 shrink-0 shadow-xxs">
+                  {card.icon}
+                </div>
+                <h4 className="font-serif text-lg font-bold text-[#2F3B0C] group-hover:text-[#4E641A] transition-colors">{card.title}</h4>
+                <p className="text-xs text-stone-500 leading-relaxed font-light mt-2">
+                  {card.desc}
+                </p>
+              </div>
             </div>
           ))}
         </div>
@@ -1778,59 +1846,7 @@ export default function Home() {
     );
   };
 
-  const renderFooterBannerSection = () => {
-    return (
-      <section key="footer-banner" className="py-10 md:py-16 px-4 sm:px-6 md:px-8 max-w-6xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="relative rounded-[32px] sm:rounded-[40px] overflow-hidden shadow-[0_24px_50px_-15px_rgba(47,59,12,0.3)] border border-[#EAE4D8]/15 bg-stone-900 group"
-        >
-          <img
-            src={getOptimizedImageUrl("https://images.unsplash.com/photo-1599933310633-6f17f41f71df", { width: 1200, height: 600, cropMode: 'fill' })}
-            alt="Indian Harvest"
-            width={1200}
-            height={600}
-            loading="lazy"
-            className="absolute inset-0 w-full h-full object-cover filter brightness-[0.45] scale-100 group-hover:scale-105 transition-transform duration-[2.5s] ease-out"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#2F3B0C]/40 via-[#1C2307]/85 to-[#0E1204]/95 z-0" />
-          <div className="absolute inset-0 bg-black/30 z-0" />
-
-          <div className="relative z-10 max-w-3xl mx-auto p-8 sm:p-12 md:p-16 flex flex-col items-center text-center gap-5 md:gap-6">
-            <span className="font-sans text-[11px] font-bold tracking-[0.25em] uppercase text-[#C68A2B]">
-              {settings.homepage_section_badge_footer_banner || "Join Our Journey"}
-            </span>
-            <h2 className="font-serif text-2xl sm:text-4xl md:text-5xl text-white font-bold leading-[1.2] max-w-2xl mx-auto">
-              {settings.homepage_section_title_footer_banner || "Bring the Blessings of Pure Soil to Your Family"}
-            </h2>
-            <p className="font-sans text-xs sm:text-sm text-stone-200/90 leading-relaxed font-light max-w-xl mx-auto">
-              {settings.homepage_section_subtitle_footer_banner || "Are you ready to transcend chemical food? Subscribe to our monthly organic farm hampers, book a personalized tour of our fields in Wardha, or partner with us to support our cooperative farmers."}
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 mt-4 w-full sm:w-auto justify-center items-center">
-              <button
-                onClick={() => document.getElementById('best-sellers-grid')?.scrollIntoView({ behavior: 'smooth' })}
-                className="font-sans text-xs font-bold tracking-[0.15em] uppercase bg-[#C68A2B] hover:bg-[#A8721E] text-white border-none px-8 py-3.5 rounded-full transition-all duration-300 shadow-md hover:scale-[1.02] active:scale-[0.98] cursor-pointer text-center w-full sm:w-auto"
-              >
-                Explore Catalog Staples
-              </button>
-              <Link
-                to="/contact"
-                className="font-sans text-xs font-bold tracking-[0.15em] uppercase bg-white/10 hover:bg-white hover:text-[#2F3B0C] text-white border border-white/25 hover:border-white/80 px-8 py-3.5 rounded-full transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] backdrop-blur-sm text-center w-full sm:w-auto"
-              >
-                Book a Farm Visit
-              </Link>
-            </div>
-          </div>
-        </motion.div>
-      </section>
-    );
-  };
-
   const renderSection = (sectName) => {
-    // Section visibility check
     const isVisible = settings[`homepage_section_visible_${sectName}`] !== 'false';
     if (!isVisible) return null;
 
@@ -1850,7 +1866,7 @@ export default function Home() {
       case 'reviews':
         return renderReviewsSection();
       case 'footer-banner':
-        return renderFooterBannerSection();
+        return null;
       default:
         return null;
     }
@@ -1904,7 +1920,7 @@ export default function Home() {
     return <HomepageSkeleton />;
   }
 
-  const renderPartnerCTASection = () => (
+  const renderCTASection = () => (
     <section className="py-20 px-4 sm:px-6 lg:px-12 bg-gradient-to-b from-[#F9F6F0] via-[#FAF6EE] to-[#F1ECE1] relative overflow-hidden">
       {/* Decorative background glows */}
       <div className="absolute -top-24 -right-24 w-96 h-96 bg-[#4E641A]/10 rounded-full blur-3xl pointer-events-none" />
@@ -1920,23 +1936,23 @@ export default function Home() {
           <div className="max-w-2xl text-left space-y-5">
             <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-[#4E641A]/10 border border-[#4E641A]/20 text-[#4E641A] font-sans text-xs font-semibold uppercase tracking-wider">
               <GiSprout className="text-base text-[#B8833E]" />
-              <span>Grow With Suryodaya</span>
+              <span>JOIN OUR WELLNESS JOURNEY</span>
             </div>
 
-            <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#2F3B0C] leading-tight">
-              Partner with <span className="text-[#4E641A]">Suryodaya Farms</span>
+            <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl lg:text-4xl xl:text-[2.5rem] font-bold text-[#2F3B0C] leading-tight">
+              Pure Nutrition. Backed by Science. Trusted by Families.
             </h2>
 
             <p className="font-sans text-stone-600 text-sm sm:text-base leading-relaxed">
-              Grow your business with Suryodaya Farms. We welcome distributors, retailers, wholesalers, exporters, institutions, corporate buyers, and strategic partners who share our commitment to quality, integrity, and sustainable growth.
+              Experience the goodness of nature combined with scientific expertise. Explore our carefully crafted superfoods and take a step towards healthier living, naturally.
             </p>
 
             <div className="flex flex-wrap items-center gap-4 pt-2">
               <Link
-                to="/become-a-partner"
+                to="/products"
                 className="inline-flex items-center gap-3 bg-[#4E641A] hover:bg-[#2F3B0C] text-white font-sans text-xs sm:text-sm font-bold tracking-wider uppercase px-7 py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5"
               >
-                <span>Become a Partner</span>
+                <span>Explore Products</span>
                 <FiArrowRight className="text-base" />
               </Link>
 
@@ -1953,22 +1969,22 @@ export default function Home() {
           <div className="grid grid-cols-2 gap-4 w-full lg:w-auto shrink-0">
             <div className="bg-[#FDFBF7] border border-[#EDE7D9] p-5 rounded-2xl flex flex-col gap-2 shadow-xs hover:border-[#4E641A]/40 transition duration-300">
               <span className="font-serif text-2xl font-bold text-[#4E641A]">100%</span>
-              <span className="font-sans text-xs text-stone-600 font-medium">Natural Staples</span>
+              <span className="font-sans text-xs text-stone-600 font-medium">Pure & Natural</span>
             </div>
 
             <div className="bg-[#FDFBF7] border border-[#EDE7D9] p-5 rounded-2xl flex flex-col gap-2 shadow-xs hover:border-[#4E641A]/40 transition duration-300">
-              <span className="font-serif text-2xl font-bold text-[#B8833E]">B2B & Bulk</span>
-              <span className="font-sans text-xs text-stone-600 font-medium">Flexible Supply</span>
+              <span className="font-serif text-2xl font-bold text-[#B8833E]">Science</span>
+              <span className="font-sans text-xs text-stone-600 font-medium">Guided Quality</span>
             </div>
 
             <div className="bg-[#FDFBF7] border border-[#EDE7D9] p-5 rounded-2xl flex flex-col gap-2 shadow-xs hover:border-[#4E641A]/40 transition duration-300">
               <span className="font-serif text-2xl font-bold text-[#2F3B0C]">Pan-India</span>
-              <span className="font-sans text-xs text-stone-600 font-medium">Export Logistics</span>
+              <span className="font-sans text-xs text-stone-600 font-medium">Fast Delivery</span>
             </div>
 
             <div className="bg-[#FDFBF7] border border-[#EDE7D9] p-5 rounded-2xl flex flex-col gap-2 shadow-xs hover:border-[#4E641A]/40 transition duration-300">
-              <span className="font-serif text-2xl font-bold text-[#4E641A]">Ethical</span>
-              <span className="font-sans text-xs text-stone-600 font-medium">Fair Trade & Quality</span>
+              <span className="font-serif text-2xl font-bold text-[#4E641A]">Trusted</span>
+              <span className="font-sans text-xs text-stone-600 font-medium">By Families</span>
             </div>
           </div>
 
@@ -2006,7 +2022,7 @@ export default function Home() {
           </React.Fragment>
         ))}
 
-        {renderPartnerCTASection()}
+        {renderCTASection()}
 
       </div>
     </Profiler>

@@ -17,7 +17,9 @@ import {
   FiPaperclip,
   FiX,
   FiAlertCircle,
-  FiLayers
+  FiLayers,
+  FiCpu,
+  FiHeart
 } from 'react-icons/fi';
 import { GiSun, GiSprout, GiShield, GiHeartOrgan } from 'react-icons/gi';
 import api from '../utils/api';
@@ -56,11 +58,31 @@ export default function Faq() {
   ];
 
   const commitmentCards = [
-    { title: 'Respect for Nature', desc: 'Chemical-free soil nutrition, heirloom non-hybrid seeds, and regenerative farming practices.', icon: GiSprout },
-    { title: 'Science-Guided Development', desc: 'Preserving ancient Vedic processing while testing enzyme activity and purity under 35°C.', icon: FiAward },
-    { title: 'Quality Without Compromise', desc: 'Hand-sorted crops, unadulterated ingredients, and clean-room hygienic packaging.', icon: FiShield },
-    { title: 'Honest Communication', desc: 'Complete transparency regarding farm origins, processing methods, and nutritional values.', icon: FiMessageSquare },
-    { title: 'Customer Trust', desc: 'A sacred obligation to deliver pure, nourishing staples directly from our farm fields to your home.', icon: GiHeartOrgan }
+    {
+      title: 'Respect for Nature',
+      desc: 'We carefully select quality ingredients and work to preserve their natural goodness, purity, and nutritional value through responsible sourcing and processing practices.',
+      icon: GiSprout
+    },
+    {
+      title: 'Science-Guided Development',
+      desc: "We combine nature's goodness with scientific expertise, using carefully controlled processing methods to help preserve quality, freshness, and nutritional value.",
+      icon: FiCpu
+    },
+    {
+      title: 'Uncompromising Quality',
+      desc: 'From ingredient selection to hygienic processing and packaging, every step is guided by our commitment to quality, purity, and customer trust.',
+      icon: FiShield
+    },
+    {
+      title: 'Honest Communication',
+      desc: 'Trust begins with transparency. We strive to provide clear and reliable information about our products, ingredients, and quality standards.',
+      icon: FiMessageSquare
+    },
+    {
+      title: 'Customer Trust',
+      desc: 'Your trust is at the heart of everything we do. We are committed to delivering safe, reliable, and high-quality nutrition with every product.',
+      icon: FiHeart
+    }
   ];
 
   const faqsList = [
@@ -68,97 +90,97 @@ export default function Faq() {
       id: 1,
       category: 'General',
       question: 'Why should I choose Suryodaya Farms?',
-      answer: 'Suryodaya Farms is dedicated to regenerative Vedic agriculture, heirloom non-hybrid seeds, and chemical-free soil nutrition in Wardha. We carefully process every staple under 35°C to preserve vital enzymes, natural aroma, and mineral richness.'
+      answer: "At Suryodaya Farms, we combine nature's goodness with scientific expertise to create high-quality superfoods you can trust. Our focus on purity, quality, hygiene, and nutrition ensures that every product is carefully crafted to support a healthier lifestyle."
     },
     {
       id: 2,
       category: 'General',
       question: 'What makes Suryodaya Farms different from other brands?',
-      answer: 'Unlike mass-market brands that rely on high-temperature machinery, artificial polishing, and synthetic additives, Suryodaya Farms preserves traditional Vedic methods like wooden Ghani cold-pressing and authentic Vedic Bilona ghee churning from A2 Gir cows.'
+      answer: 'Our difference lies in our science-guided approach. Every product is developed with careful attention to ingredient quality, processing methods, hygiene standards, and nutritional value. We are committed to delivering trusted nutrition without compromising on quality.'
     },
     {
       id: 3,
       category: 'General',
       question: 'Who develops Suryodaya Farms products?',
-      answer: 'Our products are guided by experienced Vedic agricultural practitioners, food technology experts, and traditional farming families who combine ancient wisdom with modern quality testing.'
+      answer: 'Our products are developed and reviewed with the support of experienced research and technical professionals who are passionate about natural nutrition, quality assurance, and product excellence.'
     },
     {
       id: 4,
       category: 'Quality',
       question: 'How do you maintain product quality?',
-      answer: 'We enforce strict end-to-end quality controls—from seed selection and pesticide-free organic soil nutrition to clean-room packaging and batch-level quality testing.'
+      answer: 'Quality is monitored at every stage—from ingredient selection and processing to packaging and storage. We follow strict hygiene practices and quality standards to help ensure consistency, safety, and freshness.'
     },
     {
       id: 5,
       category: 'Quality',
       question: 'Why do you describe your products as Science-Guided?',
-      answer: 'While we honor traditional Vedic farming rituals, we validate our methods using science—measuring nutrient retention, soil microbial activity, and zero-chemical purity standards.'
+      answer: 'We believe that nature and science work best together. Our product development and quality processes are guided by scientific knowledge, helping us preserve nutritional value while maintaining high standards of quality and safety.'
     },
     {
       id: 6,
       category: 'Customer Support',
       question: 'Do you really listen to customer feedback?',
-      answer: 'Absolutely. Customer feedback is central to our continuous innovation process. We review every suggestion, product review, and inquiry to refine our offerings and service.'
+      answer: 'Absolutely. Customer feedback plays an important role in our continuous improvement process. Your suggestions, experiences, and concerns help us enhance our products, services, and overall customer experience.'
     },
     {
       id: 7,
       category: 'Customer Support',
       question: 'What if I am not satisfied with a product?',
-      answer: 'Your trust is paramount. If you receive a product that does not meet our quality promise, our Customer Support team will happily resolve the issue with a replacement or full refund.'
+      answer: 'Customer satisfaction is important to us. If you experience any issues with a product, please contact our support team. We will review your concern and work towards a fair and satisfactory resolution.'
     },
     {
       id: 8,
       category: 'Quality',
       question: 'Why may natural products vary slightly in colour, aroma, or taste?',
-      answer: 'Because our crops are grown naturally without synthetic dyes, artificial flavor enhancers, or chemical standardization, seasonal variations in sunlight, rain, and harvest batches naturally influence shade and aroma.'
+      answer: 'Natural ingredients can vary slightly due to seasonal changes, growing conditions, and natural characteristics. These variations are normal and are often a sign of authenticity rather than inconsistency.'
     },
     {
       id: 9,
       category: 'Products',
       question: 'Are your products 100% natural?',
-      answer: 'Yes, 100%. All Suryodaya Farms products are completely free from synthetic chemicals, artificial fertilizers, toxic pesticides, and genetic modification.'
+      answer: 'Many of our products are made using carefully selected natural ingredients. Please refer to the ingredient list on each product for complete information regarding its composition.'
     },
     {
       id: 10,
       category: 'Products',
       question: 'Do your products contain artificial colours, flavours, or preservatives?',
-      answer: 'Never. We strictly prohibit artificial food dyes, synthetic fragrance enhancers, chemical bleaching agents, or harmful preservatives.'
+      answer: 'At Suryodaya Farms, we strive to keep our products as natural as possible. We avoid artificial colours, flavours, and unnecessary additives wherever possible. Please refer to the product label for complete ingredient information.'
     },
     {
       id: 11,
       category: 'Usage',
       question: 'How should I use Suryodaya Farms products?',
-      answer: 'Our products are natural daily food staples and functional nutrition items. Usage instructions and traditional recipe recommendations are provided on each product packaging label.'
+      answer: 'Usage instructions may vary depending on the product. We recommend following the directions provided on the product label for the best experience and results.'
     },
     {
       id: 12,
       category: 'Products',
       question: 'Are Suryodaya Farms products medicines?',
-      answer: 'No. Suryodaya Farms products are wholesome, natural food staples and organic dietary ingredients designed to nourish your daily life, not pharmaceutical medicines.'
+      answer: 'No. Our products are food and nutrition products intended to support a healthy lifestyle. They are not intended to diagnose, treat, cure, or prevent any disease.'
     },
     {
       id: 13,
       category: 'Storage',
       question: 'How should I store the products after opening?',
-      answer: 'Store in a cool, dry place away from direct sunlight inside airtight glass or food-grade containers to preserve freshness, natural aroma, and essential oils.'
+      answer: 'Store the product in a cool, dry place away from direct sunlight and moisture. Always keep the container tightly closed and use a clean, dry spoon when required.'
     },
     {
       id: 14,
       category: 'Customer Support',
       question: 'What should I do if my package is damaged?',
-      answer: 'If your package arrives damaged, please take a quick photo and contact our support team immediately via phone, email, or the form below. We will send a prompt replacement.'
+      answer: 'If your package arrives damaged, please contact our customer support team as soon as possible with photographs of the package and product. We will review the issue and assist you promptly.'
     },
     {
       id: 15,
       category: 'Quality',
       question: 'Do you continue improving your products?',
-      answer: 'Yes. We continuously invest in sustainable packaging improvements, eco-friendly processing refinements, and expanded natural product offerings based on customer insights.'
+      answer: 'Yes. Continuous improvement is part of our philosophy. We regularly review customer feedback, scientific developments, and quality processes to enhance our products and services.'
     },
     {
       id: 16,
       category: 'Customer Support',
       question: 'What does customer trust mean to Suryodaya Farms?',
-      answer: 'Customer trust is our sacred responsibility. It represents the sacred bond between our farm fields and your family table, built on complete honesty, quality, and care.'
+      answer: 'Customer trust is the foundation of everything we do. We are committed to transparency, quality, consistency, and honest communication, ensuring that every product reflects the values of Suryodaya Farms.'
     }
   ];
 
@@ -259,7 +281,7 @@ export default function Faq() {
         <div className="absolute -top-32 -left-32 w-96 h-96 bg-[#4E641A]/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute top-1/2 -right-32 w-96 h-96 bg-[#B8833E]/10 rounded-full blur-3xl pointer-events-none" />
 
-        <div className="max-w-4xl mx-auto text-center relative z-10 space-y-6">
+        <div className="max-w-5xl mx-auto text-center relative z-10 space-y-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -273,7 +295,7 @@ export default function Faq() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-[#2F3B0C] leading-tight"
+            className="font-serif text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-[#2F3B0C] leading-tight whitespace-nowrap"
           >
             Customer Care & <span className="text-[#4E641A]">Support Centre</span>
           </motion.h1>
@@ -694,6 +716,24 @@ export default function Faq() {
               </motion.form>
             )}
           </AnimatePresence>
+        </div>
+      </section>
+
+      {/* FINAL CLOSING STATEMENT SECTION */}
+      <section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-12 max-w-4xl mx-auto">
+        <div className="bg-gradient-to-br from-[#2F3B0C] via-[#394713] to-[#232C09] text-[#F9F6F0] rounded-[32px] p-8 sm:p-12 shadow-xl text-center space-y-4 relative overflow-hidden group">
+          <div className="absolute inset-0 bg-[radial-gradient(#C68A2B_1px,transparent_1px)] [background-size:24px_24px] opacity-10 pointer-events-none" />
+          
+          <div className="w-12 h-12 rounded-2xl bg-[#C68A2B]/20 text-[#C68A2B] flex items-center justify-center mx-auto shadow-inner shrink-0 mb-2">
+            <GiSun className="text-2xl" />
+          </div>
+
+          <p className="font-serif text-lg sm:text-xl md:text-2xl font-semibold leading-relaxed text-white max-w-3xl mx-auto">
+            At Suryodaya Farms, our mission is simple: to deliver pure, high-quality, and trusted nutrition through the perfect balance of nature and science. Your health, trust, and satisfaction inspire everything we do.
+          </p>
+          <span className="font-sans text-xs font-bold uppercase tracking-widest text-[#C68A2B] block pt-2">
+            Suryodaya Farms Mission Statement
+          </span>
         </div>
       </section>
 

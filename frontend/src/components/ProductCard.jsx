@@ -6,6 +6,7 @@ import { useCartStore } from '../store/useCartStore';
 import { useWishlistStore } from '../store/useWishlistStore';
 import { useAuthStore } from '../store/useAuthStore';
 import { getOptimizedImageUrl, getImageSrcSet } from '../utils/imageOptimizer';
+import { formatCurrency } from '../utils/currency';
 
 const getCategoryEmoji = (name) => {
   const norm = (name || '').toLowerCase();
@@ -360,11 +361,11 @@ const ProductCard = memo(function ProductCard({ product, onQuickView }) {
           {/* Mobile-only Price Section */}
           <div className="flex items-baseline gap-1.5 mt-1 sm:hidden product-card-price-mobile">
             <span className="text-[16px] font-black text-[#4E641A] leading-none">
-              ₹{selectedVariant.price}
+              {formatCurrency(selectedVariant.price)}
             </span>
             {selectedVariant.mrp > selectedVariant.price && (
               <span className="text-[12px] line-through text-stone-450 font-medium leading-none">
-                ₹{selectedVariant.mrp}
+                {formatCurrency(selectedVariant.mrp)}
               </span>
             )}
           </div>
@@ -409,11 +410,11 @@ const ProductCard = memo(function ProductCard({ product, onQuickView }) {
             <span className="text-[9px] font-bold text-stone-450 uppercase tracking-wider leading-none">Price</span>
             <div className="flex items-baseline gap-1 mt-1">
               <span className="text-base font-extrabold text-[#4E641A]">
-                ₹{selectedVariant.price}
+                {formatCurrency(selectedVariant.price)}
               </span>
               {selectedVariant.mrp > selectedVariant.price && (
                 <span className="text-[11px] line-through text-stone-400 font-medium">
-                  ₹{selectedVariant.mrp}
+                  {formatCurrency(selectedVariant.mrp)}
                 </span>
               )}
             </div>

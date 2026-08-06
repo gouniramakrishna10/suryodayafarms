@@ -4,6 +4,7 @@ import { FiPlus, FiEdit2, FiTrash2 } from 'react-icons/fi';
 import EmptyState from '../../components/EmptyState';
 import { useProductFilterStore } from '../../store/useProductFilterStore';
 import { getOptimizedImageUrl, handleImageError, DEFAULT_FALLBACK_IMAGE } from '../../utils/imageOptimizer';
+import { formatCurrency } from '../../utils/currency';
 
 export default function ProductsListPage({
   products = [],
@@ -160,7 +161,7 @@ export default function ProductsListPage({
                       {prod.categories?.map(c => c.name).join(', ') || prod.category?.name || 'Uncategorized'}
                     </td>
                     <td className="py-3 px-4 font-bold text-dark-olive">
-                      ₹{prod.price} {prod.mrp && <span className="text-stone-400 text-[10px] font-normal line-through ml-1">₹{prod.mrp}</span>}
+                      {formatCurrency(prod.price)} {prod.mrp && <span className="text-stone-400 text-[10px] font-normal line-through ml-1">{formatCurrency(prod.mrp)}</span>}
                     </td>
                     <td className="py-3 px-4">
                       <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold border ${

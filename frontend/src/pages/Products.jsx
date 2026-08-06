@@ -8,6 +8,8 @@ import { updateSEO } from '../hooks/useSEO';
 import { useCartStore } from '../store/useCartStore';
 import { useAuthStore } from '../store/useAuthStore';
 import ProductCard from '../components/ProductCard';
+import { formatCurrency } from '../utils/currency';
+import { fetchWithCache } from '../utils/cacheStore';
 
 const ProductCardSkeleton = () => (
   <div className="bg-white border border-[#EAE4D8] rounded-[24px] overflow-hidden p-4 flex flex-col gap-3 animate-pulse shadow-sm h-full justify-between">
@@ -103,10 +105,9 @@ export default function Products() {
     }
   }, [quickViewProduct]);
 
-  // Load categories and counts on mount
+  // Load categories on mount
   useEffect(() => {
     fetchCategories();
-    fetchCounts();
   }, []);
 
   // Read category parameter from URL and scroll
@@ -150,7 +151,7 @@ export default function Products() {
     } else if (!catSlug && categories.length > 1) {
       setSelectedCategory({ id: 'All', name: 'Shop All', slug: 'All' });
     }
-  }, [location.search, categories]);
+  }, [location.search, categories.length]);
 
   // Update browser tab title & meta tags dynamically
   useEffect(() => {
@@ -174,36 +175,25 @@ export default function Products() {
 
   const fetchCategories = async () => {
     try {
-      const response = await api.get('/products/categories');
+      const response = await fetchWithCache('categories', () => api.get('/products/categories'), 5 * 60 * 1000);
       const filtered = (response.categories || []).filter(
         c => c.slug?.toLowerCase() !== 'uncategorized' && c.name?.toLowerCase() !== 'uncategorized'
       );
       setCategories([{ id: 'All', name: 'Shop All', slug: 'All' }, ...filtered]);
-    } catch (err) {
-      console.error(err);
-    }
-  };
 
-  const fetchCounts = async () => {
-    try {
-      const response = await api.get('/products'); // Fetch all products for dynamic count
-      const allProds = response.products || [];
-      const counts = { all: allProds.length };
-      allProds.forEach((p) => {
-        const cats = p.categories || [];
-        if (cats.length > 0) {
-          cats.forEach((c) => {
-            const key = (c.slug || '').toLowerCase();
-            counts[key] = (counts[key] || 0) + 1;
-          });
-        } else {
-          const key = (p.category?.slug || p.category || p.tag || 'organic').toLowerCase();
-          counts[key] = (counts[key] || 0) + 1;
-        }
+      // Calculate dynamic category counts directly from backend aggregate count
+      const counts = {};
+      let totalAll = 0;
+      filtered.forEach((c) => {
+        const cnt = c._count?.products || 0;
+        const key = (c.slug || '').toLowerCase();
+        counts[key] = cnt;
+        totalAll += cnt;
       });
+      counts['all'] = totalAll;
       setCategoryCounts(counts);
     } catch (err) {
-      console.error("Error fetching category counts:", err);
+      console.error(err);
     }
   };
 
@@ -221,14 +211,10 @@ export default function Products() {
       if (searchQuery) params.append('search', searchQuery);
       if (sortBy !== 'newest') params.append('sort', sortBy);
 
-      const response = await api.get(`/products?${params.toString()}`);
+      const cacheKey = `products_${params.toString()}`;
+      const response = await fetchWithCache(cacheKey, () => api.get(`/products?${params.toString()}`), 2 * 60 * 1000);
       const fetchedProducts = response.products || [];
       setProductsList(fetchedProducts);
-
-      console.log(`[Storefront Product Logs] Total products in database: ${response.totalCount || fetchedProducts.length}`);
-      console.log(`[Storefront Product Logs] Total products returned by API: ${fetchedProducts.length}`);
-      console.log(`[Storefront Product Logs] Total products rendered on screen: ${fetchedProducts.length}`);
-
       setIsLoading(false);
     } catch (err) {
       console.error(err);
@@ -491,11 +477,11 @@ export default function Products() {
 
                 <div className="flex items-baseline gap-2">
                   <span className="font-serif text-xl font-bold text-[#4E641A]">
-                    ₹{qvSelectedVariant ? qvSelectedVariant.price : quickViewProduct.price}
+                    {formatCurrency(qvSelectedVariant ? qvSelectedVariant.price : quickViewProduct.price)}
                   </span>
                   {qvSelectedVariant && qvSelectedVariant.mrp > qvSelectedVariant.price && (
                     <span className="font-sans text-xs text-stone-400 line-through">
-                      ₹{qvSelectedVariant.mrp}
+                      {formatCurrency(qvSelectedVariant.mrp)}
                     </span>
                   )}
                 </div>
@@ -600,11 +586,11 @@ export default function Products() {
                     <span className="text-xs font-serif font-bold truncate max-w-[190px]">
                       {cartItems[0].product?.name || 'Item'} × {cartItems[0].quantity}
                     </span>
-                    <span className="text-[11px] font-sans font-bold text-white/95 mt-0.5">₹{subtotal}</span>
+                    <span className="text-[11px] font-sans font-bold text-white/95 mt-0.5">{formatCurrency(subtotal)}</span>
                   </div>
                 ) : (
                   <div className="flex flex-col gap-0.5 max-h-24 overflow-y-auto custom-scroll pr-1">
-                    <span className="text-xs font-serif font-bold">{cartItems.length} Items • ₹{subtotal}</span>
+                    <span className="text-xs font-serif font-bold">{cartItems.length} Items • {formatCurrency(subtotal)}</span>
                     <div className="space-y-0.5 mt-1 border-t border-white/15 pt-1">
                       {cartItems.map((item, idx) => (
                         <div key={idx} className="text-[10px] text-white/85 truncate max-w-[210px] font-sans font-medium">

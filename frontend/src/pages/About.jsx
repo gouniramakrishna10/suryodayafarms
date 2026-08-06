@@ -125,7 +125,7 @@ export default function About() {
 
           <div className="space-y-6 text-stone-700 text-base sm:text-lg leading-[1.8] font-sans">
             <p>
-              The name Suryodaya means Sunrise—a symbol of hope, energy, renewal, and the beginning of a healthier tomorrow.
+              The name <strong className="font-serif text-lg sm:text-xl font-bold text-[#4E641A]">Suryodaya</strong> means Sunrise—a symbol of hope, energy, renewal, and the beginning of a healthier tomorrow.
             </p>
             <p>
               Suryodaya Farms was established with a simple yet meaningful vision:<br />
@@ -143,10 +143,19 @@ export default function About() {
             <p>
               For us, quality is not a final checkpoint—it is a responsibility carried through every stage of our work.
             </p>
-            <div className="bg-[#FAF7F2] border border-[#EDE7D9] p-6 rounded-2xl space-y-2 font-semibold text-[#2F3B0C]">
-              <p>Every product reflects our commitment to purity, consistency, and integrity.</p>
-              <p>Every customer inspires us to improve.</p>
-              <p>Every sunrise reminds us that healthy living begins with better choices.</p>
+            <div className="bg-[#FAF7F2] border border-[#EDE7D9] p-6 rounded-2xl space-y-3 font-semibold text-[#2F3B0C]">
+              <p className="flex items-start gap-3">
+                <FiCheckCircle className="text-[#4E641A] w-5 h-5 shrink-0 mt-0.5" />
+                <span>Every product reflects our commitment to purity, consistency, and integrity.</span>
+              </p>
+              <p className="flex items-start gap-3">
+                <FiCheckCircle className="text-[#4E641A] w-5 h-5 shrink-0 mt-0.5" />
+                <span>Every customer inspires us to improve.</span>
+              </p>
+              <p className="flex items-start gap-3">
+                <FiCheckCircle className="text-[#4E641A] w-5 h-5 shrink-0 mt-0.5" />
+                <span>Every sunrise reminds us that healthy living begins with better choices.</span>
+              </p>
             </div>
           </div>
         </div>

@@ -5,6 +5,7 @@ import { useAdminAuthStore } from '../store/useAdminAuthStore';
 import { useSettingsStore } from '../store/useSettingsStore';
 import { useModalStore } from '../store/useModalStore';
 import { useFeedbackStore } from '../store/useFeedbackStore';
+import { calculateOrderGst, getStateCode } from '../utils/gst';
 import EmptyState from '../components/EmptyState';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -50,15 +51,17 @@ import api from '../utils/api';
 import ImageCropper from './components/ImageCropper';
 import UnifiedUploader from '../components/UnifiedUploader';
 import LazyRichTextEditor from './components/LazyRichTextEditor';
+import { formatCurrency } from '../utils/currency';
 const RichTextEditor = LazyRichTextEditor;
-import ProductsListPage from './products/ProductsListPage';
-import CreateProductPage from './products/CreateProductPage';
-import EditProductPage from './products/EditProductPage';
-import ShiprocketSettings from './components/ShiprocketSettings';
-import LogisticsDashboardPage from './logistics/LogisticsDashboardPage';
-import PartnerRequestsAdminPage from './PartnerRequestsAdminPage';
-import SupportRequestsAdminPage from './SupportRequestsAdminPage';
-import ContactAdminPage from './ContactAdminPage';
+
+const ProductsListPage = React.lazy(() => import('./products/ProductsListPage'));
+const CreateProductPage = React.lazy(() => import('./products/CreateProductPage'));
+const EditProductPage = React.lazy(() => import('./products/EditProductPage'));
+const ShiprocketSettings = React.lazy(() => import('./components/ShiprocketSettings'));
+const LogisticsDashboardPage = React.lazy(() => import('./logistics/LogisticsDashboardPage'));
+const PartnerRequestsAdminPage = React.lazy(() => import('./PartnerRequestsAdminPage'));
+const SupportRequestsAdminPage = React.lazy(() => import('./SupportRequestsAdminPage'));
+const ContactAdminPage = React.lazy(() => import('./ContactAdminPage'));
 
 const getCloudinaryCroppedUrl = (url, crop) => {
   if (!url || !crop || crop.cropX === undefined || crop.cropX === null || !crop.cropWidth) return url;
@@ -1046,7 +1049,7 @@ export default function AdminDashboard() {
         socialYoutube: settings.socialYoutube || '',
         freeDeliveryThreshold: settings.freeDeliveryThreshold || '2',
         shippingCharge: settings.shippingCharge || '80',
-        serviceableStates: settings.serviceableStates || 'Telangana, Andhra Pradesh'
+        serviceableStates: settings.serviceableStates || 'PAN India'
       });
     }
   }, [settings]);
@@ -3761,27 +3764,31 @@ Ensure confidence scores are numbers between 0 and 100. Always reply ONLY with r
       return;
     }
 
-    const itemsRows = (o.orderItems || []).map((item, idx) => `
-      <tr style="border-b: 1px solid #EDE7D9;">
-        <td style="padding: 10px; text-align: center;">${idx + 1}</td>
-        <td style="padding: 10px; font-weight: bold; text-align: left;">
-          ${item.product?.name || 'Organic staple'}
-          <span style="font-size: 10px; font-weight: normal; color: #666; display: block;">
-            (${item.variant?.name || item.product?.weight || '500g'})
-          </span>
-        </td>
-        <td style="padding: 10px; text-align: center;">${item.quantity}</td>
-        <td style="padding: 10px; text-align: right;">₹${item.price}</td>
-        <td style="padding: 10px; text-align: right; font-weight: bold;">₹${item.price * item.quantity}</td>
-      </tr>
-    `).join('');
-
     let addr = o.shippingAddress;
     if (typeof addr === 'string') {
       try {
         addr = JSON.parse(addr);
       } catch (e) {}
     }
+
+    const shippingState = (addr && addr.state) ? addr.state : 'Telangana';
+    const stateCode = getStateCode(shippingState);
+
+    const gstBreakdown = calculateOrderGst({
+      orderItems: o.orderItems || [],
+      shippingState,
+      storedGst: {
+        gstType: o.gstType,
+        taxableAmount: o.taxableAmount,
+        cgstAmount: o.cgstAmount,
+        sgstAmount: o.sgstAmount,
+        igstAmount: o.igstAmount,
+        gstRate: o.gstRate
+      }
+    });
+
+    const isIntrastate = gstBreakdown.isIntrastate;
+
     const formattedAddress = typeof addr === 'object' && addr ? `
       <strong>Recipient:</strong> ${addr.recipientName || o.user?.name || ''}<br/>
       <strong>Street:</strong> ${addr.street || ''}<br/>
@@ -3790,13 +3797,28 @@ Ensure confidence scores are numbers between 0 and 100. Always reply ONLY with r
       <strong>Country:</strong> ${addr.country || 'India'}
     ` : o.shippingAddress || o.address || 'Address not logged';
 
-    // Assuming GST is 5% inclusive for organic staples (2.5% CGST + 2.5% SGST)
-    const gstRate = 0.05;
-    const total = o.totalAmount;
-    const subtotal = Number((total / (1 + gstRate)).toFixed(2));
-    const totalGst = Number((total - subtotal).toFixed(2));
-    const cgst = Number((totalGst / 2).toFixed(2));
-    const sgst = Number((totalGst - cgst).toFixed(2));
+    const itemsRows = gstBreakdown.items.map((item, idx) => `
+      <tr style="border-bottom: 1px solid #EDE7D9;">
+        <td style="padding: 10px; text-align: center;">${idx + 1}</td>
+        <td style="padding: 10px; font-weight: bold; text-align: left;">
+          ${item.product?.name || item.name || 'Organic staple'}
+          <span style="font-size: 10px; font-weight: normal; color: #666; display: block;">
+            (${item.variant?.name || item.product?.weight || '500g'})
+          </span>
+        </td>
+        <td style="padding: 10px; text-align: center;">${item.hsnCode || '1106'}</td>
+        <td style="padding: 10px; text-align: center;">${item.quantity}</td>
+        <td style="padding: 10px; text-align: right;">₹${item.unitPrice.toFixed(2)}</td>
+        <td style="padding: 10px; text-align: right; font-weight: 500;">₹${item.taxableAmount.toFixed(2)}</td>
+        ${isIntrastate ? `
+          <td style="padding: 10px; text-align: right;">₹${item.cgstAmount.toFixed(2)}</td>
+          <td style="padding: 10px; text-align: right;">₹${item.sgstAmount.toFixed(2)}</td>
+        ` : `
+          <td style="padding: 10px; text-align: right;">₹${item.igstAmount.toFixed(2)}</td>
+        `}
+        <td style="padding: 10px; text-align: right; font-weight: bold;">₹${item.totalPriceInclusive.toFixed(2)}</td>
+      </tr>
+    `).join('');
 
     const htmlContent = `
       <!DOCTYPE html>
@@ -3814,7 +3836,7 @@ Ensure confidence scores are numbers between 0 and 100. Always reply ONLY with r
             line-height: 1.5;
           }
           .invoice-box {
-            max-width: 800px;
+            max-width: 850px;
             margin: auto;
             border: 1px solid #EDE7D9;
             padding: 30px;
@@ -3908,7 +3930,7 @@ Ensure confidence scores are numbers between 0 and 100. Always reply ONLY with r
             border-bottom: 1px solid #EDE7D9;
           }
           .totals-table {
-            width: 300px;
+            width: 320px;
             margin-left: auto;
             margin-bottom: 30px;
           }
@@ -3977,39 +3999,50 @@ Ensure confidence scores are numbers between 0 and 100. Always reply ONLY with r
             </div>
             <div class="title-block">
               <h2>TAX INVOICE</h2>
-              <p><strong>Invoice No:</strong> INV-${o.orderNumber}</p>
-              <p><strong>Date Placed:</strong> ${new Date(o.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</p>
-              <p><strong>Payment Status:</strong> ${o.paymentStatus}</p>
+              <p><strong>Invoice No:</strong> INV-${(o.orderNumber || '').replace('SURY-', '')}</p>
+              <p><strong>Order No:</strong> ${o.orderNumber}</p>
+              <p><strong>Date:</strong> ${new Date(o.createdAt || Date.now()).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</p>
+              <p><strong>State Code:</strong> ${stateCode} (${shippingState})</p>
             </div>
           </div>
 
           <div class="addresses">
             <div class="address-card">
               <h3>Seller (Billing From)</h3>
-              <strong>Suryodaya Farms Private Limited</strong><br/>
+              <strong>Suryodaya Farms</strong><br/>
               Plot No-20 NP, Kuruma Nagar, Peerzadiguda Mandal,<br/>
               Medchal (Malkajgiri), Telangana – 500039<br/>
-              <strong>GSTIN:</strong> 36AAGCS8294K1Z2 (Fictional)<br/>
-              <strong>Email:</strong> orders@suryodayafarms.com
+              <strong>GSTIN:</strong> 36AAAAA0000A1Z5<br/>
+              <strong>Email:</strong> care@suryodayafarms.com
             </div>
             <div class="address-card">
               <h3>Buyer (Billing To)</h3>
               ${formattedAddress}
             </div>
             <div class="address-card">
-              <h3>Buyer (Shipping To)</h3>
-              ${formattedAddress}
+              <h3>Tax & Payment Mode</h3>
+              <strong>GST Type:</strong> ${isIntrastate ? 'Intrastate (CGST 2.5% + SGST 2.5%)' : 'Interstate (IGST 5%)'}<br/>
+              <strong>State Code:</strong> ${stateCode}<br/>
+              <strong>Payment:</strong> ${o.paymentMethod || 'RAZORPAY'} (${o.paymentStatus || 'PAID'})
             </div>
           </div>
 
           <table>
             <thead>
               <tr>
-                <th style="width: 50px; text-align: center;">S.No</th>
+                <th style="width: 40px; text-align: center;">#</th>
                 <th style="text-align: left;">Product Description</th>
-                <th style="width: 80px; text-align: center;">Qty</th>
-                <th style="width: 100px; text-align: right;">Unit Price</th>
-                <th style="width: 100px; text-align: right;">Subtotal</th>
+                <th style="width: 60px; text-align: center;">HSN</th>
+                <th style="width: 50px; text-align: center;">Qty</th>
+                <th style="width: 90px; text-align: right;">Unit Price</th>
+                <th style="width: 90px; text-align: right;">Taxable</th>
+                ${isIntrastate ? `
+                  <th style="width: 75px; text-align: right;">CGST</th>
+                  <th style="width: 75px; text-align: right;">SGST</th>
+                ` : `
+                  <th style="width: 90px; text-align: right;">IGST (5%)</th>
+                `}
+                <th style="width: 95px; text-align: right;">Total</th>
               </tr>
             </thead>
             <tbody>
@@ -4018,28 +4051,41 @@ Ensure confidence scores are numbers between 0 and 100. Always reply ONLY with r
           </table>
 
           <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-            <div style="font-size: 11px; color: #666; max-width: 320px; text-align: left;">
+            <div style="font-size: 11px; color: #666; max-width: 340px; text-align: left;">
               <strong>Terms & Conditions:</strong><br/>
-              1. Goods once sold are not returnable except as specified in storefront policy.<br/>
-              2. This is a computer-generated tax invoice and requires no physical signature.<br/>
-              3. Payment Method: <strong>${o.paymentMethod || 'COD'}</strong>
+              1. All prices are inclusive of GST @ 5%.<br/>
+              2. Goods once sold are returnable as per store policy.<br/>
+              3. This is a computer-generated tax invoice requiring no physical signature.
             </div>
             <table class="totals-table">
               <tr>
-                <td style="text-align: left; font-weight: 500;">Subtotal:</td>
-                <td style="text-align: right; font-weight: bold;">₹${subtotal}</td>
+                <td style="text-align: left; font-weight: 500;">Taxable Value:</td>
+                <td style="text-align: right; font-weight: bold;">₹${gstBreakdown.taxableAmount.toFixed(2)}</td>
               </tr>
-              <tr>
-                <td style="text-align: left; font-weight: 500;">CGST (2.5%):</td>
-                <td style="text-align: right;">₹${cgst}</td>
-              </tr>
-              <tr>
-                <td style="text-align: left; font-weight: 500;">SGST (2.5%):</td>
-                <td style="text-align: right;">₹${sgst}</td>
-              </tr>
+              ${isIntrastate ? `
+                <tr>
+                  <td style="text-align: left; font-weight: 500;">CGST (2.5%):</td>
+                  <td style="text-align: right;">₹${gstBreakdown.cgstAmount.toFixed(2)}</td>
+                </tr>
+                <tr>
+                  <td style="text-align: left; font-weight: 500;">SGST (2.5%):</td>
+                  <td style="text-align: right;">₹${gstBreakdown.sgstAmount.toFixed(2)}</td>
+                </tr>
+              ` : `
+                <tr>
+                  <td style="text-align: left; font-weight: 500;">IGST (5.0%):</td>
+                  <td style="text-align: right;">₹${gstBreakdown.igstAmount.toFixed(2)}</td>
+                </tr>
+              `}
+              ${o.discountAmount > 0 ? `
+                <tr style="color: green;">
+                  <td style="text-align: left; font-weight: 500;">Discount:</td>
+                  <td style="text-align: right;">- ₹${o.discountAmount.toFixed(2)}</td>
+                </tr>
+              ` : ''}
               <tr class="grand-total">
                 <td style="text-align: left;">Grand Total:</td>
-                <td style="text-align: right; color: #4E641A;">₹${total}</td>
+                <td style="text-align: right; color: #4E641A;">₹${o.totalAmount.toFixed(2)}</td>
               </tr>
             </table>
           </div>
@@ -9074,10 +9120,10 @@ Ensure confidence scores are numbers between 0 and 100. Always reply ONLY with r
                         value={settingsForm.serviceableStates} 
                         onChange={(e) => setSettingsForm({ ...settingsForm, serviceableStates: e.target.value })}
                         className="bg-[#FDFBF7] border border-[#EDE7D9] rounded-xl p-2 text-stone-600 focus:outline-none focus:border-[#4E641A] font-sans" 
-                        placeholder="e.g. Telangana, Andhra Pradesh"
+                        placeholder="e.g. PAN India"
                         required
                       />
-                      <span className="text-[7px] text-stone-400 font-sans italic">Separate multiple states with commas (e.g. Telangana, Andhra Pradesh).</span>
+                      <span className="text-[7px] text-stone-400 font-sans italic">Enter 'PAN India' for nationwide shipping or list specific states separated by commas.</span>
                     </div>
                   </div>
 

@@ -4,12 +4,13 @@ import { useAuthStore } from '../store/useAuthStore';
 import { useCartStore } from '../store/useCartStore';
 import { useFeedbackStore } from '../store/useFeedbackStore';
 import { useSettingsStore } from '../store/useSettingsStore';
-import { FiArrowLeft, FiTrash2, FiCheckCircle, FiShield, FiLock } from 'react-icons/fi';
+import { FiArrowLeft, FiTrash2, FiCheckCircle, FiShield, FiLock, FiMapPin, FiTruck, FiAlertCircle } from 'react-icons/fi';
 import { GiSun } from 'react-icons/gi';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../utils/api';
 import { parseWeightToKG, formatWeightDisplay } from '../utils/weightParser';
 import { getOptimizedImageUrl, handleImageError, DEFAULT_FALLBACK_IMAGE } from '../utils/imageOptimizer';
+import { formatCurrency } from '../utils/currency';
 
 export default function Checkout() {
   const navigate = useNavigate();
@@ -186,19 +187,6 @@ export default function Checkout() {
       return;
     }
 
-    const serviceableList = (settings.serviceableStates || 'Telangana, Andhra Pradesh')
-      .split(',')
-      .map(s => s.trim().toLowerCase());
-    const selectedState = (targetAddress.state || '').trim().toLowerCase();
-
-    if (!serviceableList.includes(selectedState)) {
-      useFeedbackStore.getState().showToast(
-        `Selected state "${targetAddress.state}" is not in serviceable locations: ${settings.serviceableStates || 'Telangana, Andhra Pradesh'}.`,
-        'error'
-      );
-      return;
-    }
-
     setIsProcessing(true);
     useFeedbackStore.getState().showLoader('Connecting to gateway...');
 
@@ -357,20 +345,20 @@ export default function Checkout() {
             // Priority: Always use expectedDeliveryDate from backend if available
             const finalEDD = rawDateStr || (rawDaysNum ? `In ${rawDaysNum} Days` : '3–5 Business Days');
 
-            let computedBadge = '📦 Standard Delivery';
+            let computedBadge = 'Standard Delivery';
             let badgeStyle = 'bg-stone-100 text-stone-700 border-stone-200';
             
             if (rawDaysNum && rawDaysNum <= 1) {
-              computedBadge = '⚡ Arrives Tomorrow';
+              computedBadge = 'Arrives Tomorrow';
               badgeStyle = 'bg-[#E8F0D6] text-[#37411A] border-[#D4E2B6]';
             } else if (rawDaysNum && rawDaysNum === 2) {
-              computedBadge = '🚀 Express Delivery';
+              computedBadge = 'Express Delivery';
               badgeStyle = 'bg-[#E8F0D6] text-[#37411A] border-[#D4E2B6]';
             } else if (rawDaysNum && rawDaysNum >= 3 && rawDaysNum <= 4) {
-              computedBadge = '📦 Standard Delivery';
+              computedBadge = 'Standard Delivery';
               badgeStyle = 'bg-stone-100 text-stone-700 border-stone-200';
             } else {
-              computedBadge = '🚚 Delivery Expected';
+              computedBadge = 'Delivery Expected';
               badgeStyle = 'bg-stone-100 text-stone-700 border-stone-200';
             }
 
@@ -475,7 +463,7 @@ export default function Checkout() {
             </div>
             <div className="flex justify-between pt-2 border-t border-stone-200/60">
               <span>Total Paid</span>
-              <strong className="text-primary-green text-sm">₹{orderSuccessDetails.totalAmount}</strong>
+              <strong className="text-primary-green text-sm">{formatCurrency(orderSuccessDetails.totalAmount)}</strong>
             </div>
           </div>
 
@@ -603,11 +591,11 @@ export default function Checkout() {
                       <div className="flex justify-between items-center mt-4 pt-3 border-t border-stone-100">
                         <div className="flex flex-col">
                           <span className="font-serif text-lg font-bold text-dark-olive">
-                            ₹{itemPrice * item.quantity}
+                            {formatCurrency(itemPrice * item.quantity)}
                           </span>
                           {item.quantity > 1 && (
                             <span className="text-[11px] text-stone-400 font-sans">
-                              ₹{itemPrice} each
+                              {formatCurrency(itemPrice)} each
                             </span>
                           )}
                         </div>
@@ -643,7 +631,7 @@ export default function Checkout() {
             <div className="flex flex-col gap-3">
               <div className="flex justify-between items-center px-1">
                 <span className="font-serif text-lg font-bold text-dark-olive flex items-center gap-2">
-                  <span>📍 Deliver To</span>
+                  <FiMapPin className="text-[#C68A2B]" /> Deliver To
                 </span>
                 {addresses.length > 0 && (
                   <button
@@ -719,7 +707,7 @@ export default function Checkout() {
                   ) : isNonServiceable ? (
                     <div className="bg-red-50 border border-red-200 rounded-2xl p-5 text-xs font-sans text-red-700 space-y-1.5 shadow-2xs">
                       <div className="flex items-center gap-2 font-bold text-red-800 text-sm">
-                        <span>⚠️</span>
+                        <FiAlertCircle className="text-red-600 text-base" />
                         <span>Delivery Not Available</span>
                       </div>
                       <p className="text-[11px] text-red-600 leading-relaxed">
@@ -740,7 +728,7 @@ export default function Checkout() {
                         <div className="flex items-center justify-between">
                           <div>
                             <span className="font-serif font-bold text-dark-olive text-sm flex items-center gap-1.5">
-                              🚚 Shipped via {shiprocketQuote.courierName}
+                              <FiTruck className="text-[#4E641A]" /> Shipped via {shiprocketQuote.courierName}
                             </span>
                             <span className="text-[10px] text-stone-400 block pt-0.5 font-medium">
                               Fully Trackable Shipment
@@ -775,10 +763,10 @@ export default function Checkout() {
                           <span className="text-stone-500 font-medium">Shipping</span>
                           <div className="flex items-center gap-1.5">
                             {isFreeDeliveryByCoupon && liveShippingRate > 0 && (
-                              <span className="line-through text-stone-400 text-[11px]">₹{liveShippingRate}</span>
+                              <span className="line-through text-stone-400 text-[11px]">{formatCurrency(liveShippingRate)}</span>
                             )}
                             <strong className="text-primary-green font-bold text-sm">
-                              {isFreeDelivery ? 'FREE' : `₹${liveShippingRate}`}
+                              {isFreeDelivery ? 'FREE' : formatCurrency(liveShippingRate)}
                             </strong>
                           </div>
                         </div>
@@ -802,14 +790,14 @@ export default function Checkout() {
                     className="bg-[#F2F7E9] border border-[#D4E2B6] rounded-2xl p-5 font-sans space-y-1.5 shadow-2xs text-[#2D3A13]"
                   >
                     <div className="flex items-center gap-2 font-serif font-bold text-sm text-[#37411A]">
-                      <span>🎉</span>
+                      <GiSun className="text-[#C68A2B] text-base animate-spin-slow" />
                       <span>Congratulations!</span>
                     </div>
                     <p className="text-xs text-[#4E641A] leading-relaxed">
                       Your order qualifies for <strong>FREE Shipping</strong>.
                       {liveShippingRate > 0 && (
                         <span className="block pt-0.5 text-[#37411A] font-semibold">
-                          You saved ₹{liveShippingRate}!
+                          You saved {formatCurrency(liveShippingRate)}!
                         </span>
                       )}
                     </p>
@@ -818,7 +806,7 @@ export default function Checkout() {
                   <div className="bg-[#FAF7F2] border border-[#EAE4D8] rounded-2xl p-5 font-sans space-y-3 shadow-2xs">
                     <div className="flex items-center justify-between">
                       <span className="font-serif font-bold text-dark-olive text-sm flex items-center gap-1.5">
-                        <span>🚚 Free Shipping Offer</span>
+                        <FiTruck className="text-[#4E641A]" /> Free Shipping Offer
                       </span>
                       <span className="text-[11px] font-bold text-[#37411A] bg-[#E8F0D6] border border-[#D4E2B6] px-2.5 py-0.5 rounded-full">
                         Available above {formatWeightDisplay(freeDeliveryThreshold)}
@@ -926,7 +914,7 @@ export default function Checkout() {
                       }}
                       className="bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-lg px-2.5 py-1 text-[11px] font-medium transition cursor-pointer"
                     >
-                      {c.code} ({c.code === 'FREEDEL' ? 'Free Delivery' : (c.discountType === 'PERCENTAGE' ? `${c.discountValue}% OFF` : `₹${c.discountValue} OFF`)})
+                      {c.code} ({c.code === 'FREEDEL' ? 'Free Delivery' : (c.discountType === 'PERCENTAGE' ? `${c.discountValue}% OFF` : `${formatCurrency(c.discountValue)} OFF`)})
                     </button>
                   ))}
                 </div>
@@ -945,19 +933,19 @@ export default function Checkout() {
             <div className="flex flex-col gap-3.5 text-xs md:text-sm font-sans text-stone-600 border-t border-b border-stone-100 py-5">
               <div className="flex justify-between">
                 <span>Products ({cartItems.reduce((a, b) => a + b.quantity, 0)})</span>
-                <span className="font-semibold text-dark-olive">₹{subtotal}</span>
+                <span className="font-semibold text-dark-olive">{formatCurrency(subtotal)}</span>
               </div>
 
               {coupon && (
                 <div className="flex justify-between text-primary-green font-medium">
                   <span>Discount ({coupon.code})</span>
-                  <span>-₹{discountAmount}</span>
+                  <span>-{formatCurrency(discountAmount)}</span>
                 </div>
               )}
 
               <div className="flex justify-between">
                 <span>Shipping</span>
-                <span className="font-semibold text-dark-olive">{shipping === 0 ? 'FREE' : `₹${shipping}`}</span>
+                <span className="font-semibold text-dark-olive">{shipping === 0 ? 'FREE' : formatCurrency(shipping)}</span>
               </div>
 
               {/* Free Shipping Status Row */}
@@ -980,7 +968,7 @@ export default function Checkout() {
             {/* GRAND TOTAL */}
             <div className="flex justify-between items-baseline pt-1">
               <span className="font-serif text-lg font-bold text-dark-olive">Total</span>
-              <span className="font-serif text-2xl md:text-3xl font-bold text-dark-olive">₹{grandTotal}</span>
+              <span className="font-serif text-2xl md:text-3xl font-bold text-dark-olive">{formatCurrency(grandTotal)}</span>
             </div>
 
             {/* 7. PRIMARY CTA BUTTON WITH PREPAID SUBTEXT */}
@@ -1013,7 +1001,7 @@ export default function Checkout() {
       <div className="lg:hidden fixed bottom-0 left-0 right-0 p-3.5 bg-white border-t border-stone-200 z-40 flex items-center justify-between gap-4 shadow-lg">
         <div className="flex flex-col text-left">
           <span className="text-[10px] text-stone-500 uppercase tracking-wider">Total</span>
-          <span className="font-serif text-xl font-bold text-dark-olive">₹{grandTotal}</span>
+          <span className="font-serif text-xl font-bold text-dark-olive">{formatCurrency(grandTotal)}</span>
         </div>
         <button
           onClick={handlePlaceOrder}

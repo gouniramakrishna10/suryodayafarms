@@ -17,6 +17,9 @@ export default defineConfig(({ mode }) => ({
       output: {
         manualChunks(id) {
           if (id.includes('node_modules')) {
+            if (id.includes('@tiptap')) {
+              return 'vendor-tiptap';
+            }
             if (id.includes('react') || id.includes('react-dom') || id.includes('react-router-dom')) {
               return 'vendor-react';
             }
@@ -25,6 +28,9 @@ export default defineConfig(({ mode }) => ({
             }
             if (id.includes('react-icons')) {
               return 'vendor-icons';
+            }
+            if (id.includes('dompurify') || id.includes('axios') || id.includes('zustand')) {
+              return 'vendor-core';
             }
             return 'vendor-utils';
           }

@@ -101,6 +101,7 @@ model Product {
   taxPercent          Float?           @default(0)
   stockStatus         String?          @default("IN_STOCK")
   sku                 String           @unique
+  hsnCode             String?          @default("1106")
   inventory           Int              @default(0)
   hoverImage          String?
   mobileBanner        String?
@@ -247,9 +248,12 @@ model Order {
   orderPackedWhatsappSent Boolean    @default(false)
   orderShippedWhatsappSent Boolean   @default(false)
   adminOrderWhatsappSent   Boolean   @default(false)
-  whatsappLogs       Json?
-  cancelReason       String?
-  cancelledAt        DateTime?
+  gstType            String?         @default("CGST_SGST")
+  taxableAmount      Float?          @default(0)
+  cgstAmount         Float?          @default(0)
+  sgstAmount         Float?          @default(0)
+  igstAmount         Float?          @default(0)
+  gstRate            Float?          @default(5.0)
   coupon             Coupon?         @relation(fields: [couponId], references: [id])
   user               User            @relation(fields: [userId], references: [id])
   orderItems         OrderItem[]
@@ -274,15 +278,20 @@ model ShippingSettings {
 }
 
 model OrderItem {
-  id        String          @id @default(uuid())
-  orderId   String
-  productId String
-  variantId String?
-  quantity  Int
-  price     Float
-  order     Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  product   Product         @relation(fields: [productId], references: [id])
-  variant   ProductVariant? @relation(fields: [variantId], references: [id])
+  id            String          @id @default(uuid())
+  orderId       String
+  productId     String
+  variantId     String?
+  quantity      Int
+  price         Float
+  hsnCode       String?         @default("1106")
+  taxableAmount Float?          @default(0)
+  cgstAmount    Float?          @default(0)
+  sgstAmount    Float?          @default(0)
+  igstAmount    Float?          @default(0)
+  order         Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product       Product         @relation(fields: [productId], references: [id])
+  variant       ProductVariant? @relation(fields: [variantId], references: [id])
 }
 
 model Review {

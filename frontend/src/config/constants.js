@@ -20,3 +20,43 @@ export const getWhatsAppUrl = (message = '') => {
   const encodedMsg = message.includes('%') ? message : encodeURIComponent(message);
   return `https://wa.me/${WHATSAPP_FULL_NUMBER}?text=${encodedMsg}`;
 };
+
+// Complete List of Indian States & Union Territories for Nationwide Delivery
+export const INDIAN_STATES = [
+  'Andhra Pradesh',
+  'Arunachal Pradesh',
+  'Assam',
+  'Bihar',
+  'Chhattisgarh',
+  'Goa',
+  'Gujarat',
+  'Haryana',
+  'Himachal Pradesh',
+  'Jharkhand',
+  'Karnataka',
+  'Kerala',
+  'Madhya Pradesh',
+  'Maharashtra',
+  'Manipur',
+  'Meghalaya',
+  'Mizoram',
+  'Nagaland',
+  'Odisha',
+  'Punjab',
+  'Rajasthan',
+  'Sikkim',
+  'Tamil Nadu',
+  'Telangana',
+  'Tripura',
+  'Uttar Pradesh',
+  'Uttarakhand',
+  'West Bengal',
+  'Andaman & Nicobar Islands',
+  'Chandigarh',
+  'Dadra & Nagar Haveli and Daman & Diu',
+  'Delhi (NCT)',
+  'Jammu & Kashmir',
+  'Ladakh',
+  'Lakshadweep',
+  'Puducherry'
+];

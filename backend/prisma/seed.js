@@ -121,10 +121,11 @@ async function main() {
   await prisma.websiteSetting.createMany({
     data: [
       { key: 'companyName', value: 'Suryodaya Farms' },
+      { key: 'serviceableStates', value: 'PAN India' },
       { key: 'brandName', value: 'Suryodaya Farms & Organics' },
       { key: 'email', value: 'care@suryodayafarms.com' },
       { key: 'phone', value: '+91 9100422140' },
-      { key: 'address', value: 'Plot No-20 NP, Kuruma Nagar, Peerzadiguda Mandal, Medchal (Malkajgiri), Telangana – 500039' },
+      { key: 'address', value: 'Plot No-20 NP, Kuruma Nagar, Peerzadiguda Mandal, Medchal (Malkajgiri), Telangana – 500039, India' },
       { key: 'websiteUrl', value: 'https://suryodayafarms.com' },
       { key: 'gstNumber', value: '36AAAAA0000A1Z5' },
       { key: 'registrationDetails', value: 'FSSAI Licence No: 11524999000342 | Soil Bio-Dynamic System ISO 14001' },

@@ -8,6 +8,7 @@ import { updateSEO } from '../hooks/useSEO';
 import { useCartStore } from '../store/useCartStore';
 import { useWishlistStore } from '../store/useWishlistStore';
 import ProductCard from '../components/ProductCard';
+import { fetchWithCache } from '../utils/cacheStore';
 
 export default function CategoryCollection() {
   const { slug } = useParams();
@@ -72,7 +73,7 @@ export default function CategoryCollection() {
     }
     try {
       // 1. Fetch category metadata
-      const catResponse = await api.get(`/products/categories/${slug}`);
+      const catResponse = await fetchWithCache(`cat_${slug}`, () => api.get(`/products/categories/${slug}`), 5 * 60 * 1000);
       const catData = catResponse.category;
       setCategory(catData);
 
@@ -86,8 +87,7 @@ export default function CategoryCollection() {
 
       // 2. Fetch products linked to this category
       const sortParam = sortBy !== 'newest' ? `&sort=${sortBy}` : '';
-      // We pass the category slug to backend products endpoint
-      const prodResponse = await api.get(`/products?category=${catData.slug}${sortParam}`);
+      const prodResponse = await fetchWithCache(`cat_prods_${catData.slug}_${sortBy}`, () => api.get(`/products?category=${catData.slug}${sortParam}`), 2 * 60 * 1000);
       setProductsList(prodResponse.products || []);
     } catch (err) {
       console.error("Failed to load collection data:", err);

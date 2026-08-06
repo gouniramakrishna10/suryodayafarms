@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../store/useAuthStore';
+import { getOptimizedImageUrl, getImageSrcSet } from '../utils/imageOptimizer';
+import { formatCurrency } from '../utils/currency';
+import { INDIAN_STATES } from '../config/constants';
+import GstInvoiceModal from '../components/GstInvoiceModal';
 import { useCartStore } from '../store/useCartStore';
 import { useModalStore } from '../store/useModalStore';
 import { useWishlistStore } from '../store/useWishlistStore';
@@ -30,6 +34,7 @@ import {
   FiLock,
   FiMessageSquare,
   FiPackage,
+  FiGlobe,
   FiShield,
   FiCompass,
   FiAward,
@@ -677,8 +682,8 @@ export default function Dashboard() {
                 <h3 className="font-serif text-lg font-extrabold text-[#2F3B0C] leading-snug truncate max-w-[220px]">
                   {user.name || 'Premium Member'}
                 </h3>
-                <p className="text-[10px] tracking-widest uppercase font-extrabold text-[#C68A2B] mt-1.5 flex items-center bg-[#C68A2B]/5 px-2.5 py-0.5 rounded-full border border-[#C68A2B]/10 w-fit mx-auto">
-                  Gold Sprout 🌿
+                <p className="text-[10px] tracking-widest uppercase font-extrabold text-[#C68A2B] mt-1.5 flex items-center gap-1 bg-[#C68A2B]/5 px-2.5 py-0.5 rounded-full border border-[#C68A2B]/10 w-fit mx-auto">
+                  <GiSprout className="text-xs text-[#C68A2B]" /> Gold Sprout Tier
                 </p>
               </div>
             </div>
@@ -919,7 +924,7 @@ export default function Dashboard() {
                                     {product?.name || 'Organic Harvest'} {totalItems > 1 && `+ ${totalItems - 1} more`}
                                   </h5>
                                   <span className="text-[8px] text-stone-400 block font-semibold">
-                                    {new Date(order.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })} • ₹{order.totalAmount}
+                                    {new Date(order.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })} • {formatCurrency(order.totalAmount)}
                                   </span>
                                 </div>
                               </div>
@@ -979,7 +984,7 @@ export default function Dashboard() {
                     const isActive = ['PENDING', 'CONFIRMED', 'PROCESSING', 'PREPARED', 'SHIPPED', 'IN_TRANSIT', 'IN TRANSIT', 'TRANSIT', 'OUT_FOR_DELIVERY'].includes(status);
 
                     if (isActive) {
-                      const displayStatus = latestOrder.status === 'OUT_FOR_DELIVERY' ? '🛵 Out for Delivery' : `🚚 ${latestOrder.status}`;
+                      const displayStatus = latestOrder.status === 'OUT_FOR_DELIVERY' ? 'Out for Delivery' : latestOrder.status;
                       return (
                         <div className="bg-white border border-[#EAE4D8] rounded-2xl p-5 shadow-sm space-y-4 text-left border-l-4 border-l-[#C68A2B]">
                           <div className="space-y-1">
@@ -1067,17 +1072,17 @@ export default function Dashboard() {
 
                   {/* F. Delivery Benefits Widget */}
                   <div className="bg-gradient-to-br from-[#FDFBF7] to-[#EAE4D8]/20 border border-[#EAE4D8] rounded-2xl p-5 shadow-sm space-y-4 text-left">
-                    <h4 className="font-serif text-xs font-bold text-[#2F3B0C] pb-2 border-b border-[#EAE4D8] uppercase tracking-wider">
-                      Premium Dispatch Benefits 🌾
+                    <h4 className="font-serif text-xs font-bold text-[#2F3B0C] pb-2 border-b border-[#EAE4D8] uppercase tracking-wider flex items-center gap-1.5">
+                      <FiTruck className="text-[#C68A2B]" /> Premium Dispatch Benefits
                     </h4>
                     <div className="space-y-3">
                       {[
-                        { emoji: '🚚', title: 'Free delivery above 2kg', desc: 'Sourced directly and shipped for free when buying bulk staples.' },
-                        { emoji: '⚡', title: 'Telangana & Andhra Pradesh', desc: 'Fully operational express shipping routes to all major sectors.' },
-                        { emoji: '🌾', title: 'Estimated dispatch', desc: 'Harvested fresh and shipped within 3–5 working days.' }
+                        { icon: <FiTruck className="text-[#4E641A] text-sm shrink-0 mt-0.5" />, title: 'Free delivery above 2kg', desc: 'Sourced directly and shipped for free when buying bulk staples.' },
+                        { icon: <FiGlobe className="text-[#4E641A] text-sm shrink-0 mt-0.5" />, title: 'PAN INDIA DELIVERY', desc: 'We currently deliver across India. Delivery timelines may vary depending on your location and service availability.' },
+                        { icon: <FiClock className="text-[#4E641A] text-sm shrink-0 mt-0.5" />, title: 'Estimated dispatch', desc: 'Harvested fresh and shipped within 3–5 working days.' }
                       ].map((benefit, bIdx) => (
                         <div key={bIdx} className="flex items-start gap-2.5">
-                          <span className="text-sm shrink-0 mt-0.5">{benefit.emoji}</span>
+                          {benefit.icon}
                           <div className="space-y-0.5">
                             <span className="text-[10px] font-bold text-[#2F3B0C] block leading-none">{benefit.title}</span>
                             <p className="text-[9px] text-stone-500 font-medium leading-relaxed">{benefit.desc}</p>
@@ -1098,7 +1103,9 @@ export default function Dashboard() {
           {activeTab === 'orders' && (
             <div className="space-y-6">
               <div className="flex flex-col gap-1.5">
-                <h3 className="font-serif text-2xl font-bold text-[#2F3B0C]">Your Direct Farm Shipments 📦</h3>
+                <h3 className="font-serif text-2xl font-bold text-[#2F3B0C] flex items-center gap-2">
+                  <FiPackage className="text-[#C68A2B]" /> Direct Farm Shipments
+                </h3>
                 <p className="text-xs text-stone-600 font-medium">Click any shipment card to expand details, live tracking status, and invoices.</p>
               </div>
 
@@ -1163,7 +1170,7 @@ export default function Dashboard() {
                               <p className="text-[10px] text-stone-400 font-semibold flex items-center gap-1.5 flex-wrap leading-none">
                                 <span>Placed: {new Date(order.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</span>
                                 <span>•</span>
-                                <span className="text-primary-green font-bold">₹{order.totalAmount}</span>
+                                <span className="text-primary-green font-bold">{formatCurrency(order.totalAmount)}</span>
                               </p>
                             </div>
                           </div>
@@ -1197,7 +1204,7 @@ export default function Dashboard() {
                                         <span className="block font-sans text-[9px] text-stone-400 uppercase font-bold mt-0.5">Qty: {item.quantity} {item.variantName ? `• ${item.variantName}` : ''}</span>
                                       </div>
                                     </div>
-                                    <span className="font-serif text-xs font-bold text-primary-green shrink-0">₹{item.price * item.quantity}</span>
+                                    <span className="font-serif text-xs font-bold text-primary-green shrink-0">{formatCurrency(item.price * item.quantity)}</span>
                                   </div>
                                 ))}
                               </div>
@@ -1310,7 +1317,9 @@ export default function Dashboard() {
           {/* TAB 3: WISHLIST */}
           {activeTab === 'wishlist' && (
             <div className="space-y-6">
-              <h3 className="font-serif text-2xl font-bold text-[#2F3B0C]">Wishlist Bookmarks ❤️</h3>
+              <h3 className="font-serif text-2xl font-bold text-[#2F3B0C] flex items-center gap-2">
+                <FiHeart className="text-red-550" /> Wishlist Bookmarks
+              </h3>
               {wishlistItems.length > 0 ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   {wishlistItems.map((item) => {
@@ -1330,7 +1339,7 @@ export default function Dashboard() {
                           <div className="space-y-0.5">
                             <span className="font-serif font-bold text-[#2F3B0C] block leading-none">{product.name}</span>
                             <span className="text-[9px] text-stone-400 font-bold block uppercase mt-1">{product.weight || '500 ml'}</span>
-                            <span className="font-extrabold text-[#4E641A] block pt-1">₹{product.price}</span>
+                            <span className="font-extrabold text-[#4E641A] block pt-1">{formatCurrency(product.price)}</span>
                           </div>
                         </div>
                         <div className="flex flex-col justify-between items-end shrink-0">
@@ -1375,7 +1384,9 @@ export default function Dashboard() {
             <div className="space-y-6 w-full text-left">
               <div className="flex justify-between items-center flex-wrap gap-4 pb-4 border-b border-[#EDE7D9]">
                 <div className="flex flex-col gap-1">
-                  <h3 className="font-serif text-2xl font-bold text-[#2F3B0C]">Saved Coordinates 📍</h3>
+                  <h3 className="font-serif text-2xl font-bold text-[#2F3B0C] flex items-center gap-2">
+                    <FiMapPin className="text-[#C68A2B]" /> Saved Coordinates
+                  </h3>
                   <p className="text-xs text-stone-600 font-medium">Manage coordinates for fast shipping logs routing.</p>
                 </div>
                 <div className="flex gap-2 items-center flex-wrap">
@@ -1542,16 +1553,17 @@ export default function Dashboard() {
 
                         {/* State Selection */}
                         <div className="flex flex-col gap-1">
-                          <label className="text-[9px] font-extrabold uppercase tracking-wider text-stone-400">State (Serviceable Areas Only)</label>
+                          <label className="text-[9px] font-extrabold uppercase tracking-wider text-stone-400">State / Union Territory</label>
                           <select 
                             value={addressForm.state} 
                             onChange={e => setAddressForm({ ...addressForm, state: e.target.value })} 
                             className="w-full bg-[#FDFBF7] border border-[#EAE4D8] focus:border-[#4E641A] rounded-xl py-3 px-4 text-xs font-sans focus:outline-none text-[#37411A] font-medium cursor-pointer"
                             required
                           >
-                            <option value="">-- Choose State --</option>
-                            <option value="Telangana">Telangana</option>
-                            <option value="Andhra Pradesh">Andhra Pradesh</option>
+                            <option value="">-- Choose State / UT --</option>
+                            {INDIAN_STATES.map(st => (
+                              <option key={st} value={st}>{st}</option>
+                            ))}
                           </select>
                         </div>
 
@@ -1770,10 +1782,10 @@ export default function Dashboard() {
                         </div>
                       </div>
                       <div className="flex items-start gap-3">
-                        <span className="text-base shrink-0 mt-0.5">📍</span>
+                        <span className="text-base shrink-0 mt-0.5">🌍</span>
                         <div className="leading-tight">
-                          <strong className="block text-[#37411A] text-[9px] font-extrabold uppercase tracking-wider">Serviceable States</strong>
-                          <span className="text-[8px] text-stone-500 font-light block mt-0.5">Currently serving Telangana and Andhra Pradesh locations.</span>
+                          <strong className="block text-[#37411A] text-[9px] font-extrabold uppercase tracking-wider">PAN INDIA DELIVERY</strong>
+                          <span className="text-[8px] text-stone-500 font-light block mt-0.5">We currently deliver across India. Delivery timelines may vary depending on your location and service availability.</span>
                         </div>
                       </div>
                     </div>
@@ -1849,7 +1861,7 @@ export default function Dashboard() {
                           {item.name}
                         </h4>
                         <p className="text-[9px] text-stone-400 font-bold uppercase tracking-wider">{item.weight}</p>
-                        <span className="text-sm font-extrabold text-[#4E641A] block pt-1">₹{item.price}</span>
+                        <span className="text-sm font-extrabold text-[#4E641A] block pt-1">{formatCurrency(item.price)}</span>
                       </div>
                       <button onClick={() => {
                         addItem(item.id, null, 1);
@@ -2215,31 +2227,7 @@ export default function Dashboard() {
 
       {/* Invoice receipt modal */}
       {activeInvoice && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div onClick={() => setActiveInvoice(null)} className="absolute inset-0 bg-[#2F3B0C]/40 backdrop-blur-md" />
-          <div className="relative bg-white border border-[#EAE4D8] rounded-[28px] p-6 md:p-8 w-full max-w-lg shadow-2xl z-10 text-left space-y-6">
-            <div className="flex items-center justify-between border-b pb-4"><div className="flex items-center gap-2"><SparklesIcon className="w-5 h-5 text-[#C68A2B]" /><span className="font-serif text-base font-bold text-[#2F3B0C]">Receipt Receipt</span></div><button onClick={() => setActiveInvoice(null)} className="text-stone-400 font-extrabold cursor-pointer">✕</button></div>
-            <div className="space-y-4 text-xs font-medium text-stone-600">
-              <div className="flex justify-between border-b pb-2"><span>Order reference</span><span className="font-mono font-bold text-stone-850">{activeInvoice.orderNumber}</span></div>
-              <div className="flex justify-between border-b pb-2"><span>Authorized Date</span><span className="text-stone-850 font-bold">{new Date(activeInvoice.createdAt).toLocaleDateString()}</span></div>
-              <div className="flex justify-between border-b pb-2"><span>Gateway Status</span><span className="text-stone-850 font-bold">{activeInvoice.paymentMethod} • {activeInvoice.paymentStatus}</span></div>
-              <div className="space-y-2 pt-2">
-                <span className="text-[9px] font-extrabold tracking-widest text-[#C68A2B] uppercase block">SHIPPED HARVESTS</span>
-                {activeInvoice.orderItems?.map((item, idx) => (
-                  <div key={idx} className="flex justify-between items-center bg-[#F9F6F0] p-3 rounded-xl border border-[#EAE4D8] gap-3">
-                    <div className="flex items-center gap-2">
-                      <span className="text-lg shrink-0">🌱</span>
-                      <span className="font-semibold">{item.product?.name} {item.variant ? `(${item.variant.name})` : `(${item.product?.weight || '500 ml'})`} x{item.quantity}</span>
-                    </div>
-                    <span className="font-bold text-[#2F3B0C] shrink-0">₹{item.price * item.quantity}</span>
-                  </div>
-                ))}
-              </div>
-              <div className="pt-4 flex justify-between items-center text-sm border-t"><span className="font-serif font-bold text-[#2F3B0C]">Total Investment</span><span className="font-extrabold text-[#4E641A] text-base">₹{activeInvoice.totalAmount}</span></div>
-            </div>
-            <button onClick={() => { modal.alert('Receipt Downloaded', 'Compiling receipt download log has completed.', 'success'); setActiveInvoice(null); }} className="w-full py-3.5 bg-[#4E641A] hover:bg-[#2F3B0C] text-white text-xs font-bold uppercase tracking-widest rounded-xl shadow-sm cursor-pointer">Download Receipt PDF</button>
-          </div>
-        </div>
+        <GstInvoiceModal order={activeInvoice} onClose={() => setActiveInvoice(null)} />
       )}
 
       {/* Product Review Modal */}

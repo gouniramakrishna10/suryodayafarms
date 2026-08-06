@@ -377,7 +377,7 @@ router.get('/settings', async (req, res, next) => {
       brandName: 'Suryodaya Farms & Organics',
       email: 'care@suryodayafarms.com',
       phone: '+91 9100422140',
-      address: 'Plot No-20 NP, Kuruma Nagar, Peerzadiguda Mandal, Medchal (Malkajgiri), Telangana – 500039',
+      address: 'Plot No-20 NP, Kuruma Nagar, Peerzadiguda Mandal, Medchal (Malkajgiri), Telangana – 500039, India',
       websiteUrl: 'https://suryodayafarms.com',
       gstNumber: '36AAAAA0000A1Z5',
       registrationDetails: 'FSSAI Licence No: 11524999000342 | Soil Bio-Dynamic System ISO 14001',
@@ -387,7 +387,7 @@ router.get('/settings', async (req, res, next) => {
       socialYoutube: 'https://youtube.com/suryodayafarms',
       freeDeliveryThreshold: '2',
       shippingCharge: '80',
-      serviceableStates: 'Telangana, Andhra Pradesh'
+      serviceableStates: 'PAN India'
     };
 
     res.status(200).json({

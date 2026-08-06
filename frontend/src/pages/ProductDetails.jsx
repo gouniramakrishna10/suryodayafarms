@@ -15,6 +15,8 @@ import api from '../utils/api';
 import { getOptimizedImageUrl, getImageSrcSet, resolveImageUrl, handleImageError, DEFAULT_FALLBACK_IMAGE } from '../utils/imageOptimizer';
 import DOMPurify from 'dompurify';
 import DynamicSectionRenderer from '../components/DynamicSectionRenderer';
+import { formatCurrency } from '../utils/currency';
+import { fetchWithCache } from '../utils/cacheStore';
 
 // Simple, high-quality, organic confetti effect
 const triggerConfetti = (canvasEl) => {
@@ -201,7 +203,7 @@ export default function ProductDetails() {
   const fetchProductDetails = async () => {
     setIsLoading(true);
     try {
-      const response = await api.get(`/products/${slug}`);
+      const response = await fetchWithCache(`product_${slug}`, () => api.get(`/products/${slug}`), 5 * 60 * 1000);
       const prod = response.product;
       setProduct(prod);
       
@@ -526,7 +528,7 @@ export default function ProductDetails() {
                 {renderProductTitle()}
                 <div className="flex justify-between items-baseline border-b border-stone-100 pb-4 pt-2">
                   <span className="font-serif text-2xl font-bold text-[#4E641A]">
-                    ₹{selectedVariant ? selectedVariant.price : product.price}
+                    {formatCurrency(selectedVariant ? selectedVariant.price : product.price)}
                   </span>
                   {(() => {
                     const mrpVal = selectedVariant ? (selectedVariant.mrp || product.compareAtPrice) : product.compareAtPrice;
@@ -535,7 +537,7 @@ export default function ProductDetails() {
                     const discVal = Math.round(((mrpVal - priceVal) / mrpVal) * 100);
                     return (
                       <div className="flex items-center gap-2">
-                        <span className="font-sans text-xs line-through text-stone-400">₹{mrpVal}</span>
+                        <span className="font-sans text-xs line-through text-stone-400">{formatCurrency(mrpVal)}</span>
                         <span className="text-[10px] font-bold text-[#C68A2B] bg-[#C68A2B]/10 px-2 py-0.5 rounded">{discVal}% OFF</span>
                       </div>
                     );
@@ -940,7 +942,7 @@ export default function ProductDetails() {
                 {renderProductTitle()}
                 <div className="flex justify-between items-baseline border-b border-stone-100 pb-4">
                   <span className="font-serif text-2xl font-bold text-[#4E641A]">
-                    ₹{selectedVariant ? selectedVariant.price : product.price}
+                    {formatCurrency(selectedVariant ? selectedVariant.price : product.price)}
                   </span>
                   {(() => {
                     const mrpVal = selectedVariant ? (selectedVariant.mrp || product.compareAtPrice) : product.compareAtPrice;
@@ -949,7 +951,7 @@ export default function ProductDetails() {
                     const discVal = Math.round(((mrpVal - priceVal) / mrpVal) * 100);
                     return (
                       <div className="flex items-center gap-2">
-                        <span className="font-sans text-xs line-through text-stone-400">₹{mrpVal}</span>
+                        <span className="font-sans text-xs line-through text-stone-400">{formatCurrency(mrpVal)}</span>
                         <span className="text-[10px] font-bold text-[#C68A2B] bg-[#C68A2B]/10 px-2 py-0.5 rounded">{discVal}% OFF</span>
                       </div>
                     );
@@ -1040,10 +1042,13 @@ export default function ProductDetails() {
                     <FiTruck className="text-xs" /> Delivery information
                   </span>
                   <p className="font-sans text-[10px] text-stone-500 leading-relaxed font-light">
-                    Enjoy <strong className="font-semibold text-[#4E641A]">FREE Delivery</strong> for orders above <strong className="font-semibold text-stone-700">{settings.freeDeliveryThreshold || '2'} KG</strong>. Standard shipping rate of ₹{settings.shippingCharge || '80'} applies for smaller orders.
+                    Enjoy <strong className="font-semibold text-[#4E641A]">FREE Delivery</strong> for orders above <strong className="font-semibold text-stone-700">{settings.freeDeliveryThreshold || '2'} KG</strong>. Standard shipping rate of {formatCurrency(settings.shippingCharge || 80)} applies for smaller orders.
                   </p>
-                  <p className="font-sans text-[9px] text-[#C68A2B] font-bold">
-                    📍 Serviceable in: Telangana, Andhra Pradesh
+                  <p className="font-sans text-[9.5px] text-[#4E641A] font-bold flex items-center gap-1 pt-0.5">
+                    <span>🌍 PAN INDIA DELIVERY</span>
+                  </p>
+                  <p className="font-sans text-[9px] text-stone-500 font-light">
+                    We currently deliver across India. Delivery timelines may vary depending on your location and service availability.
                   </p>
                 </div>
 
@@ -1072,7 +1077,7 @@ export default function ProductDetails() {
                   <img src={product.image} alt={product.name} className="w-16 h-16 object-contain p-1" />
                   <div className="text-left">
                     <span className="font-serif text-xs font-bold text-[#2F3B0C] block line-clamp-1">{product.name}</span>
-                    <span className="font-sans text-xs text-[#4E641A] font-bold">₹{product.price}</span>
+                    <span className="font-sans text-xs text-[#4E641A] font-bold">{formatCurrency(product.price)}</span>
                   </div>
                 </div>
 
@@ -1083,13 +1088,13 @@ export default function ProductDetails() {
                   <img src={relatedProducts[0].image || relatedProducts[0].images?.[0]?.url} alt={relatedProducts[0].name} className="w-16 h-16 object-contain p-1" />
                   <div className="text-left">
                     <span className="font-serif text-xs font-bold text-[#2F3B0C] block line-clamp-1">{relatedProducts[0].name}</span>
-                    <span className="font-sans text-xs text-[#4E641A] font-bold">₹{relatedProducts[0].price}</span>
+                    <span className="font-sans text-xs text-[#4E641A] font-bold">{formatCurrency(relatedProducts[0].price)}</span>
                   </div>
                 </div>
 
                 {/* Bundle Action */}
                 <div className="sm:ml-auto text-left sm:text-right space-y-2">
-                  <p className="text-xs text-stone-500 font-light">Bundle Price: <strong className="text-[#4E641A] font-bold text-sm">₹{product.price + relatedProducts[0].price}</strong></p>
+                  <p className="text-xs text-stone-500 font-light">Bundle Price: <strong className="text-[#4E641A] font-bold text-sm">{formatCurrency(product.price + relatedProducts[0].price)}</strong></p>
                   <button
                     onClick={async () => {
                       if (!isAuthenticated) {
@@ -1129,7 +1134,7 @@ export default function ProductDetails() {
                     </div>
                     <div className="p-4 border-t border-stone-100 text-left space-y-1.5 flex-1 flex flex-col justify-between">
                       <strong className="font-serif text-xs font-bold text-stone-800 group-hover:text-[#4E641A] transition line-clamp-2">{p.name}</strong>
-                      <span className="font-serif text-xs font-bold text-[#4E641A]">₹{p.price}</span>
+                      <span className="font-serif text-xs font-bold text-[#4E641A]">{formatCurrency(p.price)}</span>
                     </div>
                   </div>
                 ))}
@@ -1151,7 +1156,7 @@ export default function ProductDetails() {
                     <img src={p.image} alt={p.name} className="w-12 h-12 object-contain bg-[#FCFAF5] p-1 rounded-lg" />
                     <div className="text-left truncate">
                       <strong className="font-serif text-[11px] font-bold text-stone-850 truncate block">{p.name}</strong>
-                      <span className="font-sans text-[10px] text-[#4E641A] font-bold block">₹{p.price}</span>
+                      <span className="font-sans text-[10px] text-[#4E641A] font-bold block">{formatCurrency(p.price)}</span>
                     </div>
                   </div>
                 ))}

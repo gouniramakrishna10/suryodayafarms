@@ -7,6 +7,7 @@ import { mapCartItem, mapWishlistItem, mapOrder } from '../utils/productMapper.j
 import { syncService } from '../services/shiprocket/sync.service.js';
 import { ordersService } from '../services/shiprocket/orders.service.js';
 import whatsappService from '../services/whatsapp.service.js';
+import { calculateOrderGst } from '../utils/gst.js';
 
 const router = express.Router();
 
@@ -369,17 +370,21 @@ router.post('/checkout', protect, async (req, res, next) => {
 
     const freeDeliveryThreshold = parseFloat(settingsObj.freeDeliveryThreshold || '2');
     const shippingCharge = parseFloat(settingsObj.shippingCharge || '80');
-    const serviceableStatesStr = settingsObj.serviceableStates || 'Telangana, Andhra Pradesh';
+    const serviceableStatesStr = settingsObj.serviceableStates || 'PAN India';
     const serviceableStates = serviceableStatesStr
       .split(',')
       .map(s => s.trim().toLowerCase());
 
-    // Validate if the address state is in serviceable locations
+    // Validate if address state is serviceable (PAN India delivery allows all states)
     const addressState = (address.state || '').trim().toLowerCase();
-    if (!serviceableStates.includes(addressState)) {
+    const isPanIndiaDelivery = serviceableStatesStr.toLowerCase().includes('pan india') || 
+                               serviceableStatesStr.toLowerCase().includes('all') || 
+                               serviceableStatesStr.toLowerCase().includes('india');
+                               
+    if (!isPanIndiaDelivery && addressState && !serviceableStates.includes(addressState)) {
       return res.status(400).json({
         success: false,
-        message: `Suryodaya Farms only services locations in: ${serviceableStatesStr}. Selected state "${address.state}" is not serviceable.`
+        message: `Delivery is currently restricted to: ${serviceableStatesStr}. Selected state "${address.state}" is not serviceable.`
       });
     }
 
@@ -474,6 +479,18 @@ router.post('/checkout', protect, async (req, res, next) => {
       });
     }
 
+    // Calculate GST line-by-line using Shipping Address State (Telangana => CGST+SGST, Other States => IGST)
+    const shippingState = address.state || 'Telangana';
+    const orderGst = calculateOrderGst({
+      orderItems: cartItems.map(item => ({
+        price: item.variant ? item.variant.price : item.product.price,
+        quantity: item.quantity,
+        product: item.product,
+        hsnCode: item.product?.hsnCode || '1106'
+      })),
+      shippingState
+    });
+
     // Build database order data
     const orderData = {
       userId: req.user.id,
@@ -493,7 +510,13 @@ router.post('/checkout', protect, async (req, res, next) => {
         country: address.country,
       },
       status: 'PENDING',
-      paymentStatus: 'PENDING'
+      paymentStatus: 'PENDING',
+      gstType: orderGst.gstType,
+      taxableAmount: orderGst.taxableAmount,
+      cgstAmount: orderGst.cgstAmount,
+      sgstAmount: orderGst.sgstAmount,
+      igstAmount: orderGst.igstAmount,
+      gstRate: 5.0
     };
 
     // Save order record in DB
@@ -501,12 +524,21 @@ router.post('/checkout', protect, async (req, res, next) => {
       data: {
         ...orderData,
         orderItems: {
-          create: cartItems.map((item) => ({
-            productId: item.productId,
-            variantId: item.variantId || undefined,
-            quantity: item.quantity,
-            price: item.variant ? item.variant.price : item.product.price,
-          })),
+          create: cartItems.map((item, idx) => {
+            const lineGst = orderGst.items[idx] || {};
+            const price = item.variant ? item.variant.price : item.product.price;
+            return {
+              productId: item.productId,
+              variantId: item.variantId || undefined,
+              quantity: item.quantity,
+              price,
+              hsnCode: item.product?.hsnCode || '1106',
+              taxableAmount: lineGst.taxableAmount || 0,
+              cgstAmount: lineGst.cgstAmount || 0,
+              sgstAmount: lineGst.sgstAmount || 0,
+              igstAmount: lineGst.igstAmount || 0
+            };
+          }),
         },
       },
       include: { orderItems: { include: { product: true, variant: true } } },

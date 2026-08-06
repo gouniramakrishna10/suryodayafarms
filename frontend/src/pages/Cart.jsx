@@ -7,6 +7,7 @@ import { useSettingsStore } from '../store/useSettingsStore';
 import api from '../utils/api';
 import { getOptimizedImageUrl, handleImageError, DEFAULT_FALLBACK_IMAGE } from '../utils/imageOptimizer';
 import { parseWeightToKG } from '../utils/weightParser';
+import { formatCurrency } from '../utils/currency';
 
 export default function Cart() {
   const navigate = useNavigate();
@@ -200,7 +201,7 @@ export default function Cart() {
 
                         <div className="flex items-center gap-6 shrink-0">
                           <span className="font-serif text-base font-bold text-primary-green min-w-[70px] text-right">
-                            ₹{itemPrice * item.quantity}
+                            {formatCurrency(itemPrice * item.quantity)}
                           </span>
                           
                           <button
@@ -248,7 +249,7 @@ export default function Cart() {
                       <span className="font-sans text-[10px] text-dark-text/60 mt-0.5">
                         {appliedCoupon.discountType === 'PERCENTAGE' 
                           ? `${appliedCoupon.discountValue}% Off applied` 
-                          : `₹${appliedCoupon.discountValue} Flat deduction applied`}
+                          : `${formatCurrency(appliedCoupon.discountValue)} Flat deduction applied`}
                       </span>
                     </div>
                     <button
@@ -328,7 +329,7 @@ export default function Cart() {
                 <div className="flex flex-col gap-3 font-sans text-xs text-dark-text/75">
                   <div className="flex justify-between">
                     <span>Subtotal Basket:</span>
-                    <span className="font-semibold text-dark-olive">₹{subtotal}</span>
+                    <span className="font-semibold text-dark-olive">{formatCurrency(subtotal)}</span>
                   </div>
 
                   <div className="flex justify-between">
@@ -339,7 +340,7 @@ export default function Cart() {
                   {appliedCoupon && (
                     <div className="flex justify-between text-primary-green font-medium">
                       <span>Discount Received:</span>
-                      <span>-₹{discountAmount}</span>
+                      <span>-{formatCurrency(discountAmount)}</span>
                     </div>
                   )}
 
@@ -350,14 +351,14 @@ export default function Cart() {
                         FREE DELIVERY
                       </span>
                     ) : (
-                      <span className="font-semibold text-dark-olive">₹{shippingFee}</span>
+                      <span className="font-semibold text-dark-olive">{formatCurrency(shippingFee)}</span>
                     )}
                   </div>
                 </div>
 
                 <div className="border-t border-light-beige/50 pt-4 flex justify-between items-baseline font-serif text-lg font-bold text-dark-olive">
                   <span>Grand Total:</span>
-                  <span className="text-primary-green text-2xl">₹{finalTotal}</span>
+                  <span className="text-primary-green text-2xl">{formatCurrency(finalTotal)}</span>
                 </div>
 
                 <p className="font-sans text-[10px] text-dark-text/50 font-light italic leading-normal">

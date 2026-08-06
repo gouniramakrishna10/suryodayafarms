@@ -125,15 +125,11 @@ export default function Partner() {
     }
   };
 
-  // Structured client lists with associated visual icons for clean grid rendering
   const partnershipOpportunities = [
     { title: 'Distribution Partnerships', icon: FiTruck },
-    { title: 'Wholesale Supply', icon: FiBox },
-    { title: 'Retail & Supermarket Partnerships', icon: FiBriefcase },
+    { title: 'Wholesale & Retail Partnerships', icon: FiBriefcase },
     { title: 'Institutional & Corporate Supply', icon: FiUsers },
-    { title: 'Export Opportunities', icon: FiGlobe },
-    { title: 'Private Label & Contract Manufacturing', icon: FiLayers },
-    { title: 'Product Development & Strategic Collaborations', icon: GiSprout }
+    { title: 'Export Opportunities', icon: FiGlobe }
   ];
 
   const whyPartnerItems = [
@@ -246,7 +242,7 @@ export default function Partner() {
             <p className="text-stone-600 text-base sm:text-lg font-sans">We welcome collaborations in the following areas:</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
             {partnershipOpportunities.map((opp, idx) => {
               const Icon = opp.icon;
               return (
@@ -654,7 +650,7 @@ export default function Partner() {
                         value={formData.state}
                         onChange={handleInputChange}
                         required
-                        placeholder="e.g. Telangana"
+                        placeholder="e.g. Maharashtra, Delhi, Telangana"
                         className="w-full px-4.5 py-3.5 bg-[#FAF8F5] border border-[#EDE7D9] rounded-xl focus:ring-2 focus:ring-[#4E641A] focus:outline-none text-sm text-[#2F3B0C]"
                       />
                     </div>

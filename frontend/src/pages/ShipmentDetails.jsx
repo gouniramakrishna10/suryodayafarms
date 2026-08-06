@@ -21,6 +21,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import api from '../utils/api';
 import { useCartStore } from '../store/useCartStore';
 import { useFeedbackStore } from '../store/useFeedbackStore';
+import { formatCurrency } from '../utils/currency';
+import GstInvoiceModal from '../components/GstInvoiceModal';
 
 export default function ShipmentDetails() {
   const { orderId } = useParams();
@@ -414,7 +416,7 @@ export default function ShipmentDetails() {
               </span>
             </div>
             <div className="font-serif text-2xl font-extrabold text-[#4E641A]">
-              ₹{order.totalAmount}
+              {formatCurrency(order.totalAmount)}
             </div>
             <span className="text-[10px] text-stone-400 font-bold uppercase tracking-widest">
               Payment: {order.paymentStatus}
@@ -555,7 +557,7 @@ export default function ShipmentDetails() {
                       <div className="grid grid-cols-2 gap-3 pt-2 border-t border-emerald-200/60 text-xs">
                         <div>
                           <span className="text-[9px] font-extrabold uppercase tracking-wider text-emerald-600 block">Refund Amount</span>
-                          <strong className="text-emerald-900 font-serif text-sm">₹{refundAmount}</strong>
+                          <strong className="text-emerald-900 font-serif text-sm">{formatCurrency(refundAmount)}</strong>
                         </div>
                         <div>
                           <span className="text-[9px] font-extrabold uppercase tracking-wider text-emerald-600 block">Gateway</span>
@@ -588,7 +590,7 @@ export default function ShipmentDetails() {
                       <div className="grid grid-cols-2 gap-3 pt-2 border-t border-red-200/60 text-xs">
                         <div>
                           <span className="text-[9px] font-extrabold uppercase tracking-wider text-red-600 block">Refund Amount</span>
-                          <strong className="text-red-900 font-serif">₹{refundAmount}</strong>
+                          <strong className="text-red-900 font-serif">{formatCurrency(refundAmount)}</strong>
                         </div>
                         <div>
                           <span className="text-[9px] font-extrabold uppercase tracking-wider text-red-600 block">Gateway</span>
@@ -614,7 +616,7 @@ export default function ShipmentDetails() {
                       <div className="grid grid-cols-2 gap-3 border-t border-blue-200/60 pt-3 text-xs">
                         <div>
                           <span className="text-[9px] font-extrabold uppercase tracking-wider text-blue-600 block">Refund Amount</span>
-                          <strong className="text-blue-900 font-serif text-sm">₹{refundAmount}</strong>
+                          <strong className="text-blue-900 font-serif text-sm">{formatCurrency(refundAmount)}</strong>
                         </div>
                         <div>
                           <span className="text-[9px] font-extrabold uppercase tracking-wider text-blue-600 block">Gateway</span>
@@ -939,10 +941,10 @@ export default function ShipmentDetails() {
                     </div>
                     <div className="text-right shrink-0">
                       <span className="font-serif text-xs font-extrabold text-[#4E641A] block">
-                        ₹{item.price * item.quantity}
+                        {formatCurrency(item.price * item.quantity)}
                       </span>
                       <span className="text-[8px] text-stone-400 font-medium block">
-                        ₹{item.price} each
+                        {formatCurrency(item.price)} each
                       </span>
                     </div>
                   </div>
@@ -953,17 +955,17 @@ export default function ShipmentDetails() {
             {/* Total items pricing banner */}
             <div className="pt-3 border-t border-stone-100 flex justify-between items-center text-xs">
               <span className="text-stone-450 font-bold">Subtotal Amount</span>
-              <span className="font-bold text-[#2F3B0C]">₹{order.totalAmount + (order.discountAmount || 0)}</span>
+              <span className="font-bold text-[#2F3B0C]">{formatCurrency(order.totalAmount + (order.discountAmount || 0))}</span>
             </div>
             {order.discountAmount > 0 && (
               <div className="flex justify-between items-center text-xs text-green-755 font-semibold">
                 <span>Voucher Saved</span>
-                <span>- ₹{order.discountAmount}</span>
+                <span>- {formatCurrency(order.discountAmount)}</span>
               </div>
             )}
             <div className="pt-2 flex justify-between items-center text-sm border-t font-semibold">
               <span className="font-serif text-[#2F3B0C]">Total Investment</span>
-              <span className="font-extrabold text-[#4E641A]">₹{order.totalAmount}</span>
+              <span className="font-extrabold text-[#4E641A]">{formatCurrency(order.totalAmount)}</span>
             </div>
           </div>
         </div>
@@ -991,79 +993,7 @@ export default function ShipmentDetails() {
       {/* 5. Invoice receipt modal popup */}
       <AnimatePresence>
         {activeInvoice && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setActiveInvoice(false)} 
-              className="absolute inset-0 bg-[#2F3B0C]/45 backdrop-blur-sm" 
-            />
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95, y: 15 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 15 }}
-              transition={{ type: "spring", stiffness: 100, damping: 15 }}
-              className="relative bg-white border border-[#EAE4D8] rounded-[28px] p-6 md:p-8 w-full max-w-lg shadow-2xl z-10 text-left space-y-5"
-            >
-              <div className="flex items-center justify-between border-b pb-4">
-                <div className="flex items-center gap-2">
-                  <GiSun className="w-5 h-5 text-[#C68A2B] animate-spin-slow" />
-                  <span className="font-serif text-base font-bold text-[#2F3B0C]">Suryodaya Invoice Receipt</span>
-                </div>
-                <button onClick={() => setActiveInvoice(false)} className="text-stone-400 font-extrabold cursor-pointer hover:text-stone-600 transition">✕</button>
-              </div>
-
-              <div className="space-y-4 text-xs font-semibold text-stone-500">
-                <div className="flex justify-between border-b pb-2">
-                  <span>Order Reference</span>
-                  <span className="font-mono font-bold text-stone-800">{order.orderNumber}</span>
-                </div>
-                <div className="flex justify-between border-b pb-2">
-                  <span>Authorized Date</span>
-                  <span className="text-stone-850 font-bold">
-                    {new Date(order.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
-                  </span>
-                </div>
-                <div className="flex justify-between border-b pb-2">
-                  <span>Gateway Status</span>
-                  <span className="text-stone-850 font-bold">{order.paymentMethod} • {order.paymentStatus}</span>
-                </div>
-                
-                <div className="space-y-2 pt-2">
-                  <span className="text-[9px] font-extrabold tracking-widest text-[#C68A2B] uppercase block">SHIPPED HARVESTS</span>
-                  <div className="max-h-[160px] overflow-y-auto space-y-2 pr-1 scrollbar-hide">
-                    {order.orderItems?.map((item, idx) => (
-                      <div key={idx} className="flex justify-between items-center bg-[#F9F6F0] p-3 rounded-xl border border-[#EAE4D8] gap-3">
-                        <div className="flex items-center gap-2">
-                          <span className="text-base shrink-0">🌱</span>
-                          <span className="font-semibold text-stone-700">
-                            {item.product?.name} {item.variant ? `(${item.variant.name})` : `(${item.product?.weight || '500 ml'})`} x{item.quantity}
-                          </span>
-                        </div>
-                        <span className="font-bold text-[#2F3B0C] shrink-0">₹{item.price * item.quantity}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="pt-4 flex justify-between items-center text-sm border-t font-semibold">
-                  <span className="font-serif text-[#2F3B0C]">Total Investment</span>
-                  <span className="font-extrabold text-[#4E641A] text-base">₹{order.totalAmount}</span>
-                </div>
-              </div>
-
-              <button 
-                onClick={() => {
-                  alert('Receipt compiled and downloaded successfully.');
-                  setActiveInvoice(false);
-                }} 
-                className="w-full py-3.5 bg-[#4E641A] hover:bg-[#2F3B0C] text-white text-xs font-bold uppercase tracking-widest rounded-xl shadow-md transition duration-300 cursor-pointer"
-              >
-                Download Receipt PDF
-              </button>
-            </motion.div>
-          </div>
+          <GstInvoiceModal order={order} onClose={() => setActiveInvoice(false)} />
         )}
       </AnimatePresence>
 
