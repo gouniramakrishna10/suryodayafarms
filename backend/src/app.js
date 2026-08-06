@@ -118,6 +118,7 @@ app.use('/api/coupons', orderRoutes);        // Coupon validate actions
 app.use('/api/orders', orderRoutes);         // Order checkouts, payments, and histories
 app.use('/api/admin', adminRoutes);          // Dashboard metrics and administrative edits
 app.use('/api/public', publicRoutes);        // Blog chronicle lists, testimonials, contact submit
+app.use('/sitemap.xml', publicRoutes);         // Dynamic SEO Sitemap endpoint
 app.use('/api/support', supportRoutes);      // Order support and customer help tickets
 app.use('/api/shiprocket', shiprocketRoutes); // Shiprocket Logistics APIs & Webhooks
 app.use('/api', partnerRoutes);              // Become a Partner public submission and admin management routes

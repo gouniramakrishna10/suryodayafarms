@@ -1,0 +1,28 @@
+# Suryodaya Farms Production Robots.txt
+# https://suryodayafarms.com
+
+User-agent: *
+Allow: /
+Allow: /about
+Allow: /products
+Allow: /product/
+Allow: /category/
+Allow: /faq
+Allow: /contact
+Allow: /become-a-partner
+Allow: /privacy
+
+# Disallow private, checkout, cart & administrative routes
+Disallow: /admin
+Disallow: /admin/
+Disallow: /admin-login
+Disallow: /cart
+Disallow: /checkout
+Disallow: /dashboard
+Disallow: /profile
+Disallow: /api/
+Disallow: /*?*sort=
+Disallow: /*?*page=
+
+# Sitemap index location
+Sitemap: https://suryodayafarms.com/sitemap.xml

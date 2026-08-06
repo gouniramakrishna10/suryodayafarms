@@ -81,7 +81,8 @@ export default function CategoryCollection() {
       if (catData) {
         updateSEO({
           title: catData.seoTitle || `${catData.name} | Suryodaya Farms`,
-          description: catData.seoDescription || catData.description || `Discover pure, natural and nutritious ${catData.name} superfoods by Suryodaya Farms.`
+          description: catData.seoDescription || catData.description || `Discover pure, natural and nutritious ${catData.name} superfoods by Suryodaya Farms.`,
+          categoryData: catData
         });
       }
 

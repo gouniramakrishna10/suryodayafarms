@@ -117,13 +117,7 @@ export default function Products() {
     if (catSlug && categories.length > 1) {
       const found = categories.find(c => 
         c.slug === catSlug || 
-        c.id === catSlug ||
-        (catSlug === 'a2-ghee' && c.slug === 'ghee') ||
-        (c.slug === 'ghee' && catSlug.includes('ghee')) ||
-        (catSlug === 'cold-pressed-oils' && c.slug === 'oils') ||
-        (c.slug === 'oils' && catSlug.includes('oils')) ||
-        c.slug.includes(catSlug) ||
-        catSlug.includes(c.slug)
+        c.id === catSlug
       );
       if (found) {
         setSelectedCategory(found);

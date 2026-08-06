@@ -1,8 +1,23 @@
 <IfModule mod_rewrite.c>
-RewriteEngine On
-RewriteBase /
-RewriteRule ^index\.html$ - [L]
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule . /index.html [L]
+  RewriteEngine On
+  RewriteBase /
+
+  # 1. Force HTTPS
+  RewriteCond %{HTTPS} off
+  RewriteRule ^(.*)$ https://suryodayafarms.com/$1 [R=301,L]
+
+  # 2. Force non-www (https://www.suryodayafarms.com -> https://suryodayafarms.com)
+  RewriteCond %{HTTP_HOST} ^www\.suryodayafarms\.com$ [NC]
+  RewriteRule ^(.*)$ https://suryodayafarms.com/$1 [R=301,L]
+
+  # 3. Strip trailing slashes from URLs (except root)
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_URI} (.+)/$
+  RewriteRule ^ %1 [R=301,L]
+
+  # 4. React Single Page Application (SPA) Routing Fallback
+  RewriteRule ^index\.html$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /index.html [L]
 </IfModule>

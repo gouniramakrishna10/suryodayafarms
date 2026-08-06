@@ -236,10 +236,13 @@ export default function ProductDetails() {
         setSelectedVariant(null);
       }
 
-      // Update dynamic SEO tags using client-approved brand metadata
+      // Update dynamic SEO tags using client-approved brand metadata and Product Schema
       updateSEO({
         title: prod.seoTitle || `${prod.name} | Suryodaya Farms`,
-        description: prod.seoDescription || prod.shortDescription || `${prod.name} by Suryodaya Farms. Pure, natural and nutritious superfood developed with scientific care.`
+        description: prod.seoDescription || prod.shortDescription || `${prod.name} by Suryodaya Farms. Pure, natural and nutritious superfood developed with scientific care.`,
+        image: (prod.images && prod.images.length > 0 ? (typeof prod.images[0] === 'string' ? prod.images[0] : prod.images[0].url) : prod.image) || undefined,
+        ogType: 'product',
+        productData: prod
       });
       
       // Fetch related products under same category - isolated error handling
