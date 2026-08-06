@@ -416,14 +416,14 @@ export default function ProductDetails() {
   };
 
   const renderProductTitle = () => (
-    <div className="space-y-3 flex flex-col items-start">
+    <div className="flex flex-col gap-2 border-b border-[#EDE7D9] pb-4 min-w-0 max-w-full overflow-hidden text-left">
       <SectionBadge text={(product.categories && product.categories.length > 0) ? product.categories[0].name : (product.category?.name || 'Vedic Staples')} align="left" />
-      <h1 className="font-serif text-2xl sm:text-3xl lg:text-3xl xl:text-4xl font-bold text-[#2F3B0C] leading-tight whitespace-nowrap">
+      <h1 className="font-serif text-xl sm:text-2xl lg:text-3xl font-bold text-[#2F3B0C] leading-snug break-words overflow-wrap-break-word tracking-tight">
         {product.name}
       </h1>
       
       {/* Ratings */}
-      <div className="flex items-center gap-1.5">
+      <div className="flex items-center gap-1.5 pt-1">
         <div className="flex text-[#C68A2B]">
           {[...Array(5)].map((_, i) => (
             <FiStar key={i} className={`text-sm ${
