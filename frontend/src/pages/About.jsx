@@ -667,35 +667,60 @@ export default function About() {
         </div>
       </section>
 
-      {/* 8. OUR CORE VALUES */}
-      <section className="py-12 md:py-16 px-4 sm:px-6 lg:px-12 bg-[#F7F8F2] border-b border-[#EDE7D9]">
-        <div className="max-w-6xl mx-auto space-y-10 text-left">
+      {/* 8. OUR CORE VALUES (RHYTHMIC 3x2 SHOWCASE WITH WATERMARKS) */}
+      <section className="py-10 md:py-14 px-4 sm:px-6 lg:px-12 bg-[#FAF7F2] border-b border-[#EDE7D9] relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(#4E641A_1px,transparent_1px)] [background-size:32px_32px] opacity-10 pointer-events-none" />
+
+        <div className="max-w-6xl mx-auto space-y-8 lg:space-y-10 text-left relative z-10">
           
           <div className="space-y-3 flex flex-col items-center text-center">
             <SectionBadge text="Foundational Pillars" align="center" />
-            <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">OUR CORE VALUES</h2>
+            <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#2F3B0C]">OUR CORE VALUES</h2>
             <div className="w-24 h-1 bg-gradient-to-r from-[#4E641A] via-[#C68A2B] to-[#4E641A] rounded-full mt-1" />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {coreValues.map((val, idx) => {
               const IconComp = val.icon || FiShield;
+              // Alternating subtle background tones and watermarks
+              const styleVariants = [
+                { bgClass: 'bg-white border-[#EDE7D9]', watermark: FiShield },
+                { bgClass: 'bg-[#F7F8F2] border-[#DCE4CD]', watermark: FiAward },
+                { bgClass: 'bg-[#FAF7F2] border-[#EDE7D9]', watermark: FiBookOpen },
+                { bgClass: 'bg-[#F5F7EF] border-[#DCE4CD]', watermark: FiUsers },
+                { bgClass: 'bg-white border-[#EDE7D9]', watermark: FiZap },
+                { bgClass: 'bg-[#F7F8F2] border-[#DCE4CD]', watermark: GiSprout }
+              ];
+              const variant = styleVariants[idx % styleVariants.length];
+              const Watermark = variant.watermark;
+
               return (
                 <div 
                   key={idx} 
-                  className="bg-white border border-[#EDE7D9] hover:border-[#4E641A]/40 p-7 rounded-[20px] space-y-4 shadow-xs hover:shadow-md hover:-translate-y-1.5 transition-all duration-300 h-full flex flex-col justify-between group"
+                  className={`${variant.bgClass} border p-6 sm:p-7 rounded-[22px] shadow-2xs hover:shadow-md hover:border-[#4E641A] transition-all duration-300 flex flex-col justify-between group relative overflow-hidden transform hover:-translate-y-1 cursor-pointer`}
                 >
-                  <div className="space-y-4">
-                    <div className="w-12 h-12 rounded-xl bg-[#F0F5E6] border border-[#4E641A]/20 flex items-center justify-center text-[#4E641A] group-hover:bg-[#4E641A] group-hover:text-white transition-colors duration-300">
-                      <IconComp className="w-6 h-6 stroke-[2px]" />
-                    </div>
-                    <h3 className="font-serif text-xl font-bold text-[#2F3B0C] group-hover:text-[#4E641A] transition-colors duration-300">
-                      {val.title}
-                    </h3>
+                  {/* Subtle 4-6% Opacity Watermark Icon */}
+                  <div className="absolute right-3 bottom-2 text-[#4E641A]/5 group-hover:text-[#4E641A]/10 text-6xl pointer-events-none select-none transition-colors duration-300">
+                    <Watermark />
                   </div>
-                  <p className="text-stone-600 text-sm sm:text-base leading-relaxed font-sans pt-2 border-t border-[#EDE7D9]/60">
-                    {val.desc}
-                  </p>
+
+                  <div className="space-y-4 relative z-10">
+                    {/* Header Row: Icon Badge Beside Title */}
+                    <div className="flex items-center gap-3.5">
+                      <div className="w-11 h-11 rounded-full bg-[#4E641A]/10 text-[#4E641A] flex items-center justify-center shrink-0 group-hover:bg-[#4E641A] group-hover:text-white transition-colors duration-300 shadow-2xs">
+                        <IconComp className="w-5 h-5 stroke-[2px]" />
+                      </div>
+                      <h3 className="font-serif text-xl font-bold text-[#2F3B0C] group-hover:text-[#4E641A] transition-colors leading-snug">
+                        {val.title}
+                      </h3>
+                    </div>
+
+                    <div className="border-b border-[#EDE7D9]/80 my-2" />
+
+                    <p className="text-stone-600 text-sm sm:text-base leading-relaxed font-sans">
+                      {val.desc}
+                    </p>
+                  </div>
                 </div>
               );
             })}
