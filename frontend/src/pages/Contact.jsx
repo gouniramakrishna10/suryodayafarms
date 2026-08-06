@@ -396,11 +396,12 @@ export default function Contact() {
                   </div>
 
                   {/* Sunday */}
-                  <div className="grid grid-cols-[105px_1fr] sm:grid-cols-[115px_1fr] items-center gap-2 pt-3 border-t border-[#EDE7D9]/60 text-left">
-                    <span className="text-xs sm:text-sm font-medium text-stone-600">Sunday:</span>
-                    <span className="text-xs sm:text-sm font-bold text-stone-700 text-left leading-snug whitespace-nowrap">
-                      Closed <span className="text-[10px] sm:text-xs text-stone-500 font-normal">(Online Orders 24/7)</span>
-                    </span>
+                  <div className="grid grid-cols-[105px_1fr] sm:grid-cols-[115px_1fr] items-start gap-2 pt-3 border-t border-[#EDE7D9]/60 text-left">
+                    <span className="text-xs sm:text-sm font-medium text-stone-600 pt-0.5">Sunday:</span>
+                    <div className="flex flex-col text-left leading-tight">
+                      <span className="text-xs sm:text-sm font-bold text-stone-700 whitespace-nowrap">Customer Support Closed</span>
+                      <span className="text-[10px] sm:text-xs text-stone-500 font-normal whitespace-nowrap pt-0.5">(Online Orders 24/7)</span>
+                    </div>
                   </div>
                 </div>
 
