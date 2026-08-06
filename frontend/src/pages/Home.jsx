@@ -1968,22 +1968,22 @@ export default function Home() {
 
           {/* Right Decorative Feature Pill Cards */}
           <div className="grid grid-cols-2 gap-4 w-full lg:w-auto shrink-0">
-            <div className="bg-[#FDFBF7] border border-[#EDE7D9] p-5 rounded-2xl flex flex-col gap-2 shadow-xs hover:border-[#4E641A]/40 transition duration-300">
+            <div className="bg-[#FDFBF7] border border-[#EDE7D9] p-5 rounded-2xl flex flex-col items-center text-center justify-center gap-1.5 shadow-xs hover:border-[#4E641A]/40 transition duration-300">
               <span className="font-serif text-2xl font-bold text-[#4E641A]">Purity</span>
               <span className="font-sans text-xs text-stone-600 font-medium">Pure & Natural</span>
             </div>
 
-            <div className="bg-[#FDFBF7] border border-[#EDE7D9] p-5 rounded-2xl flex flex-col gap-2 shadow-xs hover:border-[#4E641A]/40 transition duration-300">
+            <div className="bg-[#FDFBF7] border border-[#EDE7D9] p-5 rounded-2xl flex flex-col items-center text-center justify-center gap-1.5 shadow-xs hover:border-[#4E641A]/40 transition duration-300">
               <span className="font-serif text-2xl font-bold text-[#B8833E]">Science</span>
               <span className="font-sans text-xs text-stone-600 font-medium">Guided Quality</span>
             </div>
 
-            <div className="bg-[#FDFBF7] border border-[#EDE7D9] p-5 rounded-2xl flex flex-col gap-2 shadow-xs hover:border-[#4E641A]/40 transition duration-300">
+            <div className="bg-[#FDFBF7] border border-[#EDE7D9] p-5 rounded-2xl flex flex-col items-center text-center justify-center gap-1.5 shadow-xs hover:border-[#4E641A]/40 transition duration-300">
               <span className="font-serif text-2xl font-bold text-[#2F3B0C]">Pan-India</span>
               <span className="font-sans text-xs text-stone-600 font-medium">Fast Delivery</span>
             </div>
 
-            <div className="bg-[#FDFBF7] border border-[#EDE7D9] p-5 rounded-2xl flex flex-col gap-2 shadow-xs hover:border-[#4E641A]/40 transition duration-300">
+            <div className="bg-[#FDFBF7] border border-[#EDE7D9] p-5 rounded-2xl flex flex-col items-center text-center justify-center gap-1.5 shadow-xs hover:border-[#4E641A]/40 transition duration-300">
               <span className="font-serif text-2xl font-bold text-[#4E641A]">Trusted</span>
               <span className="font-sans text-xs text-stone-600 font-medium">By Families</span>
             </div>
