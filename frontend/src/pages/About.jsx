@@ -279,41 +279,149 @@ export default function About() {
         </div>
       </section>
 
-      {/* 3. ABOUT SURYODAYA FARMS */}
-      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 bg-[#FAF7F2] border-b border-[#EDE7D9]">
-        <div className="max-w-4xl mx-auto space-y-8 text-left">
-          <div className="space-y-3 flex flex-col items-start">
+      {/* 3. ABOUT SURYODAYA FARMS (Redesigned Editorial 2-Column Luxury Presentation) */}
+      <section className="py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-12 bg-[#FAF7F2] border-b border-[#EDE7D9] relative overflow-hidden select-none">
+        
+        {/* Subtle Background Organic Leaf Watermark */}
+        <div className="absolute -bottom-10 -left-10 opacity-5 text-[#4E641A] pointer-events-none">
+          <GiWheat size={360} />
+        </div>
+
+        <div className="max-w-7xl mx-auto relative z-10">
+          
+          {/* Main Section Header */}
+          <div className="space-y-4 flex flex-col items-start mb-10 lg:mb-14 text-left">
             <SectionBadge text="Nature's Goodness. Guided by Science." align="left" />
-            <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">ABOUT SURYODAYA FARMS</h2>
+            <div className="flex items-center gap-3">
+              <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#2F3B0C] tracking-tight">
+                ABOUT SURYODAYA FARMS
+              </h2>
+              <GiSprout className="w-8 h-8 text-[#4E641A] animate-bounce-subtle" />
+            </div>
+            <div className="w-28 h-1 bg-gradient-to-r from-[#4E641A] via-[#C68A2B] to-[#4E641A] rounded-full mt-1" />
           </div>
 
-          <div className="space-y-6 text-stone-700 text-base sm:text-lg leading-[1.8] font-sans">
-            <p>
-              At Suryodaya Farms, we believe that true wellness begins with pure, natural nutrition.
-            </p>
-            <p>
-              We are a science-driven natural superfood company dedicated to developing products that combine the richness of nature with carefully guided scientific processes.
-            </p>
-            <p>
-              Our work encompasses responsible sourcing, product development, hygienic processing, quality assurance, and the supply of premium natural superfoods that support healthy lifestyles.
-            </p>
-            <p>
-              What distinguishes Suryodaya Farms is our commitment to scientific excellence.
-            </p>
-            <p>
-              Our product development and quality practices are guided by experienced researchers, technical professionals, and Doctorates in Botany, ensuring that every stage—from ingredient selection to packaging—is approached with knowledge, care, and responsibility.
-            </p>
-            <p className="font-bold text-[#2F3B0C]">
-              We believe that science should never replace nature. Instead, science should help preserve the natural qualities that make wholesome foods valuable.
-            </p>
-            <p>That philosophy influences every decision we make.</p>
-            <p>
-              Rather than relying on exaggerated claims, we focus on delivering products that consistently reflect our values of quality, honesty, and transparency.
-            </p>
-            <p className="font-semibold text-[#4E641A]">
-              When customers choose Suryodaya Farms, they are choosing more than a product. They are choosing a company committed to earning their trust every day.
-            </p>
+          {/* Grid Layout: Desktop 2 Columns / Mobile Stacked */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+            
+            {/* Mobile-Only Image Placement (Shown under Header on Mobile/Tablet) */}
+            <div className="block lg:hidden w-full">
+              <div className="relative rounded-[28px] overflow-hidden border-4 border-white shadow-lg bg-stone-100">
+                <img 
+                  src="https://images.unsplash.com/photo-1574943320219-553eb213f72d?q=80&w=1000&auto=format&fit=crop" 
+                  alt="Suryodaya Farms Pristine Harvest & Science Guidance" 
+                  loading="lazy"
+                  className="w-full h-[260px] sm:h-[320px] object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                <div className="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-md p-3.5 rounded-2xl border border-white/60 shadow-sm flex items-center gap-3 text-left">
+                  <FiShield className="w-5 h-5 text-[#4E641A] shrink-0" />
+                  <span className="font-serif text-xs font-bold text-[#2F3B0C] italic">
+                    Nature's Goodness. Guided by Science.
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Left Column: Story Content & Highlight Cards (lg:col-span-7) */}
+            <div className="lg:col-span-7 space-y-7 text-left text-stone-700 text-base sm:text-lg leading-[1.75] font-sans max-w-[68ch]">
+              
+              {/* Intro Glass Card 1 */}
+              <div className="bg-[#F7F4EB] border border-[#E4DDCB] p-6 rounded-2xl shadow-2xs space-y-3 hover:border-[#4E641A]/40 transition-all duration-300">
+                <p className="text-stone-800">
+                  At <strong className="font-serif text-lg font-bold text-[#4E641A] hover:underline cursor-pointer">Suryodaya Farms</strong>, we believe that true wellness begins with pure, natural nutrition.
+                </p>
+                <p className="text-stone-700 text-sm sm:text-base">
+                  We are a science-driven natural superfood company dedicated to developing products that combine the richness of nature with carefully guided scientific processes.
+                </p>
+              </div>
+
+              {/* Standard Paragraph 2 */}
+              <p className="text-stone-700">
+                Our work encompasses responsible sourcing, product development, hygienic processing, quality assurance, and the supply of premium natural superfoods that support healthy lifestyles.
+              </p>
+
+              {/* Scientific Excellence Card 2 */}
+              <div className="bg-white border-l-4 border-l-[#C68A2B] border border-[#EDE7D9] p-6 rounded-2xl shadow-2xs space-y-2 hover:shadow-md transition-all duration-300">
+                <p className="font-serif text-lg font-bold text-[#2F3B0C]">
+                  What distinguishes <span className="text-[#4E641A]">Suryodaya Farms</span> is our commitment to scientific excellence.
+                </p>
+                <p className="text-stone-600 text-sm sm:text-base">
+                  Our product development and quality practices are guided by experienced researchers, technical professionals, and Doctorates in Botany, ensuring that every stage—from ingredient selection to packaging—is approached with knowledge, care, and responsibility.
+                </p>
+              </div>
+
+              {/* Featured Philosophy Card 3 (Main Callout Card) */}
+              <div className="bg-[#F0F5E6] border-l-4 border-l-[#4E641A] border border-[#DCE8C8] p-6 sm:p-7 rounded-2xl shadow-sm space-y-2 hover:shadow-md transition-all duration-300 relative group">
+                <div className="flex items-center gap-2 text-[#4E641A] mb-1">
+                  <FiFeather className="w-5 h-5 text-[#4E641A]" />
+                  <span className="font-serif text-xs font-bold uppercase tracking-wider text-[#4E641A]">
+                    Core Philosophy
+                  </span>
+                </div>
+                <p className="font-serif text-lg sm:text-xl font-bold text-[#2F3B0C] leading-snug">
+                  We believe that science should never replace nature. Instead, science should help preserve the natural qualities that make wholesome foods valuable.
+                </p>
+              </div>
+
+              {/* Standard Paragraph 4 */}
+              <p className="text-stone-700 font-medium">
+                That philosophy influences every decision we make.
+              </p>
+
+              {/* Standard Paragraph 5 */}
+              <p className="text-stone-700">
+                Rather than relying on exaggerated claims, we focus on delivering products that consistently reflect our values of quality, honesty, and transparency.
+              </p>
+
+              {/* Final Highlight Trust Card 4 */}
+              <div className="bg-gradient-to-r from-[#2F3B0C] via-[#3F4F16] to-[#4E641A] text-white p-6 sm:p-7 rounded-2xl shadow-md flex items-center gap-4 border border-[#4E641A]/30 transform hover:-translate-y-0.5 transition-all duration-300">
+                <div className="w-12 h-12 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white shrink-0">
+                  <FiHeart className="w-6 h-6 text-[#C68A2B]" />
+                </div>
+                <p className="font-serif text-base sm:text-lg font-semibold tracking-wide text-white leading-snug">
+                  When customers choose <strong className="underline decoration-[#C68A2B] decoration-2 underline-offset-4">Suryodaya Farms</strong>, they are choosing more than a product. They are choosing a company committed to earning their trust every day.
+                </p>
+              </div>
+
+            </div>
+
+            {/* Right Column: Desktop Organic Visual Image (lg:col-span-5) */}
+            <div className="hidden lg:block lg:col-span-5 sticky top-28">
+              <div className="relative rounded-[32px] overflow-hidden border-4 border-white shadow-xl bg-stone-100 group">
+                <img 
+                  src="https://images.unsplash.com/photo-1574943320219-553eb213f72d?q=80&w=1200&auto=format&fit=crop" 
+                  alt="Suryodaya Farms Pristine Harvest & Science Guidance" 
+                  loading="lazy"
+                  className="w-full h-[540px] object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#2F3B0C]/80 via-transparent to-transparent" />
+                
+                {/* Floating Top Badge */}
+                <div className="absolute top-6 left-6 bg-white/90 backdrop-blur-md px-4 py-2 rounded-full border border-white/80 shadow-sm flex items-center gap-2">
+                  <FiShield className="w-4 h-4 text-[#4E641A]" />
+                  <span className="font-sans text-xs font-bold text-[#2F3B0C] tracking-wide uppercase">
+                    Nature • Science • Trust
+                  </span>
+                </div>
+
+                {/* Floating Bottom Card Overlay */}
+                <div className="absolute bottom-6 left-6 right-6 bg-white/95 backdrop-blur-md p-5 rounded-2xl border border-white/90 shadow-lg space-y-1.5 text-left">
+                  <div className="flex items-center gap-2">
+                    <GiSprout className="w-5 h-5 text-[#4E641A]" />
+                    <span className="font-serif text-sm font-bold text-[#4E641A] uppercase tracking-wider">
+                      SURYODAYA FARMS
+                    </span>
+                  </div>
+                  <p className="font-serif text-sm font-bold text-[#2F3B0C] italic leading-snug">
+                    "Science should help preserve the natural qualities that make wholesome foods valuable."
+                  </p>
+                </div>
+              </div>
+            </div>
+
           </div>
+
         </div>
       </section>
 
