@@ -6,6 +6,7 @@ import cloudinary from '../utils/cloudinary.js';
 import { mapProduct, mapProducts } from '../utils/productMapper.js';
 import mammoth from 'mammoth';
 import whatsappService from '../services/whatsapp.service.js';
+import { generateAndSaveSitemapXML } from '../utils/sitemapGenerator.js';
 
 const router = express.Router();
 
@@ -199,6 +200,7 @@ router.post('/products', async (req, res, next) => {
       include: { variants: true, categories: true, contentSections: { orderBy: { orderIndex: 'asc' } } }
     });
 
+    generateAndSaveSitemapXML().catch(e => console.error("Sitemap sync error:", e));
     res.status(201).json({ success: true, product: mapProduct(product) });
   } catch (error) {
     next(error);
@@ -374,6 +376,7 @@ router.put('/products/:id', async (req, res, next) => {
       }
     });
 
+    generateAndSaveSitemapXML().catch(e => console.error("Sitemap sync error:", e));
     res.status(200).json({ success: true, product: mapProduct(finalProduct) });
   } catch (error) {
     next(error);
@@ -392,6 +395,7 @@ router.delete('/products/:id', async (req, res, next) => {
     }
 
     await prisma.product.delete({ where: { id } });
+    generateAndSaveSitemapXML().catch(e => console.error("Sitemap sync error:", e));
     res.status(200).json({ success: true, message: 'Product deleted from catalog.' });
   } catch (error) {
     next(error);
@@ -477,6 +481,7 @@ router.post('/categories', async (req, res, next) => {
       },
     });
 
+    generateAndSaveSitemapXML().catch(e => console.error("Sitemap sync error:", e));
     res.status(201).json({ success: true, category });
   } catch (error) {
     next(error);
@@ -541,6 +546,7 @@ router.put('/categories/:id', async (req, res, next) => {
       data: updatedData
     });
 
+    generateAndSaveSitemapXML().catch(e => console.error("Sitemap sync error:", e));
     res.status(200).json({ success: true, category });
   } catch (error) {
     next(error);
@@ -604,6 +610,7 @@ router.delete('/categories/:id', async (req, res, next) => {
     // Delete category
     await prisma.category.delete({ where: { id } });
 
+    generateAndSaveSitemapXML().catch(e => console.error("Sitemap sync error:", e));
     res.status(200).json({ 
       success: true, 
       message: 'Category successfully deleted.' 

@@ -1,6 +1,7 @@
 import express from 'express';
 import prisma from '../utils/db.js';
 import { mapProduct } from '../utils/productMapper.js';
+import { generateSitemapContent, generateAndSaveSitemapXML } from '../utils/sitemapGenerator.js';
 
 const router = express.Router();
 
@@ -399,64 +400,13 @@ router.get('/settings', async (req, res, next) => {
   }
 });
 
+import { generateSitemapContent } from '../utils/sitemapGenerator.js';
+
 // 12. DYNAMIC SITEMAP.XML GENERATOR FOR SEO
-// GET /api/public/sitemap.xml
+// GET /api/public/sitemap.xml & /sitemap.xml
 router.get('/sitemap.xml', async (req, res, next) => {
   try {
-    const products = await prisma.product.findMany({
-      where: { isVisible: true },
-      select: { slug: true, updatedAt: true }
-    });
-    const categories = await prisma.category.findMany({
-      where: { isVisible: true },
-      select: { slug: true, updatedAt: true }
-    });
-
-    const staticRoutes = [
-      '',
-      '/products',
-      '/about',
-      '/faq',
-      '/contact',
-      '/become-a-partner',
-      '/privacy'
-    ];
-
-    let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
-    xml += `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
-
-    // Static pages
-    staticRoutes.forEach(path => {
-      xml += `  <url>\n`;
-      xml += `    <loc>https://suryodayafarms.com${path}</loc>\n`;
-      xml += `    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>\n`;
-      xml += `    <changefreq>${path === '' || path === '/products' ? 'daily' : 'weekly'}</changefreq>\n`;
-      xml += `    <priority>${path === '' ? '1.0' : path === '/products' ? '0.9' : '0.8'}</priority>\n`;
-      xml += `  </url>\n`;
-    });
-
-    // Category pages
-    categories.forEach(cat => {
-      xml += `  <url>\n`;
-      xml += `    <loc>https://suryodayafarms.com/category/${cat.slug}</loc>\n`;
-      xml += `    <lastmod>${(cat.updatedAt || new Date()).toISOString().split('T')[0]}</lastmod>\n`;
-      xml += `    <changefreq>weekly</changefreq>\n`;
-      xml += `    <priority>0.8</priority>\n`;
-      xml += `  </url>\n`;
-    });
-
-    // Product pages
-    products.forEach(prod => {
-      xml += `  <url>\n`;
-      xml += `    <loc>https://suryodayafarms.com/products/${prod.slug}</loc>\n`;
-      xml += `    <lastmod>${(prod.updatedAt || new Date()).toISOString().split('T')[0]}</lastmod>\n`;
-      xml += `    <changefreq>daily</changefreq>\n`;
-      xml += `    <priority>0.9</priority>\n`;
-      xml += `  </url>\n`;
-    });
-
-    xml += `</urlset>`;
-
+    const { xml } = await generateSitemapContent();
     res.header('Content-Type', 'application/xml');
     res.send(xml);
   } catch (error) {
