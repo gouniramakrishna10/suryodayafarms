@@ -760,10 +760,10 @@ export default function About() {
       </section>
 
       {/* 11. OUR TAGLINE */}
-      <section className="py-14 md:py-16 px-4 sm:px-6 lg:px-12 bg-gradient-to-r from-[#2F3B0C] via-[#3F4F16] to-[#4E641A] text-white border-b border-[#EDE7D9]">
-        <div className="max-w-6xl mx-auto text-center space-y-3">
-          <span className="font-sans text-xs font-bold uppercase tracking-[0.3em] text-[#C68A2B]">OUR TAGLINE</span>
-          <h3 className="font-serif text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-white tracking-wide">
+      <section className="py-12 md:py-16 px-4 sm:px-6 lg:px-12 bg-gradient-to-r from-[#2F3B0C] via-[#3F4F16] to-[#4E641A] text-white border-b border-[#EDE7D9] select-none">
+        <div className="max-w-7xl mx-auto text-center space-y-3">
+          <span className="font-sans text-xs font-bold uppercase tracking-[0.3em] text-[#C68A2B] block">OUR TAGLINE</span>
+          <h3 className="font-serif text-lg sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white tracking-tight md:whitespace-nowrap leading-tight">
             Pure Nature. Scientific Quality. Trusted Nutrition.
           </h3>
         </div>
