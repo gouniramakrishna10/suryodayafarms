@@ -207,8 +207,8 @@ export default function About() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {philosophyList.map((item, idx) => (
               <div key={idx} className="bg-[#FAF7F2] border border-[#EDE7D9] p-6 rounded-2xl flex items-center gap-4">
-                <span className="w-9 h-9 rounded-full bg-[#4E641A] text-white font-serif font-bold text-lg flex items-center justify-center shrink-0">
-                  {idx + 1}
+                <span className="w-9 h-9 rounded-full bg-[#4E641A] text-white font-serif font-bold text-lg flex items-center justify-center shrink-0 shadow-xs">
+                  <GiSprout className="w-5 h-5 text-[#C68A2B]" />
                 </span>
                 <span className="font-serif text-base sm:text-lg font-bold text-[#2F3B0C]">{item}</span>
               </div>
