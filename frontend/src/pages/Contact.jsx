@@ -460,53 +460,62 @@ export default function Contact() {
         </div>
       </section>
 
-      {/* 3. GOOGLE MAP SECTION */}
-      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-b border-[#EDE7D9]/80">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 text-left">
-          <div className="space-y-2 max-w-2xl flex flex-col items-start">
-            <SectionBadge text="Our Location" align="left" />
-            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#2F3B0C] tracking-tight">Visit Our Registered Office</h2>
-            <p className="text-stone-600 text-sm font-sans leading-relaxed">
-              Plot No: 20, Bhrundavanam Apartment, Near Arca School, Peerzadiguda, Medipally, Hyderabad – 500039
-            </p>
+      {/* 3. GOOGLE MAP SECTION (REFINE REGISTERED OFFICE LOCATION) */}
+      <section className="py-12 sm:py-14 lg:py-16 px-4 sm:px-6 lg:px-8 bg-[#FAF7F2] border-b border-[#EDE7D9]/80 relative overflow-hidden select-none">
+        <div className="absolute inset-0 bg-[radial-gradient(#4E641A_1px,transparent_1px)] [background-size:32px_32px] opacity-10 pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto relative z-10">
+          
+          {/* Header Row: Info & Action Buttons */}
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 sm:mb-10 text-left">
+            <div className="space-y-2 max-w-2xl flex flex-col items-start">
+              <SectionBadge text="Our Location" align="left" />
+              <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#2F3B0C] tracking-tight">Visit Our Registered Office</h2>
+              <p className="text-stone-600/90 text-sm font-sans leading-relaxed font-normal pt-0.5">
+                Plot No: 20, Bhrundavanam Apartment, Near Arca School, Peerzadiguda, Medipally, Hyderabad – 500039
+              </p>
+            </div>
+
+            {/* Equal Height Action Buttons */}
+            <div className="flex flex-wrap items-center gap-3 shrink-0">
+              <a
+                href={googleMapsSearchUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-5 py-3 bg-white border border-[#EDE7D9] hover:border-[#4E641A]/50 hover:bg-[#F7F8F2] text-[#2F3B0C] rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-300 flex items-center gap-2 shadow-2xs hover:shadow-md transform hover:-translate-y-0.5 group"
+              >
+                <FiExternalLink className="text-stone-500 group-hover:text-[#4E641A] transition-colors" />
+                <span>Open in Google Maps</span>
+              </a>
+
+              <a
+                href={googleMapsDirectionsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-5 py-3 bg-[#4E641A] hover:bg-[#2F3B0C] text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-300 flex items-center gap-2 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 group"
+              >
+                <FiMapPin className="text-white group-hover:scale-110 transition-transform" />
+                <span>Get Directions</span>
+              </a>
+            </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3 shrink-0">
-            <a
-              href={googleMapsSearchUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-5 py-3 bg-white border border-[#EDE7D9] hover:bg-[#FAF7F2] text-[#2F3B0C] rounded-xl text-xs font-bold transition-all duration-200 flex items-center gap-2 shadow-xs"
-            >
-              <FiExternalLink />
-              <span>Open in Google Maps</span>
-            </a>
-
-            <a
-              href={googleMapsDirectionsUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-5 py-3 bg-[#4E641A] hover:bg-[#2F3B0C] text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-200 flex items-center gap-2 shadow-sm"
-            >
-              <FiMapPin />
-              <span>Get Directions</span>
-            </a>
+          {/* Refined 24px Border Radius Map Frame */}
+          <div className="bg-white border border-[#EDE7D9] rounded-[24px] p-2.5 sm:p-3.5 shadow-md hover:shadow-lg transition-shadow duration-300">
+            <div className="w-full h-[380px] sm:h-[460px] lg:h-[500px] rounded-[20px] overflow-hidden border border-[#EDE7D9] relative bg-stone-100">
+              <iframe
+                title="Suryodaya Farms Registered Office Map"
+                src="https://maps.google.com/maps?q=Peerzadiguda+Kuruma+Nagar+Hyderabad+Telangana&t=&z=14&ie=UTF8&iwloc=&output=embed"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen=""
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            </div>
           </div>
-        </div>
 
-        <div className="bg-white border border-[#EDE7D9] rounded-[36px] p-3 sm:p-4 shadow-sm">
-          <div className="w-full h-[380px] sm:h-[460px] lg:h-[500px] rounded-[28px] overflow-hidden border border-[#EDE7D9] relative bg-stone-100">
-            <iframe
-              title="Suryodaya Farms Registered Office Map"
-              src="https://maps.google.com/maps?q=Peerzadiguda+Kuruma+Nagar+Hyderabad+Telangana&t=&z=14&ie=UTF8&iwloc=&output=embed"
-              width="100%"
-              height="100%"
-              style={{ border: 0 }}
-              allowFullScreen=""
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-            />
-          </div>
         </div>
       </section>
 
