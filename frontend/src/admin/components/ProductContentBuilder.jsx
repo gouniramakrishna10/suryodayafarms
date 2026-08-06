@@ -736,9 +736,9 @@ function getDefaultContentForType(type) {
     case 'BENEFITS':
       return {
         cards: [
-          { icon: '🌾', title: 'Native Dryland Harvest', description: 'Grown with natural rainfall producing rich nutrients and authentic taste.' },
-          { icon: '🌱', title: 'Vedic Handcrafted', description: 'Small batch traditional processing preserving natural goodness.' },
-          { icon: '🤝', title: 'Farmer Enrichment', description: 'Direct farmer partnership ensuring fair trade wages.' }
+          { icon: '🔬', title: 'SCIENTIFICALLY GUIDED QUALITY', description: 'Expert-led cultivation, processing, and quality assurance.' },
+          { icon: '🌿', title: 'PURE & NATURAL', description: 'Carefully selected ingredients with no unnecessary additives.' },
+          { icon: '⚡', title: 'NUTRIENT-CONSCIOUS PROCESSING', description: 'Designed to preserve natural goodness and nutritional value.' }
         ]
       };
     case 'HIGHLIGHTS':

@@ -650,13 +650,26 @@ export default function ProductDetails() {
                 {/* SECTION 2: Why Choose Suryodaya Farms */}
                 {(() => {
                   const whyChoose = product.productContent?.whyChoose;
-                  const hasFeatures = whyChoose?.features?.length > 0;
-                  const fallbackFeatures = [
-                    { icon: '🌾', heading: 'Dryland Harvest', description: 'Grown using natural rainfall, producing concentrated nutrients and rich earthy flavors.' },
-                    { icon: '🌱', heading: 'Traditional Vedic Care', description: 'Handcrafted in dryland communities using classical Vedic recipes.' },
-                    { icon: '🤝', heading: 'Farmer Enrichment', description: 'Direct-from-farm model ensuring legacy farming families receive fair wages.' }
+                  const standardizedFeatures = [
+                    { 
+                      icon: '🔬', 
+                      heading: 'SCIENTIFICALLY GUIDED QUALITY', 
+                      title: 'SCIENTIFICALLY GUIDED QUALITY', 
+                      description: 'Expert-led cultivation, processing, and quality assurance.' 
+                    },
+                    { 
+                      icon: '🌿', 
+                      heading: 'PURE & NATURAL', 
+                      title: 'PURE & NATURAL', 
+                      description: 'Carefully selected ingredients with no unnecessary additives.' 
+                    },
+                    { 
+                      icon: '⚡', 
+                      heading: 'NUTRIENT-CONSCIOUS PROCESSING', 
+                      title: 'NUTRIENT-CONSCIOUS PROCESSING', 
+                      description: 'Designed to preserve natural goodness and nutritional value.' 
+                    }
                   ];
-                  const features = hasFeatures ? whyChoose.features : fallbackFeatures;
                   return (
                     <div className="bg-white border border-[#EDE7D9] rounded-[28px] p-6 sm:p-8 shadow-xs">
                       <div className="flex items-center gap-3 mb-5 pb-4 border-b border-[#EDE7D9]">
@@ -667,13 +680,13 @@ export default function ProductDetails() {
                         </div>
                       </div>
                       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                        {features.map((feat, idx) => (
+                        {standardizedFeatures.map((feat, idx) => (
                           <div key={idx} className="flex flex-col gap-2 bg-[#FCFAF5] border border-[#EDE7D9] rounded-2xl p-5 hover:border-[#C68A2B]/40 hover:shadow-sm transition-all duration-300">
                             <div className="flex justify-center w-full text-center">
                               <span className="text-2xl sm:text-3xl text-center block">{feat.icon}</span>
                             </div>
-                            <h4 className="font-serif text-sm font-bold text-[#2F3B0C]">{feat.heading}</h4>
-                            {feat.description && <p className="font-sans text-xs text-stone-500 leading-relaxed font-light">{feat.description}</p>}
+                            <h4 className="font-serif text-sm font-bold text-[#2F3B0C] uppercase tracking-wide">{feat.heading}</h4>
+                            <p className="font-sans text-xs text-stone-500 leading-relaxed font-light">{feat.description}</p>
                           </div>
                         ))}
                       </div>

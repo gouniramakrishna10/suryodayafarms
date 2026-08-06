@@ -58,7 +58,50 @@ function renderSingleSection(sec, idx, activeFaqIndex, setActiveFaqIndex) {
         </div>
       );
 
-    case 'WHY_CHOOSE_US':
+    case 'WHY_CHOOSE_US': {
+      const standardizedFeatures = [
+        { 
+          icon: '🔬', 
+          title: 'SCIENTIFICALLY GUIDED QUALITY', 
+          description: 'Expert-led cultivation, processing, and quality assurance.' 
+        },
+        { 
+          icon: '🌿', 
+          title: 'PURE & NATURAL', 
+          description: 'Carefully selected ingredients with no unnecessary additives.' 
+        },
+        { 
+          icon: '⚡', 
+          title: 'NUTRIENT-CONSCIOUS PROCESSING', 
+          description: 'Designed to preserve natural goodness and nutritional value.' 
+        }
+      ];
+      return (
+        <div className="bg-white border border-[#EDE7D9] rounded-[28px] p-6 sm:p-8 shadow-xs space-y-6">
+          {sectionTitle && (
+            <div className="flex items-center gap-3 pb-4 border-b border-[#EDE7D9]">
+              <span className="text-2xl">🏆</span>
+              <div>
+                <span className="text-[10px] font-extrabold tracking-widest text-[#C68A2B] uppercase block">Why Choose Us</span>
+                <h2 className="font-serif text-xl sm:text-2xl font-bold text-[#2F3B0C]">{sectionTitle}</h2>
+              </div>
+            </div>
+          )}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            {standardizedFeatures.map((c, cIdx) => (
+              <div key={cIdx} className="flex flex-col gap-2 bg-[#FCFAF5] border border-[#EDE7D9] rounded-2xl p-5 hover:border-[#C68A2B]/40 hover:shadow-sm transition duration-300">
+                <div className="flex justify-center w-full text-center">
+                  <span className="text-2xl sm:text-3xl text-center block">{c.icon}</span>
+                </div>
+                <h4 className="font-serif text-sm font-bold text-[#2F3B0C] uppercase tracking-wide">{c.title}</h4>
+                <p className="font-sans text-xs text-stone-500 leading-relaxed font-light">{c.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
     case 'BENEFITS': {
       const cardList = content.cards || [];
       return (
@@ -67,7 +110,7 @@ function renderSingleSection(sec, idx, activeFaqIndex, setActiveFaqIndex) {
             <div className="flex items-center gap-3 pb-4 border-b border-[#EDE7D9]">
               <span className="text-2xl">🏆</span>
               <div>
-                <span className="text-[10px] font-extrabold tracking-widest text-[#C68A2B] uppercase block">Why Choose Us</span>
+                <span className="text-[10px] font-extrabold tracking-widest text-[#C68A2B] uppercase block">Benefits</span>
                 <h2 className="font-serif text-xl sm:text-2xl font-bold text-[#2F3B0C]">{sectionTitle}</h2>
               </div>
             </div>
