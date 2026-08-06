@@ -447,35 +447,180 @@ export default function About() {
         </div>
       </section>
 
-      {/* 5. OUR PURPOSE */}
-      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 bg-[#F4EFE6] border-b border-[#EDE7D9]">
-        <div className="max-w-4xl mx-auto text-center space-y-6">
-          <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">OUR PURPOSE</h2>
-          <p className="font-serif text-xl sm:text-2xl lg:text-3xl font-light text-[#2F3B0C] leading-relaxed max-w-3xl mx-auto">
-            To make premium natural nutrition accessible through products developed with scientific care, uncompromising quality, and genuine respect for customer well-being.
-          </p>
+      {/* 5. OUR PURPOSE (Hero-Style Statement Banner) */}
+      <section className="py-20 sm:py-24 lg:py-28 px-4 sm:px-6 lg:px-12 bg-gradient-to-b from-[#F4EFE6] via-[#FAF7F2] to-[#FCFAF4] border-b border-[#EDE7D9] relative overflow-hidden select-none">
+        
+        {/* Soft Background Sun & Leaf Watermarks */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-5 text-[#C68A2B] pointer-events-none">
+          <GiSun size={420} />
+        </div>
+        <div className="absolute top-8 left-8 opacity-5 text-[#4E641A] pointer-events-none">
+          <GiSprout size={180} />
+        </div>
+
+        <div className="max-w-5xl mx-auto relative z-10 space-y-8 text-center flex flex-col items-center">
+          
+          {/* Badge & Heading */}
+          <div className="space-y-3 flex flex-col items-center">
+            <SectionBadge text="Guiding Purpose & Core Mission" align="center" />
+            <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#2F3B0C] tracking-tight">
+              OUR PURPOSE
+            </h2>
+            <div className="w-20 h-1 bg-gradient-to-r from-[#4E641A] via-[#C68A2B] to-[#4E641A] rounded-full mt-1" />
+          </div>
+
+          {/* Focal Statement Card */}
+          <div className="w-full bg-white/90 backdrop-blur-md border border-[#4E641A]/20 rounded-[28px] p-8 sm:p-12 shadow-md hover:shadow-lg transition-all duration-300 relative group">
+            <div className="absolute -top-5 left-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-[#F0F5E6] border border-[#4E641A]/30 flex items-center justify-center text-[#4E641A] shadow-xs">
+              <GiSprout className="w-5 h-5 text-[#4E641A]" />
+            </div>
+            
+            <span className="font-serif text-5xl text-[#C68A2B]/40 leading-none select-none block mb-2">“</span>
+            
+            <p className="font-serif text-xl sm:text-2xl lg:text-3xl font-light text-[#2F3B0C] leading-relaxed max-w-4xl mx-auto italic">
+              To make premium natural nutrition accessible through products developed with scientific care, uncompromising quality, and genuine respect for customer well-being.
+            </p>
+
+            <div className="mt-6 pt-6 border-t border-[#EDE7D9]/80 flex items-center justify-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#4E641A]" />
+              <span className="font-sans text-xs font-bold text-[#4E641A] uppercase tracking-widest">
+                Suryodaya Farms Purpose Statement
+              </span>
+              <span className="w-2 h-2 rounded-full bg-[#4E641A]" />
+            </div>
+          </div>
+
         </div>
       </section>
 
-      {/* 6. OUR VISION */}
-      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 bg-white border-b border-[#EDE7D9]">
-        <div className="max-w-4xl mx-auto space-y-8 text-left">
-          <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">OUR VISION</h2>
+      {/* VISUAL BOTANICAL CONNECTOR DIVIDER */}
+      <div className="w-full bg-[#FCFAF4] py-4 flex items-center justify-center gap-4 text-[#4E641A]/40 select-none">
+        <div className="h-px bg-gradient-to-r from-transparent via-[#EDE7D9] to-[#EDE7D9] w-24 sm:w-40" />
+        <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-[#F0F5E6] border border-[#4E641A]/20 text-[#4E641A] text-xs font-bold uppercase tracking-widest shadow-2xs">
+          <GiSprout className="w-3.5 h-3.5 text-[#4E641A]" />
+          <span>Nature • Science • Trust</span>
+        </div>
+        <div className="h-px bg-gradient-to-l from-transparent via-[#EDE7D9] to-[#EDE7D9] w-24 sm:w-40" />
+      </div>
 
-          <div className="space-y-6 text-stone-700 text-base sm:text-lg leading-[1.8] font-sans">
-            <p className="font-serif text-xl sm:text-2xl font-bold text-[#4E641A]">
-              To become one of India's most trusted and respected natural nutrition companies by combining the purity of nature with scientific excellence, uncompromising quality, responsible innovation, and lasting customer trust.
-            </p>
-            <p>
-              We aspire to create products that enrich everyday nutrition, inspire healthier lifestyles, and set high standards for quality, integrity, and responsible business practices.
-            </p>
-            <p>
-              As we grow, we aim to build meaningful relationships with our customers, farmers, partners, and communities while continuously advancing through research, innovation, and sustainable development.
-            </p>
-            <p className="font-semibold text-[#2F3B0C]">
-              Our vision is not only to grow as a company but also to earn the confidence of generations by delivering products that people can choose with trust.
-            </p>
+      {/* 6. OUR VISION (Redesigned Split Layout Presentation) */}
+      <section className="py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-12 bg-[#FCFAF4] border-b border-[#EDE7D9] relative overflow-hidden select-none">
+        
+        {/* Subtle Background Organic Watermark */}
+        <div className="absolute -top-10 -right-10 opacity-5 text-[#4E641A] pointer-events-none">
+          <GiWheat size={360} />
+        </div>
+
+        <div className="max-w-7xl mx-auto relative z-10">
+          
+          {/* Main Section Header */}
+          <div className="space-y-4 flex flex-col items-start mb-10 lg:mb-14 text-left">
+            <SectionBadge text="Future Roadmap & Aspirations" align="left" />
+            <div className="flex items-center gap-3">
+              <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#2F3B0C] tracking-tight">
+                OUR VISION
+              </h2>
+              <FiEye className="w-8 h-8 text-[#C68A2B]" />
+            </div>
+            <div className="w-24 h-1 bg-gradient-to-r from-[#4E641A] via-[#C68A2B] to-[#4E641A] rounded-full mt-1" />
           </div>
+
+          {/* Grid Layout: Desktop 2 Columns / Mobile Stacked */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+            
+            {/* Mobile-Only Image Placement (Shown under Header on Mobile/Tablet) */}
+            <div className="block lg:hidden w-full">
+              <div className="relative rounded-[28px] overflow-hidden border-4 border-white shadow-lg bg-stone-100">
+                <img 
+                  src="https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?q=80&w=1000&auto=format&fit=crop" 
+                  alt="Suryodaya Farms Vision & Future Growth" 
+                  loading="lazy"
+                  className="w-full h-[260px] sm:h-[320px] object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                <div className="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-md p-3.5 rounded-2xl border border-white/60 shadow-sm flex items-center gap-3 text-left">
+                  <GiSprout className="w-6 h-6 text-[#4E641A] shrink-0" />
+                  <span className="font-serif text-xs font-bold text-[#2F3B0C] italic">
+                    Building a legacy of trust and natural excellence for future generations.
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Left Column: Vision Story & Highlight Cards (lg:col-span-7) */}
+            <div className="lg:col-span-7 space-y-7 text-left text-stone-700 text-base sm:text-lg leading-[1.75] font-sans max-w-[68ch]">
+              
+              {/* Featured Vision Card 1 (Bold Highlight Statement) */}
+              <div className="bg-[#F0F5E6] border-l-4 border-l-[#4E641A] border border-[#DCE8C8] p-6 sm:p-7 rounded-2xl shadow-xs space-y-2 hover:shadow-md transition-all duration-300 relative group">
+                <div className="flex items-center gap-2 text-[#4E641A] mb-1">
+                  <GiSprout className="w-5 h-5 text-[#4E641A]" />
+                  <span className="font-serif text-xs font-bold uppercase tracking-wider text-[#4E641A]">
+                    Vision Milestone
+                  </span>
+                </div>
+                <p className="font-serif text-lg sm:text-xl font-bold text-[#2F3B0C] leading-snug">
+                  To become one of India's most trusted and respected natural nutrition companies by combining the purity of nature with scientific excellence, uncompromising quality, responsible innovation, and lasting customer trust.
+                </p>
+              </div>
+
+              {/* Standard Paragraph 2 */}
+              <p className="text-stone-700">
+                We aspire to create products that enrich everyday nutrition, inspire healthier lifestyles, and set high standards for quality, integrity, and responsible business practices.
+              </p>
+
+              {/* Standard Paragraph 3 */}
+              <p className="text-stone-700">
+                As we grow, we aim to build meaningful relationships with our customers, farmers, partners, and communities while continuously advancing through research, innovation, and sustainable development.
+              </p>
+
+              {/* Final Highlighted Statement Card 2 */}
+              <div className="bg-gradient-to-r from-[#2F3B0C] via-[#3F4F16] to-[#4E641A] text-white p-6 sm:p-7 rounded-2xl shadow-md flex items-center gap-4 border border-[#4E641A]/30 transform hover:-translate-y-0.5 transition-all duration-300">
+                <div className="w-12 h-12 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white shrink-0">
+                  <FiHeart className="w-6 h-6 text-[#C68A2B]" />
+                </div>
+                <p className="font-serif text-base sm:text-lg font-semibold tracking-wide text-white leading-snug">
+                  Our vision is not only to grow as a company but also to earn the confidence of generations by delivering products that people can choose with trust.
+                </p>
+              </div>
+
+            </div>
+
+            {/* Right Column: Desktop Vision Visual Panel (lg:col-span-5) */}
+            <div className="hidden lg:block lg:col-span-5 sticky top-28">
+              <div className="relative rounded-[32px] overflow-hidden border-4 border-white shadow-xl bg-stone-100 group">
+                <img 
+                  src="https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?q=80&w=1200&auto=format&fit=crop" 
+                  alt="Suryodaya Farms Vision & Future Growth" 
+                  loading="lazy"
+                  className="w-full h-[520px] object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#2F3B0C]/80 via-transparent to-transparent" />
+                
+                {/* Floating Top Badge */}
+                <div className="absolute top-6 left-6 bg-white/90 backdrop-blur-md px-4 py-2 rounded-full border border-white/80 shadow-sm flex items-center gap-2">
+                  <GiSprout className="w-4 h-4 text-[#4E641A]" />
+                  <span className="font-sans text-xs font-bold text-[#2F3B0C] tracking-wide uppercase">
+                    Purity • Innovation • Future
+                  </span>
+                </div>
+
+                {/* Floating Bottom Card Overlay */}
+                <div className="absolute bottom-6 left-6 right-6 bg-white/95 backdrop-blur-md p-5 rounded-2xl border border-white/90 shadow-lg space-y-1.5 text-left">
+                  <div className="flex items-center gap-2">
+                    <FiEye className="w-5 h-5 text-[#C68A2B]" />
+                    <span className="font-serif text-sm font-bold text-[#4E641A] uppercase tracking-wider">
+                      SURYODAYA FARMS VISION
+                    </span>
+                  </div>
+                  <p className="font-serif text-sm font-bold text-[#2F3B0C] italic leading-snug">
+                    "Earn the confidence of generations by delivering products people choose with trust."
+                  </p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
         </div>
       </section>
 
