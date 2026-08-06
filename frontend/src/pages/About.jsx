@@ -75,8 +75,8 @@ export default function About() {
     <div className="bg-[#F9F6F0] min-h-screen font-sans text-[#2F3B0C] selection:bg-[#4E641A] selection:text-white">
       
       {/* 1. A LETTER FROM SURYODAYA FARMS */}
-      <section className="relative pt-10 sm:pt-14 lg:pt-16 pb-16 sm:pb-24 px-4 sm:px-6 lg:px-12 bg-gradient-to-b from-[#F4EFE6] via-[#FAF7F2] to-[#F9F6F0] border-b border-[#EDE7D9]">
-        <div className="max-w-4xl mx-auto space-y-8 text-left">
+      <section className="relative py-12 md:py-16 px-4 sm:px-6 lg:px-12 bg-gradient-to-b from-[#F4EFE6] via-[#FAF7F2] to-[#F9F6F0] border-b border-[#EDE7D9]">
+        <div className="max-w-4xl mx-auto space-y-6 text-left">
           <h1 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">
             A Letter from Suryodaya Farms
           </h1>
@@ -117,7 +117,7 @@ export default function About() {
       </section>
 
       {/* 2. OUR STORY (Redesigned Editorial 2-Column Luxury Layout) */}
-      <section className="py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-12 bg-[#FCFAF4] border-b border-[#EDE7D9] relative overflow-hidden select-none">
+      <section className="py-12 md:py-16 px-4 sm:px-6 lg:px-12 bg-[#FCFAF4] border-b border-[#EDE7D9] relative overflow-hidden select-none">
         
         {/* Subtle Background Organic Watermark */}
         <div className="absolute top-10 right-10 opacity-5 text-[#4E641A] pointer-events-none">
@@ -280,7 +280,7 @@ export default function About() {
       </section>
 
       {/* 3. ABOUT SURYODAYA FARMS (Redesigned Editorial 2-Column Luxury Presentation) */}
-      <section className="py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-12 bg-[#FAF7F2] border-b border-[#EDE7D9] relative overflow-hidden select-none">
+      <section className="py-12 md:py-16 px-4 sm:px-6 lg:px-12 bg-[#FAF7F2] border-b border-[#EDE7D9] relative overflow-hidden select-none">
         
         {/* Subtle Background Organic Leaf Watermark */}
         <div className="absolute -bottom-10 -left-10 opacity-5 text-[#4E641A] pointer-events-none">
@@ -290,7 +290,7 @@ export default function About() {
         <div className="max-w-7xl mx-auto relative z-10">
           
           {/* Main Section Header */}
-          <div className="space-y-4 flex flex-col items-start mb-10 lg:mb-14 text-left">
+          <div className="space-y-4 flex flex-col items-start mb-8 lg:mb-10 text-left">
             <SectionBadge text="Nature's Goodness. Guided by Science." align="left" />
             <div className="flex items-center gap-3">
               <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#2F3B0C] tracking-tight">
@@ -302,7 +302,7 @@ export default function About() {
           </div>
 
           {/* Grid Layout: Desktop 2 Columns / Mobile Stacked */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
             
             {/* Mobile-Only Image Placement (Shown under Header on Mobile/Tablet) */}
             <div className="block lg:hidden w-full">
@@ -324,7 +324,7 @@ export default function About() {
             </div>
 
             {/* Left Column: Story Content & Highlight Cards (lg:col-span-7) */}
-            <div className="lg:col-span-7 space-y-7 text-left text-stone-700 text-base sm:text-lg leading-[1.75] font-sans max-w-[68ch]">
+            <div className="lg:col-span-7 space-y-6 text-left text-stone-700 text-base sm:text-lg leading-[1.75] font-sans max-w-[68ch]">
               
               {/* Intro Glass Card 1 */}
               <div className="bg-[#F7F4EB] border border-[#E4DDCB] p-6 rounded-2xl shadow-2xs space-y-3 hover:border-[#4E641A]/40 transition-all duration-300">
@@ -393,7 +393,7 @@ export default function About() {
                   src="https://images.unsplash.com/photo-1574943320219-553eb213f72d?q=80&w=1200&auto=format&fit=crop" 
                   alt="Suryodaya Farms Pristine Harvest & Science Guidance" 
                   loading="lazy"
-                  className="w-full h-[540px] object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="w-full h-[460px] object-cover transition-transform duration-700 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#2F3B0C]/80 via-transparent to-transparent" />
                 
@@ -426,8 +426,8 @@ export default function About() {
       </section>
 
       {/* 4. OUR PHILOSOPHY */}
-      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 bg-white border-b border-[#EDE7D9]">
-        <div className="max-w-4xl mx-auto space-y-8 text-left">
+      <section className="py-12 md:py-16 px-4 sm:px-6 lg:px-12 bg-white border-b border-[#EDE7D9]">
+        <div className="max-w-4xl mx-auto space-y-6 text-left">
           <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">OUR PHILOSOPHY</h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -448,7 +448,7 @@ export default function About() {
       </section>
 
       {/* 5. OUR PURPOSE (Hero-Style Statement Banner) */}
-      <section className="py-20 sm:py-24 lg:py-28 px-4 sm:px-6 lg:px-12 bg-gradient-to-b from-[#F4EFE6] via-[#FAF7F2] to-[#FCFAF4] border-b border-[#EDE7D9] relative overflow-hidden select-none">
+      <section className="py-14 md:py-16 px-4 sm:px-6 lg:px-12 bg-gradient-to-b from-[#F4EFE6] via-[#FAF7F2] to-[#FCFAF4] border-b border-[#EDE7D9] relative overflow-hidden select-none">
         
         {/* Soft Background Sun & Leaf Watermarks */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-5 text-[#C68A2B] pointer-events-none">
@@ -458,7 +458,7 @@ export default function About() {
           <GiSprout size={180} />
         </div>
 
-        <div className="max-w-5xl mx-auto relative z-10 space-y-8 text-center flex flex-col items-center">
+        <div className="max-w-5xl mx-auto relative z-10 space-y-6 text-center flex flex-col items-center">
           
           {/* Badge & Heading */}
           <div className="space-y-3 flex flex-col items-center">
@@ -470,7 +470,7 @@ export default function About() {
           </div>
 
           {/* Focal Statement Card */}
-          <div className="w-full bg-white/90 backdrop-blur-md border border-[#4E641A]/20 rounded-[28px] p-8 sm:p-12 shadow-md hover:shadow-lg transition-all duration-300 relative group">
+          <div className="w-full bg-white/90 backdrop-blur-md border border-[#4E641A]/20 rounded-[28px] p-8 sm:p-10 shadow-md hover:shadow-lg transition-all duration-300 relative group">
             <div className="absolute -top-5 left-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-[#F0F5E6] border border-[#4E641A]/30 flex items-center justify-center text-[#4E641A] shadow-xs">
               <GiSprout className="w-5 h-5 text-[#4E641A]" />
             </div>
@@ -481,7 +481,7 @@ export default function About() {
               To make premium natural nutrition accessible through products developed with scientific care, uncompromising quality, and genuine respect for customer well-being.
             </p>
 
-            <div className="mt-6 pt-6 border-t border-[#EDE7D9]/80 flex items-center justify-center gap-2">
+            <div className="mt-6 pt-5 border-t border-[#EDE7D9]/80 flex items-center justify-center gap-2">
               <span className="w-2 h-2 rounded-full bg-[#4E641A]" />
               <span className="font-sans text-xs font-bold text-[#4E641A] uppercase tracking-widest">
                 Suryodaya Farms Purpose Statement
@@ -494,7 +494,7 @@ export default function About() {
       </section>
 
       {/* VISUAL BOTANICAL CONNECTOR DIVIDER */}
-      <div className="w-full bg-[#FCFAF4] py-4 flex items-center justify-center gap-4 text-[#4E641A]/40 select-none">
+      <div className="w-full bg-[#FCFAF4] py-3 flex items-center justify-center gap-4 text-[#4E641A]/40 select-none">
         <div className="h-px bg-gradient-to-r from-transparent via-[#EDE7D9] to-[#EDE7D9] w-24 sm:w-40" />
         <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-[#F0F5E6] border border-[#4E641A]/20 text-[#4E641A] text-xs font-bold uppercase tracking-widest shadow-2xs">
           <GiSprout className="w-3.5 h-3.5 text-[#4E641A]" />
@@ -504,7 +504,7 @@ export default function About() {
       </div>
 
       {/* 6. OUR VISION (Redesigned Split Layout Presentation) */}
-      <section className="py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-12 bg-[#FCFAF4] border-b border-[#EDE7D9] relative overflow-hidden select-none">
+      <section className="py-12 md:py-16 px-4 sm:px-6 lg:px-12 bg-[#FCFAF4] border-b border-[#EDE7D9] relative overflow-hidden select-none">
         
         {/* Subtle Background Organic Watermark */}
         <div className="absolute -top-10 -right-10 opacity-5 text-[#4E641A] pointer-events-none">
@@ -514,7 +514,7 @@ export default function About() {
         <div className="max-w-7xl mx-auto relative z-10">
           
           {/* Main Section Header */}
-          <div className="space-y-4 flex flex-col items-start mb-10 lg:mb-14 text-left">
+          <div className="space-y-4 flex flex-col items-start mb-8 lg:mb-10 text-left">
             <SectionBadge text="Future Roadmap & Aspirations" align="left" />
             <div className="flex items-center gap-3">
               <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#2F3B0C] tracking-tight">
@@ -526,7 +526,7 @@ export default function About() {
           </div>
 
           {/* Grid Layout: Desktop 2 Columns / Mobile Stacked */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
             
             {/* Mobile-Only Image Placement (Shown under Header on Mobile/Tablet) */}
             <div className="block lg:hidden w-full">
@@ -548,7 +548,7 @@ export default function About() {
             </div>
 
             {/* Left Column: Vision Story & Highlight Cards (lg:col-span-7) */}
-            <div className="lg:col-span-7 space-y-7 text-left text-stone-700 text-base sm:text-lg leading-[1.75] font-sans max-w-[68ch]">
+            <div className="lg:col-span-7 space-y-6 text-left text-stone-700 text-base sm:text-lg leading-[1.75] font-sans max-w-[68ch]">
               
               {/* Featured Vision Card 1 (Bold Highlight Statement) */}
               <div className="bg-[#F0F5E6] border-l-4 border-l-[#4E641A] border border-[#DCE8C8] p-6 sm:p-7 rounded-2xl shadow-xs space-y-2 hover:shadow-md transition-all duration-300 relative group">
@@ -592,7 +592,7 @@ export default function About() {
                   src="https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?q=80&w=1200&auto=format&fit=crop" 
                   alt="Suryodaya Farms Vision & Future Growth" 
                   loading="lazy"
-                  className="w-full h-[520px] object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="w-full h-[450px] object-cover transition-transform duration-700 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#2F3B0C]/80 via-transparent to-transparent" />
                 
