@@ -1021,12 +1021,17 @@ router.get('/orders', async (req, res, next) => {
 
     let filter = {
       OR: [
-        { paymentStatus: { in: ['COMPLETED', 'PAID', 'REFUNDED'] } },
-        { status: { in: ['PAID', 'CONFIRMED', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'REFUNDED'] } }
+        { paymentStatus: { in: ['COMPLETED', 'REFUNDED'] } },
+        { status: { in: ['CONFIRMED', 'PROCESSING', 'PACKED', 'SHIPPED', 'IN_TRANSIT', 'OUT_FOR_DELIVERY', 'DELIVERED', 'CANCELLED'] } }
       ],
-      NOT: {
-        cancelReason: 'Payment Timeout'
-      }
+      AND: [
+        {
+          OR: [
+            { cancelReason: null },
+            { cancelReason: { not: 'Payment Timeout' } }
+          ]
+        }
+      ]
     };
 
     if (showAbandoned === 'true') {

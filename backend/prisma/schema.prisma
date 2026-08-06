@@ -244,6 +244,8 @@ model Order {
   refundExpectedDate DateTime?
   refundGateway      String?         @default("Razorpay")
   refundInitiatedAt  DateTime?
+  cancelReason       String?
+  cancelledAt        DateTime?
   orderPlacedWhatsappSent Boolean    @default(false)
   orderPackedWhatsappSent Boolean    @default(false)
   orderShippedWhatsappSent Boolean   @default(false)

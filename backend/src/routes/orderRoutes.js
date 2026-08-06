@@ -831,12 +831,17 @@ router.get('/history', protect, async (req, res, next) => {
       where: {
         userId: req.user.id,
         OR: [
-          { paymentStatus: { in: ['COMPLETED', 'PAID', 'REFUNDED'] } },
-          { status: { in: ['PAID', 'CONFIRMED', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'REFUNDED'] } }
+          { paymentStatus: { in: ['COMPLETED', 'REFUNDED'] } },
+          { status: { in: ['CONFIRMED', 'PROCESSING', 'PACKED', 'SHIPPED', 'IN_TRANSIT', 'OUT_FOR_DELIVERY', 'DELIVERED'] } }
         ],
-        NOT: {
-          cancelReason: 'Payment Timeout'
-        }
+        AND: [
+          {
+            OR: [
+              { cancelReason: null },
+              { cancelReason: { not: 'Payment Timeout' } }
+            ]
+          }
+        ]
       },
       include: {
         orderItems: {
@@ -870,12 +875,17 @@ router.get('/history', protect, async (req, res, next) => {
         where: {
           userId: req.user.id,
           OR: [
-            { paymentStatus: { in: ['COMPLETED', 'PAID', 'REFUNDED'] } },
-            { status: { in: ['PAID', 'CONFIRMED', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'REFUNDED'] } }
+            { paymentStatus: { in: ['COMPLETED', 'REFUNDED'] } },
+            { status: { in: ['CONFIRMED', 'PROCESSING', 'PACKED', 'SHIPPED', 'IN_TRANSIT', 'OUT_FOR_DELIVERY', 'DELIVERED'] } }
           ],
-          NOT: {
-            cancelReason: 'Payment Timeout'
-          }
+          AND: [
+            {
+              OR: [
+                { cancelReason: null },
+                { cancelReason: { not: 'Payment Timeout' } }
+              ]
+            }
+          ]
         },
         include: {
           orderItems: {
@@ -907,12 +917,17 @@ router.get('/history/:orderId', protect, async (req, res, next) => {
         id: orderId,
         userId: req.user.id,
         OR: [
-          { paymentStatus: { in: ['COMPLETED', 'PAID', 'REFUNDED'] } },
-          { status: { in: ['PAID', 'CONFIRMED', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'REFUNDED'] } }
+          { paymentStatus: { in: ['COMPLETED', 'REFUNDED'] } },
+          { status: { in: ['CONFIRMED', 'PROCESSING', 'PACKED', 'SHIPPED', 'IN_TRANSIT', 'OUT_FOR_DELIVERY', 'DELIVERED'] } }
         ],
-        NOT: {
-          cancelReason: 'Payment Timeout'
-        }
+        AND: [
+          {
+            OR: [
+              { cancelReason: null },
+              { cancelReason: { not: 'Payment Timeout' } }
+            ]
+          }
+        ]
       },
       include: {
         orderItems: {
