@@ -632,8 +632,8 @@ export default function Partner() {
               </div>
             </div>
 
-            {/* Right Column: Values Grid */}
-            <div className="lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-4 text-left h-full">
+            {/* Right Column: Values Grid (All 6 boxes equal size) */}
+            <div className="lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 auto-rows-fr gap-4 text-left h-full">
               {promiseValues.map((val, idx) => (
                 <motion.div
                   key={idx}
@@ -641,7 +641,7 @@ export default function Partner() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.3, delay: idx * 0.04 }}
-                  className="bg-white border border-[#EDE7D9] p-5 sm:p-6 rounded-2xl shadow-xs flex items-center gap-3.5 hover:border-[#4E641A] hover:shadow-md transition duration-200 h-full flex-1"
+                  className="bg-white border border-[#EDE7D9] p-5 sm:p-6 rounded-2xl shadow-xs flex items-center gap-3.5 hover:border-[#4E641A] hover:shadow-md transition duration-200 h-full min-h-[84px]"
                 >
                   <div className="w-3 h-3 rounded-full bg-[#4E641A] shrink-0" />
                   <span className="font-serif text-base font-bold text-[#2F3B0C] leading-snug">{val}</span>
