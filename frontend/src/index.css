@@ -544,18 +544,21 @@
     gap: 2px !important;
   }
 
-  /* 6. Product title: Max 2 lines, line-clamp, 18px font size */
+  /* 6. Product title: Max 2 lines, line-clamp, 14px font size to prevent overflow */
   .product-card-title {
-    font-size: 18px !important; /* Font size: 18px */
+    font-size: 14px !important; /* Decreased font size to ensure long names never overflow */
     font-weight: 700 !important;
-    line-height: 1.2 !important;
+    line-height: 1.25 !important;
     display: -webkit-box !important;
     -webkit-box-orient: vertical !important;
     -webkit-line-clamp: 2 !important; /* Maximum 2 lines */
     overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
     min-height: auto !important; /* Remove excessive height/whitespace */
     margin-top: 4px !important;
-    margin-bottom: 0 !important; /* 3. Remove excessive whitespace below product title */
+    margin-bottom: 0 !important; /* Remove excessive whitespace below product title */
   }
 
   /* 7. Price section: Place immediately below title, no large margins */

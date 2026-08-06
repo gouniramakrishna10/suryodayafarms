@@ -353,7 +353,7 @@ const ProductCard = memo(function ProductCard({ product, onQuickView }) {
           {/* Product Name */}
           <h3 
             onClick={handleCardClick}
-            className="font-serif text-[13px] sm:text-base font-bold text-[#2F3B0C] group-hover:text-[#4E641A] transition leading-tight line-clamp-2 cursor-pointer product-card-title mt-1"
+            className="font-serif text-xs sm:text-sm md:text-base font-bold text-[#2F3B0C] group-hover:text-[#4E641A] transition leading-snug line-clamp-2 cursor-pointer product-card-title mt-1 break-words overflow-hidden"
           >
             {product.name}
           </h3>
