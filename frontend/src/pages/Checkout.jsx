@@ -36,14 +36,16 @@ export default function Checkout() {
   const [isCalculatingShipping, setIsCalculatingShipping] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('RAZORPAY'); // 'RAZORPAY' | 'COD'
 
-  // 10-minute client-side quote cache helpers (SessionStorage)
-  const getCachedQuote = (pincode, weightKg, codFlag) => {
+  // Client-side quote cache helpers (SessionStorage)
+  // Cache may ONLY be reused if destination PIN, cart weight, payment mode, and order amount are EXACTLY the same.
+  const getCachedQuote = (pincode, weightKg, paymentMode, orderAmount) => {
     try {
-      const key = `shiprocket_quote_v3_${pincode}_${weightKg.toFixed(2)}_${codFlag}`;
+      if (!pincode || pincode.length < 6) return null;
+      const key = `shiprocket_quote_v4_${pincode}_${weightKg.toFixed(2)}_${paymentMode}_${Number(orderAmount || 0).toFixed(2)}`;
       const raw = sessionStorage.getItem(key);
       if (!raw) return null;
       const parsed = JSON.parse(raw);
-      if (Date.now() - parsed.timestamp < 10 * 60 * 1000) {
+      if (Date.now() - parsed.timestamp < 5 * 60 * 1000) {
         return parsed.data;
       }
       sessionStorage.removeItem(key);
@@ -53,9 +55,10 @@ export default function Checkout() {
     return null;
   };
 
-  const setCachedQuote = (pincode, weightKg, codFlag, quoteData) => {
+  const setCachedQuote = (pincode, weightKg, paymentMode, orderAmount, quoteData) => {
     try {
-      const key = `shiprocket_quote_v3_${pincode}_${weightKg.toFixed(2)}_${codFlag}`;
+      if (!pincode || pincode.length < 6) return;
+      const key = `shiprocket_quote_v4_${pincode}_${weightKg.toFixed(2)}_${paymentMode}_${Number(orderAmount || 0).toFixed(2)}`;
       sessionStorage.setItem(key, JSON.stringify({
         timestamp: Date.now(),
         data: quoteData
@@ -310,19 +313,24 @@ export default function Checkout() {
   useEffect(() => {
     if (!selectedPincode || selectedPincode.length < 6 || cartItems.length === 0) {
       setShiprocketQuote(null);
-      return;
-    }
-
-    const codFlag = 0; // 100% Prepaid store only
-    const cached = getCachedQuote(selectedPincode, totalWeightKg, codFlag);
-    if (cached) {
-      setShiprocketQuote(cached);
+      setIsCalculatingShipping(false);
       return;
     }
 
     let isMounted = true;
+
+    // Immediately reset quote and enter loading state when address/pincode changes
+    setShiprocketQuote(null);
+    setIsCalculatingShipping(true);
+
+    const cached = getCachedQuote(selectedPincode, totalWeightKg, paymentMethod, subtotal);
+    if (cached) {
+      setShiprocketQuote(cached);
+      setIsCalculatingShipping(false);
+      return;
+    }
+
     const fetchRate = async () => {
-      setIsCalculatingShipping(true);
       try {
         const res = await api.post('/shiprocket/rate-calculator', {
           deliveryPincode: selectedPincode,
@@ -331,63 +339,63 @@ export default function Checkout() {
           declaredValue: subtotal
         });
 
-        if (isMounted) {
-          if (res && res.isServiceable) {
-            const chosen = res.cheapest || res.recommendedCourier || res.couriers?.[0] || null;
-            
-            // Clean up courier name (e.g. "Ekart Logistics Air" -> "Ekart Logistics")
-            const cleanName = (chosen?.courierName || 'Partner Express')
-              .replace(/\s+(Air|Surface|Express|Standard|Cod|Surface\s+2kg|Surface\s+1kg|5kg|10kg|20kg)$/i, '')
-              .trim();
+        if (!isMounted) return;
 
-            const rawDateStr = chosen?.expectedDeliveryDate || chosen?.formattedEDD || null;
-            const rawDaysNum = chosen?.expectedDeliveryDays ?? chosen?.diffDays ?? null;
-            const chargeVal = chosen?.shippingCharge !== undefined ? chosen.shippingCharge : (chosen?.rate !== undefined ? chosen.rate : (res.rate || 0));
+        if (res && res.isServiceable) {
+          const chosen = res.cheapest || res.recommendedCourier || res.couriers?.[0] || null;
+          
+          // Clean up courier name (e.g. "Ekart Logistics Air" -> "Ekart Logistics")
+          const cleanName = (chosen?.courierName || 'Partner Express')
+            .replace(/\s+(Air|Surface|Express|Standard|Cod|Surface\s+2kg|Surface\s+1kg|5kg|10kg|20kg)$/i, '')
+            .trim();
 
-            // Priority: Always use expectedDeliveryDate from backend if available
-            const finalEDD = rawDateStr || (rawDaysNum ? `In ${rawDaysNum} Days` : '3–5 Business Days');
+          const rawDateStr = chosen?.expectedDeliveryDate || chosen?.formattedEDD || null;
+          const rawDaysNum = chosen?.expectedDeliveryDays ?? chosen?.diffDays ?? null;
+          const chargeVal = chosen?.shippingCharge !== undefined ? chosen.shippingCharge : (chosen?.rate !== undefined ? chosen.rate : (res.rate || 0));
 
-            let computedBadge = 'Standard Delivery';
-            let badgeStyle = 'bg-stone-100 text-stone-700 border-stone-200';
-            
-            if (rawDaysNum && rawDaysNum <= 1) {
-              computedBadge = 'Arrives Tomorrow';
-              badgeStyle = 'bg-[#E8F0D6] text-[#37411A] border-[#D4E2B6]';
-            } else if (rawDaysNum && rawDaysNum === 2) {
-              computedBadge = 'Express Delivery';
-              badgeStyle = 'bg-[#E8F0D6] text-[#37411A] border-[#D4E2B6]';
-            } else if (rawDaysNum && rawDaysNum >= 3 && rawDaysNum <= 4) {
-              computedBadge = 'Standard Delivery';
-              badgeStyle = 'bg-stone-100 text-stone-700 border-stone-200';
-            } else {
-              computedBadge = 'Delivery Expected';
-              badgeStyle = 'bg-stone-100 text-stone-700 border-stone-200';
-            }
+          // Priority: Always use expectedDeliveryDate from backend if available
+          const finalEDD = rawDateStr || (rawDaysNum ? `In ${rawDaysNum} Days` : '3–5 Business Days');
 
-            const quoteData = {
-              isServiceable: true,
-              courierCompanyId: chosen?.courierCompanyId || chosen?.courierId || 0,
-              courierName: cleanName,
-              shippingCharge: chargeVal,
-              rate: chargeVal,
-              expectedDeliveryDate: finalEDD,
-              expectedDeliveryDays: rawDaysNum,
-              formattedEDD: finalEDD,
-              shortEDD: chosen?.shortEDD || finalEDD,
-              badgeText: chosen?.badgeText || computedBadge,
-              badgeStyle,
-              courierRating: chosen?.courierRating || 4.5
-            };
-            setShiprocketQuote(quoteData);
-            setCachedQuote(selectedPincode, totalWeightKg, codFlag, quoteData);
+          let computedBadge = 'Standard Delivery';
+          let badgeStyle = 'bg-stone-100 text-stone-700 border-stone-200';
+          
+          if (rawDaysNum && rawDaysNum <= 1) {
+            computedBadge = 'Arrives Tomorrow';
+            badgeStyle = 'bg-[#E8F0D6] text-[#37411A] border-[#D4E2B6]';
+          } else if (rawDaysNum && rawDaysNum === 2) {
+            computedBadge = 'Express Delivery';
+            badgeStyle = 'bg-[#E8F0D6] text-[#37411A] border-[#D4E2B6]';
+          } else if (rawDaysNum && rawDaysNum >= 3 && rawDaysNum <= 4) {
+            computedBadge = 'Standard Delivery';
+            badgeStyle = 'bg-stone-100 text-stone-700 border-stone-200';
           } else {
-            const nonServiceableQuote = {
-              isServiceable: false,
-              message: res?.message || `Unfortunately, delivery is not available to pincode ${selectedPincode}.`
-            };
-            setShiprocketQuote(nonServiceableQuote);
-            setCachedQuote(selectedPincode, totalWeightKg, codFlag, nonServiceableQuote);
+            computedBadge = 'Delivery Expected';
+            badgeStyle = 'bg-stone-100 text-stone-700 border-stone-200';
           }
+
+          const quoteData = {
+            isServiceable: true,
+            courierCompanyId: chosen?.courierCompanyId || chosen?.courierId || 0,
+            courierName: cleanName,
+            shippingCharge: chargeVal,
+            rate: chargeVal,
+            expectedDeliveryDate: finalEDD,
+            expectedDeliveryDays: rawDaysNum,
+            formattedEDD: finalEDD,
+            shortEDD: chosen?.shortEDD || finalEDD,
+            badgeText: chosen?.badgeText || computedBadge,
+            badgeStyle,
+            courierRating: chosen?.courierRating || 4.5
+          };
+          setShiprocketQuote(quoteData);
+          setCachedQuote(selectedPincode, totalWeightKg, paymentMethod, subtotal, quoteData);
+        } else {
+          const nonServiceableQuote = {
+            isServiceable: false,
+            message: res?.message || `Unfortunately, delivery is not available to pincode ${selectedPincode}.`
+          };
+          setShiprocketQuote(nonServiceableQuote);
+          setCachedQuote(selectedPincode, totalWeightKg, paymentMethod, subtotal, nonServiceableQuote);
         }
       } catch (err) {
         console.warn('Shiprocket API error:', err);
@@ -415,7 +423,7 @@ export default function Checkout() {
     fetchRate();
 
     return () => { isMounted = false; };
-  }, [selectedPincode, totalWeightKg, subtotal, cartItems, settings.shippingCharge]);
+  }, [selectedAddressId, selectedPincode, totalWeightKg, subtotal, paymentMethod, cartItems, settings.shippingCharge]);
 
   // Financial Breakdown Math
   const freeDeliveryThreshold = parseFloat(settings.freeDeliveryThreshold || '2');
