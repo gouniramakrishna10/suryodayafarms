@@ -254,23 +254,7 @@ export async function verifyOtp(req, res, next) {
         }
       });
 
-      console.log(`🆕 [User Registered] Created new customer account: ${user.id} (${maskMobile(cleanedMobile)})`);
-
-      // Create welcome notification
-      try {
-        await prisma.notification.create({
-          data: {
-            userId: user.id,
-            title: 'Welcome to Suryodaya Farms!',
-            message: 'Explore our catalog and enjoy native unrefined organic harvest.'
-          }
-        });
-      } catch (notifErr) {
-        console.error('Failed to create welcome notification:', notifErr.message);
-      }
-
-      // Trigger Meta WhatsApp Welcome Notification (welcome_new_user)
-      whatsappService.sendWelcome(user).catch(err => console.error('[WhatsApp Service] Welcome error:', err));
+      console.log(`🆕 [User Registered] Created new customer account awaiting profile completion: ${user.id} (${maskMobile(cleanedMobile)})`);
     }
 
     // Generate JWT & send response

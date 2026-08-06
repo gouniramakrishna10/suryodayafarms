@@ -172,7 +172,19 @@ export async function sendWelcome(user) {
       return { success: false, error: 'Mobile number missing' };
     }
 
-    const customerName = user.name || 'Valued Customer';
+    const rawName = String(user.name || '').trim();
+    const isInvalidOrTempName = !rawName || 
+      /^Customer\s*\d*$/i.test(rawName) || 
+      /^Guest/i.test(rawName) || 
+      /^Unknown/i.test(rawName) || 
+      /^\d+$/.test(rawName);
+
+    if (isInvalidOrTempName) {
+      console.warn(`⚠️ [WhatsApp Service] Skipped sending welcome notification to user ${user.id} because name "${user.name}" is temporary or invalid.`);
+      return { success: false, error: 'User name is temporary or invalid' };
+    }
+
+    const customerName = rawName;
 
     const result = await sendMetaTemplate({
       recipientPhone,

@@ -201,18 +201,18 @@ export const LoginModal = () => {
 
       if (response && (response.return === true || response.status_code === 200 || response.success) && response.user) {
         const loggedInUser = response.user;
-        
-        // Show success animation
-        setStep('success');
+        const isTempUser = !loggedInUser.name || /^Customer\s*\d*$/i.test(loggedInUser.name) || /^Guest/i.test(loggedInUser.name);
 
-        setTimeout(() => {
-          // Check if profile completion is needed
-          if (!loggedInUser.name || loggedInUser.name.startsWith('Customer ')) {
-            setStep('profile');
-          } else {
+        if (isTempUser) {
+          // Mandatory Profile Completion for new user registration
+          setStep('profile');
+        } else {
+          // Returning customer with active profile
+          setStep('success');
+          setTimeout(() => {
             handleFinalAuthSuccess(loggedInUser);
-          }
-        }, 1200);
+          }, 1200);
+        }
 
       } else {
         setErrorMessage(response?.message || 'Invalid or expired OTP. Please try again.');
@@ -276,12 +276,15 @@ export const LoginModal = () => {
 
       useFeedbackStore.getState().hideLoader();
       setIsSubmitting(false);
-      useFeedbackStore.getState().showToast('🌿 Profile completed successfully!', 'success');
-      handleFinalAuthSuccess();
+      useFeedbackStore.getState().showToast('🌿 Account created successfully!', 'success');
+      setStep('success');
+      setTimeout(() => {
+        handleFinalAuthSuccess();
+      }, 1200);
     } catch (err) {
       useFeedbackStore.getState().hideLoader();
       setIsSubmitting(false);
-      setErrorMessage(err.message || 'Failed to update profile.');
+      setErrorMessage(err.message || 'Failed to save profile. Please check name input.');
     }
   };
 
@@ -534,17 +537,21 @@ export const LoginModal = () => {
             )}
 
             {/* ========================================================================= */}
-            {/* SCREEN 3: OPTIONAL PROFILE COMPLETION */}
+            {/* SCREEN 3: MANDATORY PROFILE COMPLETION */}
             {/* ========================================================================= */}
             {step === 'profile' && (
               <form onSubmit={handleSaveProfileSubmit} className="space-y-4">
+                <div className="bg-[#F0F5E6] border border-[#DCE8C8] rounded-xl p-3 text-xs text-[#2F3B0C] font-medium leading-relaxed">
+                  🌿 Please enter your details to complete your account setup and receive your welcome benefits.
+                </div>
+
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold text-stone-700">Full Name *</label>
                   <input
                     type="text"
                     value={profileName}
                     onChange={(e) => setProfileName(e.target.value)}
-                    placeholder="e.g. Ramesh Kumar"
+                    placeholder="e.g. Srujan Kumar"
                     required
                     className="w-full bg-white border border-stone-300 rounded-xl py-2.5 px-3.5 text-xs text-stone-900 font-semibold focus:outline-none focus:border-[#4E641A]"
                   />
@@ -556,7 +563,7 @@ export const LoginModal = () => {
                     type="email"
                     value={profileEmail}
                     onChange={(e) => setProfileEmail(e.target.value)}
-                    placeholder="e.g. ramesh@example.com"
+                    placeholder="e.g. srujan@example.com"
                     className="w-full bg-white border border-stone-300 rounded-xl py-2.5 px-3.5 text-xs text-stone-900 focus:outline-none focus:border-[#4E641A]"
                   />
                 </div>
@@ -587,21 +594,20 @@ export const LoginModal = () => {
                   </div>
                 </div>
 
-                <div className="flex justify-between items-center pt-4 border-t border-stone-200">
-                  <button
-                    type="button"
-                    onClick={() => handleFinalAuthSuccess()}
-                    className="text-stone-500 hover:text-stone-800 text-xs font-bold border-none bg-transparent cursor-pointer"
-                  >
-                    Skip for Now
-                  </button>
-
+                <div className="pt-4 border-t border-stone-200">
                   <button
                     type="submit"
                     disabled={!profileName.trim() || isSubmitting}
-                    className="px-6 py-2.5 bg-[#4E641A] hover:bg-[#2F3B0C] text-white rounded-xl font-bold text-xs shadow-xs transition cursor-pointer disabled:opacity-50 border-none"
+                    className="w-full py-3.5 bg-[#4E641A] hover:bg-[#2F3B0C] text-white rounded-2xl font-bold text-xs sm:text-sm shadow-md transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed border-none flex items-center justify-center gap-2"
                   >
-                    {isSubmitting ? 'Saving...' : 'Save Profile →'}
+                    {isSubmitting ? (
+                      <>
+                        <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        <span>Saving Profile...</span>
+                      </>
+                    ) : (
+                      <span>Complete Account Registration →</span>
+                    )}
                   </button>
                 </div>
               </form>

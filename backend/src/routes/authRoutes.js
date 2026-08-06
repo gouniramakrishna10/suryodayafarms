@@ -295,12 +295,33 @@ router.get('/notifications', protect, async (req, res, next) => {
   }
 });
 
-// 10. UPDATE USER PROFILE (Name and Avatar)
+// 10. UPDATE USER PROFILE (Name, Email, and Avatar)
 router.put('/profile', protect, async (req, res, next) => {
-  const { name, avatarUrl } = req.body;
+  const { name, email, avatarUrl } = req.body;
   try {
+    // 1. Validation: Name must not be empty or whitespace only
+    if (name !== undefined) {
+      const trimmedName = String(name || '').trim();
+      if (!trimmedName) {
+        return res.status(400).json({
+          success: false,
+          message: 'Full Name is required and cannot be empty.'
+        });
+      }
+    }
+
+    // Fetch existing user to check welcome message status
+    const currentUser = await prisma.user.findUnique({
+      where: { id: req.user.id }
+    });
+
+    if (!currentUser) {
+      return res.status(404).json({ success: false, message: 'User account not found.' });
+    }
+
     const data = {};
-    if (name !== undefined) data.name = name;
+    if (name !== undefined) data.name = String(name).trim();
+    if (email !== undefined && email.trim() !== '') data.email = String(email).trim();
     if (avatarUrl !== undefined) data.avatarUrl = avatarUrl;
 
     const updatedUser = await prisma.user.update({
@@ -310,10 +331,37 @@ router.put('/profile', protect, async (req, res, next) => {
         id: true,
         name: true,
         email: true,
+        mobile: true,
         role: true,
-        avatarUrl: true
+        avatarUrl: true,
+        walletBalance: true,
+        welcomeWhatsappSent: true
       }
     });
+
+    // 2. Send WhatsApp Welcome Notification ONCE after first successful profile completion
+    const cleanName = (updatedUser.name || '').trim();
+    const isTempName = !cleanName || 
+      /^Customer\s*\d*$/i.test(cleanName) || 
+      /^Guest/i.test(cleanName) || 
+      /^Unknown/i.test(cleanName) || 
+      /^\d+$/.test(cleanName);
+
+    if (!currentUser.welcomeWhatsappSent && !isTempName) {
+      // Trigger WhatsApp Welcome Template async
+      whatsappService.sendWelcome(updatedUser).catch(err => 
+        console.error('[WhatsApp Service] Welcome notification error on profile completion:', err)
+      );
+
+      // Create welcome notification in DB
+      prisma.notification.create({
+        data: {
+          userId: updatedUser.id,
+          title: 'Welcome to Suryodaya Farms! 🌿',
+          message: `Hi ${cleanName}, welcome to Suryodaya Farms! We're delighted to have you with us.`
+        }
+      }).catch(() => {});
+    }
 
     res.status(200).json({ success: true, user: updatedUser });
   } catch (error) {

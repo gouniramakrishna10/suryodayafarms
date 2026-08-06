@@ -232,7 +232,19 @@ export async function sendWelcome(user) {
   if (!user || !user.mobile) return { success: false, error: 'User mobile missing' };
   if (user.welcomeWhatsappSent) return { success: true, skipped: true };
 
-  const customerName = user.name || 'Valued Customer';
+  const rawName = String(user.name || '').trim();
+  const isInvalidOrTempName = !rawName || 
+    /^Customer\s*\d*$/i.test(rawName) || 
+    /^Guest/i.test(rawName) || 
+    /^Unknown/i.test(rawName) || 
+    /^\d+$/.test(rawName);
+
+  if (isInvalidOrTempName) {
+    console.warn(`⚠️ [WhatsApp Service] Skipped sending welcome notification to user ${user.id || user.mobile} because name "${user.name}" is temporary or invalid.`);
+    return { success: false, error: 'User name is temporary or invalid' };
+  }
+
+  const customerName = rawName;
 
   const res = await sendTemplate({
     messageId: APPROVED_MESSAGE_IDS.WELCOME,
