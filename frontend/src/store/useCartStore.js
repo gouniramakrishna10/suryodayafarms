@@ -13,14 +13,14 @@ export const useCartStore = create((set, get) => ({
   // Helper: Recalculate Subtotal based on active items
   calculateSubtotal: (items) => {
     let subtotal = 0;
-    items.forEach((item) => {
-      const price = item.variant ? item.variant.price : item.product.price;
+    (items || []).forEach((item) => {
+      const price = item.variant ? item.variant.price : item.product ? item.product.price : item.price || 0;
       subtotal += price * item.quantity;
     });
     return subtotal;
   },
 
-  // 1. FETCH USER CART
+  // 1. FETCH USER CART WITH LOCAL FALLBACK
   fetchCart: async () => {
     set({ isLoading: true, error: null });
     try {
@@ -34,7 +34,30 @@ export const useCartStore = create((set, get) => ({
         isLoading: false
       });
     } catch (error) {
-      set({ error: error.message, isLoading: false });
+      set({ isLoading: false });
+    }
+  },
+
+  // Sync Guest Cart after login
+  syncGuestCartWithServer: async () => {
+    try {
+      const localGuestCart = localStorage.getItem('guestCart');
+      if (localGuestCart) {
+        const guestItems = JSON.parse(localGuestCart);
+        if (Array.isArray(guestItems) && guestItems.length > 0) {
+          for (const item of guestItems) {
+            await api.post('/orders/cart', {
+              productId: item.productId,
+              variantId: item.variantId,
+              quantity: item.quantity
+            }).catch(() => {});
+          }
+          localStorage.removeItem('guestCart');
+        }
+      }
+      await get().fetchCart();
+    } catch (e) {
+      console.warn('Failed to sync guest cart:', e);
     }
   },
 

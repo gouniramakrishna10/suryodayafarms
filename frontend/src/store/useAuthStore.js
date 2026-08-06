@@ -4,11 +4,31 @@ import { useWishlistStore } from './useWishlistStore';
 import { useCartStore } from './useCartStore';
 import { useFeedbackStore } from './useFeedbackStore';
 
+const getInitialUserData = () => {
+  try {
+    const data = localStorage.getItem('userData');
+    return data ? JSON.parse(data) : null;
+  } catch (e) {
+    return null;
+  }
+};
+
+const hasStoredAuthToken = () => {
+  try {
+    return !!(localStorage.getItem('userToken') || localStorage.getItem('userData'));
+  } catch (e) {
+    return false;
+  }
+};
+
+const initialUser = getInitialUserData();
+const initialAuth = hasStoredAuthToken();
+
 export const useAuthStore = create((set, get) => ({
-  user: null,
-  isAuthenticated: false,
+  user: initialUser,
+  isAuthenticated: initialAuth,
   isLoading: false,
-  isAuthChecked: false,
+  isAuthChecked: initialAuth,
   isAuthModalOpen: false,
   isLoginRequiredModalOpen: false,
   loginRequiredMessage: '',
@@ -36,18 +56,26 @@ export const useAuthStore = create((set, get) => ({
     }
   },
 
-  // 2. FAST2SMS VERIFY OTP & SET SESSION
+  // 2. FAST2SMS VERIFY OTP & SET PERSISTENT SESSION
   verifyOtp: async (mobile, otp) => {
     set({ isLoading: true, error: null });
     try {
       const response = await api.post('/auth/verify-otp', { mobile, otp });
       if (response && (response.return === true || response.success) && response.user) {
+        if (response.token) {
+          localStorage.setItem('userToken', response.token);
+        }
+        localStorage.setItem('userData', JSON.stringify(response.user));
+
         set({
           user: response.user,
           isAuthenticated: true,
           isLoading: false,
           isAuthChecked: true
         });
+
+        // Merge guest local cart if present
+        useCartStore.getState().syncGuestCartWithServer();
       }
       return response;
     } catch (error) {
@@ -75,10 +103,12 @@ export const useAuthStore = create((set, get) => ({
     try {
       const response = await api.put('/auth/profile', profileData);
       if (response && response.success && response.user) {
-        set((state) => ({
-          user: { ...state.user, ...response.user },
+        const updatedUser = { ...get().user, ...response.user };
+        localStorage.setItem('userData', JSON.stringify(updatedUser));
+        set({
+          user: updatedUser,
           isLoading: false
-        }));
+        });
       }
       return response;
     } catch (error) {
@@ -95,6 +125,11 @@ export const useAuthStore = create((set, get) => ({
       const response = await api.post('/auth/register', { name, email, password });
       useFeedbackStore.getState().hideLoader();
       if (response.success && response.user) {
+        if (response.token) {
+          localStorage.setItem('userToken', response.token);
+        }
+        localStorage.setItem('userData', JSON.stringify(response.user));
+
         set({
           user: response.user,
           isAuthenticated: true,
@@ -123,6 +158,11 @@ export const useAuthStore = create((set, get) => ({
       const response = await api.post('/auth/login', { email, password });
       useFeedbackStore.getState().hideLoader();
       if (response.success && response.user) {
+        if (response.token) {
+          localStorage.setItem('userToken', response.token);
+        }
+        localStorage.setItem('userData', JSON.stringify(response.user));
+
         set({
           user: response.user,
           isAuthenticated: true,
@@ -143,12 +183,16 @@ export const useAuthStore = create((set, get) => ({
     }
   },
 
-  // 7. CHECK SESSIONS
+  // 7. CHECK SESSIONS (SILENT BACKGROUND VERIFICATION)
   checkAuth: async () => {
-    set({ isLoading: true, error: null });
     try {
       const response = await api.get('/auth/me');
       if (response.success && response.user) {
+        if (response.token) {
+          localStorage.setItem('userToken', response.token);
+        }
+        localStorage.setItem('userData', JSON.stringify(response.user));
+
         set({
           user: response.user,
           isAuthenticated: true,
@@ -156,6 +200,8 @@ export const useAuthStore = create((set, get) => ({
           isAuthChecked: true
         });
       } else {
+        localStorage.removeItem('userToken');
+        localStorage.removeItem('userData');
         set({
           user: null,
           isAuthenticated: false,
@@ -164,12 +210,23 @@ export const useAuthStore = create((set, get) => ({
         });
       }
     } catch (error) {
-      set({
-        user: null,
-        isAuthenticated: false,
-        isLoading: false,
-        isAuthChecked: true
-      });
+      // Clear token only if server explicitly responds with 401 unauthenticated
+      if (error.message && (error.message.includes('401') || error.message.includes('unauthorized') || error.message.includes('Token expired'))) {
+        localStorage.removeItem('userToken');
+        localStorage.removeItem('userData');
+        set({
+          user: null,
+          isAuthenticated: false,
+          isLoading: false,
+          isAuthChecked: true
+        });
+      } else {
+        // Keep optimistic state if network glitch occurs
+        set({
+          isLoading: false,
+          isAuthChecked: true
+        });
+      }
     }
   },
 
@@ -178,7 +235,9 @@ export const useAuthStore = create((set, get) => ({
     set({ isLoading: true, error: null });
     useFeedbackStore.getState().showLoader('Logging out...');
     try {
-      await api.post('/auth/logout');
+      await api.post('/auth/logout').catch(() => {});
+      localStorage.removeItem('userToken');
+      localStorage.removeItem('userData');
       useCartStore.getState().clearCart();
       useWishlistStore.getState().clearWishlist();
       set({
@@ -190,10 +249,15 @@ export const useAuthStore = create((set, get) => ({
       useFeedbackStore.getState().hideLoader();
       useFeedbackStore.getState().showToast('✅ Logged out successfully', 'success');
     } catch (error) {
+      localStorage.removeItem('userToken');
+      localStorage.removeItem('userData');
       useFeedbackStore.getState().hideLoader();
-      set({ error: error.message, isLoading: false });
-      useFeedbackStore.getState().showToast(`❌ Logout failed: ${error.message}`, 'error');
-      throw error;
+      set({
+        user: null,
+        isAuthenticated: false,
+        isLoading: false,
+        isAuthChecked: true
+      });
     }
   }
 }));

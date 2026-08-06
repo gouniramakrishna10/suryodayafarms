@@ -25,8 +25,11 @@ api.interceptors.request.use(
   (config) => {
     config.metadata = { startTime: Date.now() };
     const adminToken = localStorage.getItem('adminToken');
+    const userToken = localStorage.getItem('userToken');
     if (adminToken) {
       config.headers.Authorization = `Bearer ${adminToken}`;
+    } else if (userToken) {
+      config.headers.Authorization = `Bearer ${userToken}`;
     }
     return config;
   },

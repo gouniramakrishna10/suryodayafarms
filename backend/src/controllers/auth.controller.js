@@ -33,12 +33,12 @@ function createAndSendTokenResponse(user, statusCode, req, res, message = 'Authe
   const token = jwt.sign(
     { id: user.id, role: user.role, mobile: user.mobile || null },
     process.env.JWT_SECRET || 'suryodaya_sacred_secret_key_2026_nature',
-    { expiresIn: process.env.JWT_EXPIRE || '7d' }
+    { expiresIn: process.env.JWT_EXPIRE || '30d' }
   );
 
   const isHttps = req.secure || req.headers['x-forwarded-proto'] === 'https';
   const cookieOptions = {
-    expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+    expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days persistent session
     httpOnly: true,
     secure: isHttps,
     sameSite: isHttps ? 'none' : 'lax'

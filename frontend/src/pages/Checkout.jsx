@@ -4,13 +4,14 @@ import { useAuthStore } from '../store/useAuthStore';
 import { useCartStore } from '../store/useCartStore';
 import { useFeedbackStore } from '../store/useFeedbackStore';
 import { useSettingsStore } from '../store/useSettingsStore';
-import { FiArrowLeft, FiTrash2, FiCheckCircle, FiShield, FiLock, FiMapPin, FiTruck, FiAlertCircle, FiHome, FiBriefcase } from 'react-icons/fi';
+import { FiArrowLeft, FiTrash2, FiCheckCircle, FiShield, FiLock, FiMapPin, FiTruck, FiAlertCircle, FiHome, FiBriefcase, FiCompass, FiPlus, FiDownload, FiPackage } from 'react-icons/fi';
 import { GiSun } from 'react-icons/gi';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../utils/api';
 import { parseWeightToKG, formatWeightDisplay } from '../utils/weightParser';
 import { getOptimizedImageUrl, handleImageError, DEFAULT_FALLBACK_IMAGE } from '../utils/imageOptimizer';
 import { formatCurrency } from '../utils/currency';
+import GstInvoiceModal from '../components/GstInvoiceModal';
 
 export default function Checkout() {
   const navigate = useNavigate();
@@ -22,6 +23,21 @@ export default function Checkout() {
   const [selectedAddressId, setSelectedAddressId] = useState('');
   const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
   const [tempSelectedAddressId, setTempSelectedAddressId] = useState('');
+  const [isAddingInlineAddress, setIsAddingInlineAddress] = useState(false);
+  const [activeInvoiceOrder, setActiveInvoiceOrder] = useState(null);
+
+  const [newAddrForm, setNewAddrForm] = useState({
+    title: 'Home',
+    recipientName: '',
+    phone: '',
+    street: '',
+    city: '',
+    state: '',
+    postalCode: '',
+    country: 'India',
+    isDefault: false
+  });
+
   const [couponCode, setCouponCode] = useState('');
   const [couponError, setCouponError] = useState(null);
   const [couponSuccess, setCouponSuccess] = useState(false);
@@ -34,7 +50,7 @@ export default function Checkout() {
   // Live Shiprocket Shipping Rate & Serviceability States
   const [shiprocketQuote, setShiprocketQuote] = useState(null);
   const [isCalculatingShipping, setIsCalculatingShipping] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState('RAZORPAY'); // 'RAZORPAY' | 'COD'
+  const [paymentMethod, setPaymentMethod] = useState(() => localStorage.getItem('preferredPaymentMethod') || 'RAZORPAY');
 
   // Client-side quote cache helpers (SessionStorage)
   // Cache may ONLY be reused if destination PIN, cart weight, payment mode, and order amount are EXACTLY the same.
@@ -118,14 +134,100 @@ export default function Checkout() {
       const addrList = response.addresses || [];
       setAddresses(addrList);
       
+      const storedPrefId = localStorage.getItem('preferredAddressId');
+      const foundPref = addrList.find(a => a.id === storedPrefId);
       const defaultAddr = addrList.find(a => a.isDefault);
-      if (defaultAddr) {
+
+      if (foundPref) {
+        setSelectedAddressId(foundPref.id);
+      } else if (defaultAddr) {
         setSelectedAddressId(defaultAddr.id);
       } else if (addrList.length > 0) {
         setSelectedAddressId(addrList[0].id);
       }
     } catch (err) {
       console.error(err);
+    }
+  };
+
+  const handleSelectAddress = (id) => {
+    setSelectedAddressId(id);
+    localStorage.setItem('preferredAddressId', id);
+  };
+
+  const handleSelectPaymentMethod = (mode) => {
+    setPaymentMethod(mode);
+    localStorage.setItem('preferredPaymentMethod', mode);
+  };
+
+  const handleUseCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      useFeedbackStore.getState().showToast('Geolocation is not supported by your browser.', 'error');
+      return;
+    }
+    useFeedbackStore.getState().showLoader('Detecting location via GPS...');
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        try {
+          const { latitude, longitude } = position.coords;
+          const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
+          const data = await res.json();
+          if (data && data.address) {
+            const postalCode = data.address.postcode || '';
+            const city = data.address.city || data.address.town || data.address.village || data.address.county || '';
+            const state = data.address.state || '';
+            const street = [data.address.road, data.address.suburb, data.address.neighbourhood].filter(Boolean).join(', ');
+            
+            setNewAddrForm(prev => ({
+              ...prev,
+              recipientName: prev.recipientName || user?.name || '',
+              phone: prev.phone || user?.mobile || '',
+              postalCode,
+              city,
+              state,
+              street: street || prev.street
+            }));
+            setIsAddingInlineAddress(true);
+            useFeedbackStore.getState().showToast('📍 Location & Pincode detected', 'success');
+          }
+        } catch (e) {
+          useFeedbackStore.getState().showToast('Please fill in your address details manually.', 'warning');
+          setIsAddingInlineAddress(true);
+        } finally {
+          useFeedbackStore.getState().hideLoader();
+        }
+      },
+      () => {
+        useFeedbackStore.getState().hideLoader();
+        useFeedbackStore.getState().showToast('Location permission denied or unavailable.', 'warning');
+        setIsAddingInlineAddress(true);
+      }
+    );
+  };
+
+  const handleSaveInlineAddress = async (e) => {
+    if (e) e.preventDefault();
+    if (!newAddrForm.recipientName || !newAddrForm.phone || !newAddrForm.street || !newAddrForm.city || !newAddrForm.state || !newAddrForm.postalCode) {
+      useFeedbackStore.getState().showToast('Please fill all required address fields.', 'warning');
+      return;
+    }
+
+    useFeedbackStore.getState().showLoader('Saving delivery address...');
+    try {
+      const response = await api.post('/auth/addresses', newAddrForm);
+      if (response && response.success && response.address) {
+        const saved = response.address;
+        await fetchAddresses();
+        handleSelectAddress(saved.id);
+        setTempSelectedAddressId(saved.id);
+        setIsAddingInlineAddress(false);
+        setIsAddressModalOpen(false);
+        useFeedbackStore.getState().showToast('✅ Address saved & selected for delivery', 'success');
+      }
+    } catch (err) {
+      useFeedbackStore.getState().showToast(`Failed to save address: ${err.message}`, 'error');
+    } finally {
+      useFeedbackStore.getState().hideLoader();
     }
   };
 
@@ -451,47 +553,94 @@ export default function Checkout() {
 
   // Success Confirmation Screen
   if (orderSuccessDetails) {
+    const successAddr = orderSuccessDetails.shippingAddress || selectedAddress;
+    const orderIdToTrack = orderSuccessDetails.id || orderSuccessDetails.orderNumber;
+
     return (
-      <div className="min-h-screen bg-cream-bg pt-32 pb-16 px-4 flex items-center justify-center">
-        <div className="max-w-md w-full bg-white border border-stone-200/80 rounded-3xl p-8 text-center flex flex-col items-center gap-6 shadow-xs">
-          <FiCheckCircle className="text-primary-green text-5xl" />
-          <div className="flex flex-col gap-1">
-            <h2 className="font-serif text-2xl font-bold text-dark-olive">Order Confirmed</h2>
-            <p className="font-sans text-xs text-stone-500">
-              Thank you! Order #{orderSuccessDetails.orderNumber} is confirmed.
+      <div className="min-h-screen bg-[#FBF9F4] pt-24 pb-16 px-4 flex items-center justify-center">
+        <div className="max-w-lg w-full bg-white border border-[#EDE7D9] rounded-3xl p-6 sm:p-8 text-center flex flex-col items-center gap-6 shadow-md relative overflow-hidden">
+          <div className="w-16 h-16 rounded-full bg-[#F0F5E6] border border-[#4E641A]/20 flex items-center justify-center text-[#4E641A] shrink-0 shadow-xs">
+            <FiCheckCircle className="text-4xl text-[#4E641A]" />
+          </div>
+
+          <div className="flex flex-col gap-1 text-center">
+            <span className="font-sans text-xs font-bold uppercase tracking-[0.2em] text-[#C68A2B]">✓ Payment Successful</span>
+            <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#2F3B0C]">Order Confirmed!</h2>
+            <p className="font-sans text-xs text-stone-500 font-medium">
+              Thank you for choosing Suryodaya Farms! Order <strong>#{orderSuccessDetails.orderNumber}</strong> has been received.
             </p>
           </div>
 
-          <div className="w-full bg-stone-50 border border-stone-100 rounded-2xl p-4 text-left flex flex-col gap-2.5 text-xs text-stone-600 font-sans">
-            <div className="flex justify-between">
-              <span>Order Number</span>
-              <strong className="text-dark-olive">{orderSuccessDetails.orderNumber}</strong>
+          <div className="w-full bg-[#FAF8F5] border border-[#EAE4D8] rounded-2xl p-5 text-left flex flex-col gap-3 text-xs text-stone-700 font-sans shadow-2xs">
+            <div className="flex justify-between items-center pb-2 border-b border-[#EAE4D8]">
+              <span className="font-medium text-stone-500">Order Number</span>
+              <strong className="font-mono font-bold text-[#2F3B0C] text-sm">#{orderSuccessDetails.orderNumber}</strong>
             </div>
-            <div className="flex justify-between">
-              <span>Payment Ref</span>
-              <span className="font-mono text-[11px] text-stone-500">{orderSuccessDetails.razorpayPaymentId || 'N/A'}</span>
+
+            <div className="flex justify-between items-center">
+              <span className="font-medium text-stone-500">Payment Reference</span>
+              <span className="font-mono text-[11px] text-stone-600 bg-white px-2 py-0.5 rounded border border-[#EDE7D9]">{orderSuccessDetails.razorpayPaymentId || 'PAID via Razorpay'}</span>
             </div>
-            <div className="flex justify-between pt-2 border-t border-stone-200/60">
-              <span>Total Paid</span>
-              <strong className="text-primary-green text-sm">{formatCurrency(orderSuccessDetails.totalAmount)}</strong>
+
+            {shiprocketQuote?.expectedDeliveryDate && (
+              <div className="flex justify-between items-center">
+                <span className="font-medium text-stone-500 flex items-center gap-1.5"><FiTruck className="text-[#4E641A]" /> Estimated Delivery</span>
+                <strong className="text-[#4E641A] font-semibold">{shiprocketQuote.expectedDeliveryDate}</strong>
+              </div>
+            )}
+
+            {successAddr && (
+              <div className="pt-2 border-t border-[#EAE4D8] space-y-1">
+                <span className="font-medium text-stone-500 block">Delivery Address:</span>
+                <p className="text-stone-800 font-medium text-xs leading-relaxed">
+                  {successAddr.recipientName || user?.name} • {successAddr.phone}<br />
+                  {successAddr.street ? successAddr.street.replace(/\s*\|\s*/g, ', ') : ''}, {successAddr.city ? successAddr.city.replace(/\s*\|\s*/g, ', ') : ''}, {successAddr.state} – {successAddr.postalCode || successAddr.pincode}
+                </p>
+              </div>
+            )}
+
+            <div className="flex justify-between items-center pt-2.5 border-t border-[#EAE4D8]">
+              <span className="font-bold text-stone-800 text-sm">Total Paid</span>
+              <strong className="text-[#4E641A] text-base font-serif font-bold">{formatCurrency(orderSuccessDetails.totalAmount)}</strong>
             </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
+            <button
+              onClick={() => navigate(`/profile?tab=my-shipments`)}
+              className="w-full font-sans text-xs font-bold uppercase tracking-wider bg-[#4E641A] text-white py-3.5 rounded-xl hover:bg-[#37411A] transition cursor-pointer shadow-xs flex items-center justify-center gap-2"
+            >
+              <FiPackage className="text-sm" /> Track Shipment
+            </button>
+
+            <button
+              onClick={() => setActiveInvoiceOrder(orderSuccessDetails)}
+              className="w-full font-sans text-xs font-bold uppercase tracking-wider border border-[#C68A2B] text-[#8C5D14] bg-[#C68A2B]/10 hover:bg-[#C68A2B]/20 py-3.5 rounded-xl transition cursor-pointer flex items-center justify-center gap-2"
+            >
+              <FiDownload className="text-sm" /> GST Invoice
+            </button>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-3 w-full">
             <button
               onClick={() => navigate('/products')}
-              className="flex-1 font-sans text-xs font-semibold uppercase tracking-wider bg-primary-green text-white py-3.5 rounded-xl hover:bg-dark-olive transition cursor-pointer"
+              className="flex-1 font-sans text-xs font-semibold uppercase tracking-wider border border-stone-300 text-stone-700 py-3 rounded-xl hover:bg-stone-50 transition cursor-pointer"
             >
               Continue Shopping
             </button>
             <button
-              onClick={() => navigate('/profile')}
-              className="flex-1 font-sans text-xs font-semibold uppercase tracking-wider border border-stone-300 text-stone-700 py-3.5 rounded-xl hover:bg-stone-50 transition cursor-pointer"
+              onClick={() => navigate('/profile?tab=my-orders')}
+              className="flex-1 font-sans text-xs font-semibold uppercase tracking-wider border border-stone-300 text-stone-700 py-3 rounded-xl hover:bg-stone-50 transition cursor-pointer"
             >
-              My Dashboard
+              View My Orders
             </button>
           </div>
         </div>
+
+        {/* GST Invoice Modal Preview & Download */}
+        {activeInvoiceOrder && (
+          <GstInvoiceModal order={activeInvoiceOrder} onClose={() => setActiveInvoiceOrder(null)} />
+        )}
       </div>
     );
   }
@@ -1074,9 +1223,160 @@ export default function Checkout() {
                 </button>
               </div>
 
-              {/* Scrollable Address Cards List */}
-              <div className="p-5 sm:p-6 overflow-y-auto space-y-3.5 flex-grow bg-[#FAF8F5]">
-                {addresses.length > 0 ? (
+              {/* Scrollable Address Cards & Inline Add Form List */}
+              <div className="p-5 sm:p-6 overflow-y-auto space-y-4 flex-grow bg-[#FAF8F5]">
+                
+                {/* GPS Location Auto-Fill Quick Action */}
+                <div className="bg-[#F0F5E6] border border-[#DCE8C8] rounded-2xl p-3.5 flex items-center justify-between gap-3 shadow-2xs">
+                  <div className="flex items-center gap-2.5 text-xs text-[#2F3B0C] font-sans">
+                    <FiCompass className="w-4 h-4 text-[#4E641A] shrink-0" />
+                    <span>Auto-detect pincode & address with GPS location</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleUseCurrentLocation}
+                    className="px-3 py-1.5 bg-[#4E641A] hover:bg-[#37411A] text-white text-xs font-bold rounded-xl shadow-2xs transition border-none cursor-pointer shrink-0"
+                  >
+                    📍 Use Current Location
+                  </button>
+                </div>
+
+                {/* Inline Add Address Toggle */}
+                {isAddingInlineAddress ? (
+                  <form onSubmit={handleSaveInlineAddress} className="bg-white border-2 border-[#4E641A] rounded-2xl p-5 space-y-3.5 text-left shadow-sm">
+                    <div className="flex justify-between items-center pb-2 border-b border-[#EAE4D8]">
+                      <h4 className="font-serif font-bold text-sm text-[#2F3B0C] flex items-center gap-1.5">
+                        <FiPlus className="text-[#4E641A]" /> Add New Delivery Address
+                      </h4>
+                      <button
+                        type="button"
+                        onClick={() => setIsAddingInlineAddress(false)}
+                        className="text-xs text-stone-500 hover:text-stone-800 cursor-pointer border-none bg-transparent"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3 text-xs">
+                      <div>
+                        <label className="block text-[11px] font-bold text-stone-600 mb-1">Address Label</label>
+                        <select
+                          value={newAddrForm.title}
+                          onChange={(e) => setNewAddrForm({ ...newAddrForm, title: e.target.value })}
+                          className="w-full p-2.5 rounded-xl border border-stone-300 bg-white font-medium text-stone-800"
+                        >
+                          <option value="Home">Home</option>
+                          <option value="Work">Office / Work</option>
+                          <option value="Other">Other</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-bold text-stone-600 mb-1">Recipient Name *</label>
+                        <input
+                          type="text"
+                          required
+                          placeholder="Full Name"
+                          value={newAddrForm.recipientName}
+                          onChange={(e) => setNewAddrForm({ ...newAddrForm, recipientName: e.target.value })}
+                          className="w-full p-2.5 rounded-xl border border-stone-300 bg-white font-medium text-stone-800"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3 text-xs">
+                      <div>
+                        <label className="block text-[11px] font-bold text-stone-600 mb-1">10-Digit Phone *</label>
+                        <input
+                          type="tel"
+                          required
+                          placeholder="Phone Number"
+                          value={newAddrForm.phone}
+                          onChange={(e) => setNewAddrForm({ ...newAddrForm, phone: e.target.value })}
+                          className="w-full p-2.5 rounded-xl border border-stone-300 bg-white font-medium text-stone-800"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-bold text-stone-600 mb-1">Pincode *</label>
+                        <input
+                          type="text"
+                          required
+                          maxLength={6}
+                          placeholder="6-digit Pincode"
+                          value={newAddrForm.postalCode}
+                          onChange={(e) => setNewAddrForm({ ...newAddrForm, postalCode: e.target.value })}
+                          className="w-full p-2.5 rounded-xl border border-stone-300 bg-white font-medium text-stone-800"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="text-xs">
+                      <label className="block text-[11px] font-bold text-stone-600 mb-1">Flat / House No / Street Address *</label>
+                      <textarea
+                        required
+                        rows={2}
+                        placeholder="House No., Building, Street Name, Area"
+                        value={newAddrForm.street}
+                        onChange={(e) => setNewAddrForm({ ...newAddrForm, street: e.target.value })}
+                        className="w-full p-2.5 rounded-xl border border-stone-300 bg-white font-medium text-stone-800"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3 text-xs">
+                      <div>
+                        <label className="block text-[11px] font-bold text-stone-600 mb-1">City / District *</label>
+                        <input
+                          type="text"
+                          required
+                          placeholder="City"
+                          value={newAddrForm.city}
+                          onChange={(e) => setNewAddrForm({ ...newAddrForm, city: e.target.value })}
+                          className="w-full p-2.5 rounded-xl border border-stone-300 bg-white font-medium text-stone-800"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-bold text-stone-600 mb-1">State *</label>
+                        <input
+                          type="text"
+                          required
+                          placeholder="State"
+                          value={newAddrForm.state}
+                          onChange={(e) => setNewAddrForm({ ...newAddrForm, state: e.target.value })}
+                          className="w-full p-2.5 rounded-xl border border-stone-300 bg-white font-medium text-stone-800"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 pt-1 text-xs font-sans text-stone-700">
+                      <input
+                        type="checkbox"
+                        id="inlineIsDefault"
+                        checked={newAddrForm.isDefault}
+                        onChange={(e) => setNewAddrForm({ ...newAddrForm, isDefault: e.target.checked })}
+                        className="w-4 h-4 accent-[#4E641A] rounded"
+                      />
+                      <label htmlFor="inlineIsDefault" className="cursor-pointer font-medium">Set as default delivery address</label>
+                    </div>
+
+                    <div className="pt-2 flex justify-end gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setIsAddingInlineAddress(false)}
+                        className="px-4 py-2 border border-stone-300 text-stone-600 text-xs font-bold rounded-xl bg-white"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        className="px-5 py-2 bg-[#4E641A] hover:bg-[#37411A] text-white text-xs font-bold rounded-xl shadow-xs border-none cursor-pointer"
+                      >
+                        Save & Deliver Here
+                      </button>
+                    </div>
+                  </form>
+                ) : addresses.length > 0 ? (
                   <div className="grid grid-cols-1 gap-3.5">
                     {addresses.map((addr) => {
                       const isSelected = tempSelectedAddressId === addr.id;
@@ -1150,10 +1450,7 @@ export default function Checkout() {
                     </div>
                     <button
                       type="button"
-                      onClick={() => {
-                        setIsAddressModalOpen(false);
-                        navigate('/profile?tab=saved-coordinates&from=checkout');
-                      }}
+                      onClick={() => setIsAddingInlineAddress(true)}
                       className="px-5 py-2.5 bg-[#4E641A] hover:bg-[#37411A] text-white text-xs font-bold rounded-xl shadow-xs transition border-none cursor-pointer mt-1"
                     >
                       + Add New Address
@@ -1166,13 +1463,10 @@ export default function Checkout() {
               <div className="p-4 sm:p-5 bg-white border-t border-[#EAE4D8] flex items-center justify-between gap-3 shrink-0">
                 <button
                   type="button"
-                  onClick={() => {
-                    setIsAddressModalOpen(false);
-                    navigate('/profile?tab=saved-coordinates&from=checkout');
-                  }}
+                  onClick={() => setIsAddingInlineAddress(prev => !prev)}
                   className="text-xs font-bold text-[#4E641A] hover:underline cursor-pointer bg-transparent border-none p-0 flex items-center gap-1"
                 >
-                  + Add New Address
+                  {isAddingInlineAddress ? 'Back to Saved Addresses' : '+ Add New Address'}
                 </button>
 
                 <div className="flex items-center gap-3">
@@ -1188,7 +1482,7 @@ export default function Checkout() {
                     disabled={!tempSelectedAddressId}
                     onClick={() => {
                       if (tempSelectedAddressId) {
-                        setSelectedAddressId(tempSelectedAddressId);
+                        handleSelectAddress(tempSelectedAddressId);
                         setIsAddressModalOpen(false);
                       }
                     }}
