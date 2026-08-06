@@ -487,8 +487,8 @@ export default function Partner() {
       {/* 9. WHAT YOU CAN EXPECT */}
       <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 bg-white border-b border-[#EDE7D9]">
         <div className="max-w-7xl mx-auto space-y-16">
-          <div className="text-center max-w-3xl mx-auto space-y-4">
-            <span className="font-sans text-xs font-bold text-[#4E641A] uppercase tracking-widest">Operational Excellence</span>
+          <div className="text-center max-w-3xl mx-auto space-y-4 flex flex-col items-center">
+            <SectionBadge text="Operational Excellence" align="center" />
             <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">What You Can Expect</h2>
             <p className="text-stone-700 text-base sm:text-lg font-sans">As our business partner, you can expect:</p>
           </div>
@@ -514,8 +514,8 @@ export default function Partner() {
       {/* 10. OUR COMMITMENT */}
       <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 bg-[#F4EFE6] border-b border-[#EDE7D9]">
         <div className="max-w-4xl mx-auto">
-          <div className="bg-white border border-[#EDE7D9] rounded-[40px] p-10 sm:p-16 shadow-lg text-center space-y-8">
-            <span className="font-sans text-xs font-bold text-[#B8833E] uppercase tracking-widest">Our Promise</span>
+          <div className="bg-white border border-[#EDE7D9] rounded-[40px] p-10 sm:p-16 shadow-lg text-center space-y-8 flex flex-col items-center">
+            <SectionBadge text="Our Promise" align="center" />
             <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">Our Commitment</h2>
             
             <div className="space-y-6 text-stone-700 text-base sm:text-lg leading-relaxed font-sans max-w-2xl mx-auto">
