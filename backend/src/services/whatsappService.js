@@ -214,6 +214,18 @@ export async function sendWelcome(user) {
 }
 
 /**
+ * Helper to strip any currency symbols (₹, Rs., INR) and format as clean plain numeric strings
+ * for WhatsApp template parameters, as templates already contain currency symbols (e.g. ₹{{2}}).
+ */
+export function formatNumericAmount(val) {
+  if (val === null || val === undefined) return '0';
+  const cleanedStr = String(val).replace(/[₹\sRs\.INR,]/gi, '').trim();
+  const num = parseFloat(cleanedStr);
+  if (isNaN(num)) return '0';
+  return Number.isInteger(num) ? String(num) : num.toFixed(2);
+}
+
+/**
  * 2. Send Order Placed Template (order_placed_success)
  * Trigger: Only after online payment succeeds OR COD order is created.
  */
@@ -235,7 +247,7 @@ export async function sendOrderPlaced(order) {
 
     const customerName = order.shippingAddress?.recipientName || order.user?.name || 'Valued Customer';
     const orderId = order.orderNumber || order.id;
-    const orderAmount = `₹${order.totalAmount}`;
+    const orderAmount = formatNumericAmount(order.totalAmount);
 
     const result = await sendMetaTemplate({
       recipientPhone,
@@ -444,7 +456,7 @@ export async function sendAdminNewOrder(order) {
     const orderId = order.orderNumber || order.id;
     const customerName = order.shippingAddress?.recipientName || order.user?.name || 'Customer';
     const productList = formatProductList(order.orderItems || []);
-    const totalAmount = `₹${order.totalAmount}`;
+    const totalAmount = formatNumericAmount(order.totalAmount);
     const paymentMode = order.paymentMethod === 'COD' ? 'COD' : 'Online';
 
     console.log(`📡 [WhatsApp Service] Triggering admin_new_order | Admin: ${adminPhone} | Order: ${orderId} | Customer: ${customerName}`);

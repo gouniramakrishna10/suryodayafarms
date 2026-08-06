@@ -265,6 +265,18 @@ export async function sendWelcome(user) {
 }
 
 /**
+ * Helper to strip any currency symbols (₹, Rs., INR) and format as clean plain numeric strings
+ * for WhatsApp template parameters, as templates already contain currency symbols (e.g. ₹{{2}}).
+ */
+export function formatNumericAmount(val) {
+  if (val === null || val === undefined) return '0';
+  const cleanedStr = String(val).replace(/[₹\sRs\.INR,]/gi, '').trim();
+  const num = parseFloat(cleanedStr);
+  if (isNaN(num)) return '0';
+  return Number.isInteger(num) ? String(num) : num.toFixed(2);
+}
+
+/**
  * 3. sendOrderPlaced (order)
  * Approved Message ID: 27509
  * Trigger: ONLY after paymentStatus == COMPLETED / PAID or COD confirmed
@@ -278,7 +290,7 @@ export async function sendOrderPlaced(order) {
 
   const customerName = order.shippingAddress?.recipientName || order.user?.name || 'Valued Customer';
   const orderId = order.orderNumber || order.id;
-  const totalAmount = `₹${order.totalAmount}`;
+  const totalAmount = formatNumericAmount(order.totalAmount);
 
   const res = await sendTemplate({
     messageId: APPROVED_MESSAGE_IDS.ORDER_PLACED,
@@ -430,7 +442,7 @@ export async function sendRefundInitiated(order, refundAmount) {
 
   const customerName = order.shippingAddress?.recipientName || order.user?.name || 'Valued Customer';
   const orderId = order.orderNumber || order.id;
-  const amountStr = `₹${refundAmount || order.totalAmount}`;
+  const amountStr = formatNumericAmount(refundAmount || order.totalAmount);
 
   return sendTemplate({
     messageId: APPROVED_MESSAGE_IDS.REFUND_INITIATED,
@@ -454,7 +466,7 @@ export async function sendRefundCompleted(order, refundAmount, referenceNumber) 
 
   const customerName = order.shippingAddress?.recipientName || order.user?.name || 'Valued Customer';
   const orderId = order.orderNumber || order.id;
-  const amountStr = `₹${refundAmount || order.totalAmount}`;
+  const amountStr = formatNumericAmount(refundAmount || order.totalAmount);
   const refNum = referenceNumber || order.refundId || 'RRN-99201';
 
   return sendTemplate({
@@ -490,7 +502,7 @@ export async function sendAdminNewOrder(order) {
     return `• ${name} x${qty}`;
   }).join('\n') || '• Standard Product Item x1';
 
-  const totalAmount = `₹${order.totalAmount}`;
+  const totalAmount = formatNumericAmount(order.totalAmount);
   const paymentMode = order.paymentMethod === 'COD' ? 'COD' : 'ONLINE';
 
   console.log(`📡 [WhatsApp Service] Sending ADMIN_NEW_ORDER to Admin Mobile: ${adminMobile}`);
