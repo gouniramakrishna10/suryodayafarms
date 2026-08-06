@@ -133,12 +133,9 @@ const Footer = memo(function Footer() {
                 href="https://wa.me/919100422140"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-sans text-xs sm:text-sm text-light-beige/75 hover:text-[#25D366] transition-colors font-light flex items-center gap-2"
+                className="font-sans text-xs sm:text-sm text-light-beige/75 hover:text-[#25D366] transition-colors font-light"
               >
-                <span>+91 9100422140</span>
-                <span className="text-[10px] font-bold text-[#25D366] bg-[#25D366]/10 border border-[#25D366]/30 px-2 py-0.5 rounded-full">
-                  WhatsApp
-                </span>
+                +91 9100422140
               </a>
             </li>
             <li className="flex gap-3 items-center">
