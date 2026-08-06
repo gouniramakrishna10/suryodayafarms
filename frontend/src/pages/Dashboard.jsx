@@ -42,7 +42,7 @@ import {
   FiArrowRight,
   FiArrowLeft
 } from 'react-icons/fi';
-import { GiSun } from 'react-icons/gi';
+import { GiSun, GiSprout } from 'react-icons/gi';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../utils/api';
 import UnifiedUploader from '../components/UnifiedUploader';
