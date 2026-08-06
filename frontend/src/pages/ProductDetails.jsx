@@ -393,7 +393,7 @@ export default function ProductDetails() {
     }
     if (product.productContent?.highlights) {
       return product.productContent.highlights.map((hl, idx) => ({
-        title: `Harvest Benefit #${idx + 1}`,
+        title: `Product Benefit #${idx + 1}`,
         desc: hl,
         icon: ['🌿', '🌱', '☀️', '💧', '🌾', '🐝'][idx % 6]
       }));
@@ -887,7 +887,7 @@ export default function ProductDetails() {
                         ))
                       ) : (
                         <div className="bg-[#FCFAF5] border border-dashed border-[#EDE7D9] rounded-2xl p-6 text-center text-xs font-sans text-stone-450 italic">
-                          Be the first to review this harvest.
+                          Be the first to review this product.
                         </div>
                       )}
                     </div>

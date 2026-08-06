@@ -1696,63 +1696,77 @@ export default function Home() {
   const renderBenefitsSection = () => {
     const cards = [
       {
-        icon: <FiActivity className="text-2xl" />,
+        icon: <FiActivity className="text-xl" />,
         title: "Daily Wellness",
         desc: "Nutrient-rich superfoods for balanced nutrition and everyday well-being."
       },
       {
-        icon: <FiShield className="text-2xl" />,
+        icon: <FiShield className="text-xl" />,
         title: "Immunity Support",
         desc: "Carefully selected natural foods rich in essential nutrients and antioxidants."
       },
       {
-        icon: <FiZap className="text-2xl" />,
+        icon: <FiZap className="text-xl" />,
         title: "Energy & Vitality",
         desc: "Wholesome nutrition to help you stay active, energized, and refreshed."
       },
       {
-        icon: <FiHeart className="text-2xl" />,
+        icon: <FiHeart className="text-xl" />,
         title: "Healthy Lifestyle",
         desc: "Pure and nourishing foods designed to support overall wellness and vitality."
       },
       {
-        icon: <FiUsers className="text-2xl" />,
+        icon: <FiUsers className="text-xl" />,
         title: "Family Nutrition",
         desc: "Thoughtfully crafted products to meet the nutritional needs of every family member."
       },
       {
-        icon: <GiSprout className="text-2xl" />,
+        icon: <GiSprout className="text-xl" />,
         title: "Natural Nutrition",
         desc: "Pure, high-quality superfoods guided by nature and backed by science."
       }
     ];
 
     return (
-      <section key="benefits" className="py-20 px-6 md:px-12 max-w-7xl mx-auto border-b border-[#EAE4D8] bg-[#FDFBF7]/30">
-        <div className="text-center max-w-2xl mx-auto space-y-3 mb-12 flex flex-col items-center">
+      <section key="benefits" className="py-16 md:py-20 px-6 md:px-12 max-w-7xl mx-auto border-b border-[#EDE7D9] bg-[#FAF7F2] relative overflow-hidden">
+        {/* Subtle botanical background texture accents */}
+        <div className="absolute -top-16 -left-16 w-64 h-64 opacity-[0.03] pointer-events-none text-[#2F3B0C]">
+          <GiSprout className="w-full h-full" />
+        </div>
+        <div className="absolute -bottom-16 -right-16 w-64 h-64 opacity-[0.03] pointer-events-none text-[#2F3B0C]">
+          <GiSun className="w-full h-full" />
+        </div>
+
+        <div className="relative text-center max-w-2xl mx-auto space-y-2 mb-8 md:mb-10 flex flex-col items-center">
           <SectionBadge text={settings.homepage_section_badge_benefits || "Targeted Nutrition"} align="center" />
-          <h2 className="font-serif text-3xl md:text-5xl font-semibold text-[#2F3B0C]">
+          <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold text-[#2F3B0C] tracking-tight">
             {settings.homepage_section_title_benefits || "Shop by Wellness Goal"}
           </h2>
-          <p className="text-xs md:text-sm text-stone-500 font-medium">
+          <p className="text-xs md:text-sm text-stone-500 font-medium leading-relaxed max-w-xl">
             {settings.homepage_section_subtitle_benefits || "Find the perfect superfoods to support your family's journey toward healthier living."}
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 text-left benefits-grid">
+        <div className="relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6 text-left benefits-grid">
           {cards.map((card, idx) => (
             <div
               key={idx}
-              className="bg-white border border-[#EAE4D8] hover:border-[#4E641A] rounded-2xl p-6 shadow-xs hover:shadow-md transition duration-300 group cursor-default benefits-card flex flex-col justify-between"
+              onClick={() => navigate('/products')}
+              className="bg-white border border-[#EDE7D9] hover:border-[#4E641A] rounded-[24px] p-6 shadow-xs hover:shadow-md hover:-translate-y-1 transition-all duration-300 group cursor-pointer benefits-card flex flex-col justify-between h-full"
             >
-              <div>
-                <div className="w-12 h-12 rounded-2xl bg-[#4E641A]/10 border border-[#4E641A]/20 text-[#4E641A] group-hover:bg-[#4E641A] group-hover:text-white flex items-center justify-center transition-all duration-300 mb-4 shrink-0 shadow-xxs">
-                  {card.icon}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="w-12 h-12 rounded-full bg-[#FAF7F2] border border-[#EDE7D9] shadow-inner text-[#4E641A] group-hover:bg-[#4E641A] group-hover:text-white group-hover:border-[#4E641A] group-hover:scale-110 flex items-center justify-center transition-all duration-300 shrink-0">
+                    {card.icon}
+                  </div>
+                  <FiArrowRight className="w-4 h-4 text-[#4E641A] opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 shrink-0" />
                 </div>
-                <h4 className="font-serif text-lg font-bold text-[#2F3B0C] group-hover:text-[#4E641A] transition-colors">{card.title}</h4>
-                <p className="text-xs text-stone-500 leading-relaxed font-light mt-2">
-                  {card.desc}
-                </p>
+                <div className="space-y-1.5">
+                  <h4 className="font-serif text-base md:text-lg font-bold text-[#2F3B0C] group-hover:text-[#4E641A] transition-colors">{card.title}</h4>
+                  <p className="text-xs text-stone-500 leading-relaxed font-light">
+                    {card.desc}
+                  </p>
+                </div>
               </div>
             </div>
           ))}

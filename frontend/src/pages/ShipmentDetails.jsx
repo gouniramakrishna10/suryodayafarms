@@ -166,9 +166,9 @@ export default function ShipmentDetails() {
   }, [orderId]);
 
   const timelineSteps = [
-    { label: 'Placed', icon: FiShoppingBag, desc: 'Farm harvest request submitted' },
+    { label: 'Placed', icon: FiShoppingBag, desc: 'Farm product request submitted' },
     { label: 'Confirmed', icon: FiShield, desc: 'Suryodaya team accepted order' },
-    { label: 'Prepared', icon: FiPackage, desc: 'Harvest gathered & packed' },
+    { label: 'Prepared', icon: FiPackage, desc: 'Order prepared & packed' },
     { label: 'Shipped', icon: FiTruck, desc: 'Handed over to carrier' },
     { label: 'In Transit', icon: FiClock, desc: 'On the way to destination' },
     { label: 'Out for Delivery', icon: FiCompass, desc: 'Out with delivery partner' },
@@ -194,7 +194,7 @@ export default function ShipmentDetails() {
       return 'Your order has been packed successfully and is awaiting farm confirmation.';
     }
     if (normalized === 'CONFIRMED') {
-      return 'Your order has been confirmed. Preparing to harvest and pack.';
+      return 'Your order has been confirmed. Preparing to pack and dispatch.';
     }
     if (normalized === 'PROCESSING' || normalized === 'PREPARED') {
       return 'Your order has been packed successfully and is ready for dispatch.';
@@ -216,7 +216,7 @@ export default function ShipmentDetails() {
     if (normalized === 'CANCELLED') {
       return 'This order has been cancelled.';
     }
-    return 'Your harvest order is currently being processed.';
+    return 'Your product order is currently being processed.';
   };
 
   const handleReorder = async () => {
@@ -390,7 +390,7 @@ export default function ShipmentDetails() {
         <div className="bg-white border border-[#EAE4D8] rounded-[28px] p-6 md:p-8 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-6 text-left relative overflow-hidden">
           <div className="space-y-2">
             <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#C68A2B] bg-[#C68A2B]/10 px-3 py-1 rounded-full border border-[#C68A2B]/20 inline-block">
-              Organic Farm Harvest
+              Organic Farm Product
             </span>
             <h1 className="font-serif text-xl md:text-2xl font-bold text-[#2F3B0C]">
               Order {order.orderNumber}
@@ -904,7 +904,7 @@ export default function ShipmentDetails() {
           {/* Product Items Breakdown Section */}
           <div className="bg-white border border-[#EAE4D8] rounded-[28px] p-6 shadow-sm space-y-4">
             <h2 className="font-serif text-lg font-bold text-[#2F3B0C] border-b pb-3 border-stone-100 flex items-center gap-2">
-              <FiShoppingBag className="text-[#C68A2B]" /> Harvest Breakdown
+              <FiShoppingBag className="text-[#C68A2B]" /> Order Breakdown
             </h2>
 
             <div className="space-y-3.5 max-h-[280px] overflow-y-auto pr-1 scrollbar-hide">

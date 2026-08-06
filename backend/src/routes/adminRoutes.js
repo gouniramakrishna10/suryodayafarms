@@ -875,7 +875,7 @@ Ensure the output is strictly valid JSON without markdown formatting or surround
 function parseCleanTextToServerData(extractedText, fileName) {
   const lines = extractedText.split('\n').map(l => l.trim()).filter(Boolean);
   const productName = lines[0]?.replace(/^[#*=-]+\s*/, '') || 'Sprouted Ragi Flour';
-  const shortDescription = lines.find(l => l.length > 15 && l.length < 160) || 'Pure Organic & Vedic Harvest';
+  const shortDescription = lines.find(l => l.length > 15 && l.length < 160) || 'Pure Organic & Natural Product';
   const description = lines.filter(l => l.length > 30).map(l => `<p>${l}</p>`).join('');
 
   const sections = [];
@@ -942,7 +942,7 @@ function buildSectionFromLines(title, lines, orderIndex) {
 
   let content = {};
   if (secType === 'HERO') {
-    content = { collectionName: 'Organic Harvest', tagline: 'Pure & Natural', intro: lines.join(' ') };
+    content = { collectionName: 'Organic Products', tagline: 'Pure & Natural', intro: lines.join(' ') };
   } else if (secType === 'ABOUT_PRODUCT' || secType === 'ABOUT_INGREDIENT' || secType === 'INGREDIENTS' || secType === 'OUR_PROMISE' || secType === 'BRAND_STORY') {
     content = { title, html: lines.map(l => `<p>${l}</p>`).join('') };
   } else if (secType === 'WHY_CHOOSE_US' || secType === 'BENEFITS') {

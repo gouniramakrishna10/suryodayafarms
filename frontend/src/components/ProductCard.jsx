@@ -346,7 +346,7 @@ const ProductCard = memo(function ProductCard({ product, onQuickView }) {
                 <span className="text-stone-400/70 font-normal hidden sm:inline">({product.totalReviews})</span>
               </span>
             ) : (
-              <span className="italic text-stone-450/80 text-[8px] sm:text-[9px] hidden sm:inline">New Harvest</span>
+              <span className="italic text-stone-450/80 text-[8px] sm:text-[9px] hidden sm:inline">New Product</span>
             )}
           </div>
 

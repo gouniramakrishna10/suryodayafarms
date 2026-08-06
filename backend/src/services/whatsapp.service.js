@@ -396,7 +396,7 @@ export async function sendOrderDelivered(order) {
     const name = item.product?.name || item.name || 'Product';
     const qty = item.quantity || 1;
     return `${name} x${qty}`;
-  }).join(', ') || 'Organic Harvest Products';
+  }).join(', ') || 'Organic Products';
 
   return sendTemplate({
     messageId: APPROVED_MESSAGE_IDS.ORDER_DELIVERED,

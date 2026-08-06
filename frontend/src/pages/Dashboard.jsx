@@ -334,7 +334,7 @@ export default function Dashboard() {
       return `Scheduled Arrival: ${etaDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })} • 6:00 AM - 9:00 AM`;
     }
     
-    return "Preparing your harvest. Delivery schedule will be available soon.";
+    return "Preparing your order. Delivery schedule will be available soon.";
   };
 
   const getStepTimestamp = (order, stepIdx, steps) => {
@@ -833,7 +833,7 @@ export default function Dashboard() {
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                     {[
                       { label: 'Total Shipments', value: orders.length, detail: 'Farm deliveries', icon: FiShoppingBag, color: 'from-[#4E641A]/5 to-[#EAE4D8]/10' },
-                      { label: 'Wishlist Crops', value: wishlistItems.length, detail: 'Saved harvests', icon: FiHeart, color: 'from-[#EAE4D8]/20 to-[#C68A2B]/5' },
+                      { label: 'Wishlist Crops', value: wishlistItems.length, detail: 'Saved products', icon: FiHeart, color: 'from-[#EAE4D8]/20 to-[#C68A2B]/5' },
                       { label: 'Saved Coordinates', value: addresses.length, detail: 'Delivery points', icon: FiMapPin, color: 'from-[#4E641A]/5 to-[#EAE4D8]/15' },
                       { label: 'Active Coupons', value: 2, detail: 'Vouchers available', icon: FiTag, color: 'from-[#C68A2B]/10 to-[#EAE4D8]/20' },
                       { label: 'Support Tickets', value: supportTickets.length, detail: 'Open help cases', icon: FiMessageSquare, color: 'from-[#4E641A]/5 to-[#EAE4D8]/10' }
@@ -927,7 +927,7 @@ export default function Dashboard() {
                                 <div className="text-left space-y-0.5">
                                   <span className="font-mono text-[9px] text-stone-500 font-bold block">{order.orderNumber}</span>
                                   <h5 className="font-serif text-xs font-bold text-[#2F3B0C] line-clamp-1">
-                                    {product?.name || 'Organic Harvest'} {totalItems > 1 && `+ ${totalItems - 1} more`}
+                                    {product?.name || 'Organic Product'} {totalItems > 1 && `+ ${totalItems - 1} more`}
                                   </h5>
                                   <span className="text-[8px] text-stone-400 block font-semibold">
                                     {new Date(order.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })} • {formatCurrency(order.totalAmount)}
@@ -973,7 +973,7 @@ export default function Dashboard() {
                             <FiShoppingBag className="text-[#C68A2B] w-5 h-5" />
                           </div>
                           <div className="space-y-1">
-                            <h4 className="font-serif text-sm font-bold text-[#2F3B0C]">First Harvest Awaits</h4>
+                            <h4 className="font-serif text-sm font-bold text-[#2F3B0C]">First Product Awaits</h4>
                             <p className="text-stone-500 font-sans text-[11px] leading-relaxed font-medium">
                               Discover pure, natural and nutritious superfoods from Suryodaya Farms.
                             </p>
@@ -1038,7 +1038,7 @@ export default function Dashboard() {
                               )}
                             </div>
                             <div className="space-y-0.5 text-left">
-                              <h5 className="font-serif text-xs font-bold text-[#2F3B0C] line-clamp-1">{product?.name || 'Organic Harvest'}</h5>
+                              <h5 className="font-serif text-xs font-bold text-[#2F3B0C] line-clamp-1">{product?.name || 'Organic Product'}</h5>
                               <p className="text-[8px] text-stone-400 font-bold uppercase">
                                 Delivered: {new Date(latestOrder.updatedAt || Date.now()).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
                               </p>
@@ -1085,7 +1085,7 @@ export default function Dashboard() {
                       {[
                         { icon: <FiTruck className="text-[#4E641A] text-sm shrink-0 mt-0.5" />, title: 'Free delivery above 2kg', desc: 'Sourced directly and shipped for free when buying bulk staples.' },
                         { icon: <FiGlobe className="text-[#4E641A] text-sm shrink-0 mt-0.5" />, title: 'PAN INDIA DELIVERY', desc: 'We currently deliver across India. Delivery timelines may vary depending on your location and service availability.' },
-                        { icon: <FiClock className="text-[#4E641A] text-sm shrink-0 mt-0.5" />, title: 'Estimated dispatch', desc: 'Harvested fresh and shipped within 3–5 working days.' }
+                        { icon: <FiClock className="text-[#4E641A] text-sm shrink-0 mt-0.5" />, title: 'Estimated dispatch', desc: 'Processed fresh and shipped within 3–5 working days.' }
                       ].map((benefit, bIdx) => (
                         <div key={bIdx} className="flex items-start gap-2.5">
                           {benefit.icon}
@@ -1165,7 +1165,7 @@ export default function Dashboard() {
                               </div>
 
                               <h4 className="font-serif text-xs sm:text-sm font-bold text-[#2F3B0C] truncate max-w-xs md:max-w-md">
-                                {product?.name || 'Organic Harvest'}
+                                {product?.name || 'Organic Product'}
                                 {totalItems > 1 && (
                                   <span className="text-stone-400 font-sans text-[10px] sm:text-xs font-semibold ml-1">
                                     + {totalItems - 1} more item{totalItems > 2 ? 's' : ''}
@@ -1309,7 +1309,7 @@ export default function Dashboard() {
                   <div className="space-y-2 max-w-xs mx-auto">
                     <h3 className="font-serif text-xl font-bold text-[#2F3B0C]">No orders yet</h3>
                     <p className="text-stone-500 font-sans text-xs leading-relaxed">
-                      You haven't ordered any organic harvest items yet. Direct farm unrefined staples await your kitchen!
+                      You haven't ordered any organic product items yet. Direct farm unrefined staples await your kitchen!
                     </p>
                   </div>
                   <button onClick={() => navigate('/products')} className="px-6 py-3.5 bg-[#4E641A] hover:bg-[#2F3B0C] text-white text-xs font-bold uppercase tracking-widest rounded-xl shadow-md transition-all duration-300 flex items-center gap-2 cursor-pointer border-none scale-100 hover:scale-[1.02] active:scale-[0.98]">
@@ -2286,7 +2286,7 @@ export default function Dashboard() {
             <div className="flex items-center justify-between border-b pb-3">
               <div className="flex items-center gap-2">
                 <FiStar className="w-5 h-5 text-[#C68A2B]" />
-                <span className="font-serif text-base font-bold text-[#2F3B0C]">Write a Harvest Review</span>
+                <span className="font-serif text-base font-bold text-[#2F3B0C]">Write a Product Review</span>
               </div>
               <button 
                 type="button"
@@ -2317,7 +2317,7 @@ export default function Dashboard() {
               if (currentOrd.orderItems?.length > 1) {
                 return (
                   <div className="space-y-1">
-                    <label className="text-[9px] font-extrabold text-[#C68A2B] uppercase tracking-wider block">Select Harvest Item</label>
+                    <label className="text-[9px] font-extrabold text-[#C68A2B] uppercase tracking-wider block">Select Product Item</label>
                     <select
                       value={reviewForm.productId}
                       onChange={(e) => setReviewForm(prev => ({ ...prev, productId: e.target.value }))}
@@ -2325,7 +2325,7 @@ export default function Dashboard() {
                     >
                       {currentOrd.orderItems.map((item) => (
                         <option key={item.productId} value={item.productId}>
-                          {item.product?.name || 'Organic Harvest'}
+                          {item.product?.name || 'Organic Product'}
                         </option>
                       ))}
                     </select>
@@ -2335,8 +2335,8 @@ export default function Dashboard() {
                 const firstItem = currentOrd.orderItems?.[0];
                 return (
                   <div className="space-y-1 bg-[#F9F6F0] p-3 rounded-xl border border-[#EAE4D8]/60">
-                    <span className="text-[8px] font-extrabold text-[#C68A2B] uppercase tracking-wider block">Harvest Item</span>
-                    <span className="text-xs font-bold text-[#2F3B0C]">{firstItem?.product?.name || 'Organic Harvest'}</span>
+                    <span className="text-[8px] font-extrabold text-[#C68A2B] uppercase tracking-wider block">Product Item</span>
+                    <span className="text-xs font-bold text-[#2F3B0C]">{firstItem?.product?.name || 'Organic Product'}</span>
                   </div>
                 );
               }
@@ -2382,7 +2382,7 @@ export default function Dashboard() {
               <label className="text-[9px] font-extrabold text-[#C68A2B] uppercase tracking-wider block font-sans font-sans">Review Comments</label>
               <textarea
                 rows={4}
-                placeholder="What did you think of this fresh farm harvest? How did it taste or perform?"
+                placeholder="What did you think of this fresh farm product? How did it taste or perform?"
                 value={reviewForm.reviewText}
                 onChange={(e) => setReviewForm(prev => ({ ...prev, reviewText: e.target.value }))}
                 required

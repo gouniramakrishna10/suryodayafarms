@@ -676,7 +676,7 @@ export async function finalizeOrderPayment({
           data: {
             userId: targetUserId,
             title: 'Payment Successful!',
-            message: `Your payment for order #${updatedOrder.orderNumber} (TXN: ${razorpayPaymentId || updatedOrder.razorpayPaymentId}) was confirmed successfully. We are processing your harvest.`,
+            message: `Your payment for order #${updatedOrder.orderNumber} (TXN: ${razorpayPaymentId || updatedOrder.razorpayPaymentId}) was confirmed successfully. We are processing your order.`,
           }
         }).catch(() => {});
       }

@@ -6470,7 +6470,7 @@ Ensure confidence scores are numbers between 0 and 100. Always reply ONLY with r
                                                 <span>🌿</span> Shipment Delivered
                                               </span>
                                               <p className="text-[10px] text-stone-600 font-medium leading-relaxed">
-                                                Harvest successfully delivered to customer.
+                                                Product successfully delivered to customer.
                                               </p>
                                             </div>
                                           );
@@ -8169,7 +8169,7 @@ Ensure confidence scores are numbers between 0 and 100. Always reply ONLY with r
                               Storefront Live Simulator
                             </span>
                             <h2 className="font-serif text-2xl font-bold tracking-tight">{cat.name}</h2>
-                            <p className="text-[11px] text-stone-200 leading-relaxed font-light max-w-xl line-clamp-2">{cat.description || 'Harvested directly from chemical-free organic farming soils.'}</p>
+                            <p className="text-[11px] text-stone-200 leading-relaxed font-light max-w-xl line-clamp-2">{cat.description || 'Sourced directly from chemical-free organic farming soils.'}</p>
                           </div>
                         </div>
 
@@ -8297,7 +8297,7 @@ Ensure confidence scores are numbers between 0 and 100. Always reply ONLY with r
                         <div className="bg-[#4E641A]/5 border border-[#4E641A]/10 rounded-2xl p-4 text-left text-xs text-stone-600 space-y-1.5">
                           <span className="text-[8px] font-extrabold text-[#4E641A] uppercase tracking-widest block">Collection Performance Insights</span>
                           {totalProducts === 0 ? (
-                            <p className="leading-relaxed font-light">⚠️ This collection has zero products assigned. We recommend linking organic harvest staples to display this collection on your storefront.</p>
+                            <p className="leading-relaxed font-light">⚠️ This collection has zero products assigned. We recommend linking organic product staples to display this collection on your storefront.</p>
                           ) : outOfStockCount > 0 ? (
                             <p className="leading-relaxed font-light">🚨 Some items in this collection are out of stock. We recommend replenishing inventories of the affected products to prevent lost customer checkouts.</p>
                           ) : (
@@ -8600,7 +8600,7 @@ Ensure confidence scores are numbers between 0 and 100. Always reply ONLY with r
 
                       {/* Items breakdown */}
                       <div className="pt-3 border-t border-stone-100 space-y-2">
-                        <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#C68A2B] block">Harvest Items</span>
+                        <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#C68A2B] block">Product Items</span>
                         <div className="space-y-2 max-h-[160px] overflow-y-auto pr-1 no-scrollbar text-stone-605">
                           {selectedSupportTicket.order.orderItems?.map((item, idx) => (
                             <div key={idx} className="flex justify-between items-center bg-[#F9F6F0] p-2 rounded-xl border border-[#EAE4D8] gap-3 text-[10px] font-semibold">
@@ -9140,7 +9140,7 @@ Ensure confidence scores are numbers between 0 and 100. Always reply ONLY with r
                         Reviews Require Purchase
                       </label>
                       <span className="text-[8px] text-stone-400 font-light font-sans">
-                        Only logged-in customers who have purchased the specific harvest can submit reviews.
+                        Only logged-in customers who have purchased the specific product can submit reviews.
                       </span>
                     </div>
                   </div>

@@ -334,7 +334,7 @@ export default function Products() {
                 onChange={(e) => setSortBy(e.target.value)}
                 className="bg-cream-bg border border-light-beige rounded-xl py-2 px-3 font-sans text-xs text-dark-text/80 focus:outline-none cursor-pointer"
               >
-                <option value="newest">Newest Harvest</option>
+                <option value="newest">Newest Products</option>
                 <option value="price-asc">Price: Low to High</option>
                 <option value="price-desc">Price: High to Low</option>
               </select>
@@ -393,7 +393,7 @@ export default function Products() {
             
             <div className="space-y-3 mb-8">
               <h3 className="font-serif text-xl md:text-2xl text-dark-olive font-extrabold tracking-tight">
-                Harvest Preparing in Fields
+                Products Preparing in Fields
               </h3>
               <p className="font-sans text-xs md:text-sm text-dark-text/65 max-w-sm mx-auto leading-relaxed">
                 Our cooperative farmers are nurturing this batch under the Wardha sun. We don't use chemical storage to force supply.

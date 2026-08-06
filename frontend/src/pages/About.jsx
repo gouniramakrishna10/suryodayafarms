@@ -320,7 +320,7 @@ export default function About() {
               <div className="relative rounded-[28px] overflow-hidden border-4 border-white shadow-lg bg-stone-100">
                 <img 
                   src="https://images.unsplash.com/photo-1574943320219-553eb213f72d?q=80&w=1000&auto=format&fit=crop" 
-                  alt="Suryodaya Farms Pristine Harvest & Science Guidance" 
+                  alt="Suryodaya Farms Pristine Products & Science Guidance" 
                   loading="lazy"
                   className="w-full h-[260px] sm:h-[320px] object-cover"
                 />
@@ -402,7 +402,7 @@ export default function About() {
               <div className="relative rounded-[32px] overflow-hidden border-4 border-white shadow-xl bg-stone-100 group">
                 <img 
                   src="https://images.unsplash.com/photo-1574943320219-553eb213f72d?q=80&w=1200&auto=format&fit=crop" 
-                  alt="Suryodaya Farms Pristine Harvest & Science Guidance" 
+                  alt="Suryodaya Farms Pristine Products & Science Guidance" 
                   loading="lazy"
                   className="w-full h-[460px] object-cover transition-transform duration-700 group-hover:scale-105"
                 />
