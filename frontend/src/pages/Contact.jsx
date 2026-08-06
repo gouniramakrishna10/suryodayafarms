@@ -284,147 +284,179 @@ export default function Contact() {
         </div>
       </section>
 
-      {/* 2. CONTACT INFORMATION CARDS */}
-      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-b border-[#EDE7D9]/80">
-        <div className="text-center max-w-xl mx-auto mb-16 space-y-3 flex flex-col items-center">
-          <SectionBadge text="Connect Directly" align="center" />
-          <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#2F3B0C] tracking-tight">Contact Information</h2>
-        </div>
+      {/* 2. CONTACT INFORMATION CARDS (REDESIGNED UNIFIED 3-COLUMN PANEL) */}
+      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 bg-[#FAF7F2] border-b border-[#EDE7D9]/80 relative overflow-hidden select-none">
+        <div className="absolute inset-0 bg-[radial-gradient(#4E641A_1px,transparent_1px)] [background-size:32px_32px] opacity-10 pointer-events-none" />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left items-stretch">
-          
-          {/* 1. Registered Office */}
-          <div className="bg-white border border-[#EDE7D9] rounded-[32px] p-8 sm:p-10 shadow-xs hover:shadow-lg hover:border-[#4E641A]/40 transition-all duration-300 flex flex-col justify-between space-y-6 group">
-            <div className="space-y-4">
-              <div className="w-13 h-13 rounded-2xl bg-[#4E641A]/10 text-[#4E641A] flex items-center justify-center text-2xl group-hover:scale-105 transition-transform duration-300">
-                <FiMapPin />
-              </div>
-              <div className="space-y-1">
-                <h3 className="font-serif text-xl sm:text-2xl font-bold text-[#2F3B0C]">Registered Office</h3>
-                <p className="font-serif font-bold text-sm text-[#4E641A]">Suryodaya Farms</p>
-              </div>
-              
-              <div className="text-stone-600 text-sm leading-[1.7] font-sans pt-1 space-y-0.5">
-                <p>Plot No: 20,</p>
-                <p>Bhrundavanam Apartment,</p>
-                <p>Near Arca School,</p>
-                <p>Kuruma Nagar,</p>
-                <p>Peerzadiguda,</p>
-                <p>Medipally,</p>
-                <p>Medchal Malkajgiri,</p>
-                <p>Hyderabad,</p>
-                <p>Telangana,</p>
-                <p className="font-semibold text-[#2F3B0C]">India – 500039</p>
-              </div>
-            </div>
-            
-            <a
-              href={googleMapsSearchUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-xs font-bold text-[#4E641A] hover:text-[#2F3B0C] transition-colors pt-2 group-hover:translate-x-1 duration-200"
-            >
-              <span>View Location on Map</span>
-              <FiExternalLink />
-            </a>
+        <div className="max-w-7xl mx-auto relative z-10 space-y-12">
+          <div className="text-center max-w-xl mx-auto space-y-2 flex flex-col items-center">
+            <SectionBadge text="Connect Directly" align="center" />
+            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#2F3B0C] tracking-tight">Contact Information</h2>
           </div>
 
-          {/* 2. Direct Channels (Phone, WhatsApp, Email, Website) */}
-          <div className="space-y-5 flex flex-col justify-between">
-            {/* Phone & WhatsApp Card */}
-            <div className="bg-white border border-[#EDE7D9] rounded-[28px] p-7 shadow-xs hover:shadow-md transition-all duration-300 space-y-4">
-              <div className="flex items-center gap-4">
-                <div className="w-11 h-11 rounded-2xl bg-[#4E641A]/10 text-[#4E641A] flex items-center justify-center text-xl shrink-0">
-                  <FiPhone />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-left items-stretch">
+            
+            {/* COLUMN 1: Registered Office */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.3 }}
+              className="bg-white border border-[#EDE7D9] rounded-[24px] p-7 sm:p-8 shadow-2xs hover:shadow-lg hover:border-[#4E641A]/40 transition-all duration-300 flex flex-col justify-between space-y-6 group h-full"
+            >
+              <div className="space-y-4">
+                <div className="w-12 h-12 rounded-full bg-[#F0F5E6] text-[#4E641A] flex items-center justify-center text-xl shrink-0 group-hover:bg-[#4E641A] group-hover:text-white transition-colors duration-300 shadow-2xs">
+                  <FiMapPin />
                 </div>
-                <div>
-                  <h4 className="font-sans text-[11px] font-bold uppercase tracking-wider text-stone-400">Phone Support</h4>
-                  <a href={`tel:${WHATSAPP_FORMATTED_PHONE.replace(/\s/g, '')}`} className="font-serif text-lg font-bold text-[#2F3B0C] hover:text-[#4E641A] transition-colors block">
-                    {WHATSAPP_FORMATTED_PHONE}
-                  </a>
+                <div className="space-y-1">
+                  <h3 className="font-serif text-xl sm:text-2xl font-bold text-[#2F3B0C]">Registered Office</h3>
+                  <p className="font-serif font-bold text-sm text-[#4E641A]">Suryodaya Farms</p>
+                </div>
+                
+                <div className="text-stone-600 text-sm leading-[1.75] font-sans pt-1 space-y-0.5">
+                  <p>Plot No: 20,</p>
+                  <p>Bhrundavanam Apartment,</p>
+                  <p>Near Arca School,</p>
+                  <p>Kuruma Nagar,</p>
+                  <p>Peerzadiguda,</p>
+                  <p>Medipally,</p>
+                  <p>Medchal Malkajgiri,</p>
+                  <p>Hyderabad,</p>
+                  <p>Telangana,</p>
+                  <p className="font-semibold text-[#2F3B0C]">India – 500039</p>
                 </div>
               </div>
               
               <a
-                href={getWhatsAppUrl("Namaste Suryodaya Farms! I would like to know more.")}
+                href={googleMapsSearchUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-xs font-bold text-[#25D366] bg-[#25D366]/10 px-4 py-2.5 rounded-xl w-full justify-center hover:bg-[#25D366]/20 transition-all duration-200"
+                className="inline-flex items-center gap-2 text-xs font-bold text-[#4E641A] hover:text-[#2F3B0C] transition-colors pt-3 border-t border-[#EDE7D9]/80 group-hover:translate-x-1 duration-200"
               >
-                <FaWhatsapp size={17} />
-                <span>Chat on WhatsApp</span>
+                <span>View Location on Map</span>
+                <FiExternalLink />
               </a>
-            </div>
+            </motion.div>
 
-            {/* Email Card */}
-            <div className="bg-white border border-[#EDE7D9] rounded-[28px] p-7 shadow-xs hover:shadow-md transition-all duration-300 flex items-center gap-4">
-              <div className="w-11 h-11 rounded-2xl bg-[#4E641A]/10 text-[#4E641A] flex items-center justify-center text-xl shrink-0">
-                <FiMail />
-              </div>
-              <div>
-                <h4 className="font-sans text-[11px] font-bold uppercase tracking-wider text-stone-400">Email Address</h4>
-                <a href="mailto:care@suryodayafarms.com" className="font-serif text-base sm:text-lg font-bold text-[#2F3B0C] hover:text-[#4E641A] transition-colors">
-                  care@suryodayafarms.com
-                </a>
-              </div>
-            </div>
-
-            {/* Website Card */}
-            <div className="bg-white border border-[#EDE7D9] rounded-[24px] p-5.5 sm:p-6 shadow-xs hover:shadow-md transition-all duration-300 flex items-center gap-4">
-              <div className="w-11 h-11 rounded-2xl bg-[#4E641A]/10 text-[#4E641A] flex items-center justify-center text-xl shrink-0">
-                <FiGlobe />
-              </div>
-              <div>
-                <h4 className="font-sans text-[11px] font-bold uppercase tracking-wider text-stone-400">Official Website</h4>
-                <a href="https://www.suryodayafarms.com" target="_blank" rel="noopener noreferrer" className="font-serif text-base sm:text-lg font-bold text-[#2F3B0C] hover:text-[#4E641A] transition-colors">
-                  www.suryodayafarms.com
-                </a>
-              </div>
-            </div>
-          </div>
-
-          {/* 3. Customer Support Hours */}
-          <div className="bg-white border border-[#EDE7D9] rounded-[32px] p-8 sm:p-10 shadow-xs hover:shadow-lg hover:border-[#4E641A]/40 transition-all duration-300 flex flex-col justify-between space-y-6 group">
-            <div className="space-y-5">
-              <div className="w-13 h-13 rounded-2xl bg-[#B8833E]/10 text-[#B8833E] flex items-center justify-center text-2xl group-hover:scale-105 transition-transform duration-300">
-                <FiClock />
-              </div>
-              <h3 className="font-serif text-xl sm:text-2xl font-bold text-[#2F3B0C]">Customer Support Hours</h3>
-              
-              <div className="bg-[#FAF7F2] border border-[#EDE7D9]/80 p-4.5 sm:p-6 rounded-2xl space-y-3.5 font-sans overflow-x-auto">
-                {/* Working Days */}
-                <div className="flex items-center justify-between gap-3 min-w-0">
-                  <span className="text-[11px] sm:text-xs md:text-sm font-medium text-stone-600 shrink-0">Working Days:</span>
-                  <span className="text-[11px] sm:text-xs md:text-sm font-bold text-[#2F3B0C] whitespace-nowrap text-right">Monday – Saturday</span>
+            {/* COLUMN 2: Unified Contact Details Card (Phone, Email, Website, WhatsApp) */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.3, delay: 0.1 }}
+              className="bg-white border border-[#EDE7D9] rounded-[24px] p-7 sm:p-8 shadow-2xs hover:shadow-lg hover:border-[#4E641A]/40 transition-all duration-300 flex flex-col justify-between space-y-5 h-full group"
+            >
+              <div className="space-y-5">
+                <div className="w-12 h-12 rounded-full bg-[#F0F5E6] text-[#4E641A] flex items-center justify-center text-xl shrink-0 group-hover:bg-[#4E641A] group-hover:text-white transition-colors duration-300 shadow-2xs">
+                  <FiPhone />
                 </div>
+                <h3 className="font-serif text-xl sm:text-2xl font-bold text-[#2F3B0C]">Contact Details</h3>
 
-                {/* Support Hours */}
-                <div className="flex items-center justify-between gap-3 pt-3 border-t border-[#EDE7D9]/60 min-w-0">
-                  <span className="text-[11px] sm:text-xs md:text-sm font-medium text-stone-600 shrink-0">Support Hours:</span>
-                  <span className="text-[11px] sm:text-xs md:text-sm font-bold text-[#4E641A] whitespace-nowrap text-right">9:00 AM – 6:00 PM (IST)</span>
-                </div>
+                <div className="space-y-4 pt-1">
+                  {/* Phone Row */}
+                  <div className="flex items-center gap-3.5">
+                    <div className="w-10 h-10 rounded-full bg-[#FAF7F2] text-[#4E641A] flex items-center justify-center text-base shrink-0 border border-[#EDE7D9]">
+                      <FiPhone />
+                    </div>
+                    <div>
+                      <span className="font-sans text-[10px] font-bold uppercase tracking-wider text-stone-400 block">Phone Support</span>
+                      <a href={`tel:${WHATSAPP_FORMATTED_PHONE.replace(/\s/g, '')}`} className="font-serif text-base font-bold text-[#2F3B0C] hover:text-[#4E641A] transition-colors">
+                        {WHATSAPP_FORMATTED_PHONE}
+                      </a>
+                    </div>
+                  </div>
 
-                {/* Sunday */}
-                <div className="flex items-start justify-between gap-3 pt-3 border-t border-[#EDE7D9]/60 min-w-0">
-                  <span className="text-[11px] sm:text-xs md:text-sm font-medium text-stone-600 shrink-0 mt-0.5">Sunday:</span>
-                  <div className="text-right whitespace-nowrap">
-                    <span className="text-[11px] sm:text-xs md:text-sm font-bold text-stone-700 block whitespace-nowrap">Customer Support Closed</span>
-                    <span className="text-[10px] sm:text-[11px] md:text-xs text-stone-500 font-normal block mt-0.5 whitespace-nowrap">
-                      (Online Orders Accepted 24/7)
-                    </span>
+                  <div className="border-b border-[#EDE7D9]/80" />
+
+                  {/* Email Row */}
+                  <div className="flex items-center gap-3.5">
+                    <div className="w-10 h-10 rounded-full bg-[#FAF7F2] text-[#4E641A] flex items-center justify-center text-base shrink-0 border border-[#EDE7D9]">
+                      <FiMail />
+                    </div>
+                    <div>
+                      <span className="font-sans text-[10px] font-bold uppercase tracking-wider text-stone-400 block">Email Address</span>
+                      <a href="mailto:care@suryodayafarms.com" className="font-serif text-base font-bold text-[#2F3B0C] hover:text-[#4E641A] transition-colors">
+                        care@suryodayafarms.com
+                      </a>
+                    </div>
+                  </div>
+
+                  <div className="border-b border-[#EDE7D9]/80" />
+
+                  {/* Website Row */}
+                  <div className="flex items-center gap-3.5">
+                    <div className="w-10 h-10 rounded-full bg-[#FAF7F2] text-[#4E641A] flex items-center justify-center text-base shrink-0 border border-[#EDE7D9]">
+                      <FiGlobe />
+                    </div>
+                    <div>
+                      <span className="font-sans text-[10px] font-bold uppercase tracking-wider text-stone-400 block">Official Website</span>
+                      <a href="https://www.suryodayafarms.com" target="_blank" rel="noopener noreferrer" className="font-serif text-base font-bold text-[#2F3B0C] hover:text-[#4E641A] transition-colors">
+                        www.suryodayafarms.com
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              {/* Final Paragraph */}
-              <div className="pt-2">
-                <p className="text-xs sm:text-sm text-stone-600 leading-relaxed font-sans font-normal">
+              {/* Primary Full-Width WhatsApp Button */}
+              <a
+                href={getWhatsAppUrl("Namaste Suryodaya Farms! I would like to know more.")}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2.5 bg-[#25D366] hover:bg-[#1EBE5A] text-white font-sans text-xs font-bold uppercase tracking-widest py-3.5 px-6 rounded-xl w-full shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300 cursor-pointer"
+              >
+                <FaWhatsapp size={18} />
+                <span>Chat on WhatsApp</span>
+              </a>
+            </motion.div>
+
+            {/* COLUMN 3: Customer Support Hours */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.3, delay: 0.2 }}
+              className="bg-white border border-[#EDE7D9] rounded-[24px] p-7 sm:p-8 shadow-2xs hover:shadow-lg hover:border-[#4E641A]/40 transition-all duration-300 flex flex-col justify-between space-y-6 group h-full"
+            >
+              <div className="space-y-5">
+                <div className="w-12 h-12 rounded-full bg-[#B8833E]/10 text-[#B8833E] flex items-center justify-center text-xl shrink-0 group-hover:bg-[#B8833E] group-hover:text-white transition-colors duration-300 shadow-2xs">
+                  <FiClock />
+                </div>
+                <h3 className="font-serif text-xl sm:text-2xl font-bold text-[#2F3B0C]">Customer Support Hours</h3>
+                
+                <div className="bg-[#FAF7F2] border border-[#EDE7D9]/80 p-5 rounded-2xl space-y-3.5 font-sans">
+                  {/* Working Days */}
+                  <div className="flex items-center justify-between gap-3 min-w-0">
+                    <span className="text-xs sm:text-sm font-medium text-stone-600 shrink-0">Working Days:</span>
+                    <span className="text-xs sm:text-sm font-bold text-[#2F3B0C] whitespace-nowrap text-right">Monday – Saturday</span>
+                  </div>
+
+                  {/* Support Hours */}
+                  <div className="flex items-center justify-between gap-3 pt-3 border-t border-[#EDE7D9]/60 min-w-0">
+                    <span className="text-xs sm:text-sm font-medium text-stone-600 shrink-0">Support Hours:</span>
+                    <span className="text-xs sm:text-sm font-bold text-[#4E641A] whitespace-nowrap text-right">9:00 AM – 6:00 PM (IST)</span>
+                  </div>
+
+                  {/* Sunday */}
+                  <div className="flex items-start justify-between gap-3 pt-3 border-t border-[#EDE7D9]/60 min-w-0">
+                    <span className="text-xs sm:text-sm font-medium text-stone-600 shrink-0 mt-0.5">Sunday:</span>
+                    <div className="text-right whitespace-nowrap">
+                      <span className="text-xs sm:text-sm font-bold text-stone-700 block whitespace-nowrap">Customer Support Closed</span>
+                      <span className="text-[10px] sm:text-xs text-stone-500 font-normal block mt-0.5 whitespace-nowrap">
+                        (Online Orders Accepted 24/7)
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Final Support Note */}
+                <p className="text-xs sm:text-sm text-stone-600 leading-relaxed font-sans font-normal pt-1">
                   Our customer support team is available during the above business hours to assist you with inquiries, orders, and product-related questions. Orders can be placed through our website at any time, including Sundays and public holidays.
                 </p>
               </div>
-            </div>
-          </div>
+            </motion.div>
 
+          </div>
         </div>
       </section>
 
