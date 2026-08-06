@@ -13,7 +13,8 @@ import {
   FiEye,
   FiGlobe,
   FiUsers,
-  FiZap
+  FiZap,
+  FiCpu
 } from 'react-icons/fi';
 import { GiSprout, GiSun, GiWheat } from 'react-icons/gi';
 import SectionBadge from '../components/SectionBadge';
@@ -808,22 +809,68 @@ export default function About() {
       </section>
 
       {/* 12. WHY CHOOSE SURYODAYA FARMS? */}
-      <section className="py-12 md:py-16 px-4 sm:px-6 lg:px-12 bg-[#FBF9F4] border-b border-[#EDE7D9]">
-        <div className="max-w-7xl mx-auto space-y-12">
+      <section className="py-16 md:py-24 px-4 sm:px-6 lg:px-12 bg-[#FBF9F4] border-b border-[#EDE7D9] relative overflow-hidden select-none">
+        <div className="max-w-7xl mx-auto space-y-12 md:space-y-16">
           
-          <div className="space-y-3 text-center flex flex-col items-center">
+          {/* Header with Fade-Up Animation */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="space-y-4 text-center flex flex-col items-center max-w-2xl mx-auto"
+          >
             <SectionBadge text="The Suryodaya Advantage" align="center" />
-            <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">WHY CHOOSE SURYODAYA FARMS?</h2>
-            <div className="w-24 h-1 bg-gradient-to-r from-[#4E641A] via-[#C68A2B] to-[#4E641A] rounded-full mt-1" />
-          </div>
+            <h2 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-bold text-[#2F3B0C] tracking-tight">
+              WHY CHOOSE SURYODAYA FARMS?
+            </h2>
+            <div className="w-20 h-1 bg-gradient-to-r from-[#4E641A] via-[#C68A2B] to-[#4E641A] rounded-full mt-1" />
+          </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-center">
-            {whyChooseItems.map((item, idx) => (
-              <div key={idx} className="bg-white border border-[#EDE7D9] p-7 rounded-[20px] space-y-3 shadow-2xs hover:shadow-md hover:border-[#4E641A]/40 transition-all duration-300 flex flex-col items-center text-center justify-between">
-                <h3 className="font-serif text-xl font-bold text-[#2F3B0C] text-center">{item.title}</h3>
-                <p className="text-stone-600 text-sm sm:text-base leading-relaxed font-sans text-center">{item.desc}</p>
-              </div>
-            ))}
+          {/* 3x2 Grid of Cards with Staggered Entrance */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 text-center benefits-grid">
+            {whyChooseItems.map((item, idx) => {
+              const icons = [FiCpu, FiAward, FiShield, FiCheckCircle, FiEye, FiUsers];
+              const IconComp = icons[idx % icons.length];
+              const isFeatured = idx === 0;
+
+              return (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: idx * 0.08 }}
+                  className={`${
+                    isFeatured
+                      ? 'bg-[#FBF9F3] border-[#4E641A]/40 shadow-xs'
+                      : 'bg-white border-[#EDE7D9] shadow-2xs'
+                  } border pt-8 pb-7 px-6 sm:px-8 rounded-[24px] hover:shadow-md hover:border-[#4E641A] hover:-translate-y-2 transition-all duration-300 ease-out group flex flex-col items-center text-center justify-between h-full cursor-pointer relative overflow-hidden`}
+                >
+                  <div className="space-y-4 flex flex-col items-center text-center w-full">
+                    {/* Icon Container */}
+                    <div className={`${
+                      isFeatured ? 'w-14 h-14 bg-[#4E641A]/15 border-[#4E641A]/30' : 'w-13 h-13 bg-[#FAF7F2] border-[#EDE7D9]'
+                    } rounded-full border text-[#4E641A] group-hover:bg-[#4E641A] group-hover:text-white group-hover:border-[#4E641A] group-hover:scale-105 shadow-inner flex items-center justify-center transition-all duration-300 shrink-0 mx-auto`}>
+                      <IconComp className="w-6 h-6 stroke-[1.8px]" />
+                    </div>
+
+                    {/* Title */}
+                    <h3 className="font-serif text-lg sm:text-xl font-bold text-[#2F3B0C] group-hover:text-[#4E641A] transition-colors leading-snug">
+                      {item.title}
+                    </h3>
+
+                    {/* Thin Divider */}
+                    <div className="border-b border-[#EDE7D9]/80 my-2 w-full max-w-[80%] mx-auto" />
+
+                    {/* Description */}
+                    <p className="text-stone-600 text-xs sm:text-sm leading-relaxed font-sans font-light text-center">
+                      {item.desc}
+                    </p>
+                  </div>
+                </motion.div>
+              );
+            })}
           </div>
 
         </div>
