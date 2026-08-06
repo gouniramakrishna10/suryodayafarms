@@ -653,10 +653,7 @@ export default function Dashboard() {
     { id: 'wishlist', label: 'Wishlist', icon: FiHeart, badge: wishlistItems.length },
     { id: 'addresses', label: 'Saved Addresses', icon: FiMapPin },
     { id: 'notifications', label: 'Notifications', icon: FiBell, badge: notifications.filter(n => !n.isRead).length || undefined },
-    { id: 'viewed', label: 'Recently Browsed', icon: FiClock },
-    { id: 'settings', label: 'Preferences', icon: FiSettings },
-    { id: 'tickets', label: 'Support Tickets', icon: FiMessageSquare, badge: supportTickets.filter(t => t.status === 'OPEN' || t.status === 'IN_PROGRESS').length || undefined },
-    { id: 'help', label: 'Support Center', icon: FiHelpCircle }
+    { id: 'tickets', label: 'Support Tickets', icon: FiMessageSquare, badge: supportTickets.filter(t => t.status === 'OPEN' || t.status === 'IN_PROGRESS').length || undefined }
   ];
 
   return (
