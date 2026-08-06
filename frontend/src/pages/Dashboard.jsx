@@ -89,6 +89,7 @@ export default function Dashboard() {
   const [activeTab, setActiveTab] = useState('overview');
   const [profileName, setProfileName] = useState('');
   const [profileAvatar, setProfileAvatar] = useState('');
+  const [profilePhone, setProfilePhone] = useState('');
   const [settingsMessage, setSettingsMessage] = useState('');
   const [isSavingSettings, setIsSavingSettings] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -429,6 +430,7 @@ export default function Dashboard() {
     if (user) {
       setProfileName(user.name || '');
       setProfileAvatar(user.avatarUrl || '');
+      setProfilePhone(user.phone || '');
     }
   }, [user]);
 
@@ -439,14 +441,15 @@ export default function Dashboard() {
     try {
       const response = await api.put('/auth/profile', {
         name: profileName,
+        phone: profilePhone,
         avatarUrl: profileAvatar
       });
       if (response.success) {
-        setSettingsMessage('Preferences saved successfully.');
+        setSettingsMessage('Profile details updated successfully!');
         await checkAuth();
       }
     } catch (err) {
-      setSettingsMessage(err.message || 'Failed to save preferences.');
+      setSettingsMessage(err.message || 'Failed to save profile details.');
     } finally {
       setIsSavingSettings(false);
     }
@@ -645,6 +648,7 @@ export default function Dashboard() {
   // Tabs layout mappings
   const menuItems = [
     { id: 'overview', label: 'Dashboard', icon: FiSliders },
+    { id: 'profile', label: 'Edit Details', icon: FiUser },
     { id: 'orders', label: 'My Shipments', icon: FiShoppingBag, badge: orders.length },
     { id: 'wishlist', label: 'Wishlist', icon: FiHeart, badge: wishlistItems.length },
     { id: 'addresses', label: 'Saved Addresses', icon: FiMapPin },
@@ -856,11 +860,17 @@ export default function Dashboard() {
                     <h4 className="text-[9px] font-extrabold tracking-widest text-[#C68A2B] uppercase mb-3 text-left">Quick Actions</h4>
                     <div className="flex flex-wrap gap-2">
                       <button 
+                        onClick={() => setActiveTab('profile')}
+                        className="px-3.5 py-2 bg-[#4E641A] hover:bg-[#2F3B0C] text-white text-[9px] font-bold uppercase tracking-wider rounded-xl transition cursor-pointer flex items-center gap-1.5 shadow-xs"
+                      >
+                        <FiUser className="w-3 h-3 text-[#C68A2B]" /> Edit Details
+                      </button>
+                      <button 
                         onClick={() => {
                           setActiveTab('addresses');
                           setShowAddressForm(true);
                         }}
-                        className="px-3.5 py-2 bg-[#4E641A] hover:bg-[#2F3B0C] text-white text-[9px] font-bold uppercase tracking-wider rounded-xl transition cursor-pointer flex items-center gap-1.5"
+                        className="px-3.5 py-2 border border-[#EAE4D8] text-stone-700 hover:bg-stone-50 text-[9px] font-bold uppercase tracking-wider rounded-xl transition cursor-pointer flex items-center gap-1.5"
                       >
                         <FiPlus className="w-3 h-3 text-[#C68A2B]" /> Add Coordinates
                       </button>
@@ -1943,6 +1953,122 @@ export default function Dashboard() {
                   </button>
                 </div>
               )}
+            </div>
+          )}
+
+          {/* TAB: EDIT PROFILE / PERSONAL DETAILS */}
+          {(activeTab === 'profile' || activeTab === 'edit-profile') && (
+            <div className="space-y-6 text-left animate-fade-in">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white border border-[#EAE4D8] rounded-[24px] p-6 shadow-sm">
+                <div>
+                  <span className="text-[10px] font-extrabold tracking-widest text-[#C68A2B] uppercase block">Member Account</span>
+                  <h3 className="font-serif text-2xl font-bold text-[#2F3B0C] flex items-center gap-2">
+                    <FiUser className="text-[#4E641A]" /> Edit Personal Details & Profile
+                  </h3>
+                  <p className="text-xs text-stone-500 font-sans font-light mt-1">
+                    Manage your personal information, contact number, and avatar picture.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('overview')}
+                  className="px-4 py-2 bg-stone-100 hover:bg-stone-200 text-[#2F3B0C] font-sans text-xs font-bold uppercase tracking-wider rounded-xl transition flex items-center gap-1.5 border-none cursor-pointer"
+                >
+                  <FiArrowLeft size={14} /> Back to Dashboard
+                </button>
+              </div>
+
+              <div className="bg-white border border-[#EAE4D8] rounded-[28px] p-6 sm:p-8 shadow-sm">
+                <form onSubmit={handleSavePreferences} className="space-y-6">
+                  {settingsMessage && (
+                    <div className={`p-4 rounded-2xl text-xs font-bold text-center border ${
+                      settingsMessage.includes('success') || settingsMessage.includes('updated')
+                        ? 'bg-[#4E641A]/10 text-[#4E641A] border-[#4E641A]/20'
+                        : 'bg-red-50 text-red-600 border-red-200'
+                    }`}>
+                      {settingsMessage}
+                    </div>
+                  )}
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Left Inputs */}
+                    <div className="space-y-5">
+                      <div>
+                        <label className="block text-[10px] font-extrabold uppercase text-stone-400 tracking-wider mb-2">
+                          Registered Email Address (Read-Only)
+                        </label>
+                        <div className="flex items-center bg-stone-50 border border-stone-200 rounded-2xl py-3.5 px-4 text-stone-600 font-semibold text-xs">
+                          <FiMail className="mr-2.5 text-stone-400 text-sm" />
+                          <span>{user.email || 'Not provided'}</span>
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-[10px] font-extrabold uppercase text-[#2F3B0C] tracking-wider mb-2">
+                          Full Name *
+                        </label>
+                        <input
+                          type="text"
+                          value={profileName}
+                          onChange={(e) => setProfileName(e.target.value)}
+                          placeholder="Enter your full name"
+                          className="w-full bg-[#F9F6F0] border border-[#EDE7D9] rounded-2xl py-3.5 px-4 text-xs font-semibold text-[#2F3B0C] focus:outline-none focus:border-[#4E641A] transition"
+                          required
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[10px] font-extrabold uppercase text-[#2F3B0C] tracking-wider mb-2">
+                          Contact Phone Number
+                        </label>
+                        <div className="relative flex items-center">
+                          <FiPhone className="absolute left-4 text-stone-400 text-sm pointer-events-none" />
+                          <input
+                            type="tel"
+                            value={profilePhone}
+                            onChange={(e) => setProfilePhone(e.target.value)}
+                            placeholder="+91 9100422140"
+                            className="w-full bg-[#F9F6F0] border border-[#EDE7D9] rounded-2xl py-3.5 pl-11 pr-4 text-xs font-semibold text-[#2F3B0C] focus:outline-none focus:border-[#4E641A] transition"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Right Avatar Uploader */}
+                    <div className="flex flex-col justify-between space-y-4">
+                      <div>
+                        <label className="block text-[10px] font-extrabold uppercase text-[#2F3B0C] tracking-wider mb-2">
+                          Profile Avatar Photo
+                        </label>
+                        <UnifiedUploader
+                          value={profileAvatar}
+                          onChange={(url) => setProfileAvatar(url)}
+                          label="Upload / Change Profile Picture"
+                          aspectRatio={1}
+                          folder="avatars"
+                        />
+                      </div>
+
+                      <div className="bg-[#FCFAF5] border border-[#EDE7D9] rounded-2xl p-4 text-xs text-stone-600 space-y-1">
+                        <span className="font-bold text-[#4E641A] block">💡 Member Profile Note</span>
+                        <p className="font-light text-[11px] leading-relaxed">
+                          Updating your name, phone number, and avatar image will automatically sync across your account orders, reviews, and support tickets.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex justify-end pt-4 border-t border-stone-100">
+                    <button
+                      type="submit"
+                      disabled={isSavingSettings}
+                      className="px-6 py-3.5 bg-[#4E641A] hover:bg-[#2F3B0C] text-white font-sans text-xs font-bold uppercase tracking-widest rounded-2xl transition duration-300 shadow-sm border-none cursor-pointer disabled:opacity-50"
+                    >
+                      {isSavingSettings ? 'Updating Details...' : 'Save Profile Details'}
+                    </button>
+                  </div>
+                </form>
+              </div>
             </div>
           )}
 

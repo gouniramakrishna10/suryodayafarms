@@ -3,6 +3,7 @@ import { FiX, FiCheck, FiShoppingBag, FiInfo } from 'react-icons/fi';
 import { FaWhatsapp } from 'react-icons/fa';
 import { getOptimizedImageUrl, getImageSrcSet, handleImageError, DEFAULT_FALLBACK_IMAGE } from '../utils/imageOptimizer';
 import { getWhatsAppUrl } from '../config/constants';
+import { cleanText } from '../utils/textCleaner';
 
 export default function ProductModal({ product, onClose }) {
   if (!product) return null;
@@ -100,7 +101,7 @@ export default function ProductModal({ product, onClose }) {
                     <span className="w-4 h-4 rounded-full bg-primary-green/10 flex items-center justify-center text-primary-green shrink-0 mt-0.5">
                       <FiCheck size={10} />
                     </span>
-                    <span className="font-sans font-light leading-snug">{benefit}</span>
+                    <span className="font-sans font-light leading-snug">{cleanText(benefit)}</span>
                   </div>
                 ))}
               </div>

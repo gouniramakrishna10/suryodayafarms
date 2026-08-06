@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import DOMPurify from 'dompurify';
 import { FiChevronDown, FiCheck, FiInfo, FiAlertTriangle, FiHelpCircle } from 'react-icons/fi';
+import { cleanText } from '../utils/textCleaner';
 
 export default function DynamicSectionRenderer({ sections = [] }) {
   const [activeFaqIndex, setActiveFaqIndex] = useState(null);
@@ -174,7 +175,7 @@ function renderSingleSection(sec, idx, activeFaqIndex, setActiveFaqIndex) {
             {itemsList.map((item, itemIdx) => (
               <div key={itemIdx} className="flex items-start gap-3 bg-[#FCFAF5] border border-[#EDE7D9] rounded-xl p-4">
                 <span className="text-[#4E641A] font-bold text-sm shrink-0 mt-0.5">✔</span>
-                <span className="font-sans text-xs sm:text-sm text-stone-700 leading-relaxed">{item}</span>
+                <span className="font-sans text-xs sm:text-sm text-stone-700 leading-relaxed">{cleanText(item)}</span>
               </div>
             ))}
           </div>

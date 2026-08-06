@@ -18,6 +18,7 @@ import DynamicSectionRenderer from '../components/DynamicSectionRenderer';
 import { formatCurrency } from '../utils/currency';
 import { fetchWithCache } from '../utils/cacheStore';
 import SectionBadge from '../components/SectionBadge';
+import { cleanText } from '../utils/textCleaner';
 
 // Simple, high-quality, organic confetti effect
 const triggerConfetti = (canvasEl) => {
@@ -394,7 +395,7 @@ export default function ProductDetails() {
     if (product.productContent?.highlights) {
       return product.productContent.highlights.map((hl, idx) => ({
         title: `Product Benefit #${idx + 1}`,
-        desc: hl,
+        desc: cleanText(hl),
         icon: ['🌿', '🌱', '☀️', '💧', '🌾', '🐝'][idx % 6]
       }));
     }
@@ -795,7 +796,7 @@ export default function ProductDetails() {
                       {product.productContent.highlights.map((hl, idx) => (
                         <div key={idx} className="flex items-start gap-3 bg-[#FCFAF5] border border-[#EDE7D9] rounded-xl p-4 hover:border-[#4E641A]/30 transition-all duration-300">
                           <span className="text-[#C68A2B] font-bold text-base shrink-0">✓</span>
-                          <span className="font-sans text-xs text-stone-700 leading-relaxed font-medium">{hl}</span>
+                          <span className="font-sans text-xs text-stone-700 leading-relaxed font-medium">{cleanText(hl)}</span>
                         </div>
                       ))}
                     </div>
