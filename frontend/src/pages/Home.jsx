@@ -1185,7 +1185,7 @@ export default function Home() {
                     const displayName = featuredProd?.name
                       ? featuredProd.name.replace(' Leaf Powder', '').replace(' Powder', '').replace(' Flour', '')
                       : hr.headingLine1 || 'Superfood';
-                    const weightTag = featuredProd?.weight || hr.headingHighlight || '100% Organic';
+                    const weightTag = featuredProd?.weight || hr.headingHighlight || 'Organic';
 
                     return (
                       <button
@@ -1955,7 +1955,7 @@ export default function Home() {
           {/* Right Decorative Feature Pill Cards */}
           <div className="grid grid-cols-2 gap-4 w-full lg:w-auto shrink-0">
             <div className="bg-[#FDFBF7] border border-[#EDE7D9] p-5 rounded-2xl flex flex-col gap-2 shadow-xs hover:border-[#4E641A]/40 transition duration-300">
-              <span className="font-serif text-2xl font-bold text-[#4E641A]">100%</span>
+              <span className="font-serif text-2xl font-bold text-[#4E641A]">Purity</span>
               <span className="font-sans text-xs text-stone-600 font-medium">Pure & Natural</span>
             </div>
 

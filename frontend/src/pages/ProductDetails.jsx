@@ -608,7 +608,7 @@ export default function ProductDetails() {
                 <h4 className="font-serif text-sm font-bold text-[#2F3B0C] uppercase tracking-wider border-b border-stone-100 pb-2">Harvest Highlights</h4>
                 <div className="grid grid-cols-2 gap-y-4 gap-x-6">
                   {[
-                    { label: '100% Certified Organic', desc: 'Cultivated without chemical additives' },
+                    { label: 'Certified Organic', desc: 'Cultivated without chemical additives' },
                     { label: 'Traditional Vedic Methods', desc: 'Slow, handcrafted small batches' },
                     { label: 'Desi Seed Cultivation', desc: 'Native crop variety preservation' },
                     { label: 'Direct Dryland Sourcing', desc: 'Concentrated natural flavors' },
@@ -673,7 +673,7 @@ export default function ProductDetails() {
                   const whyChoose = product.productContent?.whyChoose;
                   const hasFeatures = whyChoose?.features?.length > 0;
                   const fallbackFeatures = [
-                    { icon: '🌾', heading: '100% Dryland Harvest', description: 'Grown using natural rainfall, producing concentrated nutrients and rich earthy flavors.' },
+                    { icon: '🌾', heading: 'Dryland Harvest', description: 'Grown using natural rainfall, producing concentrated nutrients and rich earthy flavors.' },
                     { icon: '🌱', heading: 'Traditional Vedic Care', description: 'Handcrafted in dryland communities using classical Vedic recipes.' },
                     { icon: '🤝', heading: 'Farmer Enrichment', description: 'Direct-from-farm model ensuring legacy farming families receive fair wages.' }
                   ];
