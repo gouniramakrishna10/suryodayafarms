@@ -823,12 +823,12 @@ export default function About() {
       </section>
 
       {/* 14. OUR RESEARCH, TECHNICAL & PRODUCT DEVELOPMENT TEAM */}
-      <section className="py-14 md:py-18 px-4 sm:px-6 lg:px-12 bg-[#FBF9F4] border-b border-[#EDE7D9]">
-        <div className="max-w-6xl mx-auto space-y-8 text-left">
+      <section className="py-14 md:py-18 px-4 sm:px-6 lg:px-12 bg-[#FBF9F4] border-b border-[#EDE7D9] select-none">
+        <div className="max-w-7xl mx-auto space-y-8 text-left">
           
-          <div className="space-y-3 flex flex-col items-start">
+          <div className="space-y-3 flex flex-col items-start w-full">
             <SectionBadge text="Botany Doctorates & Research Professionals" align="left" />
-            <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#2F3B0C]">
+            <h2 className="font-serif text-xl sm:text-2xl md:text-3xl lg:text-[32px] xl:text-[38px] 2xl:text-[42px] font-bold text-[#2F3B0C] tracking-tight md:whitespace-nowrap leading-tight">
               Our Research, Technical & Product Development Team
             </h2>
             <div className="w-24 h-1 bg-gradient-to-r from-[#4E641A] via-[#C68A2B] to-[#4E641A] rounded-full mt-1" />
