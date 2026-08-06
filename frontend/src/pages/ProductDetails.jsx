@@ -697,19 +697,21 @@ export default function ProductDetails() {
                 {/* SECTION 3: Ways To Enjoy */}
                 {product.productContent?.waysToEnjoy?.items?.length > 0 && (
                   <div className="bg-white border border-[#EDE7D9] rounded-[28px] p-6 sm:p-8 shadow-xs">
-                    <div className="flex items-center gap-3 mb-5 pb-4 border-b border-[#EDE7D9]">
+                    <div className="flex flex-col items-center text-center gap-1.5 mb-6 pb-4 border-b border-[#EDE7D9]">
                       <span className="text-2xl">🥤</span>
-                      <div>
+                      <div className="text-center">
                         <span className="text-[10px] font-extrabold tracking-widest text-[#C68A2B] uppercase block">Usage Guide</span>
-                        <h2 className="font-serif text-xl font-bold text-[#2F3B0C]">{product.productContent.waysToEnjoy.title || 'Ways To Enjoy'}</h2>
+                        <h2 className="font-serif text-xl sm:text-2xl font-bold text-[#2F3B0C]">{product.productContent.waysToEnjoy.title || 'Ways To Enjoy'}</h2>
                       </div>
                     </div>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                       {product.productContent.waysToEnjoy.items.map((item, idx) => (
-                        <div key={idx} className="flex flex-col items-center gap-2 bg-[#FCFAF5] border border-[#EDE7D9] rounded-2xl p-4 text-center hover:border-[#C68A2B]/40 hover:shadow-sm transition-all duration-300">
-                          <span className="text-3xl">{item.icon}</span>
-                          <span className="font-serif text-xs font-bold text-[#2F3B0C]">{item.title}</span>
-                          {item.description && <p className="font-sans text-[10px] text-stone-400 font-light leading-snug">{item.description}</p>}
+                        <div key={idx} className="flex flex-col items-center text-center justify-between gap-2.5 bg-[#FCFAF5] border border-[#EDE7D9] rounded-2xl p-5 hover:border-[#C68A2B]/40 hover:shadow-sm transition-all duration-300 h-full">
+                          <div className="flex justify-center w-full text-center">
+                            <span className="text-3xl text-center block">{item.icon}</span>
+                          </div>
+                          <h4 className="font-serif text-sm font-bold text-[#2F3B0C] text-center">{item.title}</h4>
+                          {item.description && <p className="font-sans text-xs text-stone-500 leading-relaxed font-light text-center">{item.description}</p>}
                         </div>
                       ))}
                     </div>
