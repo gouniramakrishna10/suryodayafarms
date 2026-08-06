@@ -951,37 +951,65 @@ export default function About() {
       </section>
 
       {/* 16. OUR COMMITMENT */}
-      <section className="py-12 md:py-16 px-4 sm:px-6 lg:px-12 bg-[#FBF9F4] border-b border-[#EDE7D9]">
-        <div className="max-w-5xl mx-auto space-y-6 text-left">
+      <section className="py-16 md:py-20 px-4 sm:px-6 lg:px-12 bg-[#FAF7F2] border-b border-[#EDE7D9] relative overflow-hidden select-none">
+        {/* Subtle radial gradient & botanical watermark (Max opacity 5%) */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-[#4E641A]/5 via-transparent to-transparent pointer-events-none" />
+        <div className="absolute top-12 right-12 w-80 h-80 opacity-[0.035] pointer-events-none text-[#2F3B0C]">
+          <GiSprout className="w-full h-full" />
+        </div>
+
+        <div className="max-w-[820px] mx-auto space-y-8 text-left relative z-10 animate-fade-in">
           
-          <div className="space-y-3 flex flex-col items-start">
+          {/* Header */}
+          <div className="space-y-3 flex flex-col items-start w-full">
             <SectionBadge text="Dedicated to Progress" align="left" />
-            <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">Our Commitment</h2>
-            <div className="w-20 h-1 bg-gradient-to-r from-[#4E641A] to-[#C68A2B] rounded-full" />
+            <h2 className="font-serif text-3xl sm:text-4xl md:text-[42px] font-bold text-[#2F3B0C] tracking-tight leading-tight">
+              Our Commitment
+            </h2>
+            <div className="w-24 h-1 bg-gradient-to-r from-[#4E641A] via-[#C68A2B] to-[#4E641A] rounded-full mt-1" />
           </div>
 
-          <div className="space-y-5 text-stone-700 text-base sm:text-lg leading-[1.75] font-sans">
-            <p className="font-serif text-2xl font-bold text-[#4E641A]">At Suryodaya Farms, research never stops.</p>
-            <p>
+          <div className="space-y-6 text-stone-700 font-sans">
+            {/* Lead Headline */}
+            <p className="font-serif text-2xl sm:text-3xl font-bold text-[#4E641A] tracking-tight leading-snug">
+              At Suryodaya Farms, research never stops.
+            </p>
+
+            {/* Explanation Paragraph */}
+            <p className="text-base sm:text-lg text-stone-600 leading-[1.8] font-normal">
               We continuously learn, improve, innovate, and refine our products because we believe every customer deserves our very best.
             </p>
-            <p className="font-semibold text-[#2F3B0C]">
-              Every improvement we make is dedicated to delivering better quality, greater consistency, and lasting customer confidence.
-            </p>
+
+            {/* Featured Statement Card */}
+            <div className="bg-white border border-[#EDE7D9] hover:border-[#4E641A]/40 p-6 sm:p-8 rounded-[24px] shadow-sm hover:shadow-md transition-all duration-300 relative overflow-hidden group">
+              <div className="w-1.5 h-12 bg-[#4E641A] rounded-full absolute left-0 top-1/2 -translate-y-1/2" />
+              <p className="font-semibold text-base sm:text-lg text-[#2F3B0C] leading-relaxed pl-3">
+                Every improvement we make is dedicated to delivering better quality, greater consistency, and lasting customer confidence.
+              </p>
+            </div>
           </div>
 
         </div>
       </section>
 
       {/* 17. OUR GUIDING PRINCIPLE */}
-      <section className="py-14 sm:py-18 lg:py-22 px-4 sm:px-6 lg:px-12 bg-gradient-to-br from-[#2F3B0C] via-[#3F4F16] to-[#1E2707] text-white relative overflow-hidden dark-section">
+      <section className="py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-12 bg-gradient-to-br from-[#2F3B0C] via-[#3F4F16] to-[#1E2707] text-white relative overflow-hidden dark-section">
         <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[radial-gradient(#ffffff_1.5px,transparent_1.5px)] [background-size:32px_32px] pointer-events-none" />
-        <div className="max-w-5xl mx-auto text-center space-y-6 relative z-10">
-          <span className="font-sans text-xs font-bold uppercase tracking-[0.25em] text-[#C68A2B] block">Our Guiding Principle</span>
+        <div className="max-w-4xl mx-auto text-center space-y-6 relative z-10">
+          <div className="flex flex-col items-center gap-2">
+            <span className="font-sans text-xs font-bold uppercase tracking-[0.25em] text-[#C68A2B] block">
+              Our Guiding Principle
+            </span>
+          </div>
 
-          <blockquote className="font-serif text-2xl sm:text-3xl lg:text-4xl font-light italic leading-relaxed text-[#F9F6F0] max-w-4xl mx-auto">
-            "Nature inspires us. Science guides us. Innovation strengthens us. Quality defines us. Customer trust is our greatest achievement."
-          </blockquote>
+          <div className="relative">
+            <span className="text-6xl sm:text-7xl font-serif text-[#C68A2B]/20 leading-none absolute -top-8 left-1/2 -translate-x-1/2 pointer-events-none">
+              “
+            </span>
+            <blockquote className="font-serif text-2xl sm:text-3xl lg:text-4xl font-light italic leading-relaxed text-[#F9F6F0] max-w-3xl mx-auto relative z-10">
+              "Nature inspires us. Science guides us. Innovation strengthens us. Quality defines us. Customer trust is our greatest achievement."
+            </blockquote>
+          </div>
 
           <div className="w-24 h-1 bg-[#C68A2B] mx-auto rounded-full mt-6" />
         </div>
