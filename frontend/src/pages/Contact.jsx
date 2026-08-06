@@ -43,6 +43,21 @@ export default function Contact() {
     fetchSettings();
   }, [fetchSettings]);
 
+  const contactCategories = [
+    'General Enquiry',
+    'Product Information',
+    'Order Support',
+    'Business Enquiry',
+    'Wholesale',
+    'Distributor',
+    'Retail Partner',
+    'Export',
+    'Private Label',
+    'Feedback',
+    'Complaint',
+    'Suggestion'
+  ];
+
   const contactCards = [
     {
       title: 'Registered Office',
