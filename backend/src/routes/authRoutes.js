@@ -295,9 +295,9 @@ router.get('/notifications', protect, async (req, res, next) => {
   }
 });
 
-// 10. UPDATE USER PROFILE (Name, Email, and Avatar)
+// 10. UPDATE USER PROFILE (Name, Email, Phone, and Avatar)
 router.put('/profile', protect, async (req, res, next) => {
-  const { name, email, avatarUrl } = req.body;
+  const { name, email, phone, mobile, avatarUrl } = req.body;
   try {
     // 1. Validation: Name must not be empty or whitespace only
     if (name !== undefined) {
@@ -321,8 +321,30 @@ router.put('/profile', protect, async (req, res, next) => {
 
     const data = {};
     if (name !== undefined) data.name = String(name).trim();
-    if (email !== undefined && email.trim() !== '') data.email = String(email).trim();
     if (avatarUrl !== undefined) data.avatarUrl = avatarUrl;
+
+    const phoneVal = phone !== undefined ? phone : mobile;
+    if (phoneVal !== undefined && String(phoneVal).trim() !== '') {
+      const targetMobile = String(phoneVal).trim();
+      const existingUser = await prisma.user.findFirst({
+        where: { mobile: targetMobile, NOT: { id: req.user.id } }
+      });
+      if (existingUser) {
+        return res.status(400).json({ success: false, message: 'This phone number is registered to another account.' });
+      }
+      data.mobile = targetMobile;
+    }
+
+    if (email !== undefined && String(email).trim() !== '') {
+      const targetEmail = String(email).trim().toLowerCase();
+      const existingUser = await prisma.user.findFirst({
+        where: { email: targetEmail, NOT: { id: req.user.id } }
+      });
+      if (existingUser) {
+        return res.status(400).json({ success: false, message: 'This email address is registered to another account.' });
+      }
+      data.email = targetEmail;
+    }
 
     const updatedUser = await prisma.user.update({
       where: { id: req.user.id },

@@ -88,6 +88,7 @@ export default function Dashboard() {
   const modal = useModalStore();
   const [activeTab, setActiveTab] = useState('overview');
   const [profileName, setProfileName] = useState('');
+  const [profileEmail, setProfileEmail] = useState('');
   const [profileAvatar, setProfileAvatar] = useState('');
   const [profilePhone, setProfilePhone] = useState('');
   const [settingsMessage, setSettingsMessage] = useState('');
@@ -429,6 +430,7 @@ export default function Dashboard() {
   useEffect(() => {
     if (user) {
       setProfileName(user.name || '');
+      setProfileEmail(user.email || '');
       setProfileAvatar(user.avatarUrl || '');
       setProfilePhone(user.phone || '');
     }
@@ -441,6 +443,7 @@ export default function Dashboard() {
     try {
       const response = await api.put('/auth/profile', {
         name: profileName,
+        email: profileEmail,
         phone: profilePhone,
         avatarUrl: profileAvatar
       });
@@ -1991,12 +1994,19 @@ export default function Dashboard() {
                     {/* Left Inputs */}
                     <div className="space-y-5">
                       <div>
-                        <label className="block text-[10px] font-extrabold uppercase text-stone-400 tracking-wider mb-2">
-                          Registered Email Address (Read-Only)
+                        <label className="block text-[10px] font-extrabold uppercase text-[#2F3B0C] tracking-wider mb-2">
+                          Registered Email Address *
                         </label>
-                        <div className="flex items-center bg-stone-50 border border-stone-200 rounded-2xl py-3.5 px-4 text-stone-600 font-semibold text-xs">
-                          <FiMail className="mr-2.5 text-stone-400 text-sm" />
-                          <span>{user.email || 'Not provided'}</span>
+                        <div className="relative flex items-center">
+                          <FiMail className="absolute left-4 text-stone-400 text-sm pointer-events-none" />
+                          <input
+                            type="email"
+                            value={profileEmail}
+                            onChange={(e) => setProfileEmail(e.target.value)}
+                            placeholder="name@example.com"
+                            className="w-full bg-[#F9F6F0] border border-[#EDE7D9] rounded-2xl py-3.5 pl-11 pr-4 text-xs font-semibold text-[#2F3B0C] focus:outline-none focus:border-[#4E641A] transition"
+                            required
+                          />
                         </div>
                       </div>
 
