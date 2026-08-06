@@ -652,190 +652,195 @@ export default function Contact() {
         </div>
       </section>
 
-      {/* 6. CONTACT FORM SECTION (FOCAL POINT) */}
-      <section id="contact-form-section" className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
-        <div className="bg-white border border-[#EDE7D9] rounded-[44px] p-8 sm:p-14 lg:p-16 shadow-2xl text-left relative overflow-hidden">
-          
-          <div className="text-center max-w-xl mx-auto mb-12 space-y-3 flex flex-col items-center">
-            <SectionBadge text="Send Us a Direct Message" align="center" />
-            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#2F3B0C] tracking-tight">Contact Form</h2>
-            <p className="text-stone-600 text-sm font-sans leading-relaxed">Please fill out your information below. We respond to every message within 24 business hours.</p>
-          </div>
+      {/* 6. CONTACT FORM SECTION (FOCAL POINT & LUXURY CONSULTATION CARD) */}
+      <section id="contact-form-section" className="py-10 sm:py-14 lg:py-16 px-4 sm:px-6 lg:px-8 bg-[#FAF7F2] relative overflow-hidden select-none border-b border-[#EDE7D9]/80">
+        <div className="absolute inset-0 bg-[radial-gradient(#4E641A_1px,transparent_1px)] [background-size:32px_32px] opacity-10 pointer-events-none" />
 
-          <AnimatePresence mode="wait">
-            {submitSuccess ? (
-              <motion.div
-                key="success"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                className="py-16 text-center space-y-6"
-              >
-                <div className="w-20 h-20 bg-[#4E641A]/10 text-[#4E641A] rounded-full flex items-center justify-center mx-auto text-4xl shadow-inner">
-                  <FiCheckCircle className="animate-bounce" />
-                </div>
-                <div className="space-y-2 max-w-md mx-auto">
-                  <h3 className="font-serif text-2xl sm:text-3xl font-bold text-[#2F3B0C]">Message Received!</h3>
-                  <p className="text-stone-600 text-sm leading-relaxed font-sans">
-                    Thank you for contacting Suryodaya Farms. An acknowledgement email has been sent to your inbox. Our team will get back to you shortly.
-                  </p>
-                </div>
-                <button
-                  onClick={() => setSubmitSuccess(false)}
-                  className="bg-[#4E641A] hover:bg-[#2F3B0C] text-white font-sans text-xs font-bold uppercase tracking-wider px-8 py-3.5 rounded-xl transition-all duration-200 cursor-pointer shadow-md"
+        <div className="max-w-4xl mx-auto relative z-10">
+          <div className="bg-white border border-[#EDE7D9] rounded-[24px] sm:rounded-[32px] p-7 sm:p-12 lg:p-14 shadow-xl text-left relative overflow-hidden">
+            
+            <div className="text-center max-w-xl mx-auto mb-9 space-y-2 flex flex-col items-center">
+              <SectionBadge text="Send Us a Direct Message" align="center" />
+              <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#2F3B0C] tracking-tight">Contact Form</h2>
+              <p className="text-stone-600 text-sm font-sans leading-relaxed font-normal">Please fill out your information below. We respond to every message within 24 business hours.</p>
+            </div>
+
+            <AnimatePresence mode="wait">
+              {submitSuccess ? (
+                <motion.div
+                  key="success"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  className="py-14 text-center space-y-5"
                 >
-                  Send Another Message
-                </button>
-              </motion.div>
-            ) : (
-              <motion.form
-                key="form"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                onSubmit={handleSubmit}
-                className="space-y-7"
-              >
-                {errorMessage && (
-                  <div className="p-4 bg-red-50 border border-red-200 rounded-2xl text-red-700 text-xs font-medium flex items-center gap-2.5">
-                    <FiAlertCircle className="shrink-0 text-base" />
-                    <span>{errorMessage}</span>
+                  <div className="w-18 h-18 bg-[#F0F5E6] border border-[#4E641A]/20 text-[#4E641A] rounded-full flex items-center justify-center mx-auto text-3xl shadow-2xs">
+                    <FiCheckCircle className="animate-bounce" />
                   </div>
-                )}
+                  <div className="space-y-1.5 max-w-md mx-auto">
+                    <h3 className="font-serif text-2xl sm:text-3xl font-bold text-[#2F3B0C]">Message Received!</h3>
+                    <p className="text-stone-600 text-sm leading-relaxed font-sans font-normal">
+                      Thank you for contacting Suryodaya Farms. An acknowledgement email has been sent to your inbox. Our team will get back to you shortly.
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setSubmitSuccess(false)}
+                    className="bg-[#4E641A] hover:bg-[#2F3B0C] text-white font-sans text-xs font-bold uppercase tracking-wider px-8 py-3.5 rounded-xl transition-all duration-300 cursor-pointer shadow-md transform hover:-translate-y-0.5"
+                  >
+                    Send Another Message
+                  </button>
+                </motion.div>
+              ) : (
+                <motion.form
+                  key="form"
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                  onSubmit={handleSubmit}
+                  className="space-y-6"
+                >
+                  {errorMessage && (
+                    <div className="p-4 bg-red-50 border border-red-200 rounded-2xl text-red-700 text-xs font-medium flex items-center gap-2.5">
+                      <FiAlertCircle className="shrink-0 text-base" />
+                      <span>{errorMessage}</span>
+                    </div>
+                  )}
 
-                {/* Row 1: Name & Email */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  {/* Row 1: Name & Email */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
+                    <div>
+                      <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">Full Name *</label>
+                      <input
+                        type="text"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        required
+                        placeholder="e.g. Vikram Reddy"
+                        className="w-full px-4.5 py-3.5 bg-[#FAF7F2] border border-[#EDE7D9] rounded-[18px] focus:bg-white focus:border-[#4E641A] focus:ring-2 focus:ring-[#4E641A]/20 focus:outline-none transition-all duration-300 text-sm text-[#2F3B0C] font-sans placeholder-stone-400 shadow-2xs focus:shadow-md"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">Email Address *</label>
+                      <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        required
+                        placeholder="e.g. vikram@example.com"
+                        className="w-full px-4.5 py-3.5 bg-[#FAF7F2] border border-[#EDE7D9] rounded-[18px] focus:bg-white focus:border-[#4E641A] focus:ring-2 focus:ring-[#4E641A]/20 focus:outline-none transition-all duration-300 text-sm text-[#2F3B0C] font-sans placeholder-stone-400 shadow-2xs focus:shadow-md"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Row 2: Phone & Category */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
+                    <div>
+                      <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">Phone Number *</label>
+                      <input
+                        type="tel"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleInputChange}
+                        required
+                        placeholder="e.g. +91 9100422140"
+                        className="w-full px-4.5 py-3.5 bg-[#FAF7F2] border border-[#EDE7D9] rounded-[18px] focus:bg-white focus:border-[#4E641A] focus:ring-2 focus:ring-[#4E641A]/20 focus:outline-none transition-all duration-300 text-sm text-[#2F3B0C] font-sans placeholder-stone-400 shadow-2xs focus:shadow-md"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">Category *</label>
+                      <select
+                        name="category"
+                        value={formData.category}
+                        onChange={handleInputChange}
+                        className="w-full px-4.5 py-3.5 bg-[#FAF7F2] border border-[#EDE7D9] rounded-[18px] focus:bg-white focus:border-[#4E641A] focus:ring-2 focus:ring-[#4E641A]/20 focus:outline-none transition-all duration-300 text-sm text-[#2F3B0C] font-sans cursor-pointer shadow-2xs focus:shadow-md"
+                      >
+                        {contactCategories.map(cat => (
+                          <option key={cat} value={cat}>{cat}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Row 3: Subject */}
                   <div>
-                    <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2.5">Full Name *</label>
+                    <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">Subject *</label>
                     <input
                       type="text"
-                      name="name"
-                      value={formData.name}
+                      name="subject"
+                      value={formData.subject}
                       onChange={handleInputChange}
                       required
-                      placeholder="e.g. Vikram Reddy"
-                      className="w-full px-5 py-3.5 bg-[#FAF8F5] border border-[#EDE7D9] rounded-2xl focus:bg-white focus:ring-2 focus:ring-[#4E641A] focus:border-transparent transition-all duration-200 text-sm text-[#2F3B0C] font-sans placeholder-stone-400 shadow-2xs"
+                      placeholder="e.g. Inquiry regarding Sprouted Ragi Powder"
+                      className="w-full px-4.5 py-3.5 bg-[#FAF7F2] border border-[#EDE7D9] rounded-[18px] focus:bg-white focus:border-[#4E641A] focus:ring-2 focus:ring-[#4E641A]/20 focus:outline-none transition-all duration-300 text-sm text-[#2F3B0C] font-sans placeholder-stone-400 shadow-2xs focus:shadow-md"
                     />
                   </div>
 
+                  {/* Row 4: Message */}
                   <div>
-                    <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2.5">Email Address *</label>
+                    <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">Message *</label>
+                    <textarea
+                      name="message"
+                      rows={5}
+                      value={formData.message}
+                      onChange={handleInputChange}
+                      required
+                      placeholder="Please type your message details here..."
+                      className="w-full px-4.5 py-4 bg-[#FAF7F2] border border-[#EDE7D9] rounded-[18px] focus:bg-white focus:border-[#4E641A] focus:ring-2 focus:ring-[#4E641A]/20 focus:outline-none transition-all duration-300 text-sm text-[#2F3B0C] font-sans placeholder-stone-400 shadow-2xs focus:shadow-md resize-none"
+                    />
+                  </div>
+
+                  {/* Optional Attachment Link */}
+                  <div>
+                    <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">Attachment URL / Document Link (Optional)</label>
                     <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
+                      type="url"
+                      name="attachment"
+                      value={formData.attachment}
                       onChange={handleInputChange}
-                      required
-                      placeholder="e.g. vikram@example.com"
-                      className="w-full px-5 py-3.5 bg-[#FAF8F5] border border-[#EDE7D9] rounded-2xl focus:bg-white focus:ring-2 focus:ring-[#4E641A] focus:border-transparent transition-all duration-200 text-sm text-[#2F3B0C] font-sans placeholder-stone-400 shadow-2xs"
+                      placeholder="https://example.com/file.pdf"
+                      className="w-full px-4.5 py-3.5 bg-[#FAF7F2] border border-[#EDE7D9] rounded-[18px] focus:bg-white focus:border-[#4E641A] focus:ring-2 focus:ring-[#4E641A]/20 focus:outline-none transition-all duration-300 text-sm text-[#2F3B0C] font-sans placeholder-stone-400 shadow-2xs focus:shadow-md"
                     />
                   </div>
-                </div>
 
-                {/* Row 2: Phone & Category */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2.5">Phone Number *</label>
+                  {/* Checkbox: Privacy Policy */}
+                  <div className="flex items-start sm:items-center gap-3 pt-1">
                     <input
-                      type="tel"
-                      name="phone"
-                      value={formData.phone}
+                      type="checkbox"
+                      id="agreeToPrivacy"
+                      name="agreeToPrivacy"
+                      checked={formData.agreeToPrivacy}
                       onChange={handleInputChange}
                       required
-                      placeholder="e.g. +91 9100422140"
-                      className="w-full px-5 py-3.5 bg-[#FAF8F5] border border-[#EDE7D9] rounded-2xl focus:bg-white focus:ring-2 focus:ring-[#4E641A] focus:border-transparent transition-all duration-200 text-sm text-[#2F3B0C] font-sans placeholder-stone-400 shadow-2xs"
+                      className="w-4.5 h-4.5 mt-0.5 sm:mt-0 text-[#4E641A] focus:ring-[#4E641A] border-[#EDE7D9] rounded cursor-pointer shrink-0"
                     />
+                    <label htmlFor="agreeToPrivacy" className="text-xs text-stone-600 cursor-pointer leading-relaxed font-sans">
+                      I agree to the <Link to="/privacy" className="text-[#4E641A] font-bold hover:underline">Privacy Policy</Link> and give consent to contact me regarding my message.
+                    </label>
                   </div>
 
-                  <div>
-                    <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2.5">Category *</label>
-                    <select
-                      name="category"
-                      value={formData.category}
-                      onChange={handleInputChange}
-                      className="w-full px-5 py-3.5 bg-[#FAF8F5] border border-[#EDE7D9] rounded-2xl focus:bg-white focus:ring-2 focus:ring-[#4E641A] focus:border-transparent transition-all duration-200 text-sm text-[#2F3B0C] font-sans cursor-pointer shadow-2xs"
-                    >
-                      {contactCategories.map(cat => (
-                        <option key={cat} value={cat}>{cat}</option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                {/* Row 3: Subject */}
-                <div>
-                  <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2.5">Subject *</label>
-                  <input
-                    type="text"
-                    name="subject"
-                    value={formData.subject}
-                    onChange={handleInputChange}
-                    required
-                    placeholder="e.g. Inquiry regarding Sprouted Ragi Powder"
-                    className="w-full px-5 py-3.5 bg-[#FAF8F5] border border-[#EDE7D9] rounded-2xl focus:bg-white focus:ring-2 focus:ring-[#4E641A] focus:border-transparent transition-all duration-200 text-sm text-[#2F3B0C] font-sans placeholder-stone-400 shadow-2xs"
-                  />
-                </div>
-
-                {/* Row 4: Message */}
-                <div>
-                  <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2.5">Message *</label>
-                  <textarea
-                    name="message"
-                    rows={4}
-                    value={formData.message}
-                    onChange={handleInputChange}
-                    required
-                    placeholder="Please type your message details here..."
-                    className="w-full px-5 py-3.5 bg-[#FAF8F5] border border-[#EDE7D9] rounded-2xl focus:bg-white focus:ring-2 focus:ring-[#4E641A] focus:border-transparent transition-all duration-200 text-sm text-[#2F3B0C] font-sans placeholder-stone-400 shadow-2xs resize-none"
-                  />
-                </div>
-
-                {/* Optional Attachment Link */}
-                <div>
-                  <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2.5">Attachment URL / Document Link (Optional)</label>
-                  <input
-                    type="url"
-                    name="attachment"
-                    value={formData.attachment}
-                    onChange={handleInputChange}
-                    placeholder="https://example.com/file.pdf"
-                    className="w-full px-5 py-3.5 bg-[#FAF8F5] border border-[#EDE7D9] rounded-2xl focus:bg-white focus:ring-2 focus:ring-[#4E641A] focus:border-transparent transition-all duration-200 text-sm text-[#2F3B0C] font-sans placeholder-stone-400 shadow-2xs"
-                  />
-                </div>
-
-                {/* Checkbox: Privacy Policy */}
-                <div className="flex items-start sm:items-center gap-3 pt-2">
-                  <input
-                    type="checkbox"
-                    id="agreeToPrivacy"
-                    name="agreeToPrivacy"
-                    checked={formData.agreeToPrivacy}
-                    onChange={handleInputChange}
-                    required
-                    className="w-4.5 h-4.5 mt-0.5 sm:mt-0 text-[#4E641A] focus:ring-[#4E641A] border-[#EDE7D9] rounded cursor-pointer shrink-0"
-                  />
-                  <label htmlFor="agreeToPrivacy" className="text-xs text-stone-600 cursor-pointer leading-relaxed">
-                    I agree to the <Link to="/privacy" className="text-[#4E641A] font-bold hover:underline">Privacy Policy</Link> and give consent to contact me regarding my message.
-                  </label>
-                </div>
-
-                {/* Submit button */}
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full bg-[#4E641A] hover:bg-[#2F3B0C] disabled:bg-stone-300 text-white font-sans text-xs sm:text-sm font-bold tracking-widest uppercase py-4.5 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-3 cursor-pointer transform hover:-translate-y-0.5 active:scale-[0.99]"
-                >
-                  {isSubmitting ? (
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  ) : (
-                    <>
-                      <FiSend className="text-base" />
-                      <span>Send Message</span>
-                    </>
-                  )}
-                </button>
-              </motion.form>
-            )}
-          </AnimatePresence>
+                  {/* Submit button */}
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full bg-[#4E641A] hover:bg-[#2F3B0C] disabled:bg-stone-300 text-white font-sans text-xs sm:text-sm font-bold tracking-widest uppercase py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-3 cursor-pointer transform hover:-translate-y-0.5 active:scale-[0.99] border-none"
+                  >
+                    {isSubmitting ? (
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      <>
+                        <FiSend className="text-base" />
+                        <span>Send Message</span>
+                      </>
+                    )}
+                  </button>
+                </motion.form>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
       </section>
 
