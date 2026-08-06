@@ -13,7 +13,8 @@ import {
   FiBriefcase,
   FiShield,
   FiExternalLink,
-  FiAlertCircle
+  FiAlertCircle,
+  FiArrowUpRight
 } from 'react-icons/fi';
 import { FaWhatsapp, FaFacebook, FaInstagram, FaYoutube, FaLinkedin } from 'react-icons/fa';
 import { GiSprout, GiSun, GiWheat } from 'react-icons/gi';
@@ -30,9 +31,7 @@ export default function Contact() {
     email: '',
     phone: '',
     subject: '',
-    category: 'General Enquiry',
     message: '',
-    attachment: '',
     agreeToPrivacy: false
   });
 
@@ -44,26 +43,66 @@ export default function Contact() {
     fetchSettings();
   }, [fetchSettings]);
 
-  const contactCategories = [
-    'General Enquiry',
-    'Product Information',
-    'Order Support',
-    'Business Enquiry',
-    'Wholesale',
-    'Distributor',
-    'Retail Partner',
-    'Export',
-    'Private Label',
-    'Feedback',
-    'Complaint',
-    'Suggestion'
+  const contactCards = [
+    {
+      title: 'Registered Office',
+      icon: FiMapPin,
+      lines: [
+        'H.No: 4-6-90/1, Street No: 02,',
+        'Peerzadiguda, Kuruma Nagar,',
+        'Hyderabad, Telangana - 500098, India.'
+      ]
+    },
+    {
+      title: 'Support Phone',
+      icon: FiPhone,
+      lines: ['+91 9100422140', 'Mon – Sat | 9:00 AM – 6:00 PM IST']
+    },
+    {
+      title: 'Email Address',
+      icon: FiMail,
+      lines: ['care@suryodayafarms.com', 'support@suryodayafarms.com']
+    },
+    {
+      title: 'Official Website',
+      icon: FiGlobe,
+      lines: ['www.suryodayafarms.com', 'Natural Nutrition & Superfoods']
+    }
   ];
 
   const socialLinks = [
-    { name: 'Facebook', url: settings.socialLinks?.facebook || 'https://facebook.com/suryodayafarms', icon: FaFacebook, color: 'text-blue-600 hover:bg-blue-50/80 border-blue-200/80' },
-    { name: 'Instagram', url: settings.socialLinks?.instagram || 'https://instagram.com/suryodayafarms', icon: FaInstagram, color: 'text-pink-600 hover:bg-pink-50/80 border-pink-200/80' },
-    { name: 'YouTube', url: settings.socialLinks?.youtube || 'https://youtube.com/@suryodayafarms', icon: FaYoutube, color: 'text-red-600 hover:bg-red-50/80 border-red-200/80' },
-    { name: 'LinkedIn', url: settings.socialLinks?.linkedin || 'https://linkedin.com/company/suryodayafarms', icon: FaLinkedin, color: 'text-sky-700 hover:bg-sky-50/80 border-sky-200/80' }
+    { 
+      name: 'Facebook', 
+      url: settings.socialLinks?.facebook || 'https://facebook.com/suryodayafarms', 
+      icon: FaFacebook, 
+      iconColor: 'text-[#1877F2]',
+      bgClass: 'bg-white border-[#EDE7D9]',
+      watermark: FaFacebook
+    },
+    { 
+      name: 'Instagram', 
+      url: settings.socialLinks?.instagram || 'https://instagram.com/suryodayafarms', 
+      icon: FaInstagram, 
+      iconColor: 'text-[#E4405F]',
+      bgClass: 'bg-[#F7F8F2] border-[#DCE4CD]',
+      watermark: FaInstagram
+    },
+    { 
+      name: 'YouTube', 
+      url: settings.socialLinks?.youtube || 'https://youtube.com/@suryodayafarms', 
+      icon: FaYoutube, 
+      iconColor: 'text-[#FF0000]',
+      bgClass: 'bg-[#FAF7F2] border-[#EDE7D9]',
+      watermark: FaYoutube
+    },
+    { 
+      name: 'LinkedIn', 
+      url: settings.socialLinks?.linkedin || 'https://linkedin.com/company/suryodayafarms', 
+      icon: FaLinkedin, 
+      iconColor: 'text-[#0A66C2]',
+      bgClass: 'bg-[#F5F7EF] border-[#DCE4CD]',
+      watermark: FaLinkedin
+    }
   ];
 
   const scrollToContactForm = () => {
@@ -376,32 +415,59 @@ export default function Contact() {
         </div>
       </section>
 
-      {/* 4. SOCIAL MEDIA CARDS */}
-      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-b border-[#EDE7D9]/80">
-        <div className="text-center max-w-xl mx-auto mb-12 space-y-3">
-          <span className="font-sans text-xs font-bold text-[#B8833E] uppercase tracking-widest">Follow Our Journey</span>
-          <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#2F3B0C] tracking-tight">Connect on Social Media</h2>
-        </div>
+      {/* 4. SOCIAL MEDIA CARDS (RHYTHMIC SHOWCASE WITH WATERMARKS) */}
+      <section className="py-12 sm:py-14 lg:py-16 px-4 sm:px-6 lg:px-8 bg-[#FAF7F2] border-b border-[#EDE7D9]/80 relative overflow-hidden select-none">
+        <div className="absolute inset-0 bg-[radial-gradient(#4E641A_1px,transparent_1px)] [background-size:32px_32px] opacity-10 pointer-events-none" />
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8">
-          {socialLinks.map((social) => {
-            const Icon = social.icon;
-            return (
-              <a
-                key={social.name}
-                href={social.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`bg-white border rounded-[28px] p-7 sm:p-8 text-center flex flex-col items-center gap-3.5 transition-all duration-200 hover:-translate-y-1.5 shadow-xs hover:shadow-lg ${social.color}`}
-              >
-                <div className="w-14 h-14 rounded-2xl bg-stone-50 flex items-center justify-center text-2xl">
-                  <Icon />
-                </div>
-                <span className="font-serif text-base font-bold text-[#2F3B0C]">{social.name}</span>
-                <span className="text-[11px] text-stone-400 font-mono">@suryodayafarms</span>
-              </a>
-            );
-          })}
+        <div className="max-w-7xl mx-auto relative z-10 space-y-8">
+          <div className="text-center max-w-xl mx-auto space-y-2 flex flex-col items-center">
+            <span className="font-sans text-xs font-bold text-[#B8833E] uppercase tracking-widest">Follow Our Journey</span>
+            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#2F3B0C] tracking-tight">Connect on Social Media</h2>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {socialLinks.map((social, idx) => {
+              const Icon = social.icon;
+              const Watermark = social.watermark || Icon;
+              return (
+                <motion.a
+                  key={social.name}
+                  href={social.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.3, delay: idx * 0.06 }}
+                  className={`${social.bgClass} border p-6 sm:p-7 rounded-[24px] shadow-2xs hover:shadow-lg hover:border-[#4E641A] transition-all duration-300 flex flex-col justify-between group relative overflow-hidden transform hover:-translate-y-1.5 cursor-pointer`}
+                >
+                  {/* Subtle 4–6% Opacity Watermark Illustration */}
+                  <div className="absolute right-3 bottom-2 text-[#4E641A]/5 group-hover:text-[#4E641A]/10 text-6xl pointer-events-none select-none transition-colors duration-300">
+                    <Watermark />
+                  </div>
+
+                  <div className="space-y-4 relative z-10">
+                    {/* Top Row: Icon Beside Platform Name & External Arrow */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3.5">
+                        <div className="w-11 h-11 rounded-full bg-[#F0F5E6] flex items-center justify-center shrink-0 group-hover:bg-[#4E641A] transition-colors duration-300 shadow-2xs">
+                          <Icon className={`text-xl ${social.iconColor} group-hover:text-white transition-colors duration-300 group-hover:scale-110 transform`} />
+                        </div>
+                        <div>
+                          <h3 className="font-serif text-lg font-bold text-[#2F3B0C] group-hover:text-[#4E641A] transition-colors leading-snug">
+                            {social.name}
+                          </h3>
+                          <span className="text-[11px] text-stone-500 font-mono block">@suryodayafarms</span>
+                        </div>
+                      </div>
+
+                      <FiArrowUpRight className="opacity-0 group-hover:opacity-100 text-[#4E641A] transition-all duration-300 text-lg transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                    </div>
+                  </div>
+                </motion.a>
+              );
+            })}
+          </div>
         </div>
       </section>
 
