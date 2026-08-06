@@ -697,17 +697,17 @@ export default function About() {
               return (
                 <div 
                   key={idx} 
-                  className={`${variant.bgClass} border p-6 sm:p-7 rounded-[22px] shadow-2xs hover:shadow-md hover:border-[#4E641A] transition-all duration-300 flex flex-col justify-between group relative overflow-hidden transform hover:-translate-y-1 cursor-pointer`}
+                  className={`${variant.bgClass} border p-6 sm:p-7 rounded-[22px] shadow-2xs hover:shadow-md hover:border-[#4E641A] transition-all duration-300 flex flex-col items-center text-center justify-between group relative overflow-hidden transform hover:-translate-y-1 cursor-pointer`}
                 >
                   {/* Subtle 4-6% Opacity Watermark Icon */}
                   <div className="absolute right-3 bottom-2 text-[#4E641A]/5 group-hover:text-[#4E641A]/10 text-6xl pointer-events-none select-none transition-colors duration-300">
                     <Watermark />
                   </div>
 
-                  <div className="space-y-4 relative z-10">
-                    {/* Header Row: Icon Badge Beside Title */}
-                    <div className="flex items-center gap-3.5">
-                      <div className="w-11 h-11 rounded-full bg-[#4E641A]/10 text-[#4E641A] flex items-center justify-center shrink-0 group-hover:bg-[#4E641A] group-hover:text-white transition-colors duration-300 shadow-2xs">
+                  <div className="space-y-4 relative z-10 flex flex-col items-center text-center w-full">
+                    {/* Header: Centered Icon Badge & Title */}
+                    <div className="flex flex-col items-center text-center gap-3">
+                      <div className="w-12 h-12 rounded-full bg-[#4E641A]/10 text-[#4E641A] flex items-center justify-center shrink-0 group-hover:bg-[#4E641A] group-hover:text-white transition-colors duration-300 shadow-2xs mx-auto">
                         <IconComp className="w-5 h-5 stroke-[2px]" />
                       </div>
                       <h3 className="font-serif text-xl font-bold text-[#2F3B0C] group-hover:text-[#4E641A] transition-colors leading-snug">
@@ -715,9 +715,9 @@ export default function About() {
                       </h3>
                     </div>
 
-                    <div className="border-b border-[#EDE7D9]/80 my-2" />
+                    <div className="border-b border-[#EDE7D9]/80 my-2 w-full" />
 
-                    <p className="text-stone-600 text-sm sm:text-base leading-relaxed font-sans">
+                    <p className="text-stone-600 text-sm sm:text-base leading-relaxed font-sans text-center">
                       {val.desc}
                     </p>
                   </div>
@@ -817,11 +817,11 @@ export default function About() {
             <div className="w-24 h-1 bg-gradient-to-r from-[#4E641A] via-[#C68A2B] to-[#4E641A] rounded-full mt-1" />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-left">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-center">
             {whyChooseItems.map((item, idx) => (
-              <div key={idx} className="bg-white border border-[#EDE7D9] p-7 rounded-[20px] space-y-3 shadow-2xs hover:shadow-md hover:border-[#4E641A]/40 transition-all duration-300">
-                <h3 className="font-serif text-xl font-bold text-[#2F3B0C]">{item.title}</h3>
-                <p className="text-stone-600 text-sm sm:text-base leading-relaxed font-sans">{item.desc}</p>
+              <div key={idx} className="bg-white border border-[#EDE7D9] p-7 rounded-[20px] space-y-3 shadow-2xs hover:shadow-md hover:border-[#4E641A]/40 transition-all duration-300 flex flex-col items-center text-center justify-between">
+                <h3 className="font-serif text-xl font-bold text-[#2F3B0C] text-center">{item.title}</h3>
+                <p className="text-stone-600 text-sm sm:text-base leading-relaxed font-sans text-center">{item.desc}</p>
               </div>
             ))}
           </div>
