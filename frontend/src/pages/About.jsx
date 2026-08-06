@@ -748,9 +748,22 @@ export default function About() {
 
           <div className="bg-white border border-[#EDE7D9] p-7 sm:p-10 rounded-2xl shadow-2xs space-y-4">
             <p className="text-stone-800">We promise to remain true to the values that define Suryodaya Farms.</p>
-            <p className="font-bold text-[#2F3B0C] text-lg font-serif">We will never compromise on quality for convenience.</p>
-            <p className="font-bold text-[#2F3B0C] text-lg font-serif">We will never compromise on integrity for growth.</p>
-            <p className="text-stone-700">We will continue learning, improving, and serving with responsibility.</p>
+            
+            <div className="space-y-3 pl-1">
+              <div className="flex items-start gap-3">
+                <GiSprout className="w-5 h-5 text-[#4E641A] shrink-0 mt-1" />
+                <p className="font-bold text-[#2F3B0C] text-lg font-serif">We will never compromise on quality for convenience.</p>
+              </div>
+              <div className="flex items-start gap-3">
+                <GiSprout className="w-5 h-5 text-[#4E641A] shrink-0 mt-1" />
+                <p className="font-bold text-[#2F3B0C] text-lg font-serif">We will never compromise on integrity for growth.</p>
+              </div>
+              <div className="flex items-start gap-3">
+                <GiSprout className="w-5 h-5 text-[#4E641A] shrink-0 mt-1" />
+                <p className="font-bold text-[#2F3B0C] text-lg font-serif">We will continue learning, improving, and serving with responsibility.</p>
+              </div>
+            </div>
+
             <p className="font-serif text-xl font-bold text-[#4E641A] italic pt-3 border-t border-[#EDE7D9]">
               Because trust is something that must be earned—every single day.
             </p>
@@ -869,9 +882,22 @@ export default function About() {
             <p className="font-semibold text-[#2F3B0C] text-lg font-serif">
               We believe that true innovation is not about changing nature—it is about understanding nature better and using scientific knowledge responsibly.
             </p>
-            <p>Research is meaningful only when it improves quality.</p>
-            <p>Innovation is valuable only when it benefits people.</p>
-            <p>Knowledge has purpose only when it serves society.</p>
+
+            <div className="space-y-3.5 pl-1">
+              <div className="flex items-start gap-3">
+                <GiSprout className="w-5 h-5 text-[#4E641A] shrink-0 mt-1" />
+                <p className="font-serif text-lg font-bold text-[#2F3B0C]">Research is meaningful only when it improves quality.</p>
+              </div>
+              <div className="flex items-start gap-3">
+                <GiSprout className="w-5 h-5 text-[#4E641A] shrink-0 mt-1" />
+                <p className="font-serif text-lg font-bold text-[#2F3B0C]">Innovation is valuable only when it benefits people.</p>
+              </div>
+              <div className="flex items-start gap-3">
+                <GiSprout className="w-5 h-5 text-[#4E641A] shrink-0 mt-1" />
+                <p className="font-serif text-lg font-bold text-[#2F3B0C]">Knowledge has purpose only when it serves society.</p>
+              </div>
+            </div>
+
             <p className="font-serif text-xl font-bold text-[#4E641A] italic pt-3 border-t border-[#EDE7D9]">
               That philosophy inspires every product we develop.
             </p>
