@@ -90,138 +90,133 @@ const Navbar = memo(function Navbar() {
     }
   };
 
+  const totalCartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+
   return (
     <>
       <nav
         ref={navRef}
-        className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ease-in-out px-3 sm:px-6 md:px-12 app-header-nav ${
+        className={`fixed top-0 left-0 w-full z-50 transition-all duration-350 ease-in-out px-4 sm:px-8 lg:px-16 xl:px-20 border-b app-header-nav ${
           isScrolled || isCartOpen || isMobileMenuOpen
-            ? 'bg-cream-bg/95 backdrop-blur-md shadow-md border-b border-light-beige py-2 lg:py-3'
-            : 'bg-cream-bg/40 backdrop-blur-md border-b border-white/10 py-3.5 lg:py-5'
+            ? 'bg-[#FBF9F4]/95 backdrop-blur-md shadow-md border-[#E8E3D6] py-3.5 lg:py-4'
+            : 'bg-[#FBF9F4]/80 backdrop-blur-md border-[#E8E3D6] py-5 lg:py-6'
         }`}
       >
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           
-          {/* Logo & Official Visiting Card Brand Header */}
+          {/* LEFT: Logo & Brand Information */}
           <Link
             to="/"
-            className="flex items-center gap-2.5 sm:gap-3 cursor-pointer group select-none text-left animate-fade-in"
+            className="flex items-center gap-3.5 sm:gap-4 cursor-pointer group select-none text-left shrink-0 transition-transform duration-300 hover:opacity-95"
           >
             <img 
               src="https://i.ibb.co/Pz01P9Y5/Whats-App-Image-2026-05-29-at-6-51-48-PM-removebg-preview.png" 
               alt="Suryodaya Farms Logo" 
               loading="eager"
               fetchPriority="high"
-              className="h-10 sm:h-12 md:h-14 lg:h-16 w-auto object-contain transition duration-500 group-hover:scale-105"
+              className={`w-auto object-contain transition-all duration-300 filter drop-shadow-2xs group-hover:scale-[1.04] ${
+                isScrolled ? 'h-11 sm:h-13 lg:h-14' : 'h-12 sm:h-14 lg:h-16'
+              }`}
             />
             <div className="flex flex-col justify-center items-center text-center space-y-0.5">
-              <span className="font-serif text-base sm:text-lg md:text-xl font-bold tracking-wide text-dark-olive leading-none group-hover:text-primary-green transition-colors duration-300 uppercase">
+              <span className="font-serif text-base sm:text-lg md:text-xl font-bold tracking-wider text-[#2F2F2F] group-hover:text-[#556B2F] transition-colors duration-300 uppercase leading-none">
                 SURYODAYA FARMS
               </span>
-              <span className="font-serif text-[9.5px] sm:text-[10.5px] md:text-[11.5px] font-medium text-stone-600 italic leading-none block text-center">
+              <span className="font-serif text-[10px] sm:text-[11px] font-medium text-stone-600 italic leading-none block text-center mt-0.5">
                 Nature's Superfoods for Modern Living
               </span>
-              <span className="font-sans text-[7.5px] sm:text-[8.5px] font-bold tracking-wider text-primary-green uppercase leading-none flex items-center justify-center gap-1">
+              <span className="font-sans text-[7.5px] sm:text-[8.5px] font-bold tracking-widest text-[#556B2F] uppercase leading-none flex items-center justify-center gap-1 mt-0.5">
                 <span>Pure</span>
-                <span className="text-sunrise-gold">•</span>
+                <span className="text-[#C68A2B]">•</span>
                 <span>Natural</span>
-                <span className="text-sunrise-gold">•</span>
+                <span className="text-[#C68A2B]">•</span>
                 <span>Nutritious</span>
               </span>
             </div>
           </Link>
 
-          {/* Desktop Navigation Links */}
-          <div className="hidden lg:flex items-center gap-8">
-            <div className="flex items-center gap-6">
-              {navItems.map((item) => (
-                <NavLink
-                  key={item.path}
-                  to={item.path}
-                  className={({ isActive }) => `
-                    relative font-sans text-sm font-medium tracking-wide py-2 transition-all duration-300 select-none
-                    ${isActive 
-                      ? 'text-primary-green' 
-                      : isScrolled
-                        ? 'text-dark-text/80 hover:text-primary-green'
-                        : 'text-dark-olive/90 hover:text-primary-green'
-                    }
-                  `}
-                >
-                  {({ isActive }) => (
-                    <>
-                      <span>{item.label}</span>
-                      {isActive && (
-                        <span className="absolute bottom-0 left-0 w-full h-[2px] bg-primary-green rounded-full transform origin-left transition-all duration-300" />
-                      )}
-                    </>
-                  )}
-                </NavLink>
-              ))}
-            </div>
-
-            {/* Icons: Profile, Wishlist & Cart */}
-            <div className="flex items-center gap-5 border-l border-light-beige pl-6">
-              
-              {/* Wishlist Heart Icon Button */}
-              <Link
-                to="/wishlist"
-                className={`transition-colors duration-300 relative ${
-                  isScrolled ? 'text-dark-olive hover:text-primary-green' : 'text-dark-olive hover:text-primary-green'
-                }`}
-                title="Wishlist"
+          {/* CENTER: Navigation Menu (Desktop) */}
+          <div className="hidden lg:flex items-center justify-center gap-6 xl:gap-8 mx-auto">
+            {navItems.map((item) => (
+              <NavLink
+                key={item.path}
+                to={item.path}
+                className={({ isActive }) => `
+                  relative font-sans text-[15px] font-medium tracking-wide py-1.5 transition-all duration-300 select-none cursor-pointer transform hover:-translate-y-0.5
+                  ${isActive 
+                    ? 'text-[#556B2F] font-semibold' 
+                    : 'text-[#2F2F2F]/85 hover:text-[#556B2F]'
+                  }
+                `}
               >
-                <FiHeart size={20} />
-                {wishlistItems.length > 0 && (
-                  <span className="absolute -top-2.5 -right-2.5 bg-primary-green text-white font-sans text-[9px] font-bold w-5 h-5 rounded-full flex items-center justify-center border border-white shadow-sm">
-                    {wishlistItems.length}
-                  </span>
+                {({ isActive }) => (
+                  <>
+                    <span>{item.label}</span>
+                    <span 
+                      className={`absolute -bottom-1 left-0 w-full h-[2.5px] bg-[#556B2F] rounded-full transition-all duration-300 origin-left ${
+                        isActive ? 'scale-x-100 opacity-100' : 'scale-x-0 opacity-0 group-hover:scale-x-100'
+                      }`} 
+                    />
+                  </>
                 )}
-              </Link>
-
-              {/* Profile Icon Button */}
-              <button
-                onClick={handleProfileClick}
-                className={`transition-colors duration-300 relative cursor-pointer ${
-                  isScrolled ? 'text-dark-olive hover:text-primary-green' : 'text-dark-olive hover:text-primary-green'
-                }`}
-                title={isAuthenticated ? "Dashboard" : "Login"}
-              >
-                <FiUser size={20} />
-                {isAuthenticated && (
-                  <span className="absolute -top-1.5 -right-1.5 w-2 h-2 rounded-full bg-primary-green border border-white" />
-                )}
-              </button>
-
-              {/* Cart Icon Button */}
-              <button
-                onClick={() => setIsCartOpen(!isCartOpen)}
-                className={`transition-colors duration-300 relative cursor-pointer ${
-                  isScrolled ? 'text-dark-olive hover:text-primary-green' : 'text-dark-olive hover:text-primary-green'
-                }`}
-                title="Cart Drawer"
-              >
-                <FiShoppingBag size={20} />
-                {cartItems.length > 0 && (
-                  <span className="absolute -top-2.5 -right-2.5 bg-primary-green text-white font-sans text-[9px] font-bold w-5 h-5 rounded-full flex items-center justify-center border border-white shadow-sm">
-                    {cartItems.reduce((acc, item) => acc + item.quantity, 0)}
-                  </span>
-                )}
-              </button>
-            </div>
+              </NavLink>
+            ))}
           </div>
 
-          {/* Mobile Menu Hamburger + Cart/Wishlist/Profile icons */}
-          <div className="lg:hidden flex items-center gap-1 sm:gap-2.5">
+          {/* RIGHT: Actions (Wishlist, Account, Cart) */}
+          <div className="hidden lg:flex items-center gap-3 shrink-0">
             
+            {/* Wishlist Button */}
             <Link
               to="/wishlist"
-              className="p-2 transition-colors relative text-dark-olive hover:text-primary-green"
+              className="w-11 h-11 rounded-full flex items-center justify-center bg-transparent hover:bg-[#556B2F]/10 text-[#2F2F2F] hover:text-[#556B2F] transition-all duration-300 transform hover:scale-105 relative cursor-pointer"
+              title="Wishlist"
+            >
+              <FiHeart size={21} className="stroke-[1.8px]" />
+              {wishlistItems.length > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 bg-[#556B2F] text-white font-sans text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-[#FBF9F4] shadow-2xs">
+                  {wishlistItems.length}
+                </span>
+              )}
+            </Link>
+
+            {/* Profile Button */}
+            <button
+              onClick={handleProfileClick}
+              className="w-11 h-11 rounded-full flex items-center justify-center bg-transparent hover:bg-[#556B2F]/10 text-[#2F2F2F] hover:text-[#556B2F] transition-all duration-300 transform hover:scale-105 relative cursor-pointer"
+              title={isAuthenticated ? "My Account" : "Sign In / Login"}
+            >
+              <FiUser size={21} className="stroke-[1.8px]" />
+              {isAuthenticated && (
+                <span className="absolute top-1 right-1 w-2.5 h-2.5 rounded-full bg-[#556B2F] border-2 border-[#FBF9F4]" />
+              )}
+            </button>
+
+            {/* Cart Button */}
+            <button
+              onClick={() => setIsCartOpen(!isCartOpen)}
+              className="w-11 h-11 rounded-full flex items-center justify-center bg-transparent hover:bg-[#556B2F]/10 text-[#2F2F2F] hover:text-[#556B2F] transition-all duration-300 transform hover:scale-105 relative cursor-pointer ml-1"
+              title="Shopping Cart"
+            >
+              <FiShoppingBag size={21} className="stroke-[1.8px]" />
+              {totalCartCount > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 bg-[#556B2F] text-white font-sans text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-[#FBF9F4] shadow-2xs">
+                  {totalCartCount}
+                </span>
+              )}
+            </button>
+          </div>
+
+          {/* Mobile Actions & Menu Trigger */}
+          <div className="lg:hidden flex items-center gap-1.5 sm:gap-2">
+            <Link
+              to="/wishlist"
+              className="w-9 h-9 rounded-full flex items-center justify-center text-[#2F2F2F] hover:text-[#556B2F] hover:bg-[#556B2F]/10 transition-colors relative"
               title="Wishlist"
             >
               <FiHeart size={20} className="stroke-[2px]" />
               {wishlistItems.length > 0 && (
-                <span className="absolute top-1 right-1 bg-primary-green text-white font-sans text-[8px] font-bold w-4 h-4 rounded-full flex items-center justify-center border border-white">
+                <span className="absolute top-0.5 right-0.5 bg-[#556B2F] text-white font-sans text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center border border-white">
                   {wishlistItems.length}
                 </span>
               )}
@@ -229,31 +224,31 @@ const Navbar = memo(function Navbar() {
 
             <button
               onClick={handleProfileClick}
-              className="p-2 transition-colors relative text-dark-olive hover:text-primary-green cursor-pointer"
+              className="w-9 h-9 rounded-full flex items-center justify-center text-[#2F2F2F] hover:text-[#556B2F] hover:bg-[#556B2F]/10 transition-colors relative cursor-pointer"
               title={isAuthenticated ? "Dashboard" : "Login"}
             >
               <FiUser size={20} className="stroke-[2px]" />
               {isAuthenticated && (
-                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-primary-green border border-white" />
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#556B2F] border border-white" />
               )}
             </button>
 
             <button
               onClick={() => setIsCartOpen(true)}
-              className="relative p-2 focus:outline-none cursor-pointer text-dark-olive hover:text-primary-green"
+              className="w-9 h-9 rounded-full flex items-center justify-center text-[#2F2F2F] hover:text-[#556B2F] hover:bg-[#556B2F]/10 transition-colors relative cursor-pointer"
               title="Cart Drawer"
             >
               <FiShoppingBag size={20} className="stroke-[2px]" />
-              {cartItems.length > 0 && (
-                <span className="absolute top-1 right-1 bg-primary-green text-white font-sans text-[8px] font-bold w-4 h-4 rounded-full flex items-center justify-center border border-white">
-                  {cartItems.reduce((acc, item) => acc + item.quantity, 0)}
+              {totalCartCount > 0 && (
+                <span className="absolute top-0.5 right-0.5 bg-[#556B2F] text-white font-sans text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center border border-white">
+                  {totalCartCount}
                 </span>
               )}
             </button>
             
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 rounded-lg transition-colors focus:outline-none cursor-pointer text-dark-olive hover:text-primary-green"
+              className="w-10 h-10 rounded-full flex items-center justify-center transition-colors text-[#2F2F2F] hover:text-[#556B2F] hover:bg-[#556B2F]/10 cursor-pointer ml-1"
               title="Toggle Menu"
             >
               {isMobileMenuOpen ? <FiX size={22} className="stroke-[2.5px]" /> : <FiMenu size={22} className="stroke-[2.5px]" />}
@@ -265,7 +260,7 @@ const Navbar = memo(function Navbar() {
 
       {/* Cart Drawer Sliding Overlay */}
       <div
-        className={`fixed inset-0 z-40 bg-dark-olive/45 backdrop-blur-sm transition-opacity duration-500 ${
+        className={`fixed inset-0 z-40 bg-[#2F2F2F]/45 backdrop-blur-xs transition-opacity duration-350 ${
           isCartOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
         onClick={() => setIsCartOpen(false)}
@@ -273,39 +268,39 @@ const Navbar = memo(function Navbar() {
 
       {/* Cart Drawer Panel */}
       <div
-        className={`fixed top-0 right-0 h-full w-[85%] max-w-md z-50 bg-cream-bg shadow-2xl border-l border-light-beige flex flex-col justify-between py-8 px-6 transition-transform duration-500 ease-in-out ${
+        className={`fixed top-0 right-0 h-full w-[85%] max-w-md z-50 bg-[#FBF9F4] shadow-2xl border-l border-[#E8E3D6] flex flex-col justify-between py-8 px-6 transition-transform duration-350 ease-in-out ${
           isCartOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
         <div className="flex flex-col h-full overflow-hidden text-left">
           
           {/* Header */}
-          <div className="flex items-center justify-between border-b border-light-beige pb-6 shrink-0">
-            <span className="font-serif text-xl font-bold text-dark-olive flex items-center gap-2">
-              <FiShoppingBag className="text-primary-green" />
+          <div className="flex items-center justify-between border-b border-[#E8E3D6] pb-5 shrink-0">
+            <span className="font-serif text-xl font-bold text-[#2F2F2F] flex items-center gap-2.5">
+              <FiShoppingBag className="text-[#556B2F]" />
               <span>Shopping Cart</span>
             </span>
             <button
               onClick={() => setIsCartOpen(false)}
-              className="text-dark-olive p-1 rounded-full bg-light-beige hover:bg-primary-green/10 cursor-pointer"
+              className="text-[#2F2F2F] p-1.5 rounded-full bg-[#E8E3D6]/50 hover:bg-[#556B2F]/15 transition-colors cursor-pointer"
             >
-              <FiX size={20} />
+              <FiX size={19} />
             </button>
           </div>
 
           {/* Cart items list */}
-          <div className="flex-grow overflow-y-auto py-6 flex flex-col gap-6 no-scrollbar">
+          <div className="flex-grow overflow-y-auto py-6 flex flex-col gap-5 no-scrollbar">
             {cartItems.length === 0 ? (
               <div className="text-center py-20 flex flex-col items-center gap-4">
-                <FiShoppingBag className="text-dark-olive/20 text-5xl" />
-                <p className="font-serif text-base text-dark-olive font-semibold">Your cart is empty.</p>
-                <p className="font-sans text-xs text-dark-text/60 max-w-[200px] mx-auto">Explore our premium selection and bring solar blessings to your home.</p>
+                <FiShoppingBag className="text-[#2F2F2F]/20 text-5xl" />
+                <p className="font-serif text-base text-[#2F2F2F] font-semibold">Your cart is empty.</p>
+                <p className="font-sans text-xs text-stone-600 max-w-[220px] mx-auto">Explore our pure natural staples and nourish your family with trusted care.</p>
                 <Link
                   to="/products"
                   onClick={() => setIsCartOpen(false)}
-                  className="font-sans text-xs font-semibold tracking-widest uppercase bg-primary-green text-white px-5 py-2.5 rounded-xl shadow block text-center mt-2"
+                  className="font-sans text-xs font-bold tracking-widest uppercase bg-[#556B2F] hover:bg-[#3F5023] text-white px-6 py-3 rounded-xl shadow-sm block text-center mt-2 transition-colors"
                 >
-                  Shop Staples
+                  Explore Staples
                 </Link>
               </div>
             ) : (
@@ -315,46 +310,46 @@ const Navbar = memo(function Navbar() {
                 const itemImg = getOptimizedImageUrl(rawImgUrl, { width: 80, height: 80, cropMode: 'fit' });
                 
                 return (
-                  <div key={item.id} className="flex gap-4 items-start border-b border-light-beige/50 pb-5 last:border-b-0">
+                  <div key={item.id} className="flex gap-4 items-start border-b border-[#E8E3D6]/60 pb-5 last:border-b-0">
                     <div className="w-16 h-16 bg-transparent shrink-0 flex items-center justify-center relative">
                       <img
                         src={itemImg}
                         alt={item.product.name}
                         onError={(e) => handleImageError(e, DEFAULT_FALLBACK_IMAGE)}
-                        className="w-full h-full object-contain p-1 filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.1)]"
+                        className="w-full h-full object-contain p-1 filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.08)]"
                       />
                     </div>
                     <div className="flex-grow flex flex-col gap-1">
-                      <span className="font-serif text-sm font-bold text-dark-olive leading-tight">
+                      <span className="font-serif text-sm font-bold text-[#2F2F2F] leading-tight">
                         {item.product.name}
                       </span>
                       {item.variant && (
-                        <span className="font-sans text-[10px] text-sunrise-gold uppercase tracking-wider font-semibold">
+                        <span className="font-sans text-[10px] text-[#C68A2B] uppercase tracking-wider font-semibold">
                           Variant: {item.variant.name}
                         </span>
                       )}
                       
                       <div className="flex justify-between items-center mt-2.5">
                         {/* Quantity triggers */}
-                        <div className="flex items-center border border-light-beige rounded-lg bg-cream-bg">
+                        <div className="flex items-center border border-[#E8E3D6] rounded-lg bg-white">
                           <button
                             onClick={() => item.quantity > 1 ? updateQuantity(item.id, item.quantity - 1) : removeItem(item.id)}
-                            className="p-1.5 text-dark-olive hover:text-primary-green"
+                            className="p-1.5 text-[#2F2F2F] hover:text-[#556B2F]"
                           >
                             <FiMinus size={10} />
                           </button>
-                          <span className="font-sans text-xs font-semibold px-2.5 text-dark-olive select-none">
+                          <span className="font-sans text-xs font-semibold px-2.5 text-[#2F2F2F] select-none">
                             {item.quantity}
                           </span>
                           <button
                             onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                            className="p-1.5 text-dark-olive hover:text-primary-green"
+                            className="p-1.5 text-[#2F2F2F] hover:text-[#556B2F]"
                           >
                             <FiPlus size={10} />
                           </button>
                         </div>
 
-                        <span className="font-serif text-sm font-bold text-primary-green">
+                        <span className="font-serif text-sm font-bold text-[#556B2F]">
                           ₹{itemPrice * item.quantity}
                         </span>
                       </div>
@@ -375,13 +370,13 @@ const Navbar = memo(function Navbar() {
 
           {/* Subtotal & Checkout links */}
           {cartItems.length > 0 && (
-            <div className="border-t border-light-beige pt-6 shrink-0 flex flex-col gap-4">
-              <div className="flex justify-between items-baseline font-serif text-base font-bold text-dark-olive">
+            <div className="border-t border-[#E8E3D6] pt-5 shrink-0 flex flex-col gap-4">
+              <div className="flex justify-between items-baseline font-serif text-base font-bold text-[#2F2F2F]">
                 <span>Subtotal Basket:</span>
-                <span className="text-primary-green text-lg">₹{subtotal}</span>
+                <span className="text-[#556B2F] text-lg">₹{subtotal}</span>
               </div>
               
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-2.5">
                 <button
                   onClick={() => {
                     setIsCartOpen(false);
@@ -392,14 +387,14 @@ const Navbar = memo(function Navbar() {
                       setAuthModalOpen(true);
                     }
                   }}
-                  className="w-full font-sans text-xs font-semibold tracking-widest uppercase bg-primary-green text-white py-3.5 rounded-xl hover:bg-dark-olive transition-colors shadow-md text-center block cursor-pointer"
+                  className="w-full font-sans text-xs font-bold tracking-widest uppercase bg-[#556B2F] text-white py-3.5 rounded-xl hover:bg-[#3F5023] transition-colors shadow-md text-center block cursor-pointer"
                 >
                   Proceed to Checkout
                 </button>
                 <Link
                   to="/cart"
                   onClick={() => setIsCartOpen(false)}
-                  className="w-full font-sans text-xs font-semibold tracking-widest uppercase border border-light-beige text-dark-text py-3.5 rounded-xl hover:bg-light-beige transition-colors text-center block bg-white"
+                  className="w-full font-sans text-xs font-bold tracking-widest uppercase border border-[#E8E3D6] text-[#2F2F2F] py-3.5 rounded-xl hover:bg-[#E8E3D6]/40 transition-colors text-center block bg-white"
                 >
                   View Full Cart
                 </Link>
@@ -412,58 +407,58 @@ const Navbar = memo(function Navbar() {
 
       {/* Mobile Slide-In Nav Menu */}
       <div
-        className={`fixed inset-0 z-40 bg-dark-olive/45 backdrop-blur-sm transition-opacity duration-500 lg:hidden ${
+        className={`fixed inset-0 z-40 bg-[#2F2F2F]/45 backdrop-blur-xs transition-opacity duration-350 lg:hidden ${
           isMobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
         onClick={() => setIsMobileMenuOpen(false)}
       />
 
       <div
-        className={`fixed top-0 right-0 h-full w-[80%] max-w-sm z-50 bg-cream-bg shadow-2xl border-l border-light-beige flex flex-col justify-between py-8 px-6 transition-transform duration-500 ease-in-out lg:hidden ${
+        className={`fixed top-0 right-0 h-full w-[80%] max-w-sm z-50 bg-[#FBF9F4] shadow-2xl border-l border-[#E8E3D6] flex flex-col justify-between py-8 px-6 transition-transform duration-350 ease-in-out lg:hidden ${
           isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
         <div>
-          <div className="flex items-center justify-between border-b border-light-beige pb-6 text-left">
-            <div className="flex items-center gap-3.5">
+          <div className="flex items-center justify-between border-b border-[#E8E3D6] pb-5 text-left">
+            <div className="flex items-center gap-3">
               <img 
                 src="https://i.ibb.co/Pz01P9Y5/Whats-App-Image-2026-05-29-at-6-51-48-PM-removebg-preview.png" 
                 alt="Suryodaya Farms Logo" 
-                className="h-10 w-auto object-contain"
+                className="h-11 w-auto object-contain"
               />
               <div className="flex flex-col justify-center">
-                <span className="font-serif text-lg font-bold text-dark-olive leading-none">
+                <span className="font-serif text-base font-bold text-[#2F2F2F] leading-none">
                   SURYODAYA
                 </span>
-                <span className="font-sans text-[8px] font-semibold tracking-[0.2em] text-sunrise-gold mt-1">
+                <span className="font-sans text-[8px] font-semibold tracking-[0.2em] text-[#C68A2B] mt-0.5">
                   FARMS
                 </span>
               </div>
             </div>
             <button
               onClick={() => setIsMobileMenuOpen(false)}
-              className="text-dark-olive p-1 rounded-full bg-light-beige hover:bg-primary-green/10 cursor-pointer"
+              className="text-[#2F2F2F] p-1.5 rounded-full bg-[#E8E3D6]/50 hover:bg-[#556B2F]/15 transition-colors cursor-pointer"
             >
-              <FiX size={20} />
+              <FiX size={19} />
             </button>
           </div>
 
-          <div className="flex flex-col gap-2 mt-8">
+          <div className="flex flex-col gap-1.5 mt-6 text-left">
             {navItems.map((item) => (
               <NavLink
                 key={item.path}
                 to={item.path}
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={({ isActive }) => `
-                  flex items-center justify-between font-sans text-xs font-semibold uppercase tracking-wider py-3 px-4 rounded-xl transition-all duration-300
+                  flex items-center justify-between font-sans text-xs font-semibold uppercase tracking-wider py-3 px-4 rounded-xl transition-all duration-200
                   ${isActive
-                    ? 'bg-primary-green text-white shadow-sm font-bold'
-                    : 'text-dark-text hover:bg-light-beige'
+                    ? 'bg-[#556B2F] text-white shadow-sm font-bold'
+                    : 'text-[#2F2F2F] hover:bg-[#E8E3D6]/40'
                   }
                 `}
               >
                 <span>{item.label}</span>
-                <FiChevronRight size={12} />
+                <FiChevronRight size={14} />
               </NavLink>
             ))}
           </div>
@@ -472,7 +467,7 @@ const Navbar = memo(function Navbar() {
         <div className="flex flex-col gap-3 mt-6">
           <button
             onClick={handleProfileClick}
-            className="w-full font-sans text-xs font-semibold tracking-widest uppercase bg-sunrise-gold text-dark-olive py-3.5 rounded-xl hover:bg-white hover:text-primary-green transition-colors duration-300 shadow-md cursor-pointer"
+            className="w-full font-sans text-xs font-bold tracking-widest uppercase bg-[#C68A2B] text-white py-3.5 rounded-xl hover:bg-[#B8833E] transition-colors shadow-sm cursor-pointer"
           >
             {isAuthenticated ? "My Account" : "Sign In / Login"}
           </button>
