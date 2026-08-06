@@ -552,21 +552,41 @@ export default function Partner() {
         </div>
       </section>
 
-      {/* 6. OUR PARTNERSHIP PHILOSOPHY */}
-      <section className="py-14 sm:py-18 lg:py-22 px-4 sm:px-6 lg:px-12 bg-gradient-to-br from-[#2F3B0C] to-[#1E2707] text-white relative overflow-hidden dark-section">
-        <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[radial-gradient(#ffffff_1.5px,transparent_1.5px)] [background-size:32px_32px] pointer-events-none" />
-        <div className="max-w-5xl mx-auto text-center space-y-8 relative z-10">
-          <span className="text-7xl font-serif text-[#B8833E]/50 leading-none block select-none">“</span>
-          
-          <div className="flex justify-center">
-            <SectionBadge text="Our Partnership Philosophy" align="center" />
-          </div>
+      {/* 6. OUR PARTNERSHIP PHILOSOPHY (ELEGANT CREAM QUOTE BANNER) */}
+      <section className="py-12 sm:py-14 lg:py-16 px-4 sm:px-6 lg:px-12 bg-[#FAF7F2] border-b border-[#EDE7D9] relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(#4E641A_1px,transparent_1px)] [background-size:32px_32px] opacity-10 pointer-events-none" />
 
-          <blockquote className="font-serif text-2xl sm:text-3xl lg:text-4xl font-light italic leading-relaxed text-[#F9F6F0] max-w-4xl mx-auto">
-            "A true partnership is not simply about doing business together. It is about growing together, learning together, creating lasting value, and building relationships founded on trust, integrity, and shared success."
-          </blockquote>
+        <div className="max-w-4xl mx-auto relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4 }}
+            className="bg-white border border-[#EDE7D9] rounded-[28px] sm:rounded-[36px] p-8 sm:p-12 lg:p-14 shadow-md hover:shadow-xl hover:border-[#4E641A]/30 transition-all duration-300 text-center space-y-6 relative overflow-hidden group transform hover:-translate-y-0.5"
+          >
+            {/* Corner Botanical Watermark */}
+            <div className="absolute -right-6 -bottom-6 text-[#4E641A]/5 group-hover:text-[#4E641A]/10 text-9xl pointer-events-none transition-colors duration-300 select-none">
+              <GiSprout />
+            </div>
+            <div className="absolute -left-6 -top-6 text-[#B8833E]/5 text-9xl pointer-events-none select-none">
+              <GiSprout />
+            </div>
 
-          <div className="w-24 h-1 bg-[#B8833E] mx-auto rounded-full mt-8" />
+            <div className="flex flex-col items-center space-y-3 relative z-10">
+              <span className="text-6xl sm:text-7xl font-serif text-[#B8833E]/40 leading-none select-none block h-10 -mb-2">“</span>
+              <SectionBadge text="Our Partnership Philosophy" align="center" />
+            </div>
+
+            <blockquote className="font-serif text-xl sm:text-2xl lg:text-3xl font-normal italic leading-relaxed text-[#2F3B0C] max-w-3xl mx-auto relative z-10">
+              "A true partnership is not simply about doing business together. It is about growing together, learning together, creating lasting value, and building relationships founded on trust, integrity, and shared success."
+            </blockquote>
+
+            <div className="flex items-center justify-center gap-3 pt-2 relative z-10">
+              <div className="w-10 h-0.5 bg-[#B8833E]/30 rounded-full" />
+              <div className="w-2.5 h-2.5 rounded-full bg-[#B8833E]" />
+              <div className="w-10 h-0.5 bg-[#B8833E]/30 rounded-full" />
+            </div>
+          </motion.div>
         </div>
       </section>
 
@@ -687,50 +707,94 @@ export default function Partner() {
         </div>
       </section>
 
-      {/* 11. JOIN HANDS WITH SURYODAYA FARMS & APPLICATION FORM */}
-      <section id="partner-form-section" className="py-16 sm:py-24 lg:py-28 px-4 sm:px-6 lg:px-12 bg-[#2F3B0C] text-white relative overflow-hidden dark-section">
-        <div className="max-w-5xl mx-auto space-y-10 sm:space-y-12 text-center relative z-10">
-          <div className="space-y-6 max-w-5xl mx-auto">
-            <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white leading-tight whitespace-nowrap">
-              Join Hands with Suryodaya Farms
-            </h2>
-            <p className="text-white/90 text-base sm:text-lg lg:text-xl leading-relaxed font-sans font-normal">
-              At Suryodaya Farms, we believe every successful partnership begins with trust and grows through shared commitment. Whether you are expanding your business, entering new markets, or looking for a dependable partner, we are ready to grow with you. Together, let us deliver premium-quality natural nutrition, inspire healthier lifestyles, help build healthier communities, and create lasting value for generations to come.
-            </p>
-            <p className="text-white/90 text-base sm:text-lg lg:text-xl leading-relaxed font-sans font-medium pt-4 border-t border-white/20">
+      {/* 11. JOIN HANDS WITH SURYODAYA FARMS */}
+      <section className="py-14 sm:py-18 lg:py-20 px-4 sm:px-6 lg:px-12 bg-[#FAF7F2] border-b border-[#EDE7D9] relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(#4E641A_1px,transparent_1px)] [background-size:32px_32px] opacity-10 pointer-events-none" />
+
+        <div className="max-w-4xl mx-auto space-y-6 text-center flex flex-col items-center relative z-10">
+          <SectionBadge text="Collaborative Growth" align="center" />
+          
+          <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#2F3B0C] leading-tight">
+            Join Hands with Suryodaya Farms
+          </h2>
+
+          <p className="text-stone-700 text-sm sm:text-base lg:text-lg leading-relaxed font-sans font-normal max-w-3xl">
+            At Suryodaya Farms, we believe every successful partnership begins with trust and grows through shared commitment. Whether you are expanding your business, entering new markets, or looking for a dependable partner, we are ready to grow with you. Together, let us deliver premium-quality natural nutrition, inspire healthier lifestyles, help build healthier communities, and create lasting value for generations to come.
+          </p>
+
+          {/* HIGHLIGHTED STATEMENT (PREMIUM TRUST BANNER) */}
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4, delay: 0.1 }}
+            className="bg-white border border-[#EDE7D9] border-l-4 border-l-[#4E641A] p-6 sm:p-8 rounded-[24px] shadow-sm max-w-3xl text-left space-y-2 mt-4"
+          >
+            <div className="flex items-center gap-2 text-[#4E641A]">
+              <GiSprout className="text-lg" />
+              <span className="text-xs font-extrabold uppercase tracking-wider text-[#4E641A]">Our Shared Impact</span>
+            </div>
+            <p className="font-serif text-base sm:text-lg lg:text-xl font-bold text-[#2F3B0C] leading-snug">
               Because true success is measured not only by business growth, but also by the trust we earn, the relationships we build, the lives we enrich, and the positive impact we create for society.
             </p>
-          </div>
+          </motion.div>
+        </div>
+      </section>
 
-          {/* APPLICATION FORM INSIDE SECTION 11 */}
-          <div className="bg-white text-[#2F3B0C] border border-[#EDE7D9] rounded-[36px] p-8 sm:p-14 shadow-2xl text-left mt-8 sm:mt-10">
-            {/* Header above form */}
-            <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-12 space-y-4">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#2F3B0C]/10 border border-[#2F3B0C]/25 !text-[#2F3B0C] text-xs font-extrabold uppercase tracking-widest shadow-2xs">
-                <GiSprout className="!text-[#2F3B0C] text-sm" />
-                <span className="!text-[#2F3B0C]">Application Portal</span>
+      {/* 12. PREMIUM APPLICATION CARD (2-COLUMN SPLIT FORM PORTAL) */}
+      <section id="partner-form-section" className="py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-12 bg-[#F9F6F0] border-b border-[#EDE7D9] relative">
+        <div className="max-w-7xl mx-auto">
+          <div className="bg-white border border-[#EDE7D9] rounded-[32px] sm:rounded-[40px] p-6 sm:p-10 lg:p-14 shadow-xl relative overflow-hidden">
+            
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+              
+              {/* [ LEFT COLUMN ] - HEADING & DESCRIPTION */}
+              <div className="lg:col-span-5 space-y-6 text-left relative z-10 lg:sticky lg:top-28">
+                <SectionBadge text="Application Portal" align="left" />
+
+                <h3 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#2F3B0C] leading-tight">
+                  Join Our Partnership Network
+                </h3>
+
+                <p className="text-stone-600 text-sm sm:text-base leading-relaxed font-sans font-normal">
+                  Complete the application below to explore partnership opportunities with Suryodaya Farms. Our team will carefully review your submission and get in touch with you to discuss the next steps.
+                </p>
+
+                <div className="w-16 h-0.5 bg-[#4E641A]/30 rounded-full" />
+
+                {/* TRUST & ASSURANCE CHECKLIST */}
+                <div className="space-y-4 pt-2">
+                  <div className="flex items-start gap-3 text-xs sm:text-sm font-sans font-medium text-stone-700">
+                    <FiCheckCircle className="text-[#4E641A] text-lg shrink-0 mt-0.5" />
+                    <span>Verified B2B Commercial Partner Network</span>
+                  </div>
+                  <div className="flex items-start gap-3 text-xs sm:text-sm font-sans font-medium text-stone-700">
+                    <FiCheckCircle className="text-[#4E641A] text-lg shrink-0 mt-0.5" />
+                    <span>Response within 24–48 Business Hours</span>
+                  </div>
+                  <div className="flex items-start gap-3 text-xs sm:text-sm font-sans font-medium text-stone-700">
+                    <FiCheckCircle className="text-[#4E641A] text-lg shrink-0 mt-0.5" />
+                    <span>Dedicated Relationship Manager Support</span>
+                  </div>
+                </div>
+
+                {/* Corner Botanical Watermark */}
+                <div className="hidden lg:block absolute -left-12 -bottom-12 text-[#4E641A]/5 text-9xl pointer-events-none select-none">
+                  <GiSprout />
+                </div>
               </div>
 
-              <h3 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold !text-[#1C2607] leading-tight">
-                Join Our Partnership Network
-              </h3>
-
-              <p className="!text-[#1C2607] text-sm sm:text-base leading-relaxed font-sans font-medium max-w-2xl mx-auto">
-                Complete the application below to explore partnership opportunities with Suryodaya Farms. Our team will carefully review your submission and get in touch with you to discuss the next steps.
-              </p>
-
-              <div className="w-20 h-0.5 bg-gradient-to-r from-transparent via-[#C68A2B]/80 to-transparent mx-auto pt-1 rounded-full" />
-            </div>
-
-            <AnimatePresence mode="wait">
-              {submitSuccess ? (
-                <motion.div
-                  key="success"
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  className="py-16 text-center space-y-6"
-                >
+              {/* [ RIGHT COLUMN ] - FORM AREA */}
+              <div className="lg:col-span-7 bg-[#FAF8F5] border border-[#EDE7D9] rounded-[24px] sm:rounded-[28px] p-6 sm:p-8 lg:p-10 shadow-xs text-left relative z-10">
+                <AnimatePresence mode="wait">
+                  {submitSuccess ? (
+                    <motion.div
+                      key="success"
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      className="py-16 text-center space-y-6"
+                    >
                   <div className="w-20 h-20 bg-[#4E641A]/10 text-[#4E641A] rounded-full flex items-center justify-center mx-auto text-4xl shadow-inner">
                     <FiCheckCircle className="animate-bounce" />
                   </div>
@@ -938,6 +1002,8 @@ export default function Partner() {
                 </motion.form>
               )}
             </AnimatePresence>
+              </div>
+            </div>
           </div>
         </div>
       </section>
