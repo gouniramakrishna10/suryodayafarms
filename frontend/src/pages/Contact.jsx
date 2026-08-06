@@ -180,107 +180,65 @@ export default function Contact() {
   return (
     <div className="bg-[#F9F6F0] min-h-screen font-sans text-[#2F3B0C]">
       
-      {/* 1. HERO SECTION (REDESIGNED 2-COLUMN SPLIT LANDING) */}
-      <section className="py-14 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 bg-gradient-to-b from-[#F4EFE6] via-[#FAF7F2] to-[#FAF7F2] overflow-hidden border-b border-[#EDE7D9] relative select-none">
-        {/* Soft Radial Dots & Glow Watermarks */}
+      {/* 1. HERO SECTION (MINIMALIST SINGLE-COLUMN CENTERED PRESENTATION) */}
+      <section className="py-14 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-[#F4EFE6] via-[#FAF7F2] to-[#FAF7F2] overflow-hidden border-b border-[#EDE7D9] relative select-none">
+        {/* Soft Radial Paper Texture & Low Opacity Organic Glow */}
         <div className="absolute inset-0 bg-[radial-gradient(#4E641A_1px,transparent_1px)] [background-size:32px_32px] opacity-10 pointer-events-none" />
-        <div className="absolute -top-32 -left-32 w-96 h-96 bg-[#4E641A]/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute top-1/2 -right-32 w-96 h-96 bg-[#B8833E]/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[600px] h-[350px] bg-[#4E641A]/5 rounded-full blur-3xl pointer-events-none" />
 
-        <div className="max-w-7xl mx-auto relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
-            
-            {/* LEFT COLUMN: Content (lg:col-span-7 ~ 55%) */}
-            <div className="lg:col-span-7 space-y-6 text-left">
-              <motion.div
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4 }}
-              >
-                <SectionBadge text="We're Here to Help" align="left" />
-              </motion.div>
+        {/* Low-Opacity Organic Leaf Illustration Watermarks (< 4% opacity) */}
+        <GiSprout className="absolute left-6 sm:left-12 top-10 text-[#4E641A]/4 text-7xl pointer-events-none select-none hidden sm:block" />
+        <GiSun className="absolute right-6 sm:right-12 bottom-8 text-[#B8833E]/4 text-7xl pointer-events-none select-none hidden sm:block" />
 
-              <motion.h1
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.1 }}
-                className="font-serif text-3xl sm:text-5xl lg:text-6xl font-bold text-[#2F3B0C] leading-[1.15] tracking-tight"
-              >
-                Contact <span className="text-[#4E641A]">Us</span>
-              </motion.h1>
+        <div className="max-w-[780px] mx-auto text-center relative z-10 space-y-6">
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            className="flex justify-center"
+          >
+            <SectionBadge text="We're Here to Help" align="center" />
+          </motion.div>
 
-              <motion.p
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.2 }}
-                className="text-stone-600/90 text-sm sm:text-base lg:text-lg max-w-2xl font-sans leading-relaxed font-normal"
-              >
-                Thank you for your interest in Suryodaya Farms. Whether you have a question about our products, need assistance with an order, would like to share your feedback, or are interested in a business partnership, our team is always happy to assist you.
-              </motion.p>
+          <motion.h1
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.1 }}
+            className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-[#2F3B0C] leading-[1.15] tracking-tight"
+          >
+            Contact <span className="text-[#4E641A]">Us</span>
+          </motion.h1>
 
-              <motion.div
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.3 }}
-                className="flex flex-wrap items-center gap-4 pt-2"
-              >
-                <button
-                  onClick={scrollToContactForm}
-                  className="inline-flex items-center gap-3 bg-[#4E641A] hover:bg-[#2F3B0C] text-white font-sans text-xs sm:text-sm font-bold tracking-widest uppercase px-8 py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 active:scale-[0.99] cursor-pointer border-none"
-                >
-                  <span>Contact Support</span>
-                  <FiArrowRight className="text-base" />
-                </button>
+          <motion.p
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.2 }}
+            className="text-stone-600/90 text-base sm:text-lg lg:text-xl max-w-2xl mx-auto font-sans leading-relaxed font-normal"
+          >
+            Thank you for your interest in Suryodaya Farms. Whether you have a question about our products, need assistance with an order, would like to share your feedback, or are interested in a business partnership, our team is always happy to assist you.
+          </motion.p>
 
-                <Link
-                  to="/become-a-partner"
-                  className="inline-flex items-center gap-3 bg-white hover:bg-[#FAF7F2] text-[#2F3B0C] border border-[#EDE7D9] hover:border-[#4E641A]/50 font-sans text-xs sm:text-sm font-bold tracking-widest uppercase px-8 py-4 rounded-2xl shadow-2xs hover:shadow-md transition-all duration-300 transform hover:-translate-y-0.5"
-                >
-                  <span>Become a Partner</span>
-                </Link>
-              </motion.div>
-            </div>
-
-            {/* RIGHT COLUMN: Visual Panel (lg:col-span-5 ~ 45%) */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.96 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="lg:col-span-5"
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.3 }}
+            className="flex flex-wrap items-center justify-center gap-4 pt-4"
+          >
+            <button
+              onClick={scrollToContactForm}
+              className="inline-flex items-center gap-3 bg-[#4E641A] hover:bg-[#2F3B0C] text-white font-sans text-xs sm:text-sm font-bold tracking-widest uppercase px-9 py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 active:scale-[0.99] cursor-pointer border-none"
             >
-              <div className="relative rounded-[28px] sm:rounded-[32px] overflow-hidden border-4 border-white shadow-xl bg-stone-100 group">
-                <img 
-                  src="https://images.unsplash.com/photo-1595475207225-428b62bda831?q=80&w=1200&auto=format&fit=crop" 
-                  alt="Suryodaya Farms Dedicated Customer Support & Organic Excellence" 
-                  loading="lazy"
-                  className="w-full h-[320px] sm:h-[400px] lg:h-[440px] object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#2F3B0C]/85 via-transparent to-transparent" />
-                
-                {/* Floating Top Badge */}
-                <div className="absolute top-5 left-5 bg-white/90 backdrop-blur-md px-4 py-2 rounded-full border border-white/80 shadow-sm flex items-center gap-2">
-                  <FiShield className="w-4 h-4 text-[#4E641A]" />
-                  <span className="font-sans text-xs font-bold text-[#2F3B0C] tracking-wide uppercase">
-                    Purity • Support • Trust
-                  </span>
-                </div>
+              <span>Contact Support</span>
+              <FiArrowRight className="text-base" />
+            </button>
 
-                {/* Floating Bottom Card Overlay */}
-                <div className="absolute bottom-5 left-5 right-5 bg-white/95 backdrop-blur-md p-4 sm:p-5 rounded-2xl border border-white/90 shadow-lg space-y-1.5 text-left">
-                  <div className="flex items-center gap-2">
-                    <GiSprout className="w-5 h-5 text-[#4E641A]" />
-                    <span className="font-serif text-xs sm:text-sm font-bold text-[#4E641A] uppercase tracking-wider">
-                      SURYODAYA FARMS CARE
-                    </span>
-                  </div>
-                  <p className="font-serif text-xs sm:text-sm font-bold text-[#2F3B0C] italic leading-snug">
-                    "Your health, trust, and satisfaction inspire everything we do."
-                  </p>
-                </div>
-              </div>
-            </motion.div>
-
-          </div>
+            <Link
+              to="/become-a-partner"
+              className="inline-flex items-center gap-3 bg-white hover:bg-[#FAF7F2] text-[#2F3B0C] border border-[#EDE7D9] hover:border-[#4E641A]/50 font-sans text-xs sm:text-sm font-bold tracking-widest uppercase px-9 py-4 rounded-2xl shadow-2xs hover:shadow-md transition-all duration-300 transform hover:-translate-y-0.5"
+            >
+              <span>Become a Partner</span>
+            </Link>
+          </motion.div>
         </div>
       </section>
 
