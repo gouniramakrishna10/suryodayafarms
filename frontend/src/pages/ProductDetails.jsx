@@ -17,6 +17,7 @@ import DOMPurify from 'dompurify';
 import DynamicSectionRenderer from '../components/DynamicSectionRenderer';
 import { formatCurrency } from '../utils/currency';
 import { fetchWithCache } from '../utils/cacheStore';
+import SectionBadge from '../components/SectionBadge';
 
 // Simple, high-quality, organic confetti effect
 const triggerConfetti = (canvasEl) => {
@@ -415,10 +416,8 @@ export default function ProductDetails() {
   };
 
   const renderProductTitle = () => (
-    <div className="space-y-3">
-      <span className="inline-block bg-[#C68A2B]/10 text-[#C68A2B] font-sans text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">
-        {(product.categories && product.categories.length > 0) ? product.categories[0].name : (product.category?.name || 'Vedic Staples')}
-      </span>
+    <div className="space-y-3 flex flex-col items-start">
+      <SectionBadge text={(product.categories && product.categories.length > 0) ? product.categories[0].name : (product.category?.name || 'Vedic Staples')} align="left" />
       <h1 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C] leading-tight">
         {product.name}
       </h1>

@@ -9,6 +9,7 @@ import { useCartStore } from '../store/useCartStore';
 import { useWishlistStore } from '../store/useWishlistStore';
 import ProductCard from '../components/ProductCard';
 import { fetchWithCache } from '../utils/cacheStore';
+import SectionBadge from '../components/SectionBadge';
 
 export default function CategoryCollection() {
   const { slug } = useParams();
@@ -148,10 +149,8 @@ export default function CategoryCollection() {
               )}
               <div className="absolute inset-0 bg-gradient-to-t from-[#2F3B0C] via-[#2F3B0C]/45 to-transparent" />
               
-              <div className="relative text-white space-y-2 max-w-2xl text-left">
-                <span className="font-sans text-[9px] font-extrabold tracking-[0.3em] uppercase text-[#C68A2B]">
-                  PURE • NATURAL • NUTRITIOUS
-                </span>
+              <div className="relative text-white space-y-2 max-w-2xl text-left flex flex-col items-start">
+                <SectionBadge text="PURE • NATURAL • NUTRITIOUS" align="left" />
                 <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold leading-tight drop-shadow-sm text-white">
                   {category.name}
                 </h1>

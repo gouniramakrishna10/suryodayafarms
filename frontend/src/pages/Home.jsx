@@ -23,6 +23,7 @@ import {
   FiShoppingBag as CartIcon
 } from 'react-icons/fi';
 import { GiWheat, GiWaterDrop, GiSprout, GiSun } from 'react-icons/gi';
+import SectionBadge from '../components/SectionBadge';
 import { useCartStore } from '../store/useCartStore';
 import { useWishlistStore } from '../store/useWishlistStore';
 import { useAuthStore } from '../store/useAuthStore';
@@ -650,10 +651,8 @@ export default function Home() {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12">
           {/* Section Header */}
-          <div className="text-center max-w-xl mx-auto space-y-4 mb-16">
-            <span className="text-xs font-bold uppercase tracking-widest text-[#C68A2B] bg-[#C68A2B]/10 px-3.5 py-1 rounded-full inline-block">
-              {settings.homepage_section_badge_categories || "PURE • NATURAL • NUTRITIOUS"}
-            </span>
+          <div className="text-center max-w-xl mx-auto space-y-4 mb-16 flex flex-col items-center">
+            <SectionBadge text={settings.homepage_section_badge_categories || "PURE • NATURAL • NUTRITIOUS"} align="center" />
             <h2 className="font-serif text-3xl md:text-5xl font-semibold text-[#2F3B0C]">
               {settings.homepage_section_title_categories || "Shop By Category"}
             </h2>
@@ -1289,12 +1288,8 @@ export default function Home() {
             
             {/* 2. Product Selector Strip (Mobile Luxury Swipe Carousel) */}
             <div className="w-full mt-2 flex flex-col items-center select-none">
-              <div className="flex items-center justify-center gap-2 mb-2.5">
-                <span className="text-[#C68A2B] text-[10px]">🌿</span>
-                <h3 className="font-serif text-[#2F3B0C] text-[10px] font-bold uppercase tracking-[0.2em] text-center">
-                  OUR SUPERFOOD RANGE
-                </h3>
-                <span className="text-[#C68A2B] text-[10px]">🌿</span>
+              <div className="flex items-center justify-center mb-2.5">
+                <SectionBadge text="OUR SUPERFOOD RANGE" align="center" />
               </div>
 
               <div className="flex flex-row gap-3 overflow-x-auto no-scrollbar py-2 w-full snap-x snap-mandatory px-4 justify-start select-none">
@@ -1473,10 +1468,8 @@ export default function Home() {
   const renderBestSellersSection = () => {
     return (
       <section key="best-sellers" id="best-sellers-grid" className="py-20 px-6 md:px-12 max-w-7xl mx-auto border-b border-[#EAE4D8]">
-        <div className="text-center max-w-2xl lg:max-w-3xl mx-auto space-y-4 mb-16">
-          <span className="text-xs font-bold uppercase tracking-widest text-[#C68A2B] bg-[#C68A2B]/10 px-3.5 py-1 rounded-full">
-            {settings.homepage_section_badge_best_sellers || "Customer Favorites"}
-          </span>
+        <div className="text-center max-w-2xl lg:max-w-3xl mx-auto space-y-4 mb-16 flex flex-col items-center">
+          <SectionBadge text={settings.homepage_section_badge_best_sellers || "Customer Favorites"} align="center" />
           <h2 className="font-serif text-3xl md:text-5xl font-semibold text-[#2F3B0C] leading-tight">
             {settings.homepage_section_title_best_sellers || "Nourish Your Family with Nature's Finest Superfoods"}
           </h2>
@@ -1610,10 +1603,8 @@ export default function Home() {
     return (
       <section key="collections" id="collections-grid" className="py-20 px-6 md:px-12 max-w-7xl mx-auto border-b border-[#EAE4D8]">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 text-left">
-          <div className="space-y-2">
-            <span className="text-xs font-bold uppercase tracking-widest text-[#C68A2B]">
-              {settings.homepage_section_badge_collections || "Handcrafted Categories"}
-            </span>
+          <div className="space-y-3 flex flex-col items-start">
+            <SectionBadge text={settings.homepage_section_badge_collections || "Handcrafted Categories"} align="left" />
             <h2 className="font-serif text-3xl md:text-5xl font-semibold text-[#2F3B0C]">
               {settings.homepage_section_title_collections || "Signature Farm Collections"}
             </h2>
@@ -1738,10 +1729,8 @@ export default function Home() {
 
     return (
       <section key="benefits" className="py-20 px-6 md:px-12 max-w-7xl mx-auto border-b border-[#EAE4D8] bg-[#FDFBF7]/30">
-        <div className="text-center max-w-2xl mx-auto space-y-3 mb-12">
-          <span className="text-xs font-bold uppercase tracking-widest text-[#C68A2B] bg-[#C68A2B]/10 px-3.5 py-1 rounded-full">
-            {settings.homepage_section_badge_benefits || "Targeted Nutrition"}
-          </span>
+        <div className="text-center max-w-2xl mx-auto space-y-3 mb-12 flex flex-col items-center">
+          <SectionBadge text={settings.homepage_section_badge_benefits || "Targeted Nutrition"} align="center" />
           <h2 className="font-serif text-3xl md:text-5xl font-semibold text-[#2F3B0C]">
             {settings.homepage_section_title_benefits || "Shop by Wellness Goal"}
           </h2>
@@ -1784,10 +1773,8 @@ export default function Home() {
       <section key="reviews" className="py-10 px-4 md:py-20 md:px-12 bg-[#F3EFE6]/40 border-b border-[#EAE4D8]">
 
         <div className="max-w-7xl mx-auto">
-          <div className="text-center max-w-xl mx-auto space-y-3 mb-10 md:mb-16">
-            <span className="text-xs font-bold uppercase tracking-widest text-[#C68A2B]">
-              {settings.homepage_section_badge_reviews || "Verified Testimonials"}
-            </span>
+          <div className="text-center max-w-xl mx-auto space-y-3 mb-10 md:mb-16 flex flex-col items-center">
+            <SectionBadge text={settings.homepage_section_badge_reviews || "Verified Testimonials"} align="center" />
             <h2 className="font-serif text-3xl md:text-5xl font-semibold text-[#2F3B0C]">
               {settings.homepage_section_title_reviews || "Earning Faith in Indian Homes"}
             </h2>

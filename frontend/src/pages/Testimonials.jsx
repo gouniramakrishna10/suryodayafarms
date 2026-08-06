@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { FiMessageSquare, FiStar, FiPlay } from 'react-icons/fi';
+import { FiStar, FiCheckCircle, FiPlay, FiVolume2, FiShare2 } from 'react-icons/fi';
+import { GiSun } from 'react-icons/gi';
+import SectionBadge from '../components/SectionBadge';
 import api from '../utils/api';
 
 export default function Testimonials() {
@@ -120,10 +122,8 @@ export default function Testimonials() {
       {/* 3. Cooperative Farmer Spotlight Section */}
       <section className="bg-light-beige/35 py-24 px-6 md:px-12 border-t border-b border-light-beige/60 my-12 w-full">
         <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-16 items-center">
-          <div className="w-full lg:w-1/2 flex flex-col gap-6">
-            <span className="font-sans text-[10px] font-bold tracking-widest uppercase text-sunrise-gold">
-              Social Cooperative Model
-            </span>
+          <div className="w-full lg:w-1/2 flex flex-col items-start gap-4">
+            <SectionBadge text="Social Cooperative Model" align="left" />
             <h2 className="font-serif text-3xl md:text-4xl font-bold text-dark-olive">
               Building a Soil-First Collective
             </h2>
@@ -156,9 +156,7 @@ export default function Testimonials() {
       {/* 4. Play Overlay Testimonial Video Boards */}
       <section className="py-24 px-6 md:px-12 max-w-7xl mx-auto w-full">
         <div className="text-center max-w-2xl mx-auto flex flex-col items-center gap-4 mb-16">
-          <span className="font-sans text-[10px] font-bold tracking-widest uppercase text-sunrise-gold">
-            The Digital Homestead
-          </span>
+          <SectionBadge text="The Digital Homestead" align="center" />
           <h2 className="font-serif text-3xl md:text-4xl font-bold text-dark-olive">
             Visual Sights of Truth
           </h2>

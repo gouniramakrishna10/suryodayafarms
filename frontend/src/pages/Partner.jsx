@@ -23,6 +23,7 @@ import {
   FiStar
 } from 'react-icons/fi';
 import { GiSprout, GiSun, GiWheat, GiHand } from 'react-icons/gi';
+import SectionBadge from '../components/SectionBadge';
 import api from '../utils/api';
 
 export default function Partner() {
@@ -180,10 +181,9 @@ export default function Partner() {
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2.5 px-5 py-2 rounded-full bg-[#4E641A]/10 border border-[#4E641A]/20 backdrop-blur-md text-[#4E641A] text-xs sm:text-sm font-semibold uppercase tracking-widest mx-auto shadow-xs"
+            className="flex justify-center"
           >
-            <GiSun className="text-[#B8833E] text-lg" />
-            <span>Growing Together. Building a Healthier Future.</span>
+            <SectionBadge text="Growing Together. Building a Healthier Future." align="center" />
           </motion.div>
 
           <motion.h1
@@ -236,8 +236,8 @@ export default function Partner() {
       {/* 3. PARTNERSHIP OPPORTUNITIES */}
       <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 bg-[#FAF7F2] border-b border-[#EDE7D9]">
         <div className="max-w-7xl mx-auto space-y-16">
-          <div className="text-center max-w-3xl mx-auto space-y-4">
-            <span className="font-sans text-xs font-bold text-[#B8833E] uppercase tracking-widest">Collaborative Avenues</span>
+          <div className="text-center max-w-3xl mx-auto space-y-4 flex flex-col items-center">
+            <SectionBadge text="Collaborative Avenues" align="center" />
             <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">Partnership Opportunities</h2>
             <p className="text-stone-600 text-base sm:text-lg font-sans">We welcome collaborations in the following areas:</p>
           </div>
@@ -276,8 +276,8 @@ export default function Partner() {
       {/* 4. WHY PARTNER WITH SURYODAYA FARMS? */}
       <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 bg-white border-b border-[#EDE7D9]">
         <div className="max-w-7xl mx-auto space-y-16">
-          <div className="text-center max-w-5xl mx-auto space-y-4">
-            <span className="font-sans text-xs font-bold text-[#B8833E] uppercase tracking-widest">Our Foundation</span>
+          <div className="text-center max-w-5xl mx-auto space-y-4 flex flex-col items-center">
+            <SectionBadge text="Our Foundation" align="center" />
             <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#1C2607] whitespace-nowrap">Why Partner with Suryodaya Farms?</h2>
             <p className="text-stone-900 text-base sm:text-lg leading-relaxed font-sans font-medium">
               When you choose Suryodaya Farms, you gain more than a supplier—you gain a reliable business partner committed to long-term success.
@@ -337,7 +337,9 @@ export default function Partner() {
         <div className="max-w-5xl mx-auto text-center space-y-8 relative z-10">
           <span className="text-7xl font-serif text-[#B8833E]/50 leading-none block select-none">“</span>
           
-          <span className="font-sans text-xs font-bold uppercase tracking-[0.25em] text-[#B8833E] block">Our Partnership Philosophy</span>
+          <div className="flex justify-center">
+            <SectionBadge text="Our Partnership Philosophy" align="center" />
+          </div>
 
           <blockquote className="font-serif text-2xl sm:text-3xl lg:text-4xl font-light italic leading-relaxed text-[#F9F6F0] max-w-4xl mx-auto">
             "A true partnership is not simply about doing business together. It is about growing together, learning together, creating lasting value, and building relationships founded on trust, integrity, and shared success."
@@ -349,8 +351,8 @@ export default function Partner() {
 
       {/* 7. OUR SHARED VISION */}
       <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 bg-white border-b border-[#EDE7D9]">
-        <div className="max-w-4xl mx-auto text-center space-y-8">
-          <span className="font-sans text-xs font-bold text-[#4E641A] uppercase tracking-widest">Forward Together</span>
+        <div className="max-w-4xl mx-auto text-center space-y-8 flex flex-col items-center">
+          <SectionBadge text="Forward Together" align="center" />
           <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">Our Shared Vision</h2>
           
           <div className="space-y-6 text-stone-700 text-base sm:text-lg lg:text-xl leading-relaxed font-sans max-w-3xl mx-auto">
@@ -367,8 +369,8 @@ export default function Partner() {
       {/* 8. OUR PROMISE TO EVERY PARTNER (PREMIUM 2-COLUMN LAYOUT) */}
       <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 bg-[#FAF7F2] border-b border-[#EDE7D9]">
         <div className="max-w-7xl mx-auto space-y-16">
-          <div className="text-center max-w-3xl mx-auto space-y-3">
-            <span className="font-sans text-xs font-bold text-[#B8833E] uppercase tracking-widest">Unwavering Principles</span>
+          <div className="text-center max-w-3xl mx-auto space-y-3 flex flex-col items-center">
+            <SectionBadge text="Unwavering Principles" align="center" />
             <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">Our Promise to Every Partner</h2>
           </div>
 

@@ -14,6 +14,7 @@ import {
   FiGlobe
 } from 'react-icons/fi';
 import { GiSprout, GiSun, GiWheat } from 'react-icons/gi';
+import SectionBadge from '../components/SectionBadge';
 
 export default function About() {
   const philosophyList = [
@@ -118,8 +119,8 @@ export default function About() {
       {/* 2. OUR STORY */}
       <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 bg-white border-b border-[#EDE7D9]">
         <div className="max-w-4xl mx-auto space-y-8 text-left">
-          <div className="space-y-3">
-            <span className="font-sans text-xs font-bold text-[#B8833E] uppercase tracking-widest">Every Sunrise Brings New Hope</span>
+          <div className="space-y-3 flex flex-col items-start">
+            <SectionBadge text="Every Sunrise Brings New Hope" align="left" />
             <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">OUR STORY</h2>
           </div>
 
@@ -164,8 +165,8 @@ export default function About() {
       {/* 3. ABOUT SURYODAYA FARMS */}
       <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 bg-[#FAF7F2] border-b border-[#EDE7D9]">
         <div className="max-w-4xl mx-auto space-y-8 text-left">
-          <div className="space-y-3">
-            <span className="font-sans text-xs font-bold text-[#4E641A] uppercase tracking-widest">Nature's Goodness. Guided by Science.</span>
+          <div className="space-y-3 flex flex-col items-start">
+            <SectionBadge text="Nature's Goodness. Guided by Science." align="left" />
             <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2F3B0C]">ABOUT SURYODAYA FARMS</h2>
           </div>
 

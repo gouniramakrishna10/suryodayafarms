@@ -16,7 +16,8 @@ import {
   FiAlertCircle
 } from 'react-icons/fi';
 import { FaWhatsapp, FaFacebook, FaInstagram, FaYoutube, FaLinkedin } from 'react-icons/fa';
-import { GiSun } from 'react-icons/gi';
+import { GiSprout, GiSun, GiWheat } from 'react-icons/gi';
+import SectionBadge from '../components/SectionBadge';
 import api from '../utils/api';
 import { getWhatsAppUrl, WHATSAPP_FORMATTED_PHONE } from '../config/constants';
 import { useSettingsStore } from '../store/useSettingsStore';
@@ -134,10 +135,9 @@ export default function Contact() {
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2.5 px-4.5 py-1.5 rounded-full bg-[#4E641A]/8 border border-[#4E641A]/20 backdrop-blur-md text-[#4E641A] text-xs font-semibold uppercase tracking-widest mx-auto"
+            className="flex justify-center"
           >
-            <GiSun className="text-[#B8833E] text-base" />
-            <span>We're Here to Help</span>
+            <SectionBadge text="We're Here to Help" align="center" />
           </motion.div>
 
           <motion.h1
@@ -184,8 +184,8 @@ export default function Contact() {
 
       {/* 2. CONTACT INFORMATION CARDS */}
       <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-b border-[#EDE7D9]/80">
-        <div className="text-center max-w-xl mx-auto mb-16 space-y-3">
-          <span className="font-sans text-xs font-bold text-[#B8833E] uppercase tracking-widest">Connect Directly</span>
+        <div className="text-center max-w-xl mx-auto mb-16 space-y-3 flex flex-col items-center">
+          <SectionBadge text="Connect Directly" align="center" />
           <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#2F3B0C] tracking-tight">Contact Information</h2>
         </div>
 
@@ -329,8 +329,8 @@ export default function Contact() {
       {/* 3. GOOGLE MAP SECTION */}
       <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-b border-[#EDE7D9]/80">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 text-left">
-          <div className="space-y-2 max-w-2xl">
-            <span className="font-sans text-xs font-bold text-[#4E641A] uppercase tracking-widest">Our Location</span>
+          <div className="space-y-2 max-w-2xl flex flex-col items-start">
+            <SectionBadge text="Our Location" align="left" />
             <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#2F3B0C] tracking-tight">Visit Our Registered Office</h2>
             <p className="text-stone-600 text-sm font-sans leading-relaxed">
               Plot No: 20, Bhrundavanam Apartment, Near Arca School, Peerzadiguda, Medipally, Hyderabad – 500039
@@ -440,8 +440,8 @@ export default function Contact() {
           <div className="space-y-6 text-left flex flex-col justify-between h-full">
             
             {/* Customer Feedback Card */}
-            <div className="bg-white border border-[#EDE7D9] rounded-[32px] p-7 sm:p-9 shadow-xs space-y-3">
-              <span className="font-sans text-xs font-bold text-[#4E641A] uppercase tracking-widest">We Value Your Thoughts</span>
+            <div className="bg-white border border-[#EDE7D9] rounded-[32px] p-7 sm:p-9 shadow-xs space-y-3 flex flex-col items-start">
+              <SectionBadge text="We Value Your Thoughts" align="left" />
               <h2 className="font-serif text-2xl font-bold text-[#2F3B0C]">Customer Feedback</h2>
               <p className="text-stone-600 text-sm leading-relaxed font-sans">
                 Your feedback is important to us. Every suggestion, appreciation, or concern helps us improve our products, services, and customer experience.
@@ -453,9 +453,8 @@ export default function Contact() {
               <div className="absolute -right-28 -bottom-28 w-96 h-96 bg-[#4E641A]/30 rounded-full blur-3xl pointer-events-none" />
               
               <div className="space-y-4 relative z-10">
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 text-sunrise-gold text-xs font-semibold uppercase tracking-wider">
-                  <FiBriefcase />
-                  <span>Commercial Partnerships</span>
+                <div className="flex items-start">
+                  <SectionBadge text="Commercial Partnerships" align="left" />
                 </div>
 
                 <h2 className="font-serif text-2xl sm:text-3xl font-bold leading-tight text-white">
@@ -487,8 +486,8 @@ export default function Contact() {
       <section id="contact-form-section" className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
         <div className="bg-white border border-[#EDE7D9] rounded-[44px] p-8 sm:p-14 lg:p-16 shadow-2xl text-left relative overflow-hidden">
           
-          <div className="text-center max-w-xl mx-auto mb-12 space-y-3">
-            <span className="font-sans text-xs font-bold text-[#4E641A] uppercase tracking-widest">Send Us a Direct Message</span>
+          <div className="text-center max-w-xl mx-auto mb-12 space-y-3 flex flex-col items-center">
+            <SectionBadge text="Send Us a Direct Message" align="center" />
             <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#2F3B0C] tracking-tight">Contact Form</h2>
             <p className="text-stone-600 text-sm font-sans leading-relaxed">Please fill out your information below. We respond to every message within 24 business hours.</p>
           </div>

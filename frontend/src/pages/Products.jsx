@@ -54,6 +54,8 @@ const getProductVariants = (prod) => {
   return list.sort((a, b) => a.price - b.price);
 };
 
+import SectionBadge from '../components/SectionBadge';
+
 export default function Products() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -253,9 +255,7 @@ export default function Products() {
         <div className="w-10 h-10 rounded-full bg-[#4E641A]/5 flex items-center justify-center text-sunrise-gold products-hero-badge">
           <GiSun className="w-5 h-5 animate-spin-slow" />
         </div>
-        <span className="font-sans text-[10px] font-bold tracking-[0.3em] uppercase text-sunrise-gold products-hero-category">
-          {selectedCategory.id !== 'All' ? `Marketplace > ${selectedCategory.name}` : 'Vedic Biodynamic Farming • Wardha'}
-        </span>
+        <SectionBadge text={selectedCategory.id !== 'All' ? `Marketplace > ${selectedCategory.name}` : 'Vedic Biodynamic Farming • Wardha'} align="center" />
         <h1 className="font-serif text-3xl md:text-5xl font-extrabold text-[#2F3B0C] leading-tight products-hero-heading">
           Nurturing Soil, Nourishing Souls
         </h1>

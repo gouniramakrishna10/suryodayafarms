@@ -21,7 +21,8 @@ import {
   FiCpu,
   FiHeart
 } from 'react-icons/fi';
-import { GiSun, GiSprout, GiShield, GiHeartOrgan } from 'react-icons/gi';
+import { GiSprout, GiSun, GiWheat } from 'react-icons/gi';
+import SectionBadge from '../components/SectionBadge';
 import api from '../utils/api';
 
 export default function Faq() {
@@ -285,10 +286,9 @@ export default function Faq() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-[#4E641A]/10 border border-[#4E641A]/20 text-[#4E641A] text-xs font-semibold uppercase tracking-wider mx-auto"
+            className="flex justify-center"
           >
-            <GiSun className="text-[#B8833E] text-base" />
-            <span>We're Here to Help</span>
+            <SectionBadge text="We're Here to Help" align="center" />
           </motion.div>
 
           <motion.h1
@@ -335,8 +335,8 @@ export default function Faq() {
 
       {/* OUR COMMITMENT SECTION */}
       <section className="py-16 px-4 sm:px-6 lg:px-12 max-w-7xl mx-auto border-b border-[#EDE7D9]">
-        <div className="text-center max-w-2xl mx-auto mb-12 space-y-2">
-          <span className="font-sans text-xs font-semibold text-[#B8833E] uppercase tracking-widest">Pillars of Trust</span>
+        <div className="text-center max-w-2xl mx-auto mb-12 space-y-2 flex flex-col items-center">
+          <SectionBadge text="Pillars of Trust" align="center" />
           <h2 className="font-serif text-3xl font-bold text-[#2F3B0C]">Our Commitment</h2>
         </div>
 
@@ -367,8 +367,8 @@ export default function Faq() {
 
       {/* SEARCHABLE FAQ SECTION */}
       <section className="py-16 sm:py-24 px-4 sm:px-6 lg:px-12 max-w-5xl mx-auto">
-        <div className="text-center space-y-4 mb-12">
-          <span className="font-sans text-xs font-semibold text-[#4E641A] uppercase tracking-widest">Find Direct Answers</span>
+        <div className="text-center space-y-4 mb-12 flex flex-col items-center">
+          <SectionBadge text="Find Direct Answers" align="center" />
           <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#2F3B0C]">Frequently Asked Questions</h2>
           <p className="text-stone-600 text-sm max-w-xl mx-auto">Search our knowledge base or filter by category to find instant answers.</p>
 
