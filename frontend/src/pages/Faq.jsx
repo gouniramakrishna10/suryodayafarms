@@ -620,9 +620,9 @@ export default function Faq() {
       <section id="support-form-section" className="py-16 sm:py-24 px-4 sm:px-6 lg:px-12 max-w-4xl mx-auto">
         <div className="bg-white border border-[#EDE7D9] rounded-[36px] p-8 sm:p-14 shadow-xl text-left">
           
-          <div className="text-center max-w-xl mx-auto mb-10 space-y-2">
-            <span className="font-sans text-xs font-semibold text-[#4E641A] uppercase tracking-widest">Get In Touch</span>
-            <h2 className="font-serif text-3xl font-bold text-[#2F3B0C]">Send Us a Message</h2>
+          <div className="text-center max-w-xl mx-auto mb-10 space-y-3 flex flex-col items-center">
+            <SectionBadge text="Get In Touch" align="center" />
+            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#2F3B0C]">Send Us a Message</h2>
             <p className="text-stone-600 text-sm">Please fill out the form below. We will respond to your query within 24 hours.</p>
           </div>
 
