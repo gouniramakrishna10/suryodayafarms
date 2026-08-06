@@ -395,127 +395,151 @@ export default function Faq() {
         </div>
       </section>
 
-      {/* SEARCHABLE FAQ SECTION */}
-      <section className="py-16 sm:py-24 px-4 sm:px-6 lg:px-12 max-w-5xl mx-auto">
-        <div className="text-center space-y-4 mb-12 flex flex-col items-center">
-          <SectionBadge text="Find Direct Answers" align="center" />
-          <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#2F3B0C]">Frequently Asked Questions</h2>
-          <p className="text-stone-600 text-sm max-w-xl mx-auto">Search our knowledge base or filter by category to find instant answers.</p>
+      {/* SEARCHABLE FAQ SECTION (REFINE KNOWLEDGE CENTER) */}
+      <section className="py-10 sm:py-14 md:py-16 px-4 sm:px-6 lg:px-12 bg-[#FAF7F2] border-b border-[#EDE7D9] relative overflow-hidden select-none">
+        <div className="absolute inset-0 bg-[radial-gradient(#4E641A_1px,transparent_1px)] [background-size:32px_32px] opacity-10 pointer-events-none" />
 
-          {/* Search Input Bar */}
-          <div className="relative max-w-xl mx-auto pt-4">
-            <FiSearch className="absolute left-4 top-1/2 translate-y-1 text-stone-400 text-lg" />
-            <input
-              type="text"
-              placeholder="Search questions (e.g. storage, natural, superfood, delivery)..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-10 py-4 bg-white border border-[#EDE7D9] rounded-2xl text-sm text-[#2F3B0C] shadow-sm focus:ring-2 focus:ring-[#4E641A] focus:outline-none"
-            />
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery('')}
-                className="absolute right-4 top-1/2 translate-y-1 text-stone-400 hover:text-stone-600 cursor-pointer"
-              >
-                <FiX size={18} />
-              </button>
-            )}
-          </div>
-        </div>
+        <div className="max-w-5xl mx-auto relative z-10 space-y-8">
+          
+          {/* Section Header & Compact Search */}
+          <div className="text-center space-y-3 flex flex-col items-center">
+            <SectionBadge text="Find Direct Answers" align="center" />
+            <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#2F3B0C] tracking-tight">
+              Frequently Asked Questions
+            </h2>
+            <p className="text-stone-600 text-sm sm:text-base max-w-xl mx-auto font-sans font-light">
+              Search our knowledge base or filter by category to find instant answers.
+            </p>
 
-        {/* Category Filters & Controls */}
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-8 border-b border-[#EDE7D9] pb-6">
-          <div className="flex flex-wrap gap-2">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
-                className={`px-4 py-2 rounded-xl text-xs font-bold transition duration-200 cursor-pointer ${
-                  activeCategory === cat
-                    ? 'bg-[#4E641A] text-white shadow-sm'
-                    : 'bg-white text-stone-600 border border-[#EDE7D9] hover:bg-[#FAF7F2]'
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
-
-          <div className="flex items-center gap-3 text-xs font-semibold text-[#4E641A]">
-            <button
-              onClick={handleExpandAll}
-              className="hover:underline cursor-pointer bg-transparent border-none"
-            >
-              Expand All
-            </button>
-            <span className="text-stone-300">•</span>
-            <button
-              onClick={handleCollapseAll}
-              className="hover:underline cursor-pointer bg-transparent border-none text-stone-500 hover:text-stone-700"
-            >
-              Collapse All
-            </button>
-          </div>
-        </div>
-
-        {/* FAQ Accordion List */}
-        <div className="space-y-4 text-left">
-          {filteredFaqs.length === 0 ? (
-            <div className="py-16 text-center bg-white border border-[#EDE7D9] rounded-3xl p-8 space-y-3">
-              <FiHelpCircle className="text-4xl text-stone-300 mx-auto" />
-              <p className="font-serif text-lg font-bold text-[#2F3B0C]">No matching questions found.</p>
-              <p className="text-xs text-stone-500">Try searching for different keywords or select "All" categories.</p>
+            {/* Enhanced 550–650px Search Bar */}
+            <div className="relative w-full max-w-[620px] mx-auto pt-2 group">
+              <FiSearch className="absolute left-4.5 top-1/2 -translate-y-1/2 text-stone-400 text-lg transition-transform duration-300 group-focus-within:scale-110 group-focus-within:text-[#4E641A] pointer-events-none" />
+              <input
+                type="text"
+                placeholder="Search questions (e.g. storage, natural, superfood, delivery)..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-12 pr-10 py-3.5 bg-white border border-[#EDE7D9] rounded-2xl text-xs sm:text-sm text-[#2F3B0C] shadow-2xs hover:border-[#4E641A]/50 focus:border-[#4E641A] focus:ring-2 focus:ring-[#4E641A]/20 focus:outline-none transition-all duration-300"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-700 cursor-pointer p-1 rounded-full hover:bg-stone-100 transition-colors"
+                >
+                  <FiX size={16} />
+                </button>
+              )}
             </div>
-          ) : (
-            filteredFaqs.map((faq) => {
-              const isOpen = openFaqIds.includes(faq.id);
-              return (
-                <div
-                  key={faq.id}
-                  id={`faq-item-${faq.id}`}
-                  className={`bg-white border rounded-2xl transition-all duration-300 overflow-hidden ${
-                    isOpen ? 'border-[#4E641A] shadow-md' : 'border-[#EDE7D9] shadow-xs hover:border-[#4E641A]/50'
+          </div>
+
+          {/* Category Filter Chips & Controls */}
+          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#EDE7D9]/80 pb-5">
+            <div className="flex flex-wrap gap-2">
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setActiveCategory(cat)}
+                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-all duration-250 cursor-pointer transform ${
+                    activeCategory === cat
+                      ? 'bg-[#4E641A] text-white shadow-sm border border-[#4E641A] scale-[1.02]'
+                      : 'bg-white text-stone-600 border border-[#EDE7D9] hover:bg-[#F7F8F2] hover:border-[#4E641A]/50 hover:-translate-y-0.5'
                   }`}
                 >
-                  <button
-                    onClick={() => toggleAccordion(faq.id)}
-                    className="w-full p-6 text-left flex items-start justify-between gap-4 cursor-pointer bg-transparent border-none"
-                  >
-                    <div className="space-y-1">
-                      <span className="text-[10px] font-bold uppercase tracking-widest text-[#B8833E] block">
-                        {faq.category}
-                      </span>
-                      <h3 className="font-serif text-base sm:text-lg font-bold text-[#2F3B0C]">
-                        {faq.id}. {faq.question}
-                      </h3>
-                    </div>
+                  {cat}
+                </button>
+              ))}
+            </div>
 
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 transition-transform duration-300 ${
-                      isOpen ? 'bg-[#4E641A] text-white rotate-180' : 'bg-[#FAF7F2] text-[#2F3B0C]'
-                    }`}>
-                      <FiChevronDown size={18} />
-                    </div>
-                  </button>
+            <div className="flex items-center gap-3 text-xs font-semibold text-[#4E641A]">
+              <button
+                onClick={handleExpandAll}
+                className="hover:underline cursor-pointer bg-transparent border-none"
+              >
+                Expand All
+              </button>
+              <span className="text-stone-300">•</span>
+              <button
+                onClick={handleCollapseAll}
+                className="hover:underline cursor-pointer bg-transparent border-none text-stone-500 hover:text-stone-700"
+              >
+                Collapse All
+              </button>
+            </div>
+          </div>
 
-                  <AnimatePresence>
-                    {isOpen && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.3 }}
-                        className="border-t border-[#EDE7D9]/60 px-6 py-5 bg-[#FAF7F2]/40"
-                      >
-                        <p className="text-stone-700 text-sm leading-relaxed font-sans">
-                          {faq.answer}
-                        </p>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+          {/* FAQ Accordion Cards List */}
+          <div className="space-y-3.5 text-left">
+            {filteredFaqs.length === 0 ? (
+              <div className="py-12 text-center bg-white border border-[#EDE7D9] rounded-[24px] p-8 space-y-4 shadow-2xs">
+                <div className="w-12 h-12 rounded-full bg-[#F0F5E6] border border-[#4E641A]/20 flex items-center justify-center text-[#4E641A] mx-auto">
+                  <FiHelpCircle className="text-2xl" />
                 </div>
-              );
-            })
-          )}
+                <div className="space-y-1">
+                  <p className="font-serif text-lg font-bold text-[#2F3B0C]">No matching questions found.</p>
+                  <p className="text-xs text-stone-500 max-w-sm mx-auto">Try searching for different keywords or select "All" categories.</p>
+                </div>
+                <button
+                  onClick={() => { setSearchQuery(''); setActiveCategory('All'); }}
+                  className="bg-[#4E641A] hover:bg-[#37411A] text-white font-sans text-xs font-bold uppercase tracking-wider px-6 py-2.5 rounded-xl transition duration-200 cursor-pointer"
+                >
+                  Clear Search & Filters
+                </button>
+              </div>
+            ) : (
+              filteredFaqs.map((faq) => {
+                const isOpen = openFaqIds.includes(faq.id);
+                return (
+                  <div
+                    key={faq.id}
+                    id={`faq-item-${faq.id}`}
+                    className={`border rounded-[20px] transition-all duration-300 overflow-hidden transform cursor-pointer ${
+                      isOpen 
+                        ? 'bg-[#FAF7F2] border-[#4E641A] shadow-md' 
+                        : 'bg-white border-[#EDE7D9] shadow-2xs hover:border-[#4E641A]/60 hover:shadow-md hover:-translate-y-0.5'
+                    }`}
+                  >
+                    <button
+                      onClick={() => toggleAccordion(faq.id)}
+                      className="w-full p-5 sm:p-6 text-left flex items-start justify-between gap-4 cursor-pointer bg-transparent border-none"
+                    >
+                      <div className="space-y-2">
+                        {/* Premium Category Pill Badge */}
+                        <span className="inline-block bg-[#F0F5E6] border border-[#4E641A]/20 text-[#4E641A] px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider">
+                          {faq.category}
+                        </span>
+                        <h3 className="font-serif text-base sm:text-lg font-bold text-[#2F3B0C] leading-snug">
+                          {faq.id}. {faq.question}
+                        </h3>
+                      </div>
+
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 ${
+                        isOpen ? 'bg-[#4E641A] text-white rotate-180 shadow-2xs' : 'bg-[#F0F5E6] text-[#4E641A] hover:bg-[#4E641A] hover:text-white'
+                      }`}>
+                        <FiChevronDown size={18} />
+                      </div>
+                    </button>
+
+                    <AnimatePresence>
+                      {isOpen && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.3 }}
+                          className="border-t border-[#EDE7D9] px-5 sm:px-6 py-4 sm:py-5 bg-white/60"
+                        >
+                          <p className="text-stone-700 text-xs sm:text-sm leading-relaxed font-sans font-normal">
+                            {faq.answer}
+                          </p>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                );
+              })
+            )}
+          </div>
+
         </div>
       </section>
 
