@@ -44,7 +44,7 @@ async function enrichSpinach() {
       title: 'About Spinach',
       content: {
         title: 'About Spinach',
-        html: '<p>Spinach (Spinacia oleracea) is one of the world\'s most widely enjoyed leafy vegetables and has been valued for generations as part of a balanced diet.</p><p>Naturally containing vitamins, minerals, dietary fibre, plant-based nutrients, and naturally occurring antioxidants, spinach is appreciated for its nutritional value and versatility in everyday cooking.</p><p>At Suryodaya Farms, we honour this wholesome leafy vegetable through careful ingredient selection, responsible processing, and quality-focused manufacturing practices.</p>'
+        html: '<p>Spinach (*Spinacia oleracea*) is one of the world\'s most widely enjoyed leafy vegetables and has been valued for generations as part of a balanced diet.</p><p>Naturally containing vitamins, minerals, dietary fibre, plant-based nutrients, and naturally occurring antioxidants, spinach is appreciated for its nutritional value and versatility in everyday cooking.</p><p>At Suryodaya Farms, we honour this wholesome leafy vegetable through careful ingredient selection, responsible processing, and quality-focused manufacturing practices.</p>'
       },
       orderIndex: 1,
       isVisible: true
@@ -274,7 +274,7 @@ async function enrichSpinach() {
   ];
 
   // 3. Selective Product Enrichment in PostgreSQL
-  const shortDescription = 'Pure Spinach (Spinacia oleracea) Leaf Powder. Science-guided dried & processed, rich in natural iron, vitamins, fibre & antioxidants.';
+  const shortDescription = 'Pure Spinach (*Spinacia oleracea*) Leaf Powder. Science-guided dried & processed, rich in natural iron, vitamins, fibre & antioxidants.';
   const detailedDescription = 'At Suryodaya Farms, we believe that healthy living begins with simple, wholesome foods from nature. Our Spinach Powder is prepared from carefully selected spinach leaves using science-guided quality practices designed to help preserve their natural colour, freshness, and nutritional value. Thoughtfully processed and carefully packed, it offers a convenient way to enjoy the natural goodness of spinach as part of your everyday meals.';
 
   const updatedProduct = await prisma.product.update({

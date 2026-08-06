@@ -41,7 +41,7 @@ async function enrichSproutedRagi() {
       content: {
         collectionName: 'Everyday Nutrition Collection',
         tagline: 'Traditional Goodness. Sprouted for Better Nutrition.',
-        intro: 'At Suryodaya Farms, we believe that nature and traditional food wisdom provide some of the best foundations for everyday nutrition. Our Sprouted Ragi Flour is prepared from carefully selected finger millet (Eleusine coracana). The grains are naturally sprouted under carefully controlled conditions, gently dried, and hygienically milled using science-guided quality practices designed to help preserve their natural goodness and nutritional value.'
+        intro: 'At Suryodaya Farms, we believe that nature and traditional food wisdom provide some of the best foundations for everyday nutrition. Our Sprouted Ragi Flour is prepared from carefully selected finger millet (*Eleusine coracana*). The grains are naturally sprouted under carefully controlled conditions, gently dried, and hygienically milled using science-guided quality practices designed to help preserve their natural goodness and nutritional value.'
       },
       orderIndex: 0,
       isVisible: true
@@ -52,7 +52,7 @@ async function enrichSproutedRagi() {
       title: 'About Sprouted Ragi',
       content: {
         title: 'About Sprouted Ragi',
-        html: '<p>Ragi, also known as Finger Millet (Eleusine coracana), is one of India\'s traditional millet grains and has been enjoyed for generations as part of a balanced diet.</p><p>Sprouting is a traditional food preparation method that allows the grains to germinate naturally before drying and milling. Sprouted ragi is valued for its pleasant flavour, versatility, and suitability for preparing porridges, beverages, rotis, dosa, pancakes, and many homemade recipes.</p><p>At Suryodaya Farms, we combine traditional food practices with science-guided quality management to prepare sprouted ragi flour with consistency, care, and attention to quality.</p>'
+        html: '<p>Ragi, also known as Finger Millet (*Eleusine coracana*), is one of India\'s traditional millet grains and has been enjoyed for generations as part of a balanced diet.</p><p>Sprouting is a traditional food preparation method that allows the grains to germinate naturally before drying and milling. Sprouted ragi is valued for its pleasant flavour, versatility, and suitability for preparing porridges, beverages, rotis, dosa, pancakes, and many homemade recipes.</p><p>At Suryodaya Farms, we combine traditional food practices with science-guided quality management to prepare sprouted ragi flour with consistency, care, and attention to quality.</p>'
       },
       orderIndex: 1,
       isVisible: true
@@ -283,8 +283,8 @@ async function enrichSproutedRagi() {
   ];
 
   // 3. Perform Selective Product Enrichment in PostgreSQL
-  const shortDescription = ' Sprouted Finger Millet (Eleusine coracana) Flour. Naturally sprouted, gently dried, and hygienically milled under science-guided quality practices.';
-  const detailedDescription = 'At Suryodaya Farms, we believe that nature and traditional food wisdom provide some of the best foundations for everyday nutrition. Our Sprouted Ragi Flour is prepared from carefully selected finger millet (Eleusine coracana). The grains are naturally sprouted under carefully controlled conditions, gently dried, and hygienically milled using science-guided quality practices designed to help preserve their natural goodness and nutritional value. Thoughtfully prepared and carefully packed, it offers a convenient and wholesome ingredient for a wide variety of everyday recipes. Every pack reflects our commitment to Nature • Science • Quality • Trust.';
+  const shortDescription = ' Sprouted Finger Millet (*Eleusine coracana*) Flour. Naturally sprouted, gently dried, and hygienically milled under science-guided quality practices.';
+  const detailedDescription = 'At Suryodaya Farms, we believe that nature and traditional food wisdom provide some of the best foundations for everyday nutrition. Our Sprouted Ragi Flour is prepared from carefully selected finger millet (*Eleusine coracana*). The grains are naturally sprouted under carefully controlled conditions, gently dried, and hygienically milled using science-guided quality practices designed to help preserve their natural goodness and nutritional value. Thoughtfully prepared and carefully packed, it offers a convenient and wholesome ingredient for a wide variety of everyday recipes. Every pack reflects our commitment to Nature • Science • Quality • Trust.';
   
   // Update Product fields
   const updatedProduct = await prisma.product.update({

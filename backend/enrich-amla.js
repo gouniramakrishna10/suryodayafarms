@@ -44,7 +44,7 @@ async function enrichAmla() {
       title: 'About Amla',
       content: {
         title: 'About Amla',
-        html: '<p>Amla (Phyllanthus emblica), also known as Indian Gooseberry, has been valued for centuries in Indian food traditions and is widely appreciated as a nutritious fruit.</p><p>Naturally containing vitamin C, dietary fibre, minerals, plant-based nutrients, and naturally occurring antioxidants, amla is enjoyed in a wide variety of foods, beverages, and traditional recipes.</p><p>At Suryodaya Farms, we honour this remarkable fruit through careful ingredient selection, responsible processing, and quality-focused manufacturing practices.</p>'
+        html: '<p>Amla (*Phyllanthus emblica*), also known as Indian Gooseberry, has been valued for centuries in Indian food traditions and is widely appreciated as a nutritious fruit.</p><p>Naturally containing vitamin C, dietary fibre, minerals, plant-based nutrients, and naturally occurring antioxidants, amla is enjoyed in a wide variety of foods, beverages, and traditional recipes.</p><p>At Suryodaya Farms, we honour this remarkable fruit through careful ingredient selection, responsible processing, and quality-focused manufacturing practices.</p>'
       },
       orderIndex: 1,
       isVisible: true
@@ -275,7 +275,7 @@ async function enrichAmla() {
   ];
 
   // 3. Selective Product Enrichment in PostgreSQL
-  const shortDescription = 'Pure Indian Gooseberry (Phyllanthus emblica) Amla Powder. Science-guided dried & processed, naturally rich in Vitamin C, polyphenols, iron & immunity antioxidants.';
+  const shortDescription = 'Pure Indian Gooseberry (*Phyllanthus emblica*) Amla Powder. Science-guided dried & processed, naturally rich in Vitamin C, polyphenols, iron & immunity antioxidants.';
   const detailedDescription = 'At Suryodaya Farms, we believe that some of nature\'s most valued ingredients have stood the test of time. Our Amla Powder is prepared from carefully selected Indian gooseberries using science-guided quality practices designed to help preserve their natural flavour, colour, and nutritional value. Thoughtfully processed and carefully packed, it offers a convenient way to enjoy the natural goodness of amla as part of your everyday diet.';
 
   const updatedProduct = await prisma.product.update({

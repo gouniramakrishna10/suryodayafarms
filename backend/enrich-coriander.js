@@ -44,7 +44,7 @@ async function enrichCoriander() {
       title: 'About Coriander Leaves',
       content: {
         title: 'About Coriander Leaves',
-        html: '<p>Coriander (Coriandrum sativum) is one of the world\'s most widely used culinary herbs, valued for its refreshing aroma, distinctive flavour, and versatility in everyday cooking.</p><p>Its leaves naturally contain vitamins, minerals, dietary fibre, plant-based nutrients, and naturally occurring antioxidants, making coriander a wholesome ingredient for a balanced diet.</p><p>At Suryodaya Farms, we honour this remarkable herb through careful ingredient selection, responsible processing, and quality-focused manufacturing practices.</p>'
+        html: '<p>Coriander (*Coriandrum sativum*) is one of the world\'s most widely used culinary herbs, valued for its refreshing aroma, distinctive flavour, and versatility in everyday cooking.</p><p>Its leaves naturally contain vitamins, minerals, dietary fibre, plant-based nutrients, and naturally occurring antioxidants, making coriander a wholesome ingredient for a balanced diet.</p><p>At Suryodaya Farms, we honour this remarkable herb through careful ingredient selection, responsible processing, and quality-focused manufacturing practices.</p>'
       },
       orderIndex: 1,
       isVisible: true
@@ -275,7 +275,7 @@ async function enrichCoriander() {
   ];
 
   // 3. Selective Product Enrichment in PostgreSQL
-  const shortDescription = 'Pure Coriander Leaf (Coriandrum sativum) Powder. Science-guided dried & processed, rich in fresh cilantro aroma, vitamins A/C/K & antioxidants.';
+  const shortDescription = 'Pure Coriander Leaf (*Coriandrum sativum*) Powder. Science-guided dried & processed, rich in fresh cilantro aroma, vitamins A/C/K & antioxidants.';
   const detailedDescription = 'At Suryodaya Farms, we believe that the finest flavours begin with nature. Our Coriander Leaf Powder is prepared from carefully selected coriander leaves using science-guided quality practices designed to help preserve their natural aroma, vibrant green colour, and nutritional value. Thoughtfully processed and carefully packed, it provides a convenient way to enjoy the fresh taste and natural goodness of coriander throughout the year.';
 
   const updatedProduct = await prisma.product.update({

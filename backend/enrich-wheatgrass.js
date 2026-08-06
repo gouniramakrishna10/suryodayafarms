@@ -45,7 +45,7 @@ async function enrichWheatgrass() {
       title: 'About Wheatgrass',
       content: {
         title: 'About Wheatgrass',
-        html: '<p>Wheatgrass is the young leaf of the common wheat plant (Triticum aestivum), harvested at an early stage of growth.</p><p>Recognized worldwide as a natural green food, wheatgrass naturally contains vitamins, minerals, dietary fibre, plant-based nutrients, and naturally occurring antioxidants.</p><p>Its fresh green character makes it a versatile ingredient for smoothies, juices, health drinks, and a variety of everyday recipes.</p><p>At Suryodaya Farms, we honour this remarkable plant through careful cultivation, responsible processing, and quality-focused manufacturing practices.</p>'
+        html: '<p>Wheatgrass is the young leaf of the common wheat plant (*Triticum aestivum*), harvested at an early stage of growth.</p><p>Recognized worldwide as a natural green food, wheatgrass naturally contains vitamins, minerals, dietary fibre, plant-based nutrients, and naturally occurring antioxidants.</p><p>Its fresh green character makes it a versatile ingredient for smoothies, juices, health drinks, and a variety of everyday recipes.</p><p>At Suryodaya Farms, we honour this remarkable plant through careful cultivation, responsible processing, and quality-focused manufacturing practices.</p>'
       },
       orderIndex: 1,
       isVisible: true
@@ -275,7 +275,7 @@ async function enrichWheatgrass() {
   ];
 
   // 3. Selective Product Enrichment in PostgreSQL
-  const shortDescription = 'Pure Wheatgrass (Triticum aestivum) Powder. Carefully harvested at early growth, science-guided processed, rich in chlorophyll, vitamins & antioxidants.';
+  const shortDescription = 'Pure Wheatgrass (*Triticum aestivum*) Powder. Carefully harvested at early growth, science-guided processed, rich in chlorophyll, vitamins & antioxidants.';
   const detailedDescription = 'At Suryodaya Farms, we believe that nature\'s simplest ingredients can make a meaningful contribution to everyday nutrition. Our Wheatgrass Powder is prepared from carefully harvested young wheatgrass using science-guided quality practices designed to help preserve its natural colour, freshness, and nutritional value. Thoughtfully processed and carefully packed, it offers a convenient way to enjoy the natural goodness of wheatgrass as part of your daily routine. Every pack reflects our commitment to Purity • Quality • Integrity • Customer Trust.';
 
   const updatedProduct = await prisma.product.update({

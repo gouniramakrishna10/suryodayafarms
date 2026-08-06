@@ -4,17 +4,43 @@ const prisma = new PrismaClient();
 
 function cleanText(str) {
   if (!str || typeof str !== 'string') return str;
-  // Replace 100% pure/natural/chemical free/etc. with clean versions
-  return str
+
+  let cleaned = str;
+
+  // 1. Replace 100% occurrences with Pure or appropriate grammar
+  cleaned = cleaned
     .replace(/100%\s*Pure\s*&\s*Natural/gi, 'Pure & Natural')
+    .replace(/100%\s*Pure\s*Natural/gi, 'Pure & Natural')
     .replace(/100%\s*Pure/gi, 'Pure')
-    .replace(/100%\s*Natural/gi, 'Natural')
+    .replace(/100%\s*Natural/gi, 'Pure Natural')
+    .replace(/100%\s*Organic/gi, 'Pure Organic')
     .replace(/100%\s*Chemical\s*Free/gi, 'Chemical Free')
     .replace(/100%\s*Fresh/gi, 'Fresh')
     .replace(/100%\s*Quality/gi, 'Quality')
-    .replace(/100%\s*Organic/gi, 'Organic')
     .replace(/100%\s*Heirloom/gi, 'Heirloom')
-    .replace(/100%/g, '');
+    .replace(/100%\s*bananas\b/gi, 'Pure Banana Powder')
+    .replace(/100%\s*banana\b/gi, 'Pure Banana')
+    .replace(/100%\s*moringa\b/gi, 'Pure Moringa')
+    .replace(/100%\s*amla\b/gi, 'Pure Amla')
+    .replace(/100%\s*wheatgrass\b/gi, 'Pure Wheatgrass')
+    .replace(/100%\s*sprouted\s*ragi\b/gi, 'Pure Sprouted Ragi')
+    .replace(/100%\s*/gi, 'Pure ');
+
+  // Clean double "Pure Pure" -> "Pure"
+  cleaned = cleaned.replace(/\bPure\s+Pure\b/gi, 'Pure');
+
+  // 2. Botanical / Scientific names in brackets MUST BE italicized:
+  // e.g., (Musa spp.) -> (*Musa spp.*)
+  // e.g., (Moringa oleifera) -> (*Moringa oleifera*)
+  // e.g., (Phyllanthus emblica) -> (*Phyllanthus emblica*)
+  // e.g., (Triticum aestivum) -> (*Triticum aestivum*)
+  // e.g., (Eleusine coracana) -> (*Eleusine coracana*)
+  cleaned = cleaned.replace(/\(([A-Z][a-z]+(?:\s+(?:[a-z]+|spp\.|sp\.))?)\)/g, (match, p1) => {
+    if (p1.startsWith('*') && p1.endsWith('*')) return match;
+    return `(*${p1}*)`;
+  });
+
+  return cleaned;
 }
 
 function cleanObject(obj) {
@@ -35,14 +61,12 @@ function cleanObject(obj) {
 }
 
 async function main() {
-  console.log('🔄 Cleaning "100%" from PostgreSQL database records...');
+  console.log('🔄 Executing Global DB Cleanup: Removing "100%" and italicizing Botanical Scientific Names...');
 
   const products = await prisma.product.findMany();
   let updatedCount = 0;
 
   for (const p of products) {
-    let needsUpdate = false;
-
     const newName = cleanText(p.name);
     const newShortDesc = cleanText(p.shortDescription);
     const newDesc = cleanText(p.description);
@@ -72,7 +96,7 @@ async function main() {
           productContent: newProductContent
         }
       });
-      console.log(`✅ Cleaned product: ${p.name} (${p.id})`);
+      console.log(`✅ Updated product: "${p.name}" -> "${newName}" (${p.id})`);
       updatedCount++;
     }
   }
@@ -94,12 +118,14 @@ async function main() {
     }
   }
 
-  console.log(`🎉 Database cleanup finished! Updated ${updatedCount} products.`);
+  console.log(`🎉 Global Database Cleanup Complete! Updated ${updatedCount} products.`);
 }
 
 main()
-  .catch(err => {
-    console.error('Error cleaning database:', err);
+  .catch((e) => {
+    console.error('❌ Error during DB cleanup:', e);
     process.exit(1);
   })
-  .finally(() => prisma.$disconnect());
+  .finally(async () => {
+    await prisma.$disconnect();
+  });

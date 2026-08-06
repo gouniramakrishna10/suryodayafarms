@@ -276,7 +276,7 @@ async function enrichCarrot() {
   ];
 
   // 3. Selective Product Enrichment in PostgreSQL
-  const shortDescription = 'Pure Carrot (Daucus carota) Powder. Gently dried, science-guided processed, naturally rich in beta-carotene (provitamin A), fibre & antioxidants.';
+  const shortDescription = 'Pure Carrot (*Daucus carota*) Powder. Gently dried, science-guided processed, naturally rich in beta-carotene (provitamin A), fibre & antioxidants.';
   const detailedDescription = 'At Suryodaya Farms, we believe that everyday nutrition should be wholesome, convenient, and inspired by nature. Our Carrot Powder is prepared from carefully selected carrots using science-guided quality practices designed to help preserve their natural colour, flavour, and nutritional value. Thoughtfully processed and carefully packed, it provides a convenient way to include the natural goodness of carrots in beverages, soups, baking, snacks, and everyday recipes.';
 
   const updatedProduct = await prisma.product.update({

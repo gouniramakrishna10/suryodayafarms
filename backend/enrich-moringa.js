@@ -44,7 +44,7 @@ async function enrichMoringa() {
       title: 'Why Moringa?',
       content: {
         title: 'Why Moringa?',
-        html: '<p>Moringa (Moringa oleifera) has been valued for centuries and is widely appreciated for its naturally rich nutritional profile.</p><p>Its leaves naturally contain a variety of vitamins, minerals, plant protein, dietary fibre, and naturally occurring antioxidants, making moringa a popular ingredient in both traditional and modern diets.</p><p>At Suryodaya Farms, we honour this remarkable plant through careful ingredient selection, responsible processing, and an unwavering commitment to quality.</p>'
+        html: '<p>Moringa (*Moringa oleifera*) has been valued for centuries and is widely appreciated for its naturally rich nutritional profile.</p><p>Its leaves naturally contain a variety of vitamins, minerals, plant protein, dietary fibre, and naturally occurring antioxidants, making moringa a popular ingredient in both traditional and modern diets.</p><p>At Suryodaya Farms, we honour this remarkable plant through careful ingredient selection, responsible processing, and an unwavering commitment to quality.</p>'
       },
       orderIndex: 1,
       isVisible: true
@@ -274,7 +274,7 @@ async function enrichMoringa() {
   ];
 
   // 3. Selective Product Enrichment in PostgreSQL
-  const shortDescription = 'Pure Moringa Leaf (Moringa oleifera) Powder. Science-guided dried & processed, rich in natural plant protein, vitamins, minerals & antioxidants.';
+  const shortDescription = 'Pure Moringa Leaf (*Moringa oleifera*) Powder. Science-guided dried & processed, rich in natural plant protein, vitamins, minerals & antioxidants.';
   const detailedDescription = 'At Suryodaya Farms, we believe that nature offers some of the finest ingredients for a balanced lifestyle. Our Moringa Leaf Powder is prepared from carefully selected moringa leaves using quality-focused processing practices designed to help preserve their natural colour, freshness, and nutritional value. Developed through science-guided product development and prepared with care, every pack reflects our commitment to purity, consistency, responsible quality practices, and customer trust.';
 
   const updatedProduct = await prisma.product.update({

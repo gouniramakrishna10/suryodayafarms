@@ -44,7 +44,7 @@ async function enrichMint() {
       title: 'About Mint',
       content: {
         title: 'About Mint',
-        html: '<p>Mint (Mentha spp.) is one of the world\'s most popular aromatic herbs, appreciated for its refreshing flavour, pleasant aroma, and versatility in everyday cooking.</p><p>Traditionally enjoyed in cuisines around the world, mint naturally contains vitamins, minerals, dietary fibre, plant-based compounds, and naturally occurring antioxidants.</p><p>Its versatility makes it a favourite ingredient in beverages, chutneys, sauces, salads, and a wide range of everyday recipes.</p><p>At Suryodaya Farms, we honour this refreshing herb through careful ingredient selection, responsible processing, and quality-focused manufacturing practices.</p>'
+        html: '<p>Mint (*Mentha spp.*) is one of the world\'s most popular aromatic herbs, appreciated for its refreshing flavour, pleasant aroma, and versatility in everyday cooking.</p><p>Traditionally enjoyed in cuisines around the world, mint naturally contains vitamins, minerals, dietary fibre, plant-based compounds, and naturally occurring antioxidants.</p><p>Its versatility makes it a favourite ingredient in beverages, chutneys, sauces, salads, and a wide range of everyday recipes.</p><p>At Suryodaya Farms, we honour this refreshing herb through careful ingredient selection, responsible processing, and quality-focused manufacturing practices.</p>'
       },
       orderIndex: 1,
       isVisible: true
@@ -275,7 +275,7 @@ async function enrichMint() {
   ];
 
   // 3. Selective Product Enrichment in PostgreSQL
-  const shortDescription = 'Pure Mint Leaf (Mentha spp.) Powder. Science-guided dried & processed, rich in natural menthol aroma, antioxidants & digestion-soothing compounds.';
+  const shortDescription = 'Pure Mint Leaf (*Mentha spp.*) Powder. Science-guided dried & processed, rich in natural menthol aroma, antioxidants & digestion-soothing compounds.';
   const detailedDescription = 'At Suryodaya Farms, we believe that nature offers simple ingredients that bring freshness, flavour, and convenience to everyday living. Our Mint Leaf Powder is prepared from carefully selected mint leaves using science-guided quality practices designed to help preserve their natural aroma, vibrant green colour, and nutritional value. Thoughtfully processed and carefully packed, it offers a convenient way to enjoy the refreshing taste and natural goodness of mint in a wide variety of foods and beverages throughout the year.';
 
   const updatedProduct = await prisma.product.update({
@@ -290,7 +290,7 @@ async function enrichMint() {
       nutrients: 'Menthol, Vitamins A & C, Iron, Potassium, Dietary Fibre, Antioxidants',
       shelfLife: '12 Months from packaging',
       seoTitle: 'Mint Leaf Powder (Pure Pudina Powder) | Suryodaya Farms',
-      seoDescription: 'Buy Pure Mint Leaf (Pudina) Powder. Gently dried, aromatic mint leaves rich in antioxidants for chutneys, buttermilk, raita, teas & mocktails.',
+      seoDescription: 'Buy Pure Mint Leaf (*Pudina*) Powder. Gently dried, aromatic mint leaves rich in antioxidants for chutneys, buttermilk, raita, teas & mocktails.',
       seoKeywords: 'mint leaf powder, pudina powder, dried mint leaves, organic pudina, mint tea powder, buttermilk pudina, suryodaya farms',
       productContent: contentSections
     },

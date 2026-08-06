@@ -45,7 +45,7 @@ async function enrichBeetroot() {
       title: 'About Beetroot',
       content: {
         title: 'About Beetroot',
-        html: '<p>Beetroot (Beta vulgaris) is a colourful root vegetable that has long been appreciated as part of a balanced diet.</p><p>Naturally containing vitamins, minerals, dietary fibre, plant-based nutrients, and naturally occurring antioxidants, beetroot is widely enjoyed in both traditional and modern cuisines.</p><p>Its naturally vibrant colour and mildly sweet flavour make it a versatile ingredient for smoothies, soups, baking, beverages, and a wide variety of everyday recipes.</p><p>At Suryodaya Farms, we honour this wholesome root vegetable through careful ingredient selection, responsible processing, and quality-focused manufacturing practices.</p>'
+        html: '<p>Beetroot (*Beta vulgaris*) is a colourful root vegetable that has long been appreciated as part of a balanced diet.</p><p>Naturally containing vitamins, minerals, dietary fibre, plant-based nutrients, and naturally occurring antioxidants, beetroot is widely enjoyed in both traditional and modern cuisines.</p><p>Its naturally vibrant colour and mildly sweet flavour make it a versatile ingredient for smoothies, soups, baking, beverages, and a wide variety of everyday recipes.</p><p>At Suryodaya Farms, we honour this wholesome root vegetable through careful ingredient selection, responsible processing, and quality-focused manufacturing practices.</p>'
       },
       orderIndex: 1,
       isVisible: true
@@ -281,7 +281,7 @@ async function enrichBeetroot() {
   ];
 
   // 3. Selective Product Enrichment in PostgreSQL
-  const shortDescription = 'Pure Beetroot (Beta vulgaris) Powder. Gently dried, science-guided processed, naturally vibrant red-pink colour, rich in nitrates, folate, iron & betalain antioxidants.';
+  const shortDescription = 'Pure Beetroot (*Beta vulgaris*) Powder. Gently dried, science-guided processed, naturally vibrant red-pink colour, rich in nitrates, folate, iron & betalain antioxidants.';
   const detailedDescription = 'At Suryodaya Farms, we believe that vibrant nutrition begins with nature. Our Beetroot Powder is prepared from carefully selected beetroot using science-guided quality practices designed to help preserve its natural colour, flavour, and nutritional value. Thoughtfully processed and carefully packed, it offers a convenient way to enjoy the natural goodness of beetroot in your everyday meals, beverages, and recipes.';
 
   const updatedProduct = await prisma.product.update({

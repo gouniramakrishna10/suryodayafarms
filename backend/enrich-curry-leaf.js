@@ -45,7 +45,7 @@ async function enrichCurryLeaf() {
       title: 'About Curry Leaves',
       content: {
         title: 'About Curry Leaves',
-        html: '<p>Curry leaves (Murraya koenigii) have long been an essential part of Indian culinary traditions. Appreciated for their distinctive aroma and naturally rich nutritional profile, they are widely used to enhance the flavour of a variety of dishes.</p><p>The leaves naturally contain vitamins, minerals, dietary fibre, naturally occurring antioxidants, and other plant-based compounds, making them a valued ingredient in traditional and modern diets alike.</p><p>At Suryodaya Farms, we honour this remarkable ingredient through careful selection, responsible processing, and an unwavering commitment to quality.</p>'
+        html: '<p>Curry leaves (*Murraya koenigii*) have long been an essential part of Indian culinary traditions. Appreciated for their distinctive aroma and naturally rich nutritional profile, they are widely used to enhance the flavour of a variety of dishes.</p><p>The leaves naturally contain vitamins, minerals, dietary fibre, naturally occurring antioxidants, and other plant-based compounds, making them a valued ingredient in traditional and modern diets alike.</p><p>At Suryodaya Farms, we honour this remarkable ingredient through careful selection, responsible processing, and an unwavering commitment to quality.</p>'
       },
       orderIndex: 1,
       isVisible: true
@@ -275,7 +275,7 @@ async function enrichCurryLeaf() {
   ];
 
   // 3. Selective Product Enrichment in PostgreSQL
-  const shortDescription = 'Pure Curry Leaf (Murraya koenigii) Powder. Science-guided dried & processed, rich in natural aroma, iron, hair-vitality nutrients & antioxidants.';
+  const shortDescription = 'Pure Curry Leaf (*Murraya koenigii*) Powder. Science-guided dried & processed, rich in natural aroma, iron, hair-vitality nutrients & antioxidants.';
   const detailedDescription = 'At Suryodaya Farms, we believe that some of nature\'s finest ingredients are those treasured in traditional kitchens for generations. Our Curry Leaf Powder is prepared from carefully selected curry leaves using quality-focused processing practices designed to help preserve their natural aroma, vibrant colour, and nutritional value. Thoughtfully processed and carefully packed, it offers a simple and convenient way to enjoy the natural goodness of curry leaves as part of your everyday meals.';
 
   const updatedProduct = await prisma.product.update({

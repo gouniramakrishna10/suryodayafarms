@@ -44,7 +44,7 @@ async function enrichBanana() {
       title: 'About Banana',
       content: {
         title: 'About Banana',
-        html: '<p>Banana (Musa spp.) is one of the world\'s most widely enjoyed fruits and has been valued for generations as part of a balanced diet.</p><p>Naturally containing carbohydrates, dietary fibre, vitamins, minerals, and plant-based nutrients, bananas are appreciated for their pleasant taste, versatility, and nutritional value.</p><p>Banana Powder provides a convenient way to enjoy the natural flavour and goodness of bananas throughout the year.</p><p>At Suryodaya Farms, we honour this wholesome fruit through careful ingredient selection, responsible processing, and quality-focused manufacturing practices.</p>'
+        html: '<p>Banana (*Musa spp.*) is one of the world\'s most widely enjoyed fruits and has been valued for generations as part of a balanced diet.</p><p>Naturally containing carbohydrates, dietary fibre, vitamins, minerals, and plant-based nutrients, bananas are appreciated for their pleasant taste, versatility, and nutritional value.</p><p>Banana Powder provides a convenient way to enjoy the natural flavour and goodness of bananas throughout the year.</p><p>At Suryodaya Farms, we honour this wholesome fruit through careful ingredient selection, responsible processing, and quality-focused manufacturing practices.</p>'
       },
       orderIndex: 1,
       isVisible: true
@@ -280,7 +280,7 @@ async function enrichBanana() {
   ];
 
   // 3. Selective Product Enrichment in PostgreSQL
-  const shortDescription = 'Pure Ripe Banana (Musa spp.) Powder. Science-guided dried & processed, naturally sweet taste, rich in potassium, B6, fibre & natural carbohydrates.';
+  const shortDescription = 'Pure Ripe Banana (*Musa spp.*) Powder. Science-guided dried & processed, naturally sweet taste, rich in potassium, B6, fibre & natural carbohydrates.';
   const detailedDescription = 'At Suryodaya Farms, we believe that everyday nutrition should be simple, wholesome, and naturally delicious. Our Banana Powder is prepared from carefully selected ripe bananas using science-guided quality practices designed to help preserve their natural flavour, colour, and nutritional value. Thoughtfully processed and carefully packed, it offers a convenient way to enjoy the natural goodness of bananas in beverages, breakfast recipes, baking, desserts, and everyday meals.';
 
   const updatedProduct = await prisma.product.update({
