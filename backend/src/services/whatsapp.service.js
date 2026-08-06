@@ -489,7 +489,7 @@ export async function sendAdminNewOrder(order) {
   if (order.adminOrderWhatsappSent) return { success: true, skipped: true };
 
   const adminMobile = process.env.ADMIN_WHATSAPP_NUMBER || ADMIN_RECIPIENT_MOBILE; // 9177900821
-  const adminName = process.env.ADMIN_NAME || 'Srujan';
+  const adminGreetingName = 'Suryodaya Farms';
   const orderId = order.orderNumber || order.id;
   const customerName = order.shippingAddress?.recipientName || order.user?.name || 'Customer';
 
@@ -511,7 +511,7 @@ export async function sendAdminNewOrder(order) {
     messageId: APPROVED_MESSAGE_IDS.ADMIN_NEW_ORDER,
     templateName: 'admin_new_order',
     mobile: adminMobile,
-    variables: [adminName, orderId, customerName, productList, totalAmount, paymentMode],
+    variables: [adminGreetingName, orderId, customerName, productList, totalAmount, paymentMode],
     customerName,
     orderId
   });

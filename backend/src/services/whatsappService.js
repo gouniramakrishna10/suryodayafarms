@@ -452,7 +452,7 @@ export async function sendAdminNewOrder(order) {
       return { success: false, error: 'ADMIN_WHATSAPP_NUMBER unconfigured' };
     }
 
-    const adminName = process.env.ADMIN_NAME || 'Admin';
+    const adminGreetingName = 'Suryodaya Farms';
     const orderId = order.orderNumber || order.id;
     const customerName = order.shippingAddress?.recipientName || order.user?.name || 'Customer';
     const productList = formatProductList(order.orderItems || []);
@@ -468,7 +468,7 @@ export async function sendAdminNewOrder(order) {
         {
           type: 'body',
           parameters: [
-            { type: 'text', text: adminName },        // {{1}} Admin Name
+            { type: 'text', text: adminGreetingName },  // {{1}} Admin/Business Greeting Name
             { type: 'text', text: orderId },          // {{2}} Order ID
             { type: 'text', text: customerName },     // {{3}} Customer Name
             { type: 'text', text: productList },      // {{4}} Product List
