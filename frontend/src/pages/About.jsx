@@ -18,6 +18,7 @@ import {
 } from 'react-icons/fi';
 import { GiSprout, GiSun, GiWheat } from 'react-icons/gi';
 import SectionBadge from '../components/SectionBadge';
+import { getBalanced3ColCards } from '../utils/gridUtils';
 
 export default function About() {
   const philosophyList = [
@@ -828,8 +829,8 @@ export default function About() {
           </motion.div>
 
           {/* 3x2 Grid of Cards with Staggered Entrance */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 text-center benefits-grid">
-            {whyChooseItems.map((item, idx) => {
+          <div className="flex flex-wrap justify-center gap-6 md:gap-8 text-center benefits-grid">
+            {getBalanced3ColCards(whyChooseItems).map((item, idx) => {
               const icons = [FiCpu, FiAward, FiShield, FiCheckCircle, FiEye, FiUsers];
               const IconComp = icons[idx % icons.length];
               const isFeatured = idx === 0;
@@ -845,7 +846,7 @@ export default function About() {
                     isFeatured
                       ? 'bg-[#FBF9F3] border-[#4E641A]/40 shadow-xs'
                       : 'bg-white border-[#EDE7D9] shadow-2xs'
-                  } border pt-8 pb-7 px-6 sm:px-8 rounded-[24px] hover:shadow-md hover:border-[#4E641A] hover:-translate-y-2 transition-all duration-300 ease-out group flex flex-col items-center text-center justify-between h-full cursor-pointer relative overflow-hidden`}
+                  } w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-22px)] border pt-8 pb-7 px-6 sm:px-8 rounded-[24px] hover:shadow-md hover:border-[#4E641A] hover:-translate-y-2 transition-all duration-300 ease-out group flex flex-col items-center text-center justify-between cursor-pointer relative overflow-hidden`}
                 >
                   <div className="space-y-4 flex flex-col items-center text-center w-full">
                     {/* Icon Container */}

@@ -19,6 +19,7 @@ import { formatCurrency } from '../utils/currency';
 import { fetchWithCache } from '../utils/cacheStore';
 import SectionBadge from '../components/SectionBadge';
 import { cleanText, stripHtml } from '../utils/textCleaner';
+import { getBalanced3ColCards, getBalanced2ColCards } from '../utils/gridUtils';
 
 // Simple, high-quality, organic confetti effect
 const triggerConfetti = (canvasEl) => {
@@ -661,9 +662,9 @@ export default function ProductDetails() {
                         <h2 className="font-serif text-xl sm:text-2xl font-bold text-[#2F3B0C]">{product.productContent.waysToEnjoy.title || 'Ways To Enjoy'}</h2>
                       </div>
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                      {product.productContent.waysToEnjoy.items.map((item, idx) => (
-                        <div key={idx} className="flex flex-col items-center text-center justify-between gap-2.5 bg-[#FCFAF5] border border-[#EDE7D9] rounded-2xl p-5 hover:border-[#C68A2B]/40 hover:shadow-sm transition-all duration-300 h-full">
+                    <div className="flex flex-wrap justify-center gap-4">
+                      {getBalanced3ColCards(product.productContent.waysToEnjoy.items).map((item, idx) => (
+                        <div key={idx} className="w-full sm:w-[calc(50%-8px)] md:w-[calc(33.333%-11px)] flex flex-col items-center text-center justify-between gap-2.5 bg-[#FCFAF5] border border-[#EDE7D9] rounded-2xl p-5 hover:border-[#C68A2B]/40 hover:shadow-sm transition-all duration-300">
                           <div className="flex justify-center w-full text-center">
                             <span className="text-3xl text-center block">{item.icon}</span>
                           </div>
@@ -706,9 +707,9 @@ export default function ProductDetails() {
                         <h2 className="font-serif text-xl font-bold text-[#2F3B0C]">Storage Instructions</h2>
                       </div>
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      {product.productContent.storageInstructions.map((item, idx) => (
-                        <div key={idx} className="flex items-start gap-3 bg-[#FCFAF5] border border-[#EDE7D9] rounded-xl p-4">
+                    <div className="flex flex-wrap justify-center gap-3">
+                      {getBalanced2ColCards(product.productContent.storageInstructions).map((item, idx) => (
+                        <div key={idx} className="w-full sm:w-[calc(50%-6px)] flex items-start gap-3 bg-[#FCFAF5] border border-[#EDE7D9] rounded-xl p-4">
                           <span className="text-[#4E641A] font-bold text-sm shrink-0 mt-0.5">✔</span>
                           <span className="font-sans text-xs text-stone-700 leading-relaxed">{item}</span>
                         </div>
@@ -727,9 +728,9 @@ export default function ProductDetails() {
                         <h2 className="font-serif text-xl font-bold text-[#2F3B0C]">Quality Commitment</h2>
                       </div>
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      {product.productContent.qualityCommitment.map((item, idx) => (
-                        <div key={idx} className="flex items-start gap-3 bg-[#FCFAF5] border border-[#EDE7D9] rounded-xl p-4">
+                    <div className="flex flex-wrap justify-center gap-3">
+                      {getBalanced2ColCards(product.productContent.qualityCommitment).map((item, idx) => (
+                        <div key={idx} className="w-full sm:w-[calc(50%-6px)] flex items-start gap-3 bg-[#FCFAF5] border border-[#EDE7D9] rounded-xl p-4">
                           <span className="text-[#C68A2B] font-bold text-sm shrink-0 mt-0.5">✨</span>
                           <span className="font-sans text-xs text-stone-700 leading-relaxed" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(cleanText(item)) }} />
                         </div>
@@ -748,9 +749,9 @@ export default function ProductDetails() {
                         <h2 className="font-serif text-xl font-bold text-[#2F3B0C]">Product Highlights</h2>
                       </div>
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      {product.productContent.highlights.map((hl, idx) => (
-                        <div key={idx} className="flex items-start gap-3 bg-[#FCFAF5] border border-[#EDE7D9] rounded-xl p-4 hover:border-[#4E641A]/30 transition-all duration-300">
+                    <div className="flex flex-wrap justify-center gap-3">
+                      {getBalanced2ColCards(product.productContent.highlights).map((hl, idx) => (
+                        <div key={idx} className="w-full sm:w-[calc(50%-6px)] flex items-start gap-3 bg-[#FCFAF5] border border-[#EDE7D9] rounded-xl p-4 hover:border-[#4E641A]/30 transition-all duration-300">
                           <span className="text-[#C68A2B] font-bold text-base shrink-0">✓</span>
                           <span className="font-sans text-xs text-stone-700 leading-relaxed font-medium" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(cleanText(hl)) }} />
                         </div>

@@ -23,7 +23,9 @@ import {
   FiStar
 } from 'react-icons/fi';
 import { GiSprout, GiSun, GiWheat, GiHand } from 'react-icons/gi';
+import { FaHandshake } from 'react-icons/fa';
 import SectionBadge from '../components/SectionBadge';
+import { getBalanced3ColCards, getBalanced2ColCards } from '../utils/gridUtils';
 import api from '../utils/api';
 
 export default function Partner() {
@@ -765,15 +767,15 @@ export default function Partner() {
             <p className="text-stone-700 text-base sm:text-lg font-sans">As our business partner, you can expect:</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-left">
-            {expectItems.map((item, idx) => (
+          <div className="flex flex-wrap justify-center gap-6 text-left">
+            {getBalanced3ColCards(expectItems).map((item, idx) => (
               <motion.div
                 key={idx}
                 initial={{ opacity: 0, y: 15 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.3, delay: idx * 0.04 }}
-                className="bg-[#FAF7F2] border border-[#EDE7D9] p-8 rounded-[24px] shadow-xs flex items-center gap-4 hover:bg-white hover:border-[#4E641A]/50 hover:shadow-md transition-all duration-300"
+                className="w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] bg-[#FAF7F2] border border-[#EDE7D9] p-8 rounded-[24px] shadow-xs flex items-center gap-4 hover:bg-white hover:border-[#4E641A]/50 hover:shadow-md transition-all duration-300"
               >
                 <div className="w-3.5 h-3.5 rounded-full bg-[#B8833E] shrink-0" />
                 <span className="font-serif text-base sm:text-lg font-bold text-[#2F3B0C]">{item}</span>
@@ -812,8 +814,9 @@ export default function Partner() {
         <div className="max-w-4xl mx-auto space-y-6 text-center flex flex-col items-center relative z-10">
           <SectionBadge text="Collaborative Growth" align="center" />
           
-          <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#2F3B0C] leading-tight">
-            Join Hands with Suryodaya Farms
+          <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#2F3B0C] leading-tight flex items-center justify-center gap-3 sm:gap-4 flex-wrap">
+            <FaHandshake className="text-[#4E641A] text-4xl sm:text-5xl lg:text-6xl shrink-0 self-center" />
+            <span>Join Hands with Suryodaya Farms</span>
           </h2>
 
           <p className="text-stone-700 text-sm sm:text-base lg:text-lg leading-relaxed font-sans font-normal max-w-3xl">

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import DOMPurify from 'dompurify';
 import { FiChevronDown, FiCheck, FiInfo, FiAlertTriangle, FiHelpCircle } from 'react-icons/fi';
 import { cleanText } from '../utils/textCleaner';
+import { getBalanced3ColCards, getBalanced2ColCards } from '../utils/gridUtils';
 
 export default function DynamicSectionRenderer({ sections = [] }) {
   const [activeFaqIndex, setActiveFaqIndex] = useState(null);
@@ -58,11 +59,37 @@ function renderSingleSection(sec, idx, activeFaqIndex, setActiveFaqIndex) {
           )}
         </div>
       );
-    case 'WHY_CHOOSE_US':
-      return null;
+
+    case 'WHY_CHOOSE_US': {
+      const cardList = getBalanced3ColCards(content.cards || []);
+      if (!cardList || cardList.length === 0) return null;
+      return (
+        <div className="bg-white border border-[#EDE7D9] rounded-[28px] p-6 sm:p-8 shadow-xs space-y-6">
+          <div className="flex flex-col items-center text-center gap-1.5 pb-4 border-b border-[#EDE7D9]">
+            <span className="text-2xl">🏆</span>
+            <div className="text-center">
+              <span className="text-[10px] font-extrabold tracking-widest text-[#C68A2B] uppercase block">Why Choose Us</span>
+              <h2 className="font-serif text-xl sm:text-2xl font-bold text-[#2F3B0C]">{content.title || sectionTitle}</h2>
+            </div>
+          </div>
+          <div className="flex flex-wrap justify-center gap-4">
+            {cardList.map((c, cIdx) => (
+              <div key={cIdx} className="w-full sm:w-[calc(50%-8px)] md:w-[calc(33.333%-11px)] flex flex-col items-center text-center justify-between gap-2.5 bg-[#FCFAF5] border border-[#EDE7D9] rounded-2xl p-5 hover:border-[#C68A2B]/40 hover:shadow-sm transition-all duration-300">
+                <div className="flex justify-center w-full text-center">
+                  <span className="text-2xl sm:text-3xl text-center block">{c.icon || '✦'}</span>
+                </div>
+                <h4 className="font-serif text-sm font-bold text-[#2F3B0C] text-center">{c.title}</h4>
+                {c.description && <p className="font-sans text-xs text-stone-500 leading-relaxed font-light text-center">{c.description}</p>}
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
 
     case 'BENEFITS': {
-      const cardList = content.cards || [];
+      const cardList = getBalanced3ColCards(content.cards || []);
+      if (cardList.length === 0) return null;
       return (
         <div className="bg-white border border-[#EDE7D9] rounded-[28px] p-6 sm:p-8 shadow-xs space-y-6">
           {sectionTitle && (
@@ -74,9 +101,9 @@ function renderSingleSection(sec, idx, activeFaqIndex, setActiveFaqIndex) {
               </div>
             </div>
           )}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="flex flex-wrap justify-center gap-4">
             {cardList.map((c, cIdx) => (
-              <div key={cIdx} className="flex flex-col items-center text-center justify-between gap-2.5 bg-[#FCFAF5] border border-[#EDE7D9] rounded-2xl p-5 hover:border-[#C68A2B]/40 hover:shadow-sm transition duration-300 h-full">
+              <div key={cIdx} className="w-full sm:w-[calc(50%-8px)] md:w-[calc(33.333%-11px)] flex flex-col items-center text-center justify-between gap-2.5 bg-[#FCFAF5] border border-[#EDE7D9] rounded-2xl p-5 hover:border-[#C68A2B]/40 hover:shadow-sm transition duration-300">
                 <div className="flex justify-center w-full text-center">
                   <span className="text-2xl sm:text-3xl text-center block">{c.icon || '✦'}</span>
                 </div>
@@ -90,7 +117,8 @@ function renderSingleSection(sec, idx, activeFaqIndex, setActiveFaqIndex) {
     }
 
     case 'WAYS_TO_ENJOY': {
-      const recipesList = content.recipes || [];
+      const recipesList = getBalanced3ColCards(content.recipes || []);
+      if (recipesList.length === 0) return null;
       return (
         <div className="bg-white border border-[#EDE7D9] rounded-[28px] p-6 sm:p-8 shadow-xs space-y-6">
           <div className="flex flex-col items-center text-center gap-1.5 pb-4 border-b border-[#EDE7D9]">
@@ -100,9 +128,9 @@ function renderSingleSection(sec, idx, activeFaqIndex, setActiveFaqIndex) {
               <h2 className="font-serif text-xl sm:text-2xl font-bold text-[#2F3B0C]">{sectionTitle || 'Ways to Enjoy'}</h2>
             </div>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="flex flex-wrap justify-center gap-4">
             {recipesList.map((r, rIdx) => (
-              <div key={rIdx} className="flex flex-col items-center text-center justify-between gap-2.5 bg-[#FCFAF5] border border-[#EDE7D9] rounded-2xl p-5 hover:border-[#C68A2B]/40 hover:shadow-sm transition duration-300 h-full">
+              <div key={rIdx} className="w-full sm:w-[calc(50%-8px)] md:w-[calc(33.333%-11px)] flex flex-col items-center text-center justify-between gap-2.5 bg-[#FCFAF5] border border-[#EDE7D9] rounded-2xl p-5 hover:border-[#C68A2B]/40 hover:shadow-sm transition duration-300">
                 <div className="flex justify-center w-full text-center">
                   <span className="text-3xl text-center block">{r.icon || '🥤'}</span>
                 </div>
@@ -119,7 +147,8 @@ function renderSingleSection(sec, idx, activeFaqIndex, setActiveFaqIndex) {
     case 'STORAGE':
     case 'QUALITY':
     case 'SUGGESTED_SERVING': {
-      const itemsList = content.items || content.instructions || [];
+      const itemsList = getBalanced2ColCards(content.items || content.instructions || []);
+      if (itemsList.length === 0) return null;
       return (
         <div className="bg-white border border-[#EDE7D9] rounded-[28px] p-6 sm:p-8 shadow-xs space-y-6">
           <div className="flex items-center gap-3 pb-4 border-b border-[#EDE7D9]">
@@ -129,9 +158,9 @@ function renderSingleSection(sec, idx, activeFaqIndex, setActiveFaqIndex) {
               <h2 className="font-serif text-xl sm:text-2xl font-bold text-[#2F3B0C]">{sectionTitle || 'Product Features'}</h2>
             </div>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="flex flex-wrap justify-center gap-3">
             {itemsList.map((item, itemIdx) => (
-              <div key={itemIdx} className="flex items-start gap-3 bg-[#FCFAF5] border border-[#EDE7D9] rounded-xl p-4">
+              <div key={itemIdx} className="w-full sm:w-[calc(50%-6px)] flex items-start gap-3 bg-[#FCFAF5] border border-[#EDE7D9] rounded-xl p-4">
                 <span className="text-[#4E641A] font-bold text-sm shrink-0 mt-0.5">✔</span>
                 <span className="font-sans text-xs sm:text-sm text-stone-700 leading-relaxed" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(cleanText(item)) }} />
               </div>
@@ -142,7 +171,8 @@ function renderSingleSection(sec, idx, activeFaqIndex, setActiveFaqIndex) {
     }
 
     case 'NUTRIENTS': {
-      const nutrientsList = content.items || [];
+      const nutrientsList = getBalanced3ColCards(content.items || []);
+      if (nutrientsList.length === 0) return null;
       return (
         <div className="bg-white border border-[#EDE7D9] rounded-[28px] p-6 sm:p-8 shadow-xs space-y-6">
           <div className="flex items-center gap-3 pb-4 border-b border-[#EDE7D9]">
@@ -152,9 +182,9 @@ function renderSingleSection(sec, idx, activeFaqIndex, setActiveFaqIndex) {
               <h2 className="font-serif text-xl sm:text-2xl font-bold text-[#2F3B0C]">{sectionTitle || 'Naturally Occurring Nutrients'}</h2>
             </div>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          <div className="flex flex-wrap justify-center gap-3">
             {nutrientsList.map((n, nIdx) => (
-              <div key={nIdx} className="bg-[#FCFAF5] border border-[#EDE7D9] rounded-2xl p-4 text-center space-y-1">
+              <div key={nIdx} className="w-full sm:w-[calc(50%-6px)] md:w-[calc(33.333%-8px)] bg-[#FCFAF5] border border-[#EDE7D9] rounded-2xl p-4 text-center space-y-1">
                 <span className="font-serif text-lg font-bold text-[#4E641A] block">{n.value}</span>
                 <span className="font-sans text-xs text-stone-600 font-semibold block">{n.name}</span>
               </div>
