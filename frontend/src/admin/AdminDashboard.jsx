@@ -4103,7 +4103,7 @@ Ensure confidence scores are numbers between 0 and 100. Always reply ONLY with r
 
           <div class="footer">
             <p><strong>Thank you for choosing luxury, healthy Vedic staples! 🌿</strong></p>
-            <p>Suryodaya Farms • www.suryodayafarms.com</p>
+            <p>Suryodaya Farms | www.suryodayafarms.com</p>
           </div>
         </div>
 
@@ -4398,7 +4398,7 @@ Ensure confidence scores are numbers between 0 and 100. Always reply ONLY with r
           </div>
 
           <div class="handle-with-care">
-            ⚠️ Handle With Care • Premium Organic Vedic Crops 🌾
+            ⚠️ Handle With Care | Premium Organic Vedic Crops 🌾
           </div>
         </div>
 
@@ -6035,7 +6035,7 @@ Ensure confidence scores are numbers between 0 and 100. Always reply ONLY with r
                           <div className="text-[10px] text-stone-500 font-semibold tracking-wider space-y-0.5">
                             <div className="flex items-center gap-1.5">
                               <span className="text-[#37411A] font-bold">Buyer: {o.user?.name || 'Guest'}</span>
-                              <span className="text-stone-300">•</span>
+                              <span className="text-stone-300">|</span>
                               <span>Placed: {new Date(o.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
                             </div>
                             <div className="text-stone-400 font-medium truncate max-w-sm sm:max-w-md" title={o.orderItems?.map(item => `${item.product?.name} (x${item.quantity})`).join(', ')}>
@@ -7717,11 +7717,11 @@ Ensure confidence scores are numbers between 0 and 100. Always reply ONLY with r
                               <h4 className="font-serif text-sm font-bold truncate text-[#37411A] group-hover:text-[#B8833E] transition">{prod.name}</h4>
                               <p className="text-[10px] text-stone-400 font-semibold mt-0.5 flex items-center space-x-1.5">
                                 <span>SKU: {prod.sku}</span>
-                                <span>•</span>
+                                <span>|</span>
                                 <span>Stock: <span className={prod.inventory > 0 ? 'text-[#4E641A] font-bold' : 'text-red-500 font-bold'}>{prod.inventory} units</span></span>
                                 {prod.isFeatured && (
                                   <>
-                                    <span>•</span>
+                                    <span>|</span>
                                     <span className="bg-[#B8833E]/10 text-[#B8833E] border border-[#B8833E]/20 px-1.5 py-0.5 rounded text-[8px] font-bold">FEATURED</span>
                                   </>
                                 )}

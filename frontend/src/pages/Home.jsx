@@ -652,7 +652,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12">
           {/* Section Header */}
           <div className="text-center max-w-xl mx-auto space-y-4 mb-16 flex flex-col items-center">
-            <SectionBadge text={settings.homepage_section_badge_categories || "PURE • NATURAL • NUTRITIOUS"} align="center" />
+            <SectionBadge text={settings.homepage_section_badge_categories || "PURE | NATURAL | NUTRITIOUS"} align="center" />
             <h2 className="font-serif text-3xl md:text-5xl font-semibold text-[#2F3B0C]">
               {settings.homepage_section_title_categories || "Shop By Category"}
             </h2>
@@ -1008,9 +1008,9 @@ export default function Home() {
 
                 <div className="font-sans text-xs md:text-sm font-bold tracking-widest text-[#4E641A] uppercase flex items-center gap-2 pt-0.5">
                   <span>Pure</span>
-                  <span className="text-[#C68A2B]">•</span>
+                  <span className="text-[#C68A2B]">|</span>
                   <span>Natural</span>
-                  <span className="text-[#C68A2B]">•</span>
+                  <span className="text-[#C68A2B]">|</span>
                   <span>Nutritious</span>
                 </div>
               </div>
@@ -1381,9 +1381,9 @@ export default function Home() {
 
               <div className="font-sans text-xs sm:text-sm font-bold tracking-wider text-[#4E641A] uppercase flex items-center justify-center gap-2 pt-0.5">
                 <span>Pure</span>
-                <span className="text-[#C68A2B]">•</span>
+                <span className="text-[#C68A2B]">|</span>
                 <span>Natural</span>
-                <span className="text-[#C68A2B]">•</span>
+                <span className="text-[#C68A2B]">|</span>
                 <span>Nutritious</span>
               </div>
             </div>
@@ -1550,7 +1550,7 @@ export default function Home() {
               {settings.homepage_section_title_trust || "The Suryodaya Farms Standard"}
             </h2>
             <p className="text-xs md:text-sm text-[#C68A2B] font-bold tracking-wide leading-relaxed uppercase">
-              {settings.homepage_section_subtitle_trust || "Pure Ingredients. Scientific Standards. Trusted Nutrition."}
+              {settings.homepage_section_subtitle_trust || "Pure Ingredients | Scientific Standards | Trusted Nutrition"}
             </p>
           </div>
 
@@ -1835,7 +1835,7 @@ export default function Home() {
                   <div className="flex flex-col text-left">
                     <span className="text-xs font-bold text-[#2F3B0C]">{review.customerName}</span>
                     <span className="text-[10px] text-stone-400 font-medium uppercase tracking-wider">
-                      {review.location}{review.productPurchased ? ` • ${review.productPurchased}` : ''}
+                      {review.location}{review.productPurchased ? ` | ${review.productPurchased}` : ''}
                     </span>
                   </div>
                 </div>

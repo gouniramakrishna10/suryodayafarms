@@ -242,7 +242,7 @@ export default function ContactAdminPage() {
         <div>
           <div className="flex items-center gap-2">
             <span className="text-xs font-bold text-[#4E641A] uppercase tracking-wider">Communication</span>
-            <span className="text-stone-300">•</span>
+            <span className="text-stone-300">|</span>
             <span className="text-xs font-semibold text-stone-500">Contact Form Inquiries</span>
           </div>
           <h1 className="font-serif text-2xl sm:text-3xl font-bold text-[#2F3B0C] mt-1">Contact Messages</h1>
@@ -425,7 +425,7 @@ export default function ContactAdminPage() {
                     <td className="py-4 px-4">
                       <div className="font-bold text-sm text-[#2F3B0C]">{msg.subject}</div>
                       <div className="text-stone-600 font-medium">{msg.name}</div>
-                      <div className="text-[11px] text-stone-400 font-mono mt-0.5">{msg.email} • {msg.phone}</div>
+                      <div className="text-[11px] text-stone-400 font-mono mt-0.5">{msg.email} | {msg.phone}</div>
                     </td>
 
                     <td className="py-4 px-4">

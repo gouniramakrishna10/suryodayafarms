@@ -267,7 +267,7 @@ export default function About() {
                 <div className="absolute top-6 left-6 bg-white/90 backdrop-blur-md px-4 py-2 rounded-full border border-white/80 shadow-sm flex items-center gap-2">
                   <GiSprout className="w-4 h-4 text-[#4E641A]" />
                   <span className="font-sans text-xs font-bold text-[#2F3B0C] tracking-wide uppercase">
-                    Purity • Science • Trust
+                    Purity | Science | Trust
                   </span>
                 </div>
 
@@ -303,7 +303,7 @@ export default function About() {
           
           {/* Main Section Header */}
           <div className="space-y-3 flex flex-col items-start mb-8 lg:mb-10 text-left">
-            <SectionBadge text="Nature's Goodness. Guided by Science." align="left" />
+            <SectionBadge text="Nature's Goodness | Guided by Science" align="left" />
             <div className="flex items-center gap-3">
               <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#2F3B0C] tracking-tight">
                 ABOUT SURYODAYA FARMS
@@ -413,7 +413,7 @@ export default function About() {
                 <div className="absolute top-6 left-6 bg-white/90 backdrop-blur-md px-4 py-2 rounded-full border border-white/80 shadow-sm flex items-center gap-2">
                   <FiShield className="w-4 h-4 text-[#4E641A]" />
                   <span className="font-sans text-xs font-bold text-[#2F3B0C] tracking-wide uppercase">
-                    Nature • Science • Trust
+                    Nature | Science | Trust
                   </span>
                 </div>
 
@@ -515,7 +515,7 @@ export default function About() {
         <div className="h-px bg-gradient-to-r from-transparent via-[#EDE7D9] to-[#EDE7D9] w-24 sm:w-40" />
         <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-[#F0F5E6] border border-[#4E641A]/20 text-[#4E641A] text-xs font-bold uppercase tracking-widest shadow-2xs">
           <GiSprout className="w-3.5 h-3.5 text-[#4E641A]" />
-          <span>Nature • Science • Trust</span>
+          <span>Nature | Science | Trust</span>
         </div>
         <div className="h-px bg-gradient-to-l from-transparent via-[#EDE7D9] to-[#EDE7D9] w-24 sm:w-40" />
       </div>
@@ -617,7 +617,7 @@ export default function About() {
                 <div className="absolute top-6 left-6 bg-white/90 backdrop-blur-md px-4 py-2 rounded-full border border-white/80 shadow-sm flex items-center gap-2">
                   <GiSprout className="w-4 h-4 text-[#4E641A]" />
                   <span className="font-sans text-xs font-bold text-[#2F3B0C] tracking-wide uppercase">
-                    Purity • Innovation • Future
+                    Purity | Innovation | Future
                   </span>
                 </div>
 
@@ -803,7 +803,7 @@ export default function About() {
         <div className="max-w-7xl mx-auto text-center space-y-3">
           <span className="font-sans text-xs font-bold uppercase tracking-[0.3em] text-[#C68A2B] block">OUR TAGLINE</span>
           <h3 className="font-serif text-lg sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white tracking-tight md:whitespace-nowrap leading-tight">
-            Pure Nature. Scientific Quality. Trusted Nutrition.
+            Pure Nature | Scientific Quality | Trusted Nutrition
           </h3>
         </div>
       </section>

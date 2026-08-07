@@ -29,7 +29,7 @@ export const SECTION_TYPES = [
   { id: 'FAQS', label: 'Frequently Asked Questions', category: 'Support', icon: '❓', desc: 'Expandable Q&A accordion list' },
   { id: 'OUR_PROMISE', label: 'Our Promise', category: 'Brand', icon: '🤝', desc: 'Pledge to farmers and pure dryland agriculture' },
   { id: 'BRAND_STORY', label: 'Brand Story', category: 'Brand', icon: '📖', desc: 'The heritage and journey of Suryodaya Farms' },
-  { id: 'SURVEYODAYA_DIFFERENCE', label: 'The Suryodaya Difference', category: 'Brand', icon: '☀️', desc: 'What sets dryland Vedic farming apart' },
+  { id: 'SURVEYODAYA_DIFFERENCE', label: 'The Suryodaya Farms Difference', category: 'Brand', icon: '☀️', desc: 'What sets dryland Vedic farming apart' },
   { id: 'SPECIFICATIONS', label: 'Product Specifications', category: 'Specs', icon: '📋', desc: 'Key-value table (Weight, Shelf Life, Origin, SKU)' },
   { id: 'NUTRITION_FACTS', label: 'Nutrition Facts Table', category: 'Specs', icon: '📊', desc: 'Caloric & macronutrient table per 100g' },
   { id: 'IMAGE', label: 'Featured Image', category: 'Media', icon: '🖼️', desc: 'Full width image with caption' },
@@ -813,7 +813,7 @@ function renderSectionEditor(sec, index, handleUpdateContent) {
                 type="text"
                 value={content.tagline || ''}
                 onChange={(e) => handleUpdateContent(index, 'tagline', e.target.value)}
-                placeholder="Pure • Natural • Nutritious"
+                placeholder="Pure | Natural | Nutritious"
                 className="w-full bg-white border border-stone-300 rounded-xl py-2 px-3 text-xs focus:outline-none focus:border-[#4E641A]"
               />
             </div>

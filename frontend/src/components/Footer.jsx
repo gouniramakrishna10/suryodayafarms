@@ -192,7 +192,7 @@ const Footer = memo(function Footer() {
           © {new Date().getFullYear()} {settings.companyName || 'Suryodaya Farms'}. All rights reserved.
         </p>
         <p className="font-sans text-[10px] sm:text-xs text-light-beige/40 text-center md:text-right flex items-center gap-1 font-light">
-          Nurtured by Nature. Perfected by Science.
+          Nurtured by Nature | Perfected by Science
         </p>
       </div>
     </footer>

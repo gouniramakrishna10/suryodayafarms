@@ -150,7 +150,7 @@ export default function CategoryCollection() {
               <div className="absolute inset-0 bg-gradient-to-t from-[#2F3B0C] via-[#2F3B0C]/45 to-transparent" />
               
               <div className="relative text-white space-y-2 max-w-2xl text-left flex flex-col items-start">
-                <SectionBadge text="PURE • NATURAL • NUTRITIOUS" align="left" />
+                <SectionBadge text="PURE | NATURAL | NUTRITIOUS" align="left" />
                 <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold leading-tight drop-shadow-sm text-white">
                   {category.name}
                 </h1>

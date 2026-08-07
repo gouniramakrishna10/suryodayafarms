@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -51,6 +51,20 @@ export default function Partner() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [fieldErrors, setFieldErrors] = useState({});
+  const [shakingField, setShakingField] = useState(null);
+
+  const fieldRefs = {
+    name: useRef(null),
+    companyName: useRef(null),
+    businessType: useRef(null),
+    email: useRef(null),
+    phone: useRef(null),
+    country: useRef(null),
+    state: useRef(null),
+    city: useRef(null),
+    agreeToContact: useRef(null)
+  };
 
   const partnershipTypes = [
     'Distributor',
@@ -64,12 +78,101 @@ export default function Partner() {
     'Other'
   ];
 
+  const validateSingleField = (name, value) => {
+    switch (name) {
+      case 'name':
+        if (!value || !String(value).trim()) return 'Please enter your full name.';
+        return '';
+      case 'companyName':
+        if (!value || !String(value).trim()) return 'Please enter your company or organization name.';
+        return '';
+      case 'businessType':
+        if (!value) return 'Please select your business type.';
+        return '';
+      case 'email':
+        if (!value || !String(value).trim()) return 'Please enter your business email address.';
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value).trim())) return 'Please enter a valid email address.';
+        return '';
+      case 'phone':
+        if (!value || !String(value).trim()) return 'Please enter your phone or mobile number.';
+        if (String(value).replace(/[\s\-\(\)\+]/g, '').length < 8) return 'Please enter a valid contact number.';
+        return '';
+      case 'country':
+        if (!value || !String(value).trim()) return 'Please enter your country.';
+        return '';
+      case 'state':
+        if (!value || !String(value).trim()) return 'Please enter your state or province.';
+        return '';
+      case 'city':
+        if (!value || !String(value).trim()) return 'Please enter your city.';
+        return '';
+      case 'agreeToContact':
+        if (!value) return 'Please accept the Privacy Policy to continue.';
+        return '';
+      default:
+        return '';
+    }
+  };
+
+  const validateAllFields = () => {
+    const fieldPriority = [
+      'name',
+      'companyName',
+      'businessType',
+      'email',
+      'phone',
+      'country',
+      'state',
+      'city',
+      'agreeToContact'
+    ];
+
+    const newErrors = {};
+    let firstInvalidField = null;
+
+    for (const fieldName of fieldPriority) {
+      const val = formData[fieldName];
+      const err = validateSingleField(fieldName, val);
+      if (err) {
+        newErrors[fieldName] = err;
+        if (!firstInvalidField) {
+          firstInvalidField = fieldName;
+        }
+      }
+    }
+
+    setFieldErrors(newErrors);
+
+    if (firstInvalidField) {
+      const targetRef = fieldRefs[firstInvalidField];
+      if (targetRef && targetRef.current) {
+        targetRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        targetRef.current.focus();
+      }
+      setShakingField(firstInvalidField);
+      setTimeout(() => setShakingField(null), 500);
+      return false;
+    }
+
+    return true;
+  };
+
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
+    const newValue = type === 'checkbox' ? checked : value;
+
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: newValue
     }));
+
+    if (fieldErrors[name]) {
+      const err = validateSingleField(name, newValue);
+      setFieldErrors(prev => ({
+        ...prev,
+        [name]: err
+      }));
+    }
   };
 
   const scrollToForm = () => {
@@ -83,21 +186,15 @@ export default function Partner() {
     e.preventDefault();
     setErrorMessage('');
 
-    if (!formData.name || !formData.companyName || !formData.businessType || !formData.email || !formData.phone || !formData.country || !formData.state || !formData.city) {
-      setErrorMessage('Please fill in all mandatory fields marked with an asterisk (*).');
-      return;
-    }
-
-    if (!formData.agreeToContact) {
-      setErrorMessage('Please confirm agreement to be contacted by Suryodaya Farms.');
-      return;
-    }
+    const isValid = validateAllFields();
+    if (!isValid) return;
 
     setIsSubmitting(true);
     try {
       const response = await api.post('/public/partner-request', formData);
       if (response && response.success) {
         setSubmitSuccess(true);
+        setFieldErrors({});
         setFormData({
           name: '',
           companyName: '',
@@ -333,7 +430,7 @@ export default function Partner() {
                       </div>
                       <div className="text-left">
                         <div className="text-[10px] font-bold uppercase tracking-wider text-[#4E641A]">B2B Partnership & Growth</div>
-                        <div className="text-xs sm:text-sm font-serif font-bold text-[#2F3B0C]">Nature • Science • Trust</div>
+                        <div className="text-xs sm:text-sm font-serif font-bold text-[#2F3B0C]">Nature | Science | Trust</div>
                       </div>
                     </div>
                     <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-[#4E641A]/10 text-[#4E641A] rounded-full text-xs font-bold">
@@ -462,7 +559,7 @@ export default function Partner() {
           <div className="pt-4 flex items-center justify-center">
             <div className="bg-white/80 backdrop-blur-md border border-[#EDE7D9] rounded-full px-6 py-2.5 shadow-xs flex items-center gap-3 text-xs font-bold text-[#4E641A] uppercase tracking-wider">
               <GiSprout className="text-base" />
-              <span>Ecosystem of Trust • Excellence • Long-Term Growth</span>
+              <span>Ecosystem of Trust | Excellence | Long-Term Growth</span>
             </div>
           </div>
         </div>
@@ -500,7 +597,7 @@ export default function Partner() {
                       </div>
                       <div className="text-left">
                         <div className="text-[10px] font-bold uppercase tracking-wider text-[#4E641A]">Closing Handshake</div>
-                        <div className="text-xs sm:text-sm font-serif font-bold text-[#2F3B0C]">Build • Scale • Flourish</div>
+                        <div className="text-xs sm:text-sm font-serif font-bold text-[#2F3B0C]">Build | Scale | Flourish</div>
                       </div>
                     </div>
                     <div className="flex items-center gap-1.5 px-3 py-1.5 bg-[#4E641A]/10 text-[#4E641A] rounded-full text-xs font-bold">
@@ -802,177 +899,285 @@ export default function Partner() {
                   </button>
                 </motion.div>
               ) : (
-                <motion.form
-                  key="form"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  onSubmit={handleSubmit}
-                  className="space-y-7"
-                >
-                  {errorMessage && (
-                    <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-xs font-medium flex items-center gap-2">
-                      <FiAlertCircle className="shrink-0 text-base" />
-                      <span>{errorMessage}</span>
-                    </div>
-                  )}
+                <>
+                  <style>{`
+                    @keyframes fieldShake {
+                      0%, 100% { transform: translateX(0); }
+                      20%, 60% { transform: translateX(-5px); }
+                      40%, 80% { transform: translateX(5px); }
+                    }
+                    .field-shake {
+                      animation: fieldShake 0.4s ease-in-out;
+                    }
+                  `}</style>
+                  <motion.form
+                    key="form"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    onSubmit={handleSubmit}
+                    noValidate
+                    className="space-y-7"
+                  >
+                    {errorMessage && (
+                      <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-xs font-medium flex items-center gap-2">
+                        <FiAlertCircle className="shrink-0 text-base text-red-600" />
+                        <span>{errorMessage}</span>
+                      </div>
+                    )}
 
-                  {/* Grid 1: Basic Information */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    {/* Grid 1: Basic Information */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                      <div>
+                        <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">Full Name *</label>
+                        <input
+                          ref={fieldRefs.name}
+                          type="text"
+                          name="name"
+                          value={formData.name}
+                          onChange={handleInputChange}
+                          placeholder="e.g. Rajesh Sharma"
+                          className={`w-full px-4.5 py-3.5 bg-[#FAF8F5] border rounded-xl text-sm text-[#2F3B0C] transition-all duration-200 focus:outline-none ${
+                            fieldErrors.name
+                              ? 'border-red-500 ring-2 ring-red-500/20 bg-red-50/20'
+                              : 'border-[#EDE7D9] focus:ring-2 focus:ring-[#4E641A]'
+                          } ${shakingField === 'name' ? 'field-shake' : ''}`}
+                        />
+                        {fieldErrors.name && (
+                          <p className="text-xs text-red-600 font-medium mt-1.5 flex items-center gap-1.5">
+                            <FiAlertCircle className="shrink-0 text-red-500" size={13} />
+                            <span>{fieldErrors.name}</span>
+                          </p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">Company / Organization Name *</label>
+                        <input
+                          ref={fieldRefs.companyName}
+                          type="text"
+                          name="companyName"
+                          value={formData.companyName}
+                          onChange={handleInputChange}
+                          placeholder="e.g. Apex Organic Distributors"
+                          className={`w-full px-4.5 py-3.5 bg-[#FAF8F5] border rounded-xl text-sm text-[#2F3B0C] transition-all duration-200 focus:outline-none ${
+                            fieldErrors.companyName
+                              ? 'border-red-500 ring-2 ring-red-500/20 bg-red-50/20'
+                              : 'border-[#EDE7D9] focus:ring-2 focus:ring-[#4E641A]'
+                          } ${shakingField === 'companyName' ? 'field-shake' : ''}`}
+                        />
+                        {fieldErrors.companyName && (
+                          <p className="text-xs text-red-600 font-medium mt-1.5 flex items-center gap-1.5">
+                            <FiAlertCircle className="shrink-0 text-red-500" size={13} />
+                            <span>{fieldErrors.companyName}</span>
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Grid 2: Business Type & GST */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                      <div>
+                        <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">Business Type *</label>
+                        <select
+                          ref={fieldRefs.businessType}
+                          name="businessType"
+                          value={formData.businessType}
+                          onChange={handleInputChange}
+                          className={`w-full px-4.5 py-3.5 bg-[#FAF8F5] border rounded-xl text-sm text-[#2F3B0C] transition-all duration-200 focus:outline-none ${
+                            fieldErrors.businessType
+                              ? 'border-red-500 ring-2 ring-red-500/20 bg-red-50/20'
+                              : 'border-[#EDE7D9] focus:ring-2 focus:ring-[#4E641A]'
+                          } ${shakingField === 'businessType' ? 'field-shake' : ''}`}
+                        >
+                          <option value="">Select Business Type</option>
+                          {partnershipTypes.map((t) => (
+                            <option key={t} value={t}>{t}</option>
+                          ))}
+                        </select>
+                        {fieldErrors.businessType && (
+                          <p className="text-xs text-red-600 font-medium mt-1.5 flex items-center gap-1.5">
+                            <FiAlertCircle className="shrink-0 text-red-500" size={13} />
+                            <span>{fieldErrors.businessType}</span>
+                          </p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">GST / Tax Registration No.</label>
+                        <input
+                          type="text"
+                          name="gstNumber"
+                          value={formData.gstNumber}
+                          onChange={handleInputChange}
+                          placeholder="e.g. 36AAAAA0000A1Z5"
+                          className="w-full px-4.5 py-3.5 bg-[#FAF8F5] border border-[#EDE7D9] rounded-xl focus:ring-2 focus:ring-[#4E641A] focus:outline-none text-sm text-[#2F3B0C]"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Grid 3: Contact Info */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                      <div>
+                        <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">Business Email Address *</label>
+                        <input
+                          ref={fieldRefs.email}
+                          type="email"
+                          name="email"
+                          value={formData.email}
+                          onChange={handleInputChange}
+                          placeholder="e.g. partner@company.com"
+                          className={`w-full px-4.5 py-3.5 bg-[#FAF8F5] border rounded-xl text-sm text-[#2F3B0C] transition-all duration-200 focus:outline-none ${
+                            fieldErrors.email
+                              ? 'border-red-500 ring-2 ring-red-500/20 bg-red-50/20'
+                              : 'border-[#EDE7D9] focus:ring-2 focus:ring-[#4E641A]'
+                          } ${shakingField === 'email' ? 'field-shake' : ''}`}
+                        />
+                        {fieldErrors.email && (
+                          <p className="text-xs text-red-600 font-medium mt-1.5 flex items-center gap-1.5">
+                            <FiAlertCircle className="shrink-0 text-red-500" size={13} />
+                            <span>{fieldErrors.email}</span>
+                          </p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">Phone / Mobile Number *</label>
+                        <input
+                          ref={fieldRefs.phone}
+                          type="tel"
+                          name="phone"
+                          value={formData.phone}
+                          onChange={handleInputChange}
+                          placeholder="e.g. +91 9876543210"
+                          className={`w-full px-4.5 py-3.5 bg-[#FAF8F5] border rounded-xl text-sm text-[#2F3B0C] transition-all duration-200 focus:outline-none ${
+                            fieldErrors.phone
+                              ? 'border-red-500 ring-2 ring-red-500/20 bg-red-50/20'
+                              : 'border-[#EDE7D9] focus:ring-2 focus:ring-[#4E641A]'
+                          } ${shakingField === 'phone' ? 'field-shake' : ''}`}
+                        />
+                        {fieldErrors.phone && (
+                          <p className="text-xs text-red-600 font-medium mt-1.5 flex items-center gap-1.5">
+                            <FiAlertCircle className="shrink-0 text-red-500" size={13} />
+                            <span>{fieldErrors.phone}</span>
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Grid 4: Location */}
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                      <div>
+                        <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">Country *</label>
+                        <input
+                          ref={fieldRefs.country}
+                          type="text"
+                          name="country"
+                          value={formData.country}
+                          onChange={handleInputChange}
+                          className={`w-full px-4.5 py-3.5 bg-[#FAF8F5] border rounded-xl text-sm text-[#2F3B0C] transition-all duration-200 focus:outline-none ${
+                            fieldErrors.country
+                              ? 'border-red-500 ring-2 ring-red-500/20 bg-red-50/20'
+                              : 'border-[#EDE7D9] focus:ring-2 focus:ring-[#4E641A]'
+                          } ${shakingField === 'country' ? 'field-shake' : ''}`}
+                        />
+                        {fieldErrors.country && (
+                          <p className="text-xs text-red-600 font-medium mt-1.5 flex items-center gap-1.5">
+                            <FiAlertCircle className="shrink-0 text-red-500" size={13} />
+                            <span>{fieldErrors.country}</span>
+                          </p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">State / Province *</label>
+                        <input
+                          ref={fieldRefs.state}
+                          type="text"
+                          name="state"
+                          value={formData.state}
+                          onChange={handleInputChange}
+                          placeholder="e.g. Maharashtra, Delhi, Telangana"
+                          className={`w-full px-4.5 py-3.5 bg-[#FAF8F5] border rounded-xl text-sm text-[#2F3B0C] transition-all duration-200 focus:outline-none ${
+                            fieldErrors.state
+                              ? 'border-red-500 ring-2 ring-red-500/20 bg-red-50/20'
+                              : 'border-[#EDE7D9] focus:ring-2 focus:ring-[#4E641A]'
+                          } ${shakingField === 'state' ? 'field-shake' : ''}`}
+                        />
+                        {fieldErrors.state && (
+                          <p className="text-xs text-red-600 font-medium mt-1.5 flex items-center gap-1.5">
+                            <FiAlertCircle className="shrink-0 text-red-500" size={13} />
+                            <span>{fieldErrors.state}</span>
+                          </p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">City *</label>
+                        <input
+                          ref={fieldRefs.city}
+                          type="text"
+                          name="city"
+                          value={formData.city}
+                          onChange={handleInputChange}
+                          placeholder="e.g. Hyderabad"
+                          className={`w-full px-4.5 py-3.5 bg-[#FAF8F5] border rounded-xl text-sm text-[#2F3B0C] transition-all duration-200 focus:outline-none ${
+                            fieldErrors.city
+                              ? 'border-red-500 ring-2 ring-red-500/20 bg-red-50/20'
+                              : 'border-[#EDE7D9] focus:ring-2 focus:ring-[#4E641A]'
+                          } ${shakingField === 'city' ? 'field-shake' : ''}`}
+                        />
+                        {fieldErrors.city && (
+                          <p className="text-xs text-red-600 font-medium mt-1.5 flex items-center gap-1.5">
+                            <FiAlertCircle className="shrink-0 text-red-500" size={13} />
+                            <span>{fieldErrors.city}</span>
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Additional details */}
                     <div>
-                      <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">Full Name *</label>
-                      <input
-                        type="text"
-                        name="name"
-                        value={formData.name}
+                      <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">Brief Business Overview & Partnership Message</label>
+                      <textarea
+                        name="message"
+                        rows={4}
+                        value={formData.message}
                         onChange={handleInputChange}
-                        required
-                        placeholder="e.g. Rajesh Sharma"
+                        placeholder="Share brief details about your organization, operating regions, and partnership goals..."
                         className="w-full px-4.5 py-3.5 bg-[#FAF8F5] border border-[#EDE7D9] rounded-xl focus:ring-2 focus:ring-[#4E641A] focus:outline-none text-sm text-[#2F3B0C]"
                       />
                     </div>
 
-                    <div>
-                      <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">Company / Organization Name *</label>
-                      <input
-                        type="text"
-                        name="companyName"
-                        value={formData.companyName}
-                        onChange={handleInputChange}
-                        required
-                        placeholder="e.g. Apex Organic Distributors"
-                        className="w-full px-4.5 py-3.5 bg-[#FAF8F5] border border-[#EDE7D9] rounded-xl focus:ring-2 focus:ring-[#4E641A] focus:outline-none text-sm text-[#2F3B0C]"
-                      />
+                    {/* Consent checkbox */}
+                    <div
+                      ref={fieldRefs.agreeToContact}
+                      tabIndex={-1}
+                      className={`p-3.5 rounded-2xl border transition-all duration-200 focus:outline-none ${
+                        fieldErrors.agreeToContact
+                          ? 'border-red-500 ring-2 ring-red-500/20 bg-red-50/20'
+                          : 'border-transparent bg-transparent'
+                      } ${shakingField === 'agreeToContact' ? 'field-shake' : ''}`}
+                    >
+                      <div className="flex items-start gap-3">
+                        <input
+                          type="checkbox"
+                          id="agreeToContact"
+                          name="agreeToContact"
+                          checked={formData.agreeToContact}
+                          onChange={handleInputChange}
+                          className="mt-0.5 w-4 h-4 text-[#4E641A] focus:ring-[#4E641A] border-[#EDE7D9] rounded cursor-pointer shrink-0"
+                        />
+                        <label htmlFor="agreeToContact" className="text-xs text-stone-700 font-medium cursor-pointer leading-relaxed">
+                          I agree to be contacted by Suryodaya Farms representative regarding this partnership inquiry.
+                        </label>
+                      </div>
+                      {fieldErrors.agreeToContact && (
+                        <p className="text-xs text-red-600 font-semibold mt-2 flex items-center gap-1.5 pl-7">
+                          <FiAlertCircle className="shrink-0 text-red-500" size={14} />
+                          <span>{fieldErrors.agreeToContact}</span>
+                        </p>
+                      )}
                     </div>
-                  </div>
-
-                  {/* Grid 2: Business Type & GST */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">Business Type *</label>
-                      <select
-                        name="businessType"
-                        value={formData.businessType}
-                        onChange={handleInputChange}
-                        required
-                        className="w-full px-4.5 py-3.5 bg-[#FAF8F5] border border-[#EDE7D9] rounded-xl focus:ring-2 focus:ring-[#4E641A] focus:outline-none text-sm text-[#2F3B0C]"
-                      >
-                        <option value="">Select Business Type</option>
-                        {partnershipTypes.map((t) => (
-                          <option key={t} value={t}>{t}</option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">GST / Tax Registration No.</label>
-                      <input
-                        type="text"
-                        name="gstNumber"
-                        value={formData.gstNumber}
-                        onChange={handleInputChange}
-                        placeholder="e.g. 36AAAAA0000A1Z5"
-                        className="w-full px-4.5 py-3.5 bg-[#FAF8F5] border border-[#EDE7D9] rounded-xl focus:ring-2 focus:ring-[#4E641A] focus:outline-none text-sm text-[#2F3B0C]"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Grid 3: Contact Info */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">Business Email Address *</label>
-                      <input
-                        type="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleInputChange}
-                        required
-                        placeholder="e.g. partner@company.com"
-                        className="w-full px-4.5 py-3.5 bg-[#FAF8F5] border border-[#EDE7D9] rounded-xl focus:ring-2 focus:ring-[#4E641A] focus:outline-none text-sm text-[#2F3B0C]"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">Phone / Mobile Number *</label>
-                      <input
-                        type="tel"
-                        name="phone"
-                        value={formData.phone}
-                        onChange={handleInputChange}
-                        required
-                        placeholder="e.g. +91 9876543210"
-                        className="w-full px-4.5 py-3.5 bg-[#FAF8F5] border border-[#EDE7D9] rounded-xl focus:ring-2 focus:ring-[#4E641A] focus:outline-none text-sm text-[#2F3B0C]"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Grid 4: Location */}
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                    <div>
-                      <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">Country *</label>
-                      <input
-                        type="text"
-                        name="country"
-                        value={formData.country}
-                        onChange={handleInputChange}
-                        required
-                        className="w-full px-4.5 py-3.5 bg-[#FAF8F5] border border-[#EDE7D9] rounded-xl focus:ring-2 focus:ring-[#4E641A] focus:outline-none text-sm text-[#2F3B0C]"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">State / Province *</label>
-                      <input
-                        type="text"
-                        name="state"
-                        value={formData.state}
-                        onChange={handleInputChange}
-                        required
-                        placeholder="e.g. Maharashtra, Delhi, Telangana"
-                        className="w-full px-4.5 py-3.5 bg-[#FAF8F5] border border-[#EDE7D9] rounded-xl focus:ring-2 focus:ring-[#4E641A] focus:outline-none text-sm text-[#2F3B0C]"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">City *</label>
-                      <input
-                        type="text"
-                        name="city"
-                        value={formData.city}
-                        onChange={handleInputChange}
-                        required
-                        placeholder="e.g. Hyderabad"
-                        className="w-full px-4.5 py-3.5 bg-[#FAF8F5] border border-[#EDE7D9] rounded-xl focus:ring-2 focus:ring-[#4E641A] focus:outline-none text-sm text-[#2F3B0C]"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Additional details */}
-                  <div>
-                    <label className="block text-xs font-bold text-[#2F3B0C] uppercase tracking-wider mb-2">Brief Business Overview & Partnership Message</label>
-                    <textarea
-                      name="message"
-                      rows={4}
-                      value={formData.message}
-                      onChange={handleInputChange}
-                      placeholder="Share brief details about your organization, operating regions, and partnership goals..."
-                      className="w-full px-4.5 py-3.5 bg-[#FAF8F5] border border-[#EDE7D9] rounded-xl focus:ring-2 focus:ring-[#4E641A] focus:outline-none text-sm text-[#2F3B0C]"
-                    />
-                  </div>
-
-                  {/* Consent checkbox */}
-                  <div className="flex items-start gap-3 pt-2">
-                    <input
-                      type="checkbox"
-                      id="agreeToContact"
-                      name="agreeToContact"
-                      checked={formData.agreeToContact}
-                      onChange={handleInputChange}
-                      className="mt-1 w-4 h-4 text-[#4E641A] focus:ring-[#4E641A] border-[#EDE7D9] rounded cursor-pointer"
-                    />
-                    <label htmlFor="agreeToContact" className="text-xs text-stone-600 cursor-pointer">
-                      I agree to be contacted by Suryodaya Farms representative regarding this partnership inquiry.
-                    </label>
-                  </div>
 
                   {/* Submit button */}
                   <button
@@ -989,7 +1194,8 @@ export default function Partner() {
                       </>
                     )}
                   </button>
-                </motion.form>
+                  </motion.form>
+                </>
               )}
             </AnimatePresence>
           </div>
@@ -1001,7 +1207,7 @@ export default function Partner() {
         <div className="space-y-5">
           <h3 className="font-serif text-4xl sm:text-5xl font-bold text-[#2F3B0C]">Suryodaya Farms</h3>
           <p className="text-xs sm:text-sm font-bold uppercase tracking-[0.3em] text-[#B8833E]">
-            NATURE • SCIENCE • QUALITY • TRUST
+            NATURE | SCIENCE | QUALITY | TRUST
           </p>
           <p className="font-serif text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl italic text-[#4E641A] font-semibold max-w-full mx-auto leading-relaxed whitespace-nowrap">
             Together, We Cultivate Trust, Deliver Quality, and Grow a Healthier Future.

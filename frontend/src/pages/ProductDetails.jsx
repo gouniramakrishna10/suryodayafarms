@@ -18,7 +18,7 @@ import DynamicSectionRenderer from '../components/DynamicSectionRenderer';
 import { formatCurrency } from '../utils/currency';
 import { fetchWithCache } from '../utils/cacheStore';
 import SectionBadge from '../components/SectionBadge';
-import { cleanText } from '../utils/textCleaner';
+import { cleanText, stripHtml } from '../utils/textCleaner';
 
 // Simple, high-quality, organic confetti effect
 const triggerConfetti = (canvasEl) => {
@@ -241,7 +241,7 @@ export default function ProductDetails() {
       // Update dynamic SEO tags using client-approved brand metadata and Product Schema
       updateSEO({
         title: prod.seoTitle || `${prod.name} | Suryodaya Farms`,
-        description: prod.seoDescription || prod.shortDescription || `${prod.name} by Suryodaya Farms. Pure, natural and nutritious superfood developed with scientific care.`,
+        description: stripHtml(cleanText(prod.seoDescription || prod.shortDescription || `${prod.name} by Suryodaya Farms. Pure, natural and nutritious superfood developed with scientific care.`)),
         image: (prod.images && prod.images.length > 0 ? (typeof prod.images[0] === 'string' ? prod.images[0] : prod.images[0].url) : prod.image) || undefined,
         ogType: 'product',
         productData: prod
@@ -640,60 +640,16 @@ export default function ProductDetails() {
                       </div>
                     </div>
                     {product.shortDescription && (
-                      <p className="font-sans text-sm text-stone-700 leading-relaxed font-semibold italic border-l-2 border-[#C68A2B] pl-4 py-1 mb-5">{cleanText(product.shortDescription)}</p>
+                      <p 
+                        className="font-sans text-sm text-stone-700 leading-relaxed font-semibold italic border-l-2 border-[#C68A2B] pl-4 py-1 mb-5"
+                        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(cleanText(product.shortDescription)) }}
+                      />
                     )}
                     <div className="font-sans text-sm text-stone-600 leading-relaxed prose max-w-none">
                       <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(cleanText(product.productContent?.about || product.description || '')) }} />
                     </div>
                   </div>
                 )}
-
-                {/* SECTION 2: Why Choose Suryodaya Farms */}
-                {(() => {
-                  const whyChoose = product.productContent?.whyChoose;
-                  const standardizedFeatures = [
-                    { 
-                      icon: '🔬', 
-                      heading: 'SCIENTIFICALLY GUIDED QUALITY', 
-                      title: 'SCIENTIFICALLY GUIDED QUALITY', 
-                      description: 'Expert-led cultivation, processing, and quality assurance.' 
-                    },
-                    { 
-                      icon: '🌿', 
-                      heading: 'PURE & NATURAL', 
-                      title: 'PURE & NATURAL', 
-                      description: 'Carefully selected ingredients with no unnecessary additives.' 
-                    },
-                    { 
-                      icon: '⚡', 
-                      heading: 'NUTRIENT-CONSCIOUS PROCESSING', 
-                      title: 'NUTRIENT-CONSCIOUS PROCESSING', 
-                      description: 'Designed to preserve natural goodness and nutritional value.' 
-                    }
-                  ];
-                  return (
-                    <div className="bg-white border border-[#EDE7D9] rounded-[28px] p-6 sm:p-8 shadow-xs">
-                      <div className="flex flex-col items-center text-center gap-1.5 mb-6 pb-4 border-b border-[#EDE7D9]">
-                        <span className="text-2xl">🏆</span>
-                        <div className="text-center">
-                          <span className="text-[10px] font-extrabold tracking-widest text-[#C68A2B] uppercase block">Our Promise</span>
-                          <h2 className="font-serif text-xl sm:text-2xl font-bold text-[#2F3B0C]">{whyChoose?.title || 'Why Choose Suryodaya Farms'}</h2>
-                        </div>
-                      </div>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                        {standardizedFeatures.map((feat, idx) => (
-                          <div key={idx} className="flex flex-col items-center text-center justify-between gap-2.5 bg-[#FCFAF5] border border-[#EDE7D9] rounded-2xl p-5 hover:border-[#C68A2B]/40 hover:shadow-sm transition-all duration-300 h-full">
-                            <div className="flex justify-center w-full text-center">
-                              <span className="text-2xl sm:text-3xl text-center block">{feat.icon}</span>
-                            </div>
-                            <h4 className="font-serif text-sm font-bold text-[#2F3B0C] uppercase tracking-wide text-center">{feat.heading}</h4>
-                            <p className="font-sans text-xs text-stone-500 leading-relaxed font-light text-center">{feat.description}</p>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  );
-                })()}
 
                 {/* SECTION 3: Ways To Enjoy */}
                 {product.productContent?.waysToEnjoy?.items?.length > 0 && (
@@ -775,7 +731,7 @@ export default function ProductDetails() {
                       {product.productContent.qualityCommitment.map((item, idx) => (
                         <div key={idx} className="flex items-start gap-3 bg-[#FCFAF5] border border-[#EDE7D9] rounded-xl p-4">
                           <span className="text-[#C68A2B] font-bold text-sm shrink-0 mt-0.5">✨</span>
-                          <span className="font-sans text-xs text-stone-700 leading-relaxed">{item}</span>
+                          <span className="font-sans text-xs text-stone-700 leading-relaxed" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(cleanText(item)) }} />
                         </div>
                       ))}
                     </div>
@@ -796,7 +752,7 @@ export default function ProductDetails() {
                       {product.productContent.highlights.map((hl, idx) => (
                         <div key={idx} className="flex items-start gap-3 bg-[#FCFAF5] border border-[#EDE7D9] rounded-xl p-4 hover:border-[#4E641A]/30 transition-all duration-300">
                           <span className="text-[#C68A2B] font-bold text-base shrink-0">✓</span>
-                          <span className="font-sans text-xs text-stone-700 leading-relaxed font-medium">{cleanText(hl)}</span>
+                          <span className="font-sans text-xs text-stone-700 leading-relaxed font-medium" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(cleanText(hl)) }} />
                         </div>
                       ))}
                     </div>

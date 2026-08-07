@@ -256,7 +256,7 @@ export default function Products() {
           <div className="w-9 h-9 rounded-full bg-[#4E641A]/10 border border-[#4E641A]/20 flex items-center justify-center text-[#4E641A] products-hero-badge shadow-2xs">
             <GiSprout className="w-5 h-5 text-[#4E641A]" />
           </div>
-          <SectionBadge text="PURE • NATURAL • NUTRITIOUS" align="center" />
+          <SectionBadge text="PURE | NATURAL | NUTRITIOUS" align="center" />
         </div>
 
         <div className="space-y-1.5 max-w-3xl mx-auto">
@@ -603,7 +603,7 @@ export default function Products() {
                   </div>
                 ) : (
                   <div className="flex flex-col gap-0.5 max-h-24 overflow-y-auto custom-scroll pr-1">
-                    <span className="text-xs font-serif font-bold">{cartItems.length} Items • {formatCurrency(subtotal)}</span>
+                    <span className="text-xs font-serif font-bold">{cartItems.length} Items | {formatCurrency(subtotal)}</span>
                     <div className="space-y-0.5 mt-1 border-t border-white/15 pt-1">
                       {cartItems.map((item, idx) => (
                         <div key={idx} className="text-[10px] text-white/85 truncate max-w-[210px] font-sans font-medium">

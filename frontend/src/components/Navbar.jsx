@@ -127,9 +127,9 @@ const Navbar = memo(function Navbar() {
               </span>
               <span className="font-sans text-[7.5px] sm:text-[8.5px] font-bold tracking-widest text-[#556B2F] uppercase leading-none flex items-center justify-center gap-1 mt-0.5">
                 <span>Pure</span>
-                <span className="text-[#C68A2B]">•</span>
+                <span className="text-[#C68A2B]">|</span>
                 <span>Natural</span>
-                <span className="text-[#C68A2B]">•</span>
+                <span className="text-[#C68A2B]">|</span>
                 <span>Nutritious</span>
               </span>
             </div>

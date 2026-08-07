@@ -40,11 +40,20 @@ function sanitizeText(str) {
     .replace(/Pure\s+Pure/gi, 'Pure')
     .replace(/\s{2,}/g, ' ');
 
-  // Italics for scientific names inside brackets: (Musa spp.) -> (*Musa spp.*)
-  s = s.replace(/\(([A-Z][a-z]+(?:\s+(?:[a-z\.]+|spp\.|sp\.))?)\)/g, (match, p1) => {
-    if (p1.startsWith('*') && p1.endsWith('*')) return match;
-    return `(*${p1}*)`;
-  });
+  // Scientific names with markdown asterisks inside parentheses: (*Musa spp.*) -> (<em>Musa spp.</em>)
+  s = s.replace(/\(\s*\*+\s*([^*]+?)\s*\*+\s*\)/g, '(<em>$1</em>)');
+
+  // Scientific names inside parentheses without formatting: (Musa spp.) -> (<em>Musa spp.</em>)
+  s = s.replace(/\(\s*(?!(?:<em>|<strong>|<b>|<i>|https?:|http:))([A-Z][a-z]+(?:\s+(?:spp\.|subsp\.|var\.|[a-z]+))+)\s*\)/g, '(<em>$1</em>)');
+
+  // Standalone markdown italics *text* -> <em>text</em>
+  s = s.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+
+  // Brand heading consistency
+  s = s
+    .replace(/\bThe\s+Suryodaya\s+Difference\b/gi, 'The Suryodaya Farms Difference')
+    .replace(/\bSuryodaya\s+Difference\b/gi, 'Suryodaya Farms Difference')
+    .replace(/Suryodaya\s+Farms\s+Farms\s+Difference/gi, 'Suryodaya Farms Difference');
 
   return s;
 }

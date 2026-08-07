@@ -593,7 +593,7 @@ export default function Checkout() {
               <div className="pt-2 border-t border-[#EAE4D8] space-y-1">
                 <span className="font-medium text-stone-500 block">Delivery Address:</span>
                 <p className="text-stone-800 font-medium text-xs leading-relaxed">
-                  {successAddr.recipientName || user?.name} • {successAddr.phone}<br />
+                  {successAddr.recipientName || user?.name} | {successAddr.phone}<br />
                   {successAddr.street ? successAddr.street.replace(/\s*\|\s*/g, ', ') : ''}, {successAddr.city ? successAddr.city.replace(/\s*\|\s*/g, ', ') : ''}, {successAddr.state} – {successAddr.postalCode || successAddr.pincode}
                 </p>
               </div>
@@ -740,7 +740,7 @@ export default function Checkout() {
                               {weightLabel}
                             </span>
                           )}
-                          <span className="text-stone-300">•</span>
+                          <span className="text-stone-300">|</span>
                           <span className="text-xs text-primary-green font-medium">
                             Organic Harvest
                           </span>
@@ -828,7 +828,7 @@ export default function Checkout() {
                           </span>
                         )}
                         <span className="text-xs text-stone-500 font-medium">
-                          • {selectedAddress.phone}
+                          | {selectedAddress.phone}
                         </span>
                       </div>
                       <span className="text-stone-600 text-xs md:text-sm">
@@ -1154,7 +1154,7 @@ export default function Checkout() {
               {/* PREPAID ONLY SUBTEXT */}
               <div className="flex items-center justify-center gap-1.5 text-[11px] text-stone-500 font-sans">
                 <FiLock className="text-primary-green text-xs" />
-                <span>Secure prepaid payment • No COD available.</span>
+                <span>Secure prepaid payment | No COD available.</span>
               </div>
             </div>
 

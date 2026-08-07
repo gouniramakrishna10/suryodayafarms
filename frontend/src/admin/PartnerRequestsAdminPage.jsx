@@ -253,7 +253,7 @@ export default function PartnerRequestsAdminPage() {
         <div>
           <div className="flex items-center gap-2">
             <span className="text-xs font-bold text-[#B8833E] uppercase tracking-wider">Business Management</span>
-            <span className="text-stone-300">•</span>
+            <span className="text-stone-300">|</span>
             <span className="text-xs font-semibold text-stone-500">Corporate & B2B Leads</span>
           </div>
           <h1 className="font-serif text-2xl sm:text-3xl font-bold text-[#2F3B0C] mt-1">Partner Requests</h1>

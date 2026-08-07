@@ -115,7 +115,7 @@ export default function Blog() {
                   <span className="text-primary-green uppercase tracking-widest text-[9px] font-bold">
                     {blogArticles[0].category}
                   </span>
-                  <span>•</span>
+                  <span>|</span>
                   <span className="flex items-center gap-1">
                     <FiClock />
                     <span>{blogArticles[0].readTime}</span>
@@ -168,7 +168,7 @@ export default function Blog() {
                   <span className="text-primary-green uppercase tracking-widest font-bold">
                     {article.category}
                   </span>
-                  <span>•</span>
+                  <span>|</span>
                   <span>{article.readTime}</span>
                 </div>
 

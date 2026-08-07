@@ -22,24 +22,24 @@ const getCategoryEmoji = (name) => {
 
 const getProductBenefits = (prod) => {
   const name = (prod.name || '').toLowerCase();
-  if (name.includes('brown rice')) return 'High Fiber • Unpolished';
-  if (name.includes('sona masuri')) return 'Lightweight • Daily Cooking';
-  if (name.includes('chilli')) return 'Fresh Ground • Rich Heat';
-  if (name.includes('coriander')) return 'Fresh Ground • Rich Aroma';
-  if (name.includes('ghee')) return 'Bilona Churned • A2 Ghee';
-  if (name.includes('mustard') || name.includes('oil')) return 'Wood Pressed • Slow Extracted';
-  if (name.includes('honey')) return 'Raw Wild Forest • Unprocessed';
-  if (name.includes('turmeric')) return 'High Curcumin • Pure Ground';
+  if (name.includes('brown rice')) return 'High Fiber | Unpolished';
+  if (name.includes('sona masuri')) return 'Lightweight | Daily Cooking';
+  if (name.includes('chilli')) return 'Fresh Ground | Rich Heat';
+  if (name.includes('coriander')) return 'Fresh Ground | Rich Aroma';
+  if (name.includes('ghee')) return 'Bilona Churned | A2 Ghee';
+  if (name.includes('mustard') || name.includes('oil')) return 'Wood Pressed | Slow Extracted';
+  if (name.includes('honey')) return 'Raw Wild Forest | Unprocessed';
+  if (name.includes('turmeric')) return 'High Curcumin | Pure Ground';
   
   const categoryName = (prod.categories && prod.categories.length > 0)
     ? prod.categories[0].name
     : (prod.category?.name || prod.category || prod.tag || '');
   const cat = categoryName.toLowerCase();
-  if (cat.includes('oil')) return 'Wood Pressed • Unrefined';
-  if (cat.includes('ghee')) return 'Traditional Bilona • Pure A2';
-  if (cat.includes('grain') || cat.includes('rice')) return 'Naturally Grown • Heritage';
-  if (cat.includes('spice')) return 'Stone Ground • Pure Spice';
-  if (cat.includes('honey')) return 'Naturally Sourced • Pure Honey';
+  if (cat.includes('oil')) return 'Wood Pressed | Unrefined';
+  if (cat.includes('ghee')) return 'Traditional Bilona | Pure A2';
+  if (cat.includes('grain') || cat.includes('rice')) return 'Naturally Grown | Heritage';
+  if (cat.includes('spice')) return 'Stone Ground | Pure Spice';
+  if (cat.includes('honey')) return 'Naturally Sourced | Pure Honey';
   return 'Pure & Natural';
 };
 

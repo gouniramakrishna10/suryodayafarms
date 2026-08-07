@@ -64,7 +64,7 @@ export default function GalleryLightbox({ images, currentIndex, setCurrentIndex,
       >
         <div className="flex flex-col gap-1 items-center">
           <span className="font-sans text-[10px] font-semibold uppercase tracking-widest text-sunrise-gold mb-1">
-            {currentImage.category} • {currentIndex + 1} of {images.length}
+            {currentImage.category} | {currentIndex + 1} of {images.length}
           </span>
           <h3 className="font-serif text-xl font-bold text-white mb-2">
             {currentImage.title}

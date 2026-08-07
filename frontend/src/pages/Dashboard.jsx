@@ -329,11 +329,11 @@ export default function Dashboard() {
       const estDate = order.logistics?.estimatedDeliveryDate || order.estimatedDelivery;
       if (estDate) {
         const etaDate = new Date(estDate);
-        return `Scheduled Arrival: ${etaDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })} • 6:00 AM - 9:00 AM`;
+        return `Scheduled Arrival: ${etaDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })} | 6:00 AM - 9:00 AM`;
       }
       const createdDate = new Date(order.createdAt);
       const etaDate = new Date(createdDate.getTime() + 2 * 24 * 60 * 60 * 1000);
-      return `Scheduled Arrival: ${etaDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })} • 6:00 AM - 9:00 AM`;
+      return `Scheduled Arrival: ${etaDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })} | 6:00 AM - 9:00 AM`;
     }
     
     return "Preparing your order. Delivery schedule will be available soon.";
@@ -940,7 +940,7 @@ export default function Dashboard() {
                                     {product?.name || 'Organic Product'} {totalItems > 1 && `+ ${totalItems - 1} more`}
                                   </h5>
                                   <span className="text-[8px] text-stone-400 block font-semibold">
-                                    {new Date(order.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })} • {formatCurrency(order.totalAmount)}
+                                    {new Date(order.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })} | {formatCurrency(order.totalAmount)}
                                   </span>
                                 </div>
                               </div>
@@ -1185,7 +1185,7 @@ export default function Dashboard() {
                               
                               <p className="text-[10px] text-stone-400 font-semibold flex items-center gap-1.5 flex-wrap leading-none">
                                 <span>Placed: {new Date(order.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</span>
-                                <span>•</span>
+                                <span>|</span>
                                 <span className="text-primary-green font-bold">{formatCurrency(order.totalAmount)}</span>
                               </p>
                             </div>
@@ -1217,7 +1217,7 @@ export default function Dashboard() {
                                       </div>
                                       <div className="min-w-0 text-left">
                                         <span className="block font-serif text-xs font-bold text-dark-olive truncate">{item.product?.name}</span>
-                                        <span className="block font-sans text-[9px] text-stone-400 uppercase font-bold mt-0.5">Qty: {item.quantity} {item.variantName ? `• ${item.variantName}` : ''}</span>
+                                        <span className="block font-sans text-[9px] text-stone-400 uppercase font-bold mt-0.5">Qty: {item.quantity} {item.variantName ? `| ${item.variantName}` : ''}</span>
                                       </div>
                                     </div>
                                     <span className="font-serif text-xs font-bold text-primary-green shrink-0">{formatCurrency(item.price * item.quantity)}</span>
@@ -2205,7 +2205,7 @@ export default function Dashboard() {
                           >
                             <div className={`max-w-[80%] space-y-1 ${isAdmin ? 'text-left' : 'text-right'}`}>
                               <span className="text-[8px] font-extrabold uppercase tracking-widest text-stone-400 block px-1">
-                                {isAdmin ? 'Suryodaya Support' : 'You'} • {new Date(msg.createdAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}
+                                {isAdmin ? 'Suryodaya Support' : 'You'} | {new Date(msg.createdAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}
                               </span>
                               <div className={`p-4 rounded-[20px] shadow-xxs ${
                                 isAdmin

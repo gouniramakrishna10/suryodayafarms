@@ -457,7 +457,7 @@ export default function Faq() {
               >
                 Expand All
               </button>
-              <span className="text-stone-300">•</span>
+              <span className="text-stone-300">|</span>
               <button
                 onClick={handleCollapseAll}
                 className="hover:underline cursor-pointer bg-transparent border-none text-stone-500 hover:text-stone-700"
