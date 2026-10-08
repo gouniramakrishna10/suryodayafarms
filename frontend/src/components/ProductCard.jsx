@@ -1,116 +1,24 @@
-import React, { useState, useEffect, useRef, memo } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { FiStar, FiHeart, FiSearch } from 'react-icons/fi';
+import { FiHeart, FiShoppingBag, FiMinus, FiPlus } from 'react-icons/fi';
 import { useCartStore } from '../store/useCartStore';
 import { useWishlistStore } from '../store/useWishlistStore';
 import { useAuthStore } from '../store/useAuthStore';
-import { getOptimizedImageUrl, getImageSrcSet } from '../utils/imageOptimizer';
+import { getOptimizedImageUrl, getImageSrcSet, handleImageError, DEFAULT_FALLBACK_IMAGE } from '../utils/imageOptimizer';
 import { formatCurrency } from '../utils/currency';
 
-const getCategoryEmoji = (name) => {
-  const norm = (name || '').toLowerCase();
-  if (norm.includes('rice') || norm.includes('grain')) return '🌾';
-  if (norm.includes('pickle')) return '🥒';
-  if (norm.includes('spice') || norm.includes('chilli') || norm.includes('powder') || norm.includes('coriander') || norm.includes('turmeric')) return '🌿';
-  if (norm.includes('ghee')) return '🥛';
-  if (norm.includes('pulse') || norm.includes('dal') || norm.includes('pulses')) return '🫘';
-  if (norm.includes('oil')) return '🫗';
-  if (norm.includes('honey') || norm.includes('sweet')) return '🍯';
-  return '🌱';
-};
-
-const getProductBenefits = (prod) => {
-  const name = (prod.name || '').toLowerCase();
-  if (name.includes('brown rice')) return 'High Fiber | Unpolished';
-  if (name.includes('sona masuri')) return 'Lightweight | Daily Cooking';
-  if (name.includes('chilli')) return 'Fresh Ground | Rich Heat';
-  if (name.includes('coriander')) return 'Fresh Ground | Rich Aroma';
-  if (name.includes('ghee')) return 'Bilona Churned | A2 Ghee';
-  if (name.includes('mustard') || name.includes('oil')) return 'Wood Pressed | Slow Extracted';
-  if (name.includes('honey')) return 'Raw Wild Forest | Unprocessed';
-  if (name.includes('turmeric')) return 'High Curcumin | Pure Ground';
-  
-  const categoryName = (prod.categories && prod.categories.length > 0)
-    ? prod.categories[0].name
-    : (prod.category?.name || prod.category || prod.tag || '');
-  const cat = categoryName.toLowerCase();
-  if (cat.includes('oil')) return 'Wood Pressed | Unrefined';
-  if (cat.includes('ghee')) return 'Traditional Bilona | Pure A2';
-  if (cat.includes('grain') || cat.includes('rice')) return 'Naturally Grown | Heritage';
-  if (cat.includes('spice')) return 'Stone Ground | Pure Spice';
-  if (cat.includes('honey')) return 'Naturally Sourced | Pure Honey';
-  return 'Pure & Natural';
-};
-
-const getDynamicBadge = (prod) => {
-  const name = (prod.name || '').toLowerCase();
-  const category = (prod.categories && prod.categories[0]?.name || prod.category || '').toLowerCase();
-  if (name.includes('ghee') || name.includes('bilona')) return 'Vedic A2';
-  if (name.includes('unpolished') || name.includes('brown rice')) return 'Heritage Crop';
-  if (name.includes('wood') || name.includes('pressed') || name.includes('oil')) return 'Cold Pressed';
-  if (name.includes('chilli') || name.includes('turmeric') || name.includes('spices') || category.includes('spice')) return 'Stone Ground';
-  if (name.includes('raw') || name.includes('honey')) return 'Wild Forest';
-  if (prod.totalReviews > 10 || prod.averageRating >= 4.8) return 'Best Seller';
-  return 'Single Origin';
-};
-
-const ProductCard = memo(function ProductCard({ product, onQuickView }) {
+const ProductCard = memo(function ProductCard({ product }) {
   const navigate = useNavigate();
-  const { addItem, cartItems, updateQuantity, removeItem } = useCartStore();
+  const { addItem, updateQuantity, removeItem, cartItems } = useCartStore();
   const wishlistItems = useWishlistStore(state => state.wishlistItems);
   const toggleWishlist = useWishlistStore(state => state.toggleWishlist);
   const { isAuthenticated } = useAuthStore();
 
   const [isAdding, setIsAdding] = useState(false);
-  const [isAdded, setIsAdded] = useState(false);
-
-  // Smooth image transition state variables
+  const [isUpdatingQty, setIsUpdatingQty] = useState(false);
+  const [isBuyingNow, setIsBuyingNow] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-  const [isIntersecting, setIsIntersecting] = useState(false);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [loadedImages, setLoadedImages] = useState({});
-  const cardRef = useRef(null);
-
-  // Set up intersection observer for mobile viewports to trigger visible carousel
-  useEffect(() => {
-    const isMobile = window.matchMedia('(max-width: 768px)').matches;
-    if (!isMobile) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsIntersecting(entry.isIntersecting);
-      },
-      { threshold: 0.4 } // Activate visible carousel when 40% of card is in viewport
-    );
-
-    if (cardRef.current) {
-      observer.observe(cardRef.current);
-    }
-
-    return () => {
-      if (cardRef.current) {
-        observer.unobserve(cardRef.current);
-      }
-    };
-  }, []);
-
-  const categoryName = (product.categories && product.categories.length > 0)
-    ? product.categories[0].name
-    : (product.category?.name || product.category || product.tag || 'Organic');
-
-  const isProductWishlisted = wishlistItems.some(
-    (item) => item.productId === product.id || item.id === product.id
-  );
-
-  const handleWishlistToggle = async (e) => {
-    if (e) e.stopPropagation();
-    if (!isAuthenticated) {
-      useAuthStore.getState().setLoginRequiredModalOpen(true, "Please login to save items to your wishlist.");
-      return;
-    }
-    await toggleWishlist(product.id);
-  };
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   const getProductVariants = (prod) => {
     if (!prod) return [];
@@ -143,360 +51,353 @@ const ProductCard = memo(function ProductCard({ product, onQuickView }) {
   };
 
   const variants = getProductVariants(product);
-  const [selectedVariant, setSelectedVariant] = useState(null);
+
+  // State for selected package variant (defaults to first variant)
+  const [selectedVariantId, setSelectedVariantId] = useState(() => {
+    return variants[0]?.id || 'base';
+  });
 
   useEffect(() => {
     if (variants.length > 0) {
-      setSelectedVariant(variants[0]);
+      setSelectedVariantId(variants[0].id);
     }
-  }, [product]);
+  }, [product?.id]);
 
-  const getProductImageUrls = () => {
-    const urls = [];
-    if (product.images && product.images.length > 0) {
-      product.images.forEach(img => {
-        if (typeof img === 'string') {
-          urls.push(img);
-        } else if (img && typeof img === 'object' && img.url) {
-          urls.push(img.url);
-        }
-      });
-    }
-    // Fallback logic
-    if (urls.length === 0) {
-      if (product.image) urls.push(product.image);
-      if (product.hoverImage) urls.push(product.hoverImage);
-    }
-    if (urls.length === 0) {
-      urls.push(DEFAULT_FALLBACK_IMAGE);
-    }
-    return [...new Set(urls)].filter(Boolean);
+  const selectedVariant = variants.find(v => v.id === selectedVariantId) || variants[0] || {
+    price: product?.price || 0,
+    mrp: product?.compareAtPrice || product?.price || 0,
+    name: product?.weight || '500g'
   };
 
-  const allImages = getProductImageUrls();
-  const optimizedImages = allImages.map(url =>
-    getOptimizedImageUrl(url, { width: 800, cropMode: 'limit' })
+  const categoryName = (product?.categories && product.categories.length > 0)
+    ? product.categories[0].name
+    : (product?.category?.name || product?.category || product?.tag || 'PURE & NATURAL');
+
+  const isProductWishlisted = wishlistItems.some(
+    (item) => item.productId === product?.id || item.id === product?.id
   );
 
-  const isActive = isHovered || isIntersecting;
+  // Cart item detection for the selected package variant
+  const variantId = selectedVariant.isBase ? null : (selectedVariant.id === 'base' ? null : selectedVariant.id);
+  const cartItem = cartItems.find((item) => {
+    const itemPId = item.productId || item.product?.id || (typeof item.product === 'string' ? item.product : null);
+    const matchesProduct = (itemPId === product?.id) || (product?._id && itemPId === product._id);
+    if (!matchesProduct) return false;
 
-  // Handles image selection and slideshow transitions (declared before early return)
-  useEffect(() => {
-    if (optimizedImages.length <= 1) {
-      setCurrentImageIndex(0);
+    const itemVId = item.variantId || item.variant?.id || null;
+    if (!variantId) {
+      return !itemVId || itemVId === 'base';
+    } else {
+      return itemVId === variantId;
+    }
+  });
+
+  const currentQty = cartItem ? cartItem.quantity : 0;
+
+  const handleWishlistToggle = async (e) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    if (!isAuthenticated) {
+      useAuthStore.getState().setLoginRequiredModalOpen(true, "Please login to save items to your wishlist.");
       return;
     }
-
-    if (optimizedImages.length === 2) {
-      setCurrentImageIndex(isActive ? 1 : 0);
-      return;
-    }
-
-    if (optimizedImages.length >= 3) {
-      if (!isActive) {
-        setCurrentImageIndex(0);
-        return;
-      }
-
-      const interval = setInterval(() => {
-        setCurrentImageIndex(prev => (prev + 1) % optimizedImages.length);
-      }, 2500); // Cycle every 2.5s
-
-      return () => clearInterval(interval);
-    }
-  }, [isActive, optimizedImages.length]);
-
-  const handleImageLoad = (index) => {
-    setLoadedImages(prev => ({ ...prev, [index]: true }));
+    await toggleWishlist(product.id);
   };
 
-  if (!selectedVariant) return null;
+  const primaryImageRaw = typeof product?.images?.[0] === 'string'
+    ? product.images[0]
+    : (product?.images?.[0]?.url || product?.image || DEFAULT_FALLBACK_IMAGE);
 
-  const isOutOfStock = selectedVariant.isBase
-    ? (selectedVariant.inventory <= 0 || product.stockStatus === 'OUT_OF_STOCK')
-    : (selectedVariant.inventory <= 0);
+  const hoverImageRaw = product?.hoverImage || (typeof product?.images?.[1] === 'string' ? product.images[1] : product?.images?.[1]?.url);
 
-  const discountPercent = selectedVariant.mrp > selectedVariant.price
+  const activeImageRaw = (isHovered && hoverImageRaw) ? hoverImageRaw : primaryImageRaw;
+  const optimizedImageUrl = getOptimizedImageUrl(activeImageRaw, { width: 350, cropMode: 'limit' });
+
+  const isOutOfStock = Boolean(product?.isOutOfStock) || (selectedVariant.isBase
+    ? (selectedVariant.inventory <= 0 || product?.stockStatus === 'OUT_OF_STOCK')
+    : (selectedVariant.inventory <= 0));
+
+  const discountPercent = (selectedVariant.mrp > selectedVariant.price)
     ? Math.round(((selectedVariant.mrp - selectedVariant.price) / selectedVariant.mrp) * 100)
     : 0;
 
-  const variantId = selectedVariant.isBase ? null : selectedVariant.id;
-  const cartItem = cartItems.find(
-    (item) => item.productId === product.id && 
-    (variantId ? item.variantId === variantId : !item.variantId)
-  );
-
-
   const handleAddToCart = async (e) => {
-    if (e) e.stopPropagation();
-    
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
     if (!isAuthenticated) {
       useAuthStore.getState().setLoginRequiredModalOpen(true, "Please login to add items to your cart.");
       return;
     }
 
-    if (isAdding || isAdded) return;
+    if (isAdding || isOutOfStock) return;
 
-    const variantId = selectedVariant.isBase ? null : selectedVariant.id;
     setIsAdding(true);
     try {
-      await addItem(product.id, variantId, 1, true); // true = silent add to cart
-      setIsAdded(true);
-      setTimeout(() => {
-        setIsAdded(false);
-      }, 2000);
+      await addItem(product.id, variantId, 1, true);
     } catch (err) {
-      console.error(err);
+      console.error('Failed to add to cart:', err);
     } finally {
       setIsAdding(false);
     }
   };
 
+  const handleIncrementQty = async (e) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    if (!cartItem || isUpdatingQty) return;
+
+    setIsUpdatingQty(true);
+    try {
+      await updateQuantity(cartItem.id, currentQty + 1);
+    } catch (err) {
+      console.error('Failed to increment quantity:', err);
+    } finally {
+      setIsUpdatingQty(false);
+    }
+  };
+
+  const handleDecrementQty = async (e) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    if (!cartItem || isUpdatingQty) return;
+
+    setIsUpdatingQty(true);
+    try {
+      if (currentQty <= 1) {
+        await removeItem(cartItem.id);
+      } else {
+        await updateQuantity(cartItem.id, currentQty - 1);
+      }
+    } catch (err) {
+      console.error('Failed to decrement quantity:', err);
+    } finally {
+      setIsUpdatingQty(false);
+    }
+  };
+
+  const handleBuyNow = async (e) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    if (!isAuthenticated) {
+      useAuthStore.getState().setCheckoutResumeRedirect('/checkout');
+      useAuthStore.getState().setLoginRequiredModalOpen(true, "Please login to proceed to checkout.");
+      return;
+    }
+
+    if (isOutOfStock || isBuyingNow) return;
+
+    setIsBuyingNow(true);
+    try {
+      if (!cartItem) {
+        await addItem(product.id, variantId, 1, true);
+      }
+      navigate('/checkout');
+    } catch (err) {
+      console.error('Buy now error:', err);
+    } finally {
+      setIsBuyingNow(false);
+    }
+  };
+
   const handleCardClick = () => {
-    if (product.slug) {
+    if (product?.slug) {
       navigate(`/products/${product.slug}`);
     }
   };
 
+  const productNameLower = (product?.name || '').toLowerCase();
+  const isSampleOrLogo = productNameLower.includes('sample') || productNameLower.includes('logo') || productNameLower.includes('test');
+
   return (
-    <motion.div
-      ref={cardRef}
-      layout
-      initial={{ opacity: 0, y: 15 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
+    <div
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="group bg-white border border-[#EAE4D8] rounded-[24px] overflow-hidden shadow-sm hover:shadow-md hover:border-[#4E641A]/20 transition-all duration-500 flex flex-col justify-between h-full cursor-pointer relative w-full text-left product-card-wrapper"
+      className="bg-white rounded-[16px] border border-[#EAE4D8] hover:border-[#4E641A]/40 transition-all duration-300 flex flex-col justify-between group h-full shadow-2xs overflow-hidden relative text-left select-none product-card-wrapper min-w-0 w-full max-w-full"
     >
-      {/* Product Image Section */}
+      {/* 1. Image Container */}
       <div 
         onClick={handleCardClick}
-        className="relative aspect-square w-full overflow-hidden bg-transparent shrink-0 product-card-image-wrapper flex items-center justify-center"
+        className="relative aspect-square w-full bg-[#FAF8F5] p-2 sm:p-3 flex items-center justify-center border-b border-[#EAE4D8]/40 shrink-0 overflow-hidden cursor-pointer product-card-image-wrapper min-w-0"
       >
-        {!loadedImages[0] && (
-          <div className="absolute inset-0 flex items-center justify-center bg-transparent">
-            <div className="w-16 h-16 rounded-full bg-light-beige/30 animate-pulse" />
+        {!imageLoaded && (
+          <div className="absolute inset-0 flex items-center justify-center bg-[#FAF8F5]">
+            <div className="w-7 h-7 rounded-full bg-stone-200/60 animate-pulse" />
           </div>
         )}
-        {optimizedImages.map((src, index) => (
-          <img
-            key={src}
-            src={src}
-            srcSet={getImageSrcSet(allImages[index], { widths: [400, 800], cropMode: 'limit' })}
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-            alt={`${product.name} - view ${index + 1}`}
-            width={800}
-            height={800}
-            loading={index === 0 ? "lazy" : "eager"}
-            onLoad={() => handleImageLoad(index)}
-            onError={(e) => handleImageError(e)}
-            className="absolute inset-0 w-full h-full object-contain p-3.5 filter drop-shadow-[0_8px_16px_rgba(0,0,0,0.12)] group-hover:scale-105 transition-opacity duration-600 ease-in-out product-card-image"
-            style={{
-              opacity: index === currentImageIndex ? 1 : 0,
-              zIndex: index === currentImageIndex ? 10 : 0,
-              pointerEvents: index === currentImageIndex ? 'auto' : 'none'
-            }}
-          />
-        ))}
 
-        {/* Wishlist Button */}
+        <img
+          src={optimizedImageUrl}
+          srcSet={getImageSrcSet(activeImageRaw, { widths: [300, 600], cropMode: 'limit' })}
+          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+          alt={product.name}
+          loading="lazy"
+          onLoad={() => setImageLoaded(true)}
+          onError={(e) => {
+            setImageLoaded(true);
+            handleImageError(e, DEFAULT_FALLBACK_IMAGE);
+          }}
+          className={`w-full h-full object-contain filter drop-shadow-xs group-hover:scale-105 transition-transform duration-300 product-card-image ${
+            isSampleOrLogo ? 'product-card-image-sample' : ''
+          } ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+        />
+
+        {/* Heart Icon Button */}
         <button 
+          type="button"
           onClick={handleWishlistToggle}
-          className="absolute top-2 right-2 w-8 h-8 bg-white/90 hover:bg-white text-stone-400 hover:text-[#4E641A] rounded-full flex items-center justify-center shadow-md border border-stone-150 transition cursor-pointer z-20 product-card-wishlist"
-          title="Wishlist"
+          className="absolute top-2 right-2 w-7.5 h-7.5 sm:w-8 sm:h-8 bg-white/95 backdrop-blur-xs border border-[#EAE4D8] text-stone-400 hover:text-red-500 rounded-full flex items-center justify-center shadow-xs transition-all cursor-pointer z-20 product-card-wishlist"
+          title="Save to Wishlist"
         >
-          <FiHeart className={`w-4 h-4 ${isProductWishlisted ? 'fill-[#4E641A] text-[#4E641A]' : 'text-stone-400'}`} />
+          <FiHeart className={`w-3.5 h-3.5 ${isProductWishlisted ? 'fill-red-500 text-red-500' : 'text-stone-400'}`} />
         </button>
-
-        {/* Dynamic Badges */}
-        {isOutOfStock ? (
-          <span className="absolute top-2 left-2 bg-red-500 text-white font-sans text-[8px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full shadow-sm z-20 product-card-dynamic-badge">
-            Sold Out
-          </span>
-        ) : product.isComingSoon ? (
-          <span className="absolute top-2 left-2 bg-sunrise-gold text-dark-olive font-sans text-[8px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full shadow-sm z-20 product-card-dynamic-badge">
-            Upcoming
-          </span>
-        ) : (
-          <span className="absolute top-2 left-2 bg-[#4E641A] text-white font-sans text-[8px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full shadow-sm z-20 product-card-dynamic-badge">
-            {getDynamicBadge(product)}
-          </span>
-        )}
-
-        {discountPercent > 0 && !isOutOfStock && (
-          <span className="absolute bottom-2 left-2 bg-[#C68A2B] text-white text-[8px] font-extrabold uppercase py-0.5 px-1.5 rounded shadow-sm leading-none z-20 product-card-discount-badge">
-            {discountPercent}% OFF
-          </span>
-        )}
       </div>
 
-      {/* Card Details Section */}
-      <div className="p-2 sm:p-4.5 flex-grow flex flex-col justify-between gap-1 sm:gap-2.5 product-card-details">
-        <div className="flex flex-col gap-1 sm:gap-1.5">
-          {/* Category Tag & Ratings */}
-          <div className="flex items-center justify-between text-[8px] sm:text-[10px] text-[#4E641A] font-sans font-medium product-card-meta">
-            <span className="bg-[#4E641A]/5 text-[#4E641A] border border-[#4E641A]/15 text-[8px] sm:text-[9px] font-extrabold uppercase tracking-widest px-2 py-0.5 rounded-md product-category-badge leading-none">
-              {categoryName}
-            </span>
-            {product.totalReviews > 0 ? (
-              <span className="flex items-center gap-0.5 text-sunrise-gold text-[9px] sm:text-[10px] font-bold product-card-rating">
-                <FiStar className="w-2.5 h-2.5 fill-sunrise-gold text-sunrise-gold sm:w-3 sm:h-3" />
-                <span className="text-dark-text/75">{product.averageRating}</span>
-                <span className="text-stone-400/70 font-normal hidden sm:inline">({product.totalReviews})</span>
-              </span>
-            ) : (
-              <span className="italic text-stone-450/80 text-[8px] sm:text-[9px] hidden sm:inline">New Product</span>
-            )}
-          </div>
+      {/* 2. Content Details Section */}
+      <div className="p-2 sm:p-2.5 pb-2.5 sm:pb-3 flex flex-col justify-between flex-grow gap-1 product-card-details min-w-0 w-full">
+        <div className="min-w-0 w-full">
+          {/* Category Eyebrow */}
+          <span className="font-sans text-[8px] sm:text-[9px] font-bold text-[#C68A2B] uppercase tracking-[0.14em] block leading-none mb-1 truncate min-w-0">
+            {categoryName}
+          </span>
 
           {/* Product Name */}
           <h3 
             onClick={handleCardClick}
-            className="font-serif text-xs sm:text-sm md:text-base font-bold text-[#2F3B0C] group-hover:text-[#4E641A] transition leading-snug line-clamp-2 cursor-pointer product-card-title mt-1 break-words overflow-hidden"
+            className="font-serif text-xs sm:text-sm font-bold text-[#2F3B0C] group-hover:text-[#4E641A] transition-colors leading-snug line-clamp-2 block mb-1 min-h-[30px] sm:min-h-[34px] cursor-pointer product-card-title break-words min-w-0"
           >
             {product.name}
           </h3>
 
-          {/* Mobile-only Price Section */}
-          <div className="flex items-baseline gap-1.5 mt-1 sm:hidden product-card-price-mobile">
-            <span className="text-[16px] font-black text-[#4E641A] leading-none">
+          {/* Price & Discount Display */}
+          <div className="flex items-baseline gap-1 flex-wrap mb-1 min-w-0">
+            <span className="font-serif text-xs sm:text-sm font-bold text-[#4E641A]">
               {formatCurrency(selectedVariant.price)}
             </span>
             {selectedVariant.mrp > selectedVariant.price && (
-              <span className="text-[12px] line-through text-stone-450 font-medium leading-none">
+              <span className="font-sans text-[10px] text-stone-400 line-through font-medium">
                 {formatCurrency(selectedVariant.mrp)}
               </span>
             )}
+            {discountPercent > 0 && (
+              <span className="font-sans text-[8.5px] font-bold text-[#C68A2B]">
+                {discountPercent}% OFF
+              </span>
+            )}
           </div>
-
-          {/* Product Benefit Line */}
-          <p className="text-[10px] text-stone-500 font-medium leading-none truncate select-none hidden sm:block mt-1">
-            {getProductBenefits(product)}
-          </p>
-
-          {/* Size Pills */}
-          {variants.length > 1 ? (
-            <div 
-              className="flex flex-row sm:flex-wrap gap-1.5 mt-2 overflow-x-auto no-scrollbar whitespace-nowrap w-full scroll-smooth product-card-sizes-container"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {variants.map((v) => (
-                <button
-                  key={v.id}
-                  type="button"
-                  onClick={() => setSelectedVariant(v)}
-                  className={`px-2.5 py-1 text-[10px] font-bold rounded-md border transition-all duration-200 shrink-0 select-none ${
-                    selectedVariant.id === v.id
-                      ? 'bg-[#4E641A] border-[#4E641A] text-white shadow-sm'
-                      : 'bg-white border-[#EAE4D8] text-[#2F3B0C]/80 hover:bg-stone-50'
-                  }`}
-                >
-                  {v.name}
-                </button>
-              ))}
-            </div>
-          ) : (
-            <span className="text-[10px] font-bold text-stone-450 uppercase tracking-wider mt-2 block product-card-weight">
-              {selectedVariant.name}
-            </span>
-          )}
         </div>
 
-        {/* Pricing & CTA Block */}
-        <div className="product-card-action-bar pt-2 border-t border-stone-100 sm:pt-3 flex flex-row items-center justify-between mt-auto w-full">
-          {/* Desktop-only Price Column */}
-          <div className="hidden sm:flex flex-col items-start leading-none">
-            <span className="text-[9px] font-bold text-stone-450 uppercase tracking-wider leading-none">Price</span>
-            <div className="flex items-baseline gap-1 mt-1">
-              <span className="text-base font-extrabold text-[#4E641A]">
-                {formatCurrency(selectedVariant.price)}
+        {/* 3. Package Size Selection & Purchasing Controls */}
+        <div className="flex flex-col gap-1 pt-1 mt-auto w-full min-w-0">
+          {/* Compact Package Size Dropdown */}
+          {variants.length > 0 && (
+            <div className="w-full min-w-0">
+              <span className="font-sans text-[8px] sm:text-[8.5px] font-bold text-stone-500 uppercase tracking-wider block mb-0.5">
+                Package Size
               </span>
-              {selectedVariant.mrp > selectedVariant.price && (
-                <span className="text-[11px] line-through text-stone-400 font-medium">
-                  {formatCurrency(selectedVariant.mrp)}
-                </span>
-              )}
+              <div className="relative w-full min-w-0">
+                <select
+                  value={selectedVariantId}
+                  onChange={(e) => setSelectedVariantId(e.target.value)}
+                  onClick={(e) => e.stopPropagation()}
+                  className="w-full bg-[#FAF8F5] border border-[#EAE4D8] focus:border-[#4E641A] rounded-lg py-1 px-1.5 pr-5 font-sans text-[10px] sm:text-[11px] font-bold text-[#2F3B0C] appearance-none cursor-pointer outline-none transition-all truncate"
+                >
+                  {variants.map((v) => (
+                    <option key={v.id} value={v.id}>
+                      {v.name} — {formatCurrency(v.price)}
+                    </option>
+                  ))}
+                </select>
+                <div className="absolute right-1.5 top-1/2 -translate-y-1/2 pointer-events-none text-stone-500 text-[8px]">
+                  ▼
+                </div>
+              </div>
             </div>
-          </div>
+          )}
 
-          {/* Add to Cart Button Container */}
-          <div className="product-card-btn-container w-full sm:w-28 md:w-32 h-[42px] sm:h-9 relative overflow-hidden select-none">
-            <AnimatePresence mode="wait">
-              {!cartItem ? (
-                <motion.button
-                  key="add"
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.15 }}
+          {/* Side-by-Side Compact Action Buttons (30px-32px Height) */}
+          <div className="mobile-cta-wrapper flex items-center gap-[6px] w-full min-w-0 mt-2">
+            {currentQty > 0 ? (
+              /* Inline Quantity Selector for Selected Variant */
+              <div className="mobile-cta-qty bg-[#FAF8F5] border border-[#4E641A] rounded-[7px] flex items-center justify-between px-1 shadow-2xs min-w-0 flex-1 h-[32px]">
+                <button
                   type="button"
-                  onClick={handleAddToCart}
-                  disabled={isOutOfStock || isAdding}
-                  className={`product-card-add-btn px-3 py-2 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider rounded-xl transition-all duration-350 flex items-center justify-center space-x-1.5 border-none cursor-pointer select-none h-full w-full ${
-                    isOutOfStock 
-                      ? 'bg-stone-100 text-stone-450 cursor-not-allowed'
-                      : 'bg-[#4E641A] hover:bg-[#2F3B0C] text-white hover:scale-[1.02] active:scale-[0.98]'
-                  }`}
+                  onClick={handleDecrementQty}
+                  disabled={isUpdatingQty}
+                  className="w-6 h-6 rounded-[5px] bg-white border border-[#EAE4D8] text-[#4E641A] hover:bg-[#4E641A] hover:text-white flex items-center justify-center transition-all cursor-pointer active:scale-95 text-xs font-bold shrink-0"
+                  title="Decrease quantity"
+                  aria-label="Decrease quantity"
                 >
-                  <span>🛒</span>
-                  <span>
-                    {isOutOfStock ? 'Out' : isAdding ? 'Adding...' : 'Add to Cart'}
-                  </span>
-                </motion.button>
-              ) : (
-                <motion.div
-                  key="quantity-selector"
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.15 }}
-                  className="product-card-qty-selector flex items-center justify-between bg-white border border-[#4E641A] text-[#4E641A] rounded-xl h-full shadow-sm w-full overflow-hidden"
+                  <FiMinus className="w-2.5 h-2.5 stroke-[2.5]" />
+                </button>
+
+                <span className="font-serif text-[10px] sm:text-xs font-bold text-[#2F3B0C] px-0.5 select-none whitespace-nowrap leading-none">
+                  {currentQty}
+                </span>
+
+                <button
+                  type="button"
+                  onClick={handleIncrementQty}
+                  disabled={isUpdatingQty}
+                  className="w-[#24px] h-[#24px] rounded-[5px] bg-[#4E641A] text-white hover:bg-[#2F3B0C] flex items-center justify-center transition-all cursor-pointer active:scale-95 text-xs font-bold shrink-0"
+                  title="Increase quantity"
+                  aria-label="Increase quantity"
                 >
-                  <button
-                    type="button"
-                    onClick={async (e) => {
-                      e.stopPropagation();
-                      try {
-                        if (cartItem.quantity > 1) {
-                          await updateQuantity(cartItem.id, cartItem.quantity - 1);
-                        } else {
-                          await removeItem(cartItem.id);
-                        }
-                      } catch (err) {
-                        console.error(err);
-                      }
-                    }}
-                    className="px-3 h-full bg-transparent hover:bg-[#4E641A]/5 text-[#4E641A] font-bold text-sm border-none cursor-pointer flex items-center justify-center transition active:scale-90"
-                  >
-                    -
-                  </button>
-                  <span className="font-sans text-xs font-extrabold text-stone-900 select-none">
-                    {cartItem.quantity}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={async (e) => {
-                      e.stopPropagation();
-                      try {
-                        await updateQuantity(cartItem.id, cartItem.quantity + 1);
-                      } catch (err) {
-                        console.error(err);
-                      }
-                    }}
-                    className="px-3 h-full bg-transparent hover:bg-[#4E641A]/5 text-[#4E641A] font-bold text-sm border-none cursor-pointer flex items-center justify-center transition active:scale-90"
-                  >
-                    +
-                  </button>
-                </motion.div>
-              )}
-            </AnimatePresence>
+                  <FiPlus className="w-2.5 h-2.5 stroke-[2.5]" />
+                </button>
+              </div>
+            ) : (
+              /* Primary Add to Cart Button */
+              <button
+                type="button"
+                onClick={handleAddToCart}
+                disabled={isOutOfStock || isAdding}
+                className={`mobile-cta-btn mobile-cta-btn-add font-sans text-[9px] sm:text-[10px] font-bold uppercase tracking-tight rounded-[7px] transition-all duration-200 flex items-center justify-center gap-1 shadow-2xs cursor-pointer border-none min-w-0 flex-1 h-[32px] py-1 px-1 sm:px-2 ${
+                  isOutOfStock
+                    ? 'bg-stone-200 text-stone-500 cursor-not-allowed'
+                    : 'bg-[#4E641A] hover:bg-[#2F3B0C] text-white active:scale-[0.98]'
+                }`}
+              >
+                <FiShoppingBag className="w-[11px] h-[11px] shrink-0" />
+                <span className="whitespace-nowrap truncate">
+                  {isOutOfStock ? 'OUT' : isAdding ? 'ADDING...' : 'ADD TO CART'}
+                </span>
+              </button>
+            )}
+
+            {/* Secondary Buy Now Button */}
+            <button
+              type="button"
+              onClick={handleBuyNow}
+              disabled={isOutOfStock || isBuyingNow}
+              className={`mobile-cta-btn mobile-cta-btn-buy font-sans text-[9px] sm:text-[10px] font-bold uppercase tracking-tight rounded-[7px] transition-all duration-200 flex items-center justify-center shadow-2xs cursor-pointer border min-w-0 flex-1 h-[32px] py-1 px-1 sm:px-2 ${
+                isOutOfStock
+                  ? 'bg-transparent text-stone-400 border-stone-200 cursor-not-allowed'
+                  : 'bg-white hover:bg-[#FAF8F5] text-[#2F3B0C] border-[#4E641A]/60 hover:border-[#4E641A] active:scale-[0.98]'
+              }`}
+            >
+              <span className="whitespace-nowrap truncate">
+                {isBuyingNow ? '...' : 'BUY NOW'}
+              </span>
+            </button>
           </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 });
 
 export default ProductCard;
-

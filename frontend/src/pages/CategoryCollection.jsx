@@ -105,7 +105,7 @@ export default function CategoryCollection() {
   return (
     <div className="flex flex-col bg-[#F9F6F0] overflow-hidden w-full min-h-screen text-left">
       {/* 1. Breadcrumbs */}
-      <nav className="px-6 md:px-12 py-4 max-w-7xl mx-auto w-full flex items-center space-x-2 text-[10px] font-extrabold uppercase tracking-widest text-[#B8833E]/70 font-sans">
+      <nav className="px-6 md:px-12 pt-2 pb-3 md:py-4 max-w-7xl mx-auto w-full flex items-center space-x-2 text-[10px] font-extrabold uppercase tracking-widest text-[#B8833E]/70 font-sans">
         <Link to="/" className="hover:text-[#4E641A] transition">Home</Link>
         <FiChevronRight className="w-3 h-3 text-stone-300" />
         <Link to="/products" className="hover:text-[#4E641A] transition">Storefront</Link>
@@ -154,8 +154,11 @@ export default function CategoryCollection() {
                 <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold leading-tight drop-shadow-sm text-white">
                   {category.name}
                 </h1>
-                <p className="font-sans text-xs md:text-sm text-[#F9F6F0]/90 leading-relaxed font-light drop-shadow-sm">
-                  {category.description || 'Pure unrefined chemical-free biodynamic collections sourced directly from the crop cycles of Wardha Valley.'}
+                <p className="font-sans text-xs md:text-sm text-[#F9F6F0]/90 leading-relaxed font-light drop-shadow-sm max-w-xl">
+                  {(!category.description || category.description === 'Pure unrefined chemical-free biodynamic collections sourced directly from the crop cycles of Wardha Valley.')
+                    ? 'From quality agricultural produce to your home — carefully sourced, hygienically processed, and crafted with care for better food and better living.'
+                    : category.description.replace('Pure unrefined chemical-free biodynamic collections sourced directly from the crop cycles of Wardha Valley.', 'From quality agricultural produce to your home — carefully sourced, hygienically processed, and crafted with care for better food and better living.')
+                  }
                 </p>
               </div>
             </div>

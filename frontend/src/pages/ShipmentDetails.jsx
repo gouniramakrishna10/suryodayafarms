@@ -236,7 +236,7 @@ export default function ShipmentDetails() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#F9F6F0] flex flex-col items-center justify-center pt-20 text-center">
+      <div className="min-h-screen bg-[#F9F6F0] flex flex-col items-center justify-center pt-4 text-center">
         <div className="animate-pulse flex flex-col items-center gap-3">
           <GiSun className="text-[#C68A2B] text-5xl animate-spin-slow" />
           <span className="font-serif text-sm font-semibold text-[#2F3B0C] uppercase tracking-widest">
@@ -249,7 +249,7 @@ export default function ShipmentDetails() {
 
   if (error || !order) {
     return (
-      <div className="min-h-screen bg-[#F9F6F0] flex flex-col items-center justify-center pt-32 px-4 text-center">
+      <div className="min-h-screen bg-[#F9F6F0] flex flex-col items-center justify-center pt-4 px-4 text-center">
         <div className="max-w-md bg-white border border-[#EAE4D8] rounded-[32px] p-8 shadow-sm space-y-6">
           <div className="w-16 h-16 rounded-full bg-red-50 text-red-550 border border-red-100 flex items-center justify-center text-2xl mx-auto">
             ✕
@@ -285,7 +285,7 @@ export default function ShipmentDetails() {
   const isShipped = ['SHIPPED', 'IN_TRANSIT', 'IN TRANSIT', 'OUT_FOR_DELIVERY', 'DELIVERED'].includes(logisticsStatus);
 
   return (
-    <div className="min-h-screen bg-[#F9F6F0] pt-6 pb-20 px-4 md:px-8 relative text-[#1E1E1E]">
+    <div className="min-h-screen bg-[#F9F6F0] pt-3 sm:pt-6 pb-20 px-4 md:px-8 relative text-[#1E1E1E]">
       
       {/* Confetti celebration for delivered state */}
       {logisticsStatus === 'DELIVERED' && (

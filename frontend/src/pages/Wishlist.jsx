@@ -1,172 +1,125 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FiHeart, FiTrash2, FiShoppingBag } from 'react-icons/fi';
+import { FiHeart } from 'react-icons/fi';
+import ProductCard from '../components/ProductCard';
 import { useWishlistStore } from '../store/useWishlistStore';
 import { useCartStore } from '../store/useCartStore';
 import { useAuthStore } from '../store/useAuthStore';
-import { getOptimizedImageUrl, getImageSrcSet } from '../utils/imageOptimizer';
-import { formatCurrency } from '../utils/currency';
+
+export function WishlistSkeleton() {
+  return (
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5">
+      {[...Array(4)].map((_, i) => (
+        <div key={i} className="bg-white border border-[#EAE4D8] rounded-[16px] p-3 space-y-3 animate-pulse shadow-2xs">
+          <div className="aspect-square w-full bg-stone-100 rounded-xl" />
+          <div className="space-y-2 pt-1">
+            <div className="h-2.5 w-14 bg-stone-200 rounded" />
+            <div className="h-4 w-5/6 bg-stone-300 rounded" />
+            <div className="h-4 w-1/3 bg-stone-200 rounded" />
+          </div>
+          <div className="h-10 w-full bg-stone-200 rounded-xl" />
+        </div>
+      ))}
+    </div>
+  );
+}
 
 export default function Wishlist() {
   const navigate = useNavigate();
-  const { wishlistItems, toggleWishlist } = useWishlistStore();
-  const { addToCart } = useCartStore();
+  const { wishlistItems, isLoading } = useWishlistStore();
   const { isAuthenticated } = useAuthStore();
-  const [loadedImages, setLoadedImages] = useState({});
 
-  const handleImageLoad = (id) => {
-    setLoadedImages(prev => ({ ...prev, [id]: true }));
-  };
-
-  const handleAddToCart = async (product) => {
-    if (!isAuthenticated) {
-      useAuthStore.getState().setLoginRequiredModalOpen(true);
-      return;
-    }
-    try {
-      // Add the default product to cart (quantity = 1, default variant if present)
-      await addToCart(product.id, null, 1);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  const savedCount = wishlistItems.length;
 
   return (
-    <div className="min-h-screen bg-cream-bg pt-6 pb-20 px-6 md:px-12">
+    <div className="bg-[#FAF8F5] pt-4 sm:pt-6 pb-12 sm:pb-16 px-4 sm:px-6 md:px-12 min-h-[60vh]">
       <div className="max-w-7xl mx-auto">
         
-        {/* Header Title */}
-        <div className="flex flex-col gap-3 mb-10 text-left">
-          <span className="font-sans text-[10px] font-bold tracking-[0.3em] uppercase text-sunrise-gold">
-            Your Premium Collection
+        {/* 1. Page Header */}
+        <div className="flex flex-col gap-0.5 mb-4 sm:mb-5 text-left">
+          <span className="font-sans text-[9.5px] sm:text-[10px] font-bold tracking-[0.25em] uppercase text-[#C68A2B]">
+            YOUR PREMIUM COLLECTION
           </span>
-          <h1 className="font-serif text-3xl sm:text-5xl font-bold text-dark-olive leading-tight">
-            My Favorites
-          </h1>
-          <div className="w-16 h-[1.5px] bg-sunrise-gold" />
+          <div className="flex flex-wrap items-baseline gap-2 justify-between">
+            <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold text-[#2F3B0C] leading-tight">
+              My Favorites
+            </h1>
+            {isAuthenticated && (
+              <span className="font-sans text-xs font-semibold text-stone-500">
+                {savedCount} {savedCount === 1 ? 'Saved Product' : 'Saved Products'}
+              </span>
+            )}
+          </div>
+          <div className="w-12 h-[2px] bg-[#C68A2B] mt-1 rounded-full" />
         </div>
 
+        {/* 2. Page Content */}
         {!isAuthenticated ? (
-          /* Authentication prompt empty state */
-          <div className="bg-light-beige/20 border border-light-beige rounded-[32px] py-20 px-6 text-center max-w-2xl mx-auto flex flex-col items-center gap-6 shadow-sm">
-            <div className="w-16 h-16 rounded-full bg-primary-green/10 flex items-center justify-center text-primary-green">
-              <FiHeart className="text-3xl animate-pulse" />
+          /* Authentication Required State */
+          <div className="bg-white border border-[#EAE4D8] rounded-[16px] py-12 sm:py-16 px-6 text-center max-w-md mx-auto flex flex-col items-center gap-4 shadow-2xs my-6">
+            <div className="w-14 h-14 rounded-full bg-[#E8EFE0] border border-[#D5E2C7] flex items-center justify-center text-[#4E641A]">
+              <FiHeart className="w-6 h-6 text-[#4E641A] animate-pulse" />
             </div>
-            <div className="flex flex-col gap-2">
-              <h2 className="font-serif text-2xl font-bold text-dark-olive">Authentication Required</h2>
-              <p className="font-sans text-xs md:text-sm text-dark-text/70 leading-relaxed font-light max-w-sm">
-                Sign in to your Suryodaya Farms account to save and synchronize your favorited crops and organic staples.
+            <div className="space-y-1">
+              <h2 className="font-serif text-xl sm:text-2xl font-bold text-[#2F3B0C]">
+                Authentication Required
+              </h2>
+              <p className="font-sans text-xs sm:text-sm text-stone-500 leading-relaxed max-w-xs mx-auto">
+                Sign in to save and synchronize your favorite superfoods across all your devices.
               </p>
             </div>
             <button
+              type="button"
               onClick={() => {
                 useAuthStore.getState().setAuthModalTab('login');
                 useAuthStore.getState().setAuthModalOpen(true);
               }}
-              className="font-sans text-xs font-semibold tracking-widest uppercase bg-primary-green text-white px-8 py-4 rounded-xl shadow-md hover:bg-dark-olive transition-all duration-300 border-none cursor-pointer"
+              className="font-sans text-xs font-bold tracking-wider uppercase bg-[#4E641A] hover:bg-[#2F3B0C] text-white px-6 py-3 rounded-xl shadow-2xs transition-all duration-300 border-none cursor-pointer mt-1"
             >
               Sign In to Account
             </button>
           </div>
-        ) : wishlistItems.length === 0 ? (
-          /* Empty state */
-          <div className="bg-light-beige/20 border border-light-beige rounded-[32px] py-20 px-6 text-center max-w-2xl mx-auto flex flex-col items-center gap-6 shadow-sm">
-            <div className="w-16 h-16 rounded-full bg-primary-green/10 flex items-center justify-center text-primary-green">
-              <FiHeart className="text-3xl" />
+        ) : isLoading && savedCount === 0 ? (
+          <WishlistSkeleton />
+        ) : savedCount === 0 ? (
+          /* Empty Favorites State */
+          <div className="bg-white border border-[#EAE4D8] rounded-[16px] py-12 sm:py-16 px-6 text-center max-w-md mx-auto flex flex-col items-center gap-4 shadow-2xs my-6">
+            <div className="w-14 h-14 rounded-full bg-[#E8EFE0] border border-[#D5E2C7] flex items-center justify-center text-[#4E641A]">
+              <FiHeart className="w-6 h-6 fill-[#4E641A]/20 text-[#4E641A]" />
             </div>
-            <div className="flex flex-col gap-2">
-              <h2 className="font-serif text-2xl font-bold text-dark-olive">Your wishlist is empty</h2>
-              <p className="font-sans text-xs md:text-sm text-dark-text/70 leading-relaxed font-light max-w-sm">
-                Save the organic staples that caught your eye by clicking the heart button on our catalog pages.
+            <div className="space-y-1">
+              <h2 className="font-serif text-xl sm:text-2xl font-bold text-[#2F3B0C]">
+                Your Favorites Are Empty
+              </h2>
+              <p className="font-sans text-xs sm:text-sm text-stone-500 leading-relaxed max-w-xs mx-auto">
+                Save products you love and they'll appear here.
               </p>
             </div>
             <Link
               to="/products"
-              className="font-sans text-xs font-semibold tracking-widest uppercase bg-primary-green text-white px-8 py-4 rounded-xl shadow-md hover:bg-dark-olive transition-all duration-300"
+              className="font-sans text-xs font-bold tracking-wider uppercase bg-[#4E641A] hover:bg-[#2F3B0C] text-white px-6 py-3 rounded-xl shadow-2xs transition-all duration-300 mt-1 inline-block"
             >
-              Browse Products
+              Explore Products
             </Link>
           </div>
         ) : (
-          /* Wishlist Grid */
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          /* Modern Responsive Wishlist Grid */
+          <div className={`wishlist-products-grid grid gap-4 sm:gap-5 ${
+            wishlistItems.length === 1 
+              ? 'grid-cols-1 max-w-sm mx-auto' 
+              : wishlistItems.length === 2 
+                ? 'grid-cols-2 max-w-2xl mx-auto' 
+                : 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4'
+          }`}>
             {wishlistItems.map((item) => {
-              const product = item.product;
-              const productPrice = product.price;
-              const rawImgUrl = typeof product.images?.[0] === 'string' ? product.images[0] : (product.images?.[0]?.url || product.image);
-              const productImg = getOptimizedImageUrl(rawImgUrl, { width: 800, cropMode: 'limit' });
-              
+              const product = item.product || item;
+              if (!product) return null;
+
               return (
-                <div 
-                  key={item.id}
-                  className="bg-white rounded-3xl overflow-hidden border border-light-beige hover:shadow-lg transition-all duration-300 flex flex-col justify-between group h-full shadow-sm text-left"
-                >
-                  <div className="relative aspect-square bg-transparent overflow-hidden flex items-center justify-center">
-                    {!loadedImages[item.id] && (
-                      <div className="absolute inset-0 flex items-center justify-center bg-transparent">
-                        <div className="w-12 h-12 rounded-full bg-light-beige/30 animate-pulse" />
-                      </div>
-                    )}
-                    <img
-                      src={productImg}
-                      srcSet={getImageSrcSet(rawImgUrl, { widths: [400, 800], cropMode: 'limit' })}
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                      alt={product.name}
-                      onLoad={() => handleImageLoad(item.id)}
-                      onError={(e) => {
-                        handleImageLoad(item.id);
-                        handleImageError(e, DEFAULT_FALLBACK_IMAGE);
-                      }}
-                      className={`w-full h-full object-contain p-3.5 filter drop-shadow-[0_8px_16px_rgba(0,0,0,0.12)] group-hover:scale-105 transition-all duration-500 ${
-                        loadedImages[item.id] ? 'opacity-100' : 'opacity-0'
-                      }`}
-                    />
-                    
-                    {/* Delete trigger overlay */}
-                    <button
-                      onClick={() => toggleWishlist(product.id)}
-                      className="absolute top-4 right-4 bg-white/90 text-red-500 border border-light-beige hover:bg-red-50 hover:text-red-600 p-2.5 rounded-full transition-all shadow-md z-20"
-                      title="Remove Bookmark"
-                    >
-                      <FiTrash2 size={15} />
-                    </button>
-                  </div>
-
-                  {/* Body Content */}
-                  <div className="p-6 flex flex-col gap-4 flex-grow justify-between">
-                    <div className="flex flex-col gap-2">
-                      <span className="font-sans text-[8px] font-bold text-sunrise-gold uppercase tracking-[0.25em]">
-                        Organic Crop
-                      </span>
-                      <Link 
-                        to={`/products/${product.slug}`} 
-                        className="font-serif text-lg font-bold text-dark-olive hover:text-primary-green transition-colors leading-tight"
-                      >
-                        {product.name}
-                      </Link>
-                      
-                      <div className="flex items-baseline gap-2 mt-1">
-                        <span className="font-serif text-base font-bold text-primary-green">
-                          {formatCurrency(productPrice)}
-                        </span>
-                        {product.compareAtPrice && (
-                          <span className="font-sans text-xs text-dark-text/40 line-through">
-                            {formatCurrency(product.compareAtPrice)}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-
-                    <button
-                      onClick={() => handleAddToCart(product)}
-                      className="w-full font-sans text-xs font-semibold tracking-widest uppercase bg-primary-green hover:bg-dark-olive text-white py-3 px-4 rounded-xl shadow-sm transition-colors flex items-center justify-center gap-2 mt-2"
-                    >
-                      <FiShoppingBag size={13} />
-                      <span>Add to Cart</span>
-                    </button>
-                  </div>
-
-                </div>
+                <ProductCard
+                  key={product.id || item.id}
+                  product={product}
+                />
               );
             })}
           </div>

@@ -358,7 +358,7 @@ export default function ProductDetails() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-cream-bg flex items-center justify-center pt-20">
+      <div className="min-h-screen bg-cream-bg flex items-center justify-center pt-4">
         <div className="animate-pulse flex flex-col items-center gap-3">
           <GiSun className="text-sunrise-gold text-4xl animate-spin-slow" />
           <span className="font-sans text-xs font-semibold text-dark-olive uppercase tracking-widest">Loading Premium Staples...</span>
@@ -369,11 +369,11 @@ export default function ProductDetails() {
 
   if (!product) return null;
 
-  const isOutOfStock = selectedVariant
+  const isOutOfStock = Boolean(product.isOutOfStock) || (selectedVariant
     ? (selectedVariant.isBase
       ? (selectedVariant.inventory <= 0 || product.stockStatus === 'OUT_OF_STOCK')
       : (selectedVariant.inventory <= 0))
-    : (product.inventory <= 0 || product.stockStatus === 'OUT_OF_STOCK');
+    : (product.inventory <= 0 || product.stockStatus === 'OUT_OF_STOCK'));
 
   const whatsappMessage = encodeURIComponent(
     `Namaste Suryodaya Farms! I am interested in inquiring about your premium organic "${product.name}" (${selectedVariant ? selectedVariant.price : product.price}). Please share more details.`
@@ -454,7 +454,7 @@ export default function ProductDetails() {
 
   return (
     <Profiler id="ProductDetails" onRender={onRenderCallback}>
-      <div className="min-h-screen bg-[#FCFAF5] pb-32 lg:pb-20 pt-6 px-4 sm:px-6 md:px-12">
+      <div className="min-h-screen bg-[#FCFAF5] pb-32 lg:pb-20 pt-3 sm:pt-6 px-4 sm:px-6 md:px-12">
         <div className="max-w-7xl mx-auto flex flex-col gap-8 sm:gap-12">
           
           {/* Back navigation */}

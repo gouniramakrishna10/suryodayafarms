@@ -103,11 +103,11 @@ export default function Cart() {
   };
 
   return (
-    <div className="min-h-screen bg-cream-bg pt-6 pb-20 px-4 sm:px-6 md:px-12">
+    <div className="min-h-screen bg-cream-bg pt-3 sm:pt-6 pb-20 px-4 sm:px-6 md:px-12">
       <div className="max-w-7xl mx-auto">
         
         {/* Title Context */}
-        <div className="flex flex-col gap-3 mb-10 text-left">
+        <div className="flex flex-col gap-3 mb-5 sm:mb-10 text-left">
           <span className="font-sans text-[10px] font-bold tracking-[0.3em] uppercase text-sunrise-gold">
             E-Commerce checkout drawer
           </span>

@@ -181,7 +181,7 @@ export default function Contact() {
     <div className="bg-[#F9F6F0] min-h-screen font-sans text-[#2F3B0C]">
       
       {/* 1. HERO SECTION (MINIMALIST SINGLE-COLUMN CENTERED PRESENTATION) */}
-      <section className="py-14 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-[#F4EFE6] via-[#FAF7F2] to-[#FAF7F2] overflow-hidden border-b border-[#EDE7D9] relative select-none">
+      <section className="pt-3 pb-8 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-[#F4EFE6] via-[#FAF7F2] to-[#FAF7F2] overflow-hidden border-b border-[#EDE7D9] relative select-none">
         {/* Soft Radial Paper Texture & Low Opacity Organic Glow */}
         <div className="absolute inset-0 bg-[radial-gradient(#4E641A_1px,transparent_1px)] [background-size:32px_32px] opacity-10 pointer-events-none" />
         <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[600px] h-[350px] bg-[#4E641A]/5 rounded-full blur-3xl pointer-events-none" />

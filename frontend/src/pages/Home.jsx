@@ -48,7 +48,7 @@ const getCloudinaryCroppedUrl = (url, crop, options = {}) => {
 
 export function HeroSkeleton() {
   return (
-    <div className="w-full bg-[#FAF8F5] py-6 md:py-8 lg:py-10 px-6 md:px-12 lg:px-20 animate-pulse border-b border-[#EAE4D8]/50">
+    <div className="w-full bg-[#FAF8F5] pt-2 pb-6 md:py-8 lg:py-10 px-4 sm:px-6 md:px-12 lg:px-20 animate-pulse border-b border-[#EAE4D8]/50">
       <div className="max-w-7xl mx-auto grid grid-cols-12 gap-6 items-center">
         {/* Left Column (35%) */}
         <div className="col-span-12 md:col-span-4 lg:col-span-4 space-y-4">
@@ -175,7 +175,7 @@ export function TestimonialsSkeleton() {
 
 export function HomepageSkeleton() {
   return (
-    <div className="flex flex-col bg-[#F9F6F0] overflow-hidden w-full pt-20">
+    <div className="flex flex-col bg-[#F9F6F0] overflow-hidden w-full pt-0">
       <HeroSkeleton />
       <CategoriesSkeleton />
       <div className="py-20 px-6 max-w-7xl mx-auto w-full">
@@ -973,7 +973,7 @@ export default function Home() {
     return (
       <section
         key="hero"
-        className="home-hero-section relative overflow-hidden py-8 md:py-14 min-h-0 md:min-h-[600px] flex items-center px-4 sm:px-6 md:px-12 lg:px-20 border-b border-[#EAE4D8]/50 bg-[#FAF8F5] text-left select-none animate-fade-in"
+        className="home-hero-section relative overflow-hidden pt-2 pb-6 sm:pt-4 sm:pb-8 md:py-14 min-h-0 md:min-h-[600px] flex items-center px-4 sm:px-6 md:px-12 lg:px-20 border-b border-[#EAE4D8]/50 bg-[#FAF8F5] text-left select-none animate-fade-in"
       >
         {/* Soft cream-green blurred background gradients */}
         <div className="absolute top-0 right-0 w-[450px] h-[450px] bg-[#EAF2DE]/50 rounded-full filter blur-3xl opacity-60 pointer-events-none -z-10" />
@@ -1060,7 +1060,7 @@ export default function Home() {
             </div>
 
             {/* Right Showcase Column (55% width) - Centered vertically within container, aligned top in grid */}
-            <div className="relative flex justify-center items-start h-[380px] sm:h-[440px] lg:h-[480px] xl:h-[520px] w-full pt-[44px] lg:pt-[48px] -mt-[40px] md:-mt-[60px] lg:-mt-[80px]">
+            <div className="home-hero-showcase relative flex justify-center items-start h-[380px] sm:h-[440px] lg:h-[480px] xl:h-[520px] w-full pt-[44px] lg:pt-[48px] -mt-[40px] md:-mt-[60px] lg:-mt-[80px]">
 
               {/* Product Presentation Wooden Stage */}
               <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-[85%] h-[80px] sm:h-[90px] lg:h-[100px] xl:h-[110px] bg-gradient-to-br from-[#D8C7B3] via-[#C5B39E] to-[#AB9983] rounded-[100%] shadow-[0_15px_30px_rgba(0,0,0,0.15)] border border-[#C5B39E]/60 z-0 flex items-center justify-center overflow-hidden">
@@ -1247,36 +1247,35 @@ export default function Home() {
             </div>
           </div>
           {/* Mobile Layout (< md) */}
-          <div className="flex md:hidden flex-col space-y-4 text-center items-center w-full">
+          <div className="flex md:hidden flex-col space-y-2 text-center items-center w-full">
 
-            {/* 1. Product Image (Showcase packet centered, 70-80% max-width) */}
-            <div className="relative flex justify-center items-center pt-2 pb-2 h-[180px] w-full overflow-hidden">
+            {/* 1. Product Image (Showcase packet centered, 90% max-width, complete composition visible) */}
+            <div className="relative flex justify-center items-center py-1 w-full max-w-[420px] mx-auto min-h-[240px] sm:min-h-[280px]">
               {/* Wooden Round Board backdrop ellipse */}
-              <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-[70%] h-[45px] bg-gradient-to-br from-[#D8C7B3] to-[#C0AD97] opacity-70 border border-[#BFAFA1]/40 z-0 rounded-[100%] shadow-md" />
+              <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-[85%] h-[55px] sm:h-[65px] bg-gradient-to-br from-[#D8C7B3] to-[#C0AD97] opacity-70 border border-[#BFAFA1]/40 z-0 rounded-[100%] shadow-md" />
 
               {/* Dynamic Floating Ingredients for mobile */}
               {renderFloatingIngredients(getIngredientKey(activeHero))}
 
               <motion.div
                 key={selectedProductIndex}
-                initial={{ opacity: 0, scale: 0.9 }}
+                initial={{ opacity: 0, scale: 0.94 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="relative z-10 h-[160px] max-w-[70%] sm:max-w-[80%] mx-auto flex items-center justify-center filter drop-shadow-xl"
+                className="relative z-10 w-[90vw] max-w-[420px] mx-auto flex items-center justify-center filter drop-shadow-xl"
               >
                 {desktopHeroImageUrl ? (
                   <motion.img
                     animate={{ y: [0, -6, 0] }}
                     transition={{ repeat: Infinity, duration: 4.5, ease: "easeInOut" }}
-                    src={getOptimizedImageUrl(packetImage, { width: 600, cropMode: 'limit', crop: activeHero, format: 'webp', quality: 'auto:good' })}
-                    srcSet={getImageSrcSet(packetImage, { widths: [400, 800], cropMode: 'limit', crop: activeHero, format: 'webp' })}
-                    sizes="100vw"
+                    src={getOptimizedImageUrl(packetImage, { width: 800, cropMode: 'limit', crop: activeHero, format: 'webp', quality: 'auto:good' })}
+                    srcSet={getImageSrcSet(packetImage, { widths: [500, 800, 1000], cropMode: 'limit', crop: activeHero, format: 'webp' })}
+                    sizes="(max-width: 768px) 90vw, 420px"
                     alt={activeProduct?.name || 'Suryodaya Product Packet'}
                     loading="eager"
                     fetchPriority="high"
-                    fetchpriority="high"
-                    width={400}
-                    height={400}
-                    className="h-full w-auto object-contain"
+                    width={800}
+                    height={800}
+                    className="w-full h-auto max-h-[300px] sm:max-h-[340px] object-contain"
                   />
                 ) : (
                   <div className="w-20 h-30 rounded-xl bg-stone-200 flex items-center justify-center text-xs text-stone-400">
@@ -1287,7 +1286,7 @@ export default function Home() {
             </div>
             
             {/* 2. Product Selector Strip (Mobile Luxury Swipe Carousel) */}
-            <div className="w-full mt-2 flex flex-col items-center select-none">
+            <div className="w-full mt-1 flex flex-col items-center select-none">
               <div className="flex items-center justify-center mb-2.5">
                 <SectionBadge text="OUR SUPERFOOD RANGE" align="center" />
               </div>
@@ -1467,34 +1466,39 @@ export default function Home() {
 
   const renderBestSellersSection = () => {
     return (
-      <section key="best-sellers" id="best-sellers-grid" className="py-20 px-6 md:px-12 max-w-7xl mx-auto border-b border-[#EAE4D8]">
-        <div className="text-center max-w-2xl lg:max-w-3xl mx-auto space-y-4 mb-16 flex flex-col items-center">
-          <SectionBadge text={settings.homepage_section_badge_best_sellers || "Customer Favorites"} align="center" />
-          <h2 className="font-serif text-3xl md:text-5xl font-semibold text-[#2F3B0C] leading-tight">
+      <section key="best-sellers" id="best-sellers-grid" className="py-10 sm:py-16 md:py-20 px-4 sm:px-6 md:px-12 max-w-7xl mx-auto border-b border-[#EAE4D8] w-full max-w-full overflow-hidden">
+        {/* 1. Header Block: Badge -> Title -> Subtitle */}
+        <div className="text-center max-w-2xl lg:max-w-3xl mx-auto space-y-2 sm:space-y-3 mb-5 sm:mb-7 flex flex-col items-center px-4 w-full">
+          <SectionBadge text={settings.homepage_section_badge_best_sellers || "CUSTOMER FAVORITES"} align="center" />
+          <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#2F3B0C] leading-snug sm:leading-tight max-w-full break-words">
             {settings.homepage_section_title_best_sellers || "Nourish Your Family with Nature's Finest Superfoods"}
           </h2>
-          <p className="text-xs md:text-sm text-stone-500 leading-relaxed font-medium max-w-2xl mx-auto">
+          <p className="text-xs sm:text-sm text-stone-500 leading-relaxed font-medium max-w-2xl mx-auto pt-0.5">
             {settings.homepage_section_subtitle_best_sellers || "Discover our most-loved products, thoughtfully crafted with scientific expertise and uncompromising quality to support healthy living, natural vitality, and everyday wellness. Made from premium-quality natural ingredients and carefully processed to preserve their nutritional goodness."}
           </p>
         </div>
 
-        {/* Dynamic Category Filtering Bar */}
-        <div className="flex flex-wrap justify-center gap-2 mb-10">
-          {[{ id: 'All', name: 'Shop All' }, ...homepageCategories].map((cat) => (
-            <button
-              key={cat.id}
-              onClick={() => setActiveCategory(cat)}
-              className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider border transition-all duration-300 cursor-pointer ${(activeCategory === 'All' && cat.id === 'All') || activeCategory?.id === cat.id
-                ? 'bg-[#4E641A] text-white border-transparent shadow'
-                : 'bg-white hover:bg-stone-50 text-stone-600 border-[#EAE4D8]'
+        {/* 2. Compact Horizontal Scroll Category Filter (Constrained Container) */}
+        <div className="w-full max-w-full overflow-hidden mb-6 sm:mb-8 min-w-0">
+          <div className="flex items-center gap-2 overflow-x-auto whitespace-nowrap flex-nowrap w-full no-scrollbar select-none py-1 justify-start md:justify-center min-w-0">
+            {[{ id: 'All', name: 'Shop All' }, ...homepageCategories].map((cat) => (
+              <button
+                key={cat.id}
+                type="button"
+                onClick={() => setActiveCategory(cat)}
+                className={`h-[40px] px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider border whitespace-nowrap shrink-0 transition-all duration-300 cursor-pointer ${
+                  (activeCategory === 'All' && cat.id === 'All') || activeCategory?.id === cat.id
+                    ? 'bg-[#4E641A] text-white border-[#4E641A] shadow-xs'
+                    : 'bg-[#FAF8F5] hover:bg-stone-100 text-[#2F3B0C] border-[#EAE4D8]'
                 }`}
-            >
-              {cat.id === 'All' ? 'Shop All' : cat.name}
-            </button>
-          ))}
+              >
+                {cat.id === 'All' ? 'Shop All' : cat.name}
+              </button>
+            ))}
+          </div>
         </div>
 
-        {/* Products Grid */}
+        {/* 3. Products Grid */}
         {isLoading ? (
           <div className="text-center py-16 flex flex-col items-center justify-center gap-2">
             <GiSun className="text-primary-green text-3xl animate-spin" />
@@ -1507,7 +1511,7 @@ export default function Home() {
             <button onClick={() => { setActiveCategory({ id: 'All', name: 'Shop All' }); }} className="mt-2 text-xs font-bold text-[#4E641A] underline">Reset Filters</button>
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-6 lg:gap-8 w-full max-w-full min-w-0">
             {filteredProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
@@ -1520,49 +1524,49 @@ export default function Home() {
   const renderTrustSection = () => {
     const standardCards = [
       {
-        icon: <FiAward className="text-xl sm:text-2xl" />,
+        icon: <FiAward className="text-xl" />,
         title: "Premium Quality Ingredients",
         desc: "We carefully select high-quality ingredients to ensure purity, freshness, and nutritional value."
       },
       {
-        icon: <FiCpu className="text-xl sm:text-2xl" />,
+        icon: <FiCpu className="text-xl" />,
         title: "Science-Guided Quality",
         desc: "Every product is developed and monitored with scientific expertise to maintain consistent quality and safety."
       },
       {
-        icon: <FiShield className="text-xl sm:text-2xl" />,
+        icon: <FiShield className="text-xl" />,
         title: "Hygienic Processing",
         desc: "Prepared and packed under strict hygiene standards to preserve freshness and product integrity."
       },
       {
-        icon: <GiSprout className="text-xl sm:text-2xl" />,
+        icon: <GiSprout className="text-xl" />,
         title: "Freshness You Can Trust",
         desc: "Carefully processed and packed to help retain quality, freshness, and nutritional goodness."
       }
     ];
 
     return (
-      <section key="trust" className="dark-section bg-[#2F3B0C] text-[#F9F6F0] py-16 px-6 md:px-12 relative overflow-hidden">
+      <section id="trust-section" key="trust" className="dark-section bg-[#2F3B0C] text-[#F9F6F0] pt-20 pb-8 sm:py-16 px-4 sm:px-6 md:px-12 relative overflow-hidden scroll-mt-20">
         <div className="absolute inset-0 bg-[radial-gradient(#4E641A_1.5px,transparent_1.5px)] [background-size:24px_24px] opacity-15" />
         <div className="max-w-7xl mx-auto relative z-10">
-          <div className="text-center max-w-4xl mx-auto space-y-3 mb-12">
-            <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl lg:text-[44px] xl:text-5xl font-semibold leading-tight text-white whitespace-nowrap">
+          <div className="text-center max-w-4xl mx-auto space-y-2 sm:space-y-3 mb-6 sm:mb-12">
+            <h2 className="font-serif text-xl sm:text-3xl md:text-4xl lg:text-[44px] xl:text-5xl font-semibold leading-tight text-white sm:whitespace-nowrap">
               {settings.homepage_section_title_trust || "The Suryodaya Farms Standard"}
             </h2>
-            <p className="text-xs md:text-sm text-[#C68A2B] font-bold tracking-wide leading-relaxed uppercase">
+            <p className="text-[10px] sm:text-xs md:text-sm text-[#C68A2B] font-bold tracking-wide leading-relaxed uppercase">
               {settings.homepage_section_subtitle_trust || "Pure Ingredients | Scientific Standards | Trusted Nutrition"}
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 text-center">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 text-center">
             {standardCards.map((card, idx) => (
-              <div key={idx} className="bg-white/5 border border-white/10 rounded-2xl p-5 sm:p-6 space-y-3 hover:bg-white/10 transition duration-300 flex flex-col items-center justify-between text-center group">
-                <div className="w-12 h-12 rounded-xl bg-[#C68A2B]/20 text-[#C68A2B] group-hover:bg-[#C68A2B] group-hover:text-[#2F3B0C] flex items-center justify-center mx-auto shadow-inner shrink-0 transition-all duration-300 mb-1">
+              <div key={idx} className="bg-white/5 border border-white/10 rounded-2xl p-4 sm:p-6 space-y-2 sm:space-y-3 hover:bg-white/10 transition duration-300 flex flex-col items-center justify-between text-center group min-h-[155px] sm:min-h-0">
+                <div className="w-12 h-12 rounded-xl bg-[#C68A2B]/20 text-[#C68A2B] group-hover:bg-[#C68A2B] group-hover:text-[#2F3B0C] flex items-center justify-center mx-auto shadow-inner shrink-0 transition-all duration-300 mb-0.5">
                   {card.icon}
                 </div>
-                <div className="space-y-1.5">
-                  <h4 className="font-serif text-sm sm:text-base font-bold uppercase tracking-wider text-white">{card.title}</h4>
-                  <p className="text-xs text-white/85 leading-relaxed font-light">
+                <div className="space-y-1">
+                  <h4 className="font-serif text-[15px] sm:text-base font-bold uppercase tracking-wider text-white leading-snug">{card.title}</h4>
+                  <p className="text-[13px] sm:text-xs text-white/85 leading-[1.45] font-light">
                     {card.desc}
                   </p>
                 </div>
@@ -1997,7 +2001,7 @@ export default function Home() {
   return (
     <Profiler id="Homepage" onRender={onRenderCallback}>
 
-      <div className="flex flex-col bg-[#F9F6F0] overflow-hidden w-full relative pt-20">
+      <div className="flex flex-col bg-[#F9F6F0] overflow-hidden w-full relative pt-0">
 
         {/* FLOATING SUCCESS TOAST MICRO-ANIMATION */}
         <AnimatePresence>

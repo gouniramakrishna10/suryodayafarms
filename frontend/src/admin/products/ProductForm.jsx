@@ -286,6 +286,23 @@ export default function ProductForm({
               </button>
             </div>
 
+            {/* Manual Stock Availability Control */}
+            <div className="p-4 bg-stone-50 border border-stone-200 rounded-2xl flex items-center justify-between">
+              <div className="space-y-0.5">
+                <h5 className="text-xs font-bold text-dark-olive">Manual Out-of-Stock Override</h5>
+                <p className="text-[11px] text-stone-500">Temporarily stop sales on storefront without changing or clearing inventory numbers.</p>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={!!productForm.isOutOfStock}
+                  onChange={(e) => setProductForm(prev => ({ ...prev, isOutOfStock: e.target.checked }))}
+                  className="sr-only peer"
+                />
+                <div className="w-11 h-6 bg-stone-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-800"></div>
+              </label>
+            </div>
+
             {/* Expandable Variant Cards List */}
             <div className="space-y-4">
               {(!productForm.variants || productForm.variants.length === 0) ? (

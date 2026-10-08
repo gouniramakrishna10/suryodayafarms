@@ -111,6 +111,7 @@ model Product {
   isNewLaunch         Boolean          @default(false)
   isVisible           Boolean          @default(true)
   isComingSoon        Boolean          @default(false)
+  isOutOfStock        Boolean          @default(false)
   nutrients           String?
   origin              String?
   shelfLife           String?

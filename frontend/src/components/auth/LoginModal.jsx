@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useFeedbackStore } from '../../store/useFeedbackStore';
 import { SuccessState } from './SuccessState';
+import { DEFAULT_FALLBACK_IMAGE } from '../../utils/imageOptimizer';
 
 export const LoginModal = () => {
   const navigate = useNavigate();
@@ -335,9 +336,11 @@ export const LoginModal = () => {
 
             {/* Brand Header */}
             <div className="flex items-center gap-2.5 mb-2">
-              <span className="w-9 h-9 bg-[#4E641A] text-white rounded-xl flex items-center justify-center text-lg shadow-xs">
-                🌱
-              </span>
+              <img 
+                src={DEFAULT_FALLBACK_IMAGE} 
+                alt="Suryodaya Farms Logo" 
+                className="h-8 sm:h-9 w-auto object-contain shrink-0 filter drop-shadow-2xs"
+              />
               <span className="font-serif text-sm font-extrabold tracking-wide text-[#2F3B0C] uppercase">
                 Suryodaya Farms
               </span>

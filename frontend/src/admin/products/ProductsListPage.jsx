@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiPlus, FiEdit2, FiTrash2 } from 'react-icons/fi';
+import { FiPlus, FiEdit2, FiTrash2, FiAlertCircle } from 'react-icons/fi';
 import EmptyState from '../../components/EmptyState';
 import { useProductFilterStore } from '../../store/useProductFilterStore';
 import { getOptimizedImageUrl, handleImageError, DEFAULT_FALLBACK_IMAGE } from '../../utils/imageOptimizer';
@@ -10,9 +10,13 @@ export default function ProductsListPage({
   products = [],
   categories = [],
   handleDeleteProduct,
+  handleToggleStockAvailability,
   isLoading
 }) {
   const navigate = useNavigate();
+  const [stockModalTarget, setStockModalTarget] = useState(null);
+  const [isSubmittingStockToggle, setIsSubmittingStockToggle] = useState(false);
+
   const {
     searchQuery,
     setSearchQuery,
@@ -45,7 +49,11 @@ export default function ProductsListPage({
       const pCatIds = p.categoryIds || [p.categoryId];
       if (!pCatIds.includes(categoryFilter)) return false;
     }
-    if (stockFilter !== 'ALL' && p.stockStatus !== stockFilter) return false;
+    if (stockFilter !== 'ALL') {
+      const isOut = p.isOutOfStock || p.inventory <= 0 || p.stockStatus === 'OUT_OF_STOCK';
+      if (stockFilter === 'IN_STOCK' && isOut) return false;
+      if (stockFilter === 'OUT_OF_STOCK' && !isOut) return false;
+    }
     if (statusFilter === 'VISIBLE' && !p.isVisible) return false;
     if (statusFilter === 'HIDDEN' && p.isVisible) return false;
     return true;
@@ -135,8 +143,8 @@ export default function ProductsListPage({
                   <th className="py-3 px-4">Product</th>
                   <th className="py-3 px-4">Category</th>
                   <th className="py-3 px-4">Price</th>
-                  <th className="py-3 px-4">Stock</th>
-                  <th className="py-3 px-4">Status</th>
+                  <th className="py-3 px-4">Stock Availability</th>
+                  <th className="py-3 px-4">Visibility</th>
                   <th className="py-3 px-4 text-right">Actions</th>
                 </tr>
               </thead>
@@ -164,11 +172,24 @@ export default function ProductsListPage({
                       {formatCurrency(prod.price)} {prod.mrp && <span className="text-stone-400 text-[10px] font-normal line-through ml-1">{formatCurrency(prod.mrp)}</span>}
                     </td>
                     <td className="py-3 px-4">
-                      <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold border ${
-                        prod.inventory > 0 ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-red-50 text-red-700 border-red-200'
-                      }`}>
-                        {prod.inventory > 0 ? `In Stock (${prod.inventory})` : 'Out of Stock'}
-                      </span>
+                      <div className="flex flex-col items-start gap-1">
+                        {prod.isOutOfStock ? (
+                          <span className="px-2.5 py-1 rounded-full text-[10px] font-bold border bg-rose-50 text-rose-700 border-rose-200 flex items-center gap-1.5" title={`Manually marked Out of Stock (Inventory Qty: ${prod.inventory})`}>
+                            <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span>
+                            Out of Stock (Manual)
+                          </span>
+                        ) : prod.inventory > 0 ? (
+                          <span className="px-2.5 py-1 rounded-full text-[10px] font-bold border bg-emerald-50 text-emerald-700 border-emerald-200 flex items-center gap-1.5">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                            In Stock ({prod.inventory})
+                          </span>
+                        ) : (
+                          <span className="px-2.5 py-1 rounded-full text-[10px] font-bold border bg-red-50 text-red-700 border-red-200 flex items-center gap-1.5">
+                            <span className="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                            Out of Stock (0)
+                          </span>
+                        )}
+                      </div>
                     </td>
                     <td className="py-3 px-4">
                       <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold border ${
@@ -178,7 +199,19 @@ export default function ProductsListPage({
                       </span>
                     </td>
                     <td className="py-3 px-4 text-right">
-                      <div className="flex justify-end gap-2">
+                      <div className="flex items-center justify-end gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setStockModalTarget(prod)}
+                          className={`px-2.5 py-1.5 rounded-lg text-[10px] font-bold transition cursor-pointer border ${
+                            prod.isOutOfStock
+                              ? 'bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border-emerald-200'
+                              : 'bg-amber-50 hover:bg-amber-100 text-amber-800 border-amber-250'
+                          }`}
+                          title={prod.isOutOfStock ? "Mark In Stock" : "Mark Out of Stock"}
+                        >
+                          {prod.isOutOfStock ? 'Mark In Stock' : 'Mark Out of Stock'}
+                        </button>
                         <button
                           type="button"
                           onClick={() => navigate(`/admin/products/${prod.id}/edit`)}
@@ -205,6 +238,74 @@ export default function ProductsListPage({
         )}
 
       </div>
+
+      {/* CONFIRMATION MODAL FOR STOCK AVAILABILITY TOGGLE */}
+      {stockModalTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-stone-900/40 backdrop-blur-xs p-4 animate-fade-in">
+          <div className="bg-white rounded-3xl p-6 max-w-md w-full border border-stone-200 shadow-xl space-y-4 text-left">
+            <div className="flex items-start gap-3">
+              <div className={`w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 text-lg ${
+                stockModalTarget.isOutOfStock ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-800'
+              }`}>
+                {stockModalTarget.isOutOfStock ? '🌿' : '⚠️'}
+              </div>
+              <div className="space-y-1">
+                <h3 className="font-serif text-lg font-bold text-dark-olive">
+                  {stockModalTarget.isOutOfStock
+                    ? `Mark ${stockModalTarget.name} as In Stock?`
+                    : `Mark ${stockModalTarget.name} as Out of Stock?`}
+                </h3>
+                <p className="text-xs text-stone-500 leading-relaxed">
+                  {stockModalTarget.isOutOfStock
+                    ? `This will restore normal purchasing on the customer website using existing stock quantity (${stockModalTarget.inventory}).`
+                    : `This will temporarily stop sales of ${stockModalTarget.name} on the customer website. Stock quantity (${stockModalTarget.inventory}) will remain unchanged.`}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-2.5 pt-3 border-t border-stone-100">
+              <button
+                type="button"
+                onClick={() => setStockModalTarget(null)}
+                disabled={isSubmittingStockToggle}
+                className="px-4 py-2.5 rounded-xl border border-stone-200 bg-white text-stone-700 text-xs font-bold hover:bg-stone-50 transition cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={isSubmittingStockToggle}
+                onClick={async () => {
+                  try {
+                    setIsSubmittingStockToggle(true);
+                    if (handleToggleStockAvailability) {
+                      await handleToggleStockAvailability(stockModalTarget.id, !stockModalTarget.isOutOfStock);
+                    }
+                    setStockModalTarget(null);
+                  } catch (err) {
+                    console.error(err);
+                  } finally {
+                    setIsSubmittingStockToggle(false);
+                  }
+                }}
+                className={`px-5 py-2.5 rounded-xl text-white text-xs font-bold transition shadow-xs cursor-pointer border-none ${
+                  stockModalTarget.isOutOfStock
+                    ? 'bg-[#4E641A] hover:bg-[#2F3B0C]'
+                    : 'bg-amber-800 hover:bg-amber-900'
+                }`}
+              >
+                {isSubmittingStockToggle
+                  ? 'Updating...'
+                  : stockModalTarget.isOutOfStock
+                    ? 'Mark In Stock'
+                    : 'Mark Out of Stock'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
+

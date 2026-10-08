@@ -103,7 +103,7 @@ router.post('/products', async (req, res, next) => {
     name, categoryId, categoryIds, description, shortDescription, detailedDescription, brand, productType,
     price, compareAtPrice, mrp, discountPercent, taxPercent, stockStatus,
     sku, inventory, hoverImage, mobileBanner,
-    isFeatured, isTrending, isBestseller, isNewLaunch, isVisible, isComingSoon,
+    isFeatured, isTrending, isBestseller, isNewLaunch, isVisible, isComingSoon, isOutOfStock,
     nutrients, origin, shelfLife, deliveryEta, codAvailable, returnEligible, weight,
     seoTitle, seoDescription, seoKeywords, image, images, variants, productContent, contentSections
   } = req.body;
@@ -162,6 +162,7 @@ router.post('/products', async (req, res, next) => {
         isNewLaunch: !!isNewLaunch,
         isVisible: isVisible !== undefined ? !!isVisible : true,
         isComingSoon: !!isComingSoon,
+        isOutOfStock: !!isOutOfStock,
         nutrients: nutrients || '',
         origin: origin || '',
         shelfLife: shelfLife || '',
@@ -217,7 +218,7 @@ router.put('/products/:id', async (req, res, next) => {
     name, categoryId, categoryIds, description, shortDescription, detailedDescription, brand, productType,
     price, compareAtPrice, mrp, discountPercent, taxPercent, stockStatus,
     sku, inventory, hoverImage, mobileBanner,
-    isFeatured, isTrending, isBestseller, isNewLaunch, isVisible, isComingSoon,
+    isFeatured, isTrending, isBestseller, isNewLaunch, isVisible, isComingSoon, isOutOfStock,
     nutrients, origin, shelfLife, deliveryEta, codAvailable, returnEligible, weight,
     seoTitle, seoDescription, seoKeywords, image, images, variants, productContent, contentSections
   } = req.body;
@@ -252,6 +253,7 @@ router.put('/products/:id', async (req, res, next) => {
       isNewLaunch: isNewLaunch !== undefined ? !!isNewLaunch : undefined,
       isVisible: isVisible !== undefined ? !!isVisible : undefined,
       isComingSoon: isComingSoon !== undefined ? !!isComingSoon : undefined,
+      isOutOfStock: isOutOfStock !== undefined ? !!isOutOfStock : undefined,
       nutrients,
       origin,
       shelfLife,
@@ -384,6 +386,45 @@ router.put('/products/:id', async (req, res, next) => {
     next(error);
   }
 });
+
+// TOGGLE PRODUCT MANUAL OUT OF STOCK AVAILABILITY
+// PATCH & PUT /api/admin/products/:id/stock-availability
+const handleStockAvailabilityToggle = async (req, res, next) => {
+  const { id } = req.params;
+  const { isOutOfStock } = req.body;
+
+  try {
+    const exists = await prisma.product.findUnique({ where: { id } });
+    if (!exists) {
+      return res.status(404).json({ success: false, message: 'Product not found.' });
+    }
+
+    const updatedProduct = await prisma.product.update({
+      where: { id },
+      data: {
+        isOutOfStock: Boolean(isOutOfStock)
+      },
+      include: {
+        categories: true,
+        variants: true,
+        contentSections: { orderBy: { orderIndex: 'asc' } }
+      }
+    });
+
+    generateAndSaveSitemapXML().catch(e => console.error("Sitemap sync error:", e));
+
+    res.status(200).json({
+      success: true,
+      message: `Product marked as ${isOutOfStock ? 'Out of Stock' : 'In Stock'}.`,
+      product: mapProduct(updatedProduct)
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+router.patch('/products/:id/stock-availability', handleStockAvailabilityToggle);
+router.put('/products/:id/stock-availability', handleStockAvailabilityToggle);
 
 // DELETE PRODUCT
 // DELETE /api/admin/products/:id

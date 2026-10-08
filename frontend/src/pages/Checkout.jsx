@@ -557,7 +557,7 @@ export default function Checkout() {
     const orderIdToTrack = orderSuccessDetails.id || orderSuccessDetails.orderNumber;
 
     return (
-      <div className="min-h-screen bg-[#FBF9F4] pt-24 pb-16 px-4 flex items-center justify-center">
+      <div className="min-h-screen bg-[#FBF9F4] pt-4 sm:pt-6 pb-16 px-4 flex items-center justify-center">
         <div className="max-w-lg w-full bg-white border border-[#EDE7D9] rounded-3xl p-6 sm:p-8 text-center flex flex-col items-center gap-6 shadow-md relative overflow-hidden">
           <div className="w-16 h-16 rounded-full bg-[#F0F5E6] border border-[#4E641A]/20 flex items-center justify-center text-[#4E641A] shrink-0 shadow-xs">
             <FiCheckCircle className="text-4xl text-[#4E641A]" />
@@ -647,7 +647,7 @@ export default function Checkout() {
 
   if (!isAuthChecked) {
     return (
-      <div className="min-h-screen bg-cream-bg flex items-center justify-center pt-32">
+      <div className="min-h-screen bg-cream-bg flex items-center justify-center pt-4">
         <div className="flex flex-col items-center gap-3">
           <GiSun className="text-sunrise-gold text-3xl animate-spin-slow" />
           <span className="font-sans text-xs text-stone-500">Loading Checkout...</span>
@@ -657,7 +657,7 @@ export default function Checkout() {
   }
 
   return (
-    <div className="min-h-screen bg-cream-bg pt-6 pb-24 md:pb-16 px-4 md:px-10 lg:px-16 w-full max-w-[1440px] mx-auto">
+    <div className="min-h-screen bg-cream-bg pt-3 sm:pt-6 pb-24 md:pb-16 px-4 md:px-10 lg:px-16 w-full max-w-[1440px] mx-auto">
       
       {/* 10. TOP BACK BUTTON - Left Aligned, Always Visible Below Navbar */}
       <div className="w-full mb-6 flex items-center justify-between">

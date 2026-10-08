@@ -12,15 +12,14 @@ import { formatCurrency } from '../utils/currency';
 import { fetchWithCache } from '../utils/cacheStore';
 
 const ProductCardSkeleton = () => (
-  <div className="bg-white border border-[#EAE4D8] rounded-[24px] overflow-hidden p-4 flex flex-col gap-3 animate-pulse shadow-sm h-full justify-between">
-    <div className="flex flex-col gap-3 w-full">
-      <div className="aspect-square w-full bg-[#F8F5F0] rounded-2xl" />
-      <div className="h-3 bg-stone-100 rounded w-1/4 animate-pulse" />
-      <div className="h-5 bg-stone-100 rounded w-3/4 animate-pulse" />
-      <div className="h-3 bg-stone-100 rounded w-1/2 animate-pulse" />
-      <div className="h-4 bg-stone-100 rounded w-1/3 mt-2 animate-pulse" />
+  <div className="bg-white border border-[#EAE4D8] rounded-[16px] overflow-hidden p-3 space-y-3 animate-pulse shadow-2xs">
+    <div className="aspect-square w-full bg-[#FAF8F5] rounded-xl" />
+    <div className="space-y-2 pt-1">
+      <div className="h-2.5 w-14 bg-stone-200 rounded" />
+      <div className="h-4 w-5/6 bg-stone-300 rounded" />
+      <div className="h-4 w-1/3 bg-stone-200 rounded" />
     </div>
-    <div className="h-10 bg-stone-100 rounded-xl mt-4 w-full" />
+    <div className="h-9 w-full bg-stone-200 rounded-xl" />
   </div>
 );
 
@@ -250,8 +249,18 @@ export default function Products() {
 
   return (
     <div className="flex flex-col bg-cream-bg min-h-screen relative w-full pb-24">
-      {/* 1. Page Header (Client Approved Storytelling Banner - Compact & Premium) */}
-      <div className="w-full bg-[#FAF7F2] border-b border-[#EAE4D8] py-8 sm:py-10 md:py-12 px-4 sm:px-6 md:px-12 text-center flex flex-col items-center gap-3.5 select-none products-hero-banner">
+      {/* 1A. Compact Mobile Page Heading (< 768px) */}
+      <div className="block md:hidden w-full bg-[#FAF7F2] border-b border-[#EAE4D8] px-4 py-3.5 text-left select-none mobile-products-header">
+        <h1 className="font-serif text-[28px] sm:text-[32px] font-bold text-[#2F3B0C] leading-[1.1] mb-1.5 tracking-tight">
+          Products
+        </h1>
+        <p className="font-sans text-[13px] sm:text-[14px] text-stone-600 leading-[1.5] max-w-md">
+          Explore our carefully crafted range of natural, nutrient-rich foods.
+        </p>
+      </div>
+
+      {/* 1B. Rich Desktop Hero Introduction (>= 768px) */}
+      <div className="hidden md:flex w-full bg-[#FAF7F2] border-b border-[#EAE4D8] pt-6 pb-10 px-6 md:px-12 text-center flex-col items-center gap-3.5 select-none products-hero-banner">
         <div className="flex flex-col items-center gap-2">
           <div className="w-9 h-9 rounded-full bg-[#4E641A]/10 border border-[#4E641A]/20 flex items-center justify-center text-[#4E641A] products-hero-badge shadow-2xs">
             <GiSprout className="w-5 h-5 text-[#4E641A]" />
@@ -291,12 +300,12 @@ export default function Products() {
       </div>
 
       {/* 2. Interactive Search & Filters Section */}
-      <section id="products-catalog-section" className="px-4 sm:px-6 md:px-12 mt-8 mb-6 md:mb-12 max-w-7xl mx-auto w-full">
-        <div className="flex flex-col lg:flex-row gap-4 justify-between items-center bg-[#FAF7F2] border border-[#EAE4D8] rounded-3xl p-4 md:p-6 products-toolbar products-filter-section shop-controls-wrapper">
-          
+      <section id="products-catalog-section" className="px-3 sm:px-6 md:px-12 mt-3.5 sm:mt-6 mb-3 md:mb-12 max-w-7xl mx-auto w-full">
+        {/* Mobile Filter & Search Toolbar (< 768px): Ultra Compact */}
+        <div className="flex flex-col gap-2.5 w-full md:hidden">
           {/* Search bar with suggestions */}
-          <div className="relative w-full lg:max-w-md">
-            <FiSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-dark-olive/40" />
+          <div className="relative w-full">
+            <FiSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#2F3B0C]/50 w-4 h-4 pointer-events-none" />
             <input
               type="text"
               value={searchQuery}
@@ -307,10 +316,10 @@ export default function Products() {
               onFocus={() => setShowSuggestions(true)}
               onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
               placeholder="Search sprouted ragi, wheatgrass, natural superfoods..."
-              className="w-full bg-cream-bg border border-light-beige rounded-2xl py-3 pl-10 pr-5 font-sans text-xs placeholder-dark-text/45 focus:outline-none focus:border-sunrise-gold focus:ring-1 focus:ring-sunrise-gold transition-all duration-300 shadow-sm products-search-input"
+              className="w-full h-[44px] bg-white border border-[#EAE4D8] focus:border-[#4E641A] rounded-2xl py-2.5 pl-10 pr-4 font-sans text-xs text-[#2F3B0C] placeholder:text-stone-400 outline-none transition-all shadow-2xs"
             />
             {showSuggestions && suggestions.length > 0 && (
-              <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-[#EAE4D8] rounded-xl shadow-lg z-30 overflow-hidden">
+              <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-[#EAE4D8] rounded-xl shadow-lg z-30 overflow-hidden">
                 {suggestions.map((s) => (
                   <div
                     key={s.id}
@@ -325,26 +334,17 @@ export default function Products() {
             )}
           </div>
 
-          {/* Sort & Category Pills */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full lg:w-auto shrink-0 justify-between sm:justify-end">
-            <div className="flex items-center gap-2 justify-between sm:justify-start products-sort-row">
-              <span className="font-sans text-xs text-dark-text/60 font-semibold uppercase tracking-wider">Sort:</span>
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="bg-cream-bg border border-light-beige rounded-xl py-2 px-3 font-sans text-xs text-dark-text/80 focus:outline-none cursor-pointer"
-              >
-                <option value="newest">Newest Products</option>
-                <option value="price-asc">Price: Low to High</option>
-                <option value="price-desc">Price: High to Low</option>
-              </select>
-            </div>
-
-            {/* Horizontal Category pills scroll */}
-            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar w-full max-w-full sm:max-w-md select-none py-1 products-category-pills">
+          {/* Categories Horizontal Scroll + Compact Sort Dropdown */}
+          <div className="flex items-center gap-2 w-full min-w-0">
+            {/* Horizontal Category Pills Row */}
+            <div 
+              className="flex items-center gap-1.5 overflow-x-auto flex-nowrap whitespace-nowrap flex-1 min-w-0 py-0.5 select-none products-category-pills"
+              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            >
               {categories.map((cat) => (
                 <button
                   key={cat.id}
+                  type="button"
                   onClick={() => {
                     setSelectedCategory(cat);
                     if (cat.id === 'All') {
@@ -353,16 +353,111 @@ export default function Products() {
                       navigate(`/products?category=${cat.slug}`);
                     }
                   }}
-                  className={`font-sans text-[10px] md:text-xs font-bold tracking-wider px-3.5 py-2 rounded-full whitespace-nowrap transition-all duration-300 border category-pill ${
+                  className={`font-sans text-[11px] font-bold tracking-tight px-3.5 h-[38px] rounded-full whitespace-nowrap shrink-0 transition-all duration-200 border flex items-center justify-center ${
                     selectedCategory.id === cat.id
-                      ? 'bg-[#4E641A] border-[#4E641A] text-white shadow-sm'
-                      : 'bg-cream-bg border-light-beige text-dark-text hover:bg-light-beige hover:border-light-beige/85'
+                      ? 'bg-[#4E641A] border-[#4E641A] text-white shadow-2xs'
+                      : 'bg-white border-[#EAE4D8] text-[#2F3B0C] hover:bg-[#FAF7F2]'
                   }`}
                 >
                   {cat.id === 'All' ? 'Shop All' : cat.name} ({getCount(cat)})
                 </button>
               ))}
             </div>
+
+            {/* Compact Sort Select */}
+            <div className="shrink-0">
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="h-[38px] bg-white border border-[#EAE4D8] rounded-full pl-3 pr-7 font-sans text-[10px] font-bold text-[#2F3B0C] focus:outline-none cursor-pointer outline-none shadow-2xs appearance-none"
+                style={{
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%232F3B0C'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
+                  backgroundRepeat: 'no-repeat',
+                  backgroundPosition: 'right 8px center',
+                  backgroundSize: '12px'
+                }}
+              >
+                <option value="newest">Sort: Newest</option>
+                <option value="price-asc">Price: Low-High</option>
+                <option value="price-desc">Price: High-Low</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* Desktop Toolbar (>= 768px): Centered, Fully Contained & Responsive */}
+        <div className="hidden md:flex flex-col gap-4 bg-[#FAF7F2] border border-[#EAE4D8] rounded-3xl p-5 md:p-6 products-toolbar products-filter-section shop-controls-wrapper w-full max-w-full min-w-0 shadow-2xs">
+          {/* Top Row: Search Input + Sort Dropdown */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 w-full min-w-0">
+            {/* Search bar with suggestions */}
+            <div className="relative w-full sm:max-w-md">
+              <FiSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#2F3B0C]/40" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setShowSuggestions(true);
+                }}
+                onFocus={() => setShowSuggestions(true)}
+                onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+                placeholder="Search sprouted ragi, wheatgrass, natural superfoods..."
+                className="w-full bg-white border border-[#EAE4D8] rounded-2xl py-2.5 pl-10 pr-4 font-sans text-xs text-[#2F3B0C] placeholder:text-stone-400 focus:outline-none focus:border-[#4E641A] transition-all shadow-2xs products-search-input"
+              />
+              {showSuggestions && suggestions.length > 0 && (
+                <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-[#EAE4D8] rounded-xl shadow-lg z-30 overflow-hidden">
+                  {suggestions.map((s) => (
+                    <div
+                      key={s.id}
+                      onClick={() => handleSuggestionClick(s.name)}
+                      className="px-4 py-2.5 text-xs font-sans text-stone-700 hover:bg-stone-50 cursor-pointer border-b border-stone-100 last:border-none flex items-center justify-between"
+                    >
+                      <span>{s.name}</span>
+                      <span className="text-[9px] text-stone-400 font-bold uppercase">{s.categories?.[0]?.name || 'Organic'}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Sort Dropdown */}
+            <div className="flex items-center gap-2 shrink-0 products-sort-row">
+              <span className="font-sans text-xs text-[#2F3B0C]/70 font-bold uppercase tracking-wider">Sort By:</span>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="bg-white border border-[#EAE4D8] rounded-xl py-2 px-3 font-sans text-xs font-bold text-[#2F3B0C] focus:outline-none cursor-pointer shadow-2xs"
+              >
+                <option value="newest">Newest Products</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Bottom Row: Centered Category Filter Pills */}
+          <div className="flex flex-wrap items-center justify-center gap-2 w-full min-w-0 select-none pt-1 products-desktop-category-pills">
+            {categories.map((cat) => (
+              <button
+                key={cat.id}
+                type="button"
+                onClick={() => {
+                  setSelectedCategory(cat);
+                  if (cat.id === 'All') {
+                    navigate('/products');
+                  } else {
+                    navigate(`/products?category=${cat.slug}`);
+                  }
+                }}
+                className={`font-sans text-xs font-bold tracking-wider px-4 py-2 rounded-full transition-all duration-200 border category-pill cursor-pointer ${
+                  selectedCategory.id === cat.id
+                    ? 'bg-[#4E641A] border-[#4E641A] text-white shadow-xs'
+                    : 'bg-white border-[#EAE4D8] text-[#2F3B0C] hover:bg-[#FAF7F2] hover:border-[#4E641A]/40'
+                }`}
+              >
+                {cat.id === 'All' ? 'Shop All' : cat.name} ({getCount(cat)})
+              </button>
+            ))}
           </div>
         </div>
       </section>
@@ -370,7 +465,7 @@ export default function Products() {
       {/* 3. Product Catalog Grid */}
       <section className="px-4 sm:px-6 md:px-12 pb-12 max-w-7xl mx-auto w-full min-h-[400px] products-catalog-section">
         {isLoading ? (
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 lg:gap-8 products-grid">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5 products-grid">
             {[...Array(8)].map((_, i) => (
               <ProductCardSkeleton key={i} />
             ))}
@@ -412,7 +507,7 @@ export default function Products() {
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 lg:gap-8 products-grid">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5 products-grid">
             <AnimatePresence mode="popLayout">
               {productsList.map((product) => (
                 <ProductCard 

@@ -60,6 +60,18 @@ const Navbar = memo(function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Lock body scroll when drawers are open
+  useEffect(() => {
+    if (isMobileMenuOpen || isCartOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isMobileMenuOpen, isCartOpen]);
+
   // Fetch cart on mount or when auth state updates
   useEffect(() => {
     if (isAuthenticated) {
@@ -96,41 +108,36 @@ const Navbar = memo(function Navbar() {
     <>
       <nav
         ref={navRef}
-        className={`fixed top-0 left-0 w-full z-50 transition-all duration-350 ease-in-out px-4 sm:px-8 lg:px-16 xl:px-20 border-b app-header-nav ${
+        className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ease-in-out px-2.5 xs:px-3 sm:px-8 lg:px-16 xl:px-20 border-b app-header-nav ${
           isScrolled || isCartOpen || isMobileMenuOpen
-            ? 'bg-[#FBF9F4]/95 backdrop-blur-md shadow-md border-[#E8E3D6] py-3.5 lg:py-4'
-            : 'bg-[#FBF9F4]/80 backdrop-blur-md border-[#E8E3D6] py-5 lg:py-6'
+            ? 'bg-[#FBF9F4]/95 backdrop-blur-md shadow-md border-[#E8E3D6] py-2 xs:py-2.5 sm:py-3 lg:py-4'
+            : 'bg-[#FBF9F4]/90 backdrop-blur-md border-[#E8E3D6] py-2.5 xs:py-3 sm:py-3.5 lg:py-6'
         }`}
       >
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
+        <div className="max-w-7xl mx-auto flex items-center justify-between min-w-0">
           
-          {/* LEFT: Logo & Brand Information */}
+          {/* LEFT: Compact Responsive Logo & Brand Information */}
           <Link
             to="/"
-            className="flex items-center gap-3.5 sm:gap-4 cursor-pointer group select-none text-left shrink-0 transition-transform duration-300 hover:opacity-95"
+            className="flex items-center gap-2 sm:gap-3.5 cursor-pointer group select-none text-left shrink-0 transition-transform duration-300 hover:opacity-95"
           >
             <img 
               src="https://i.ibb.co/Pz01P9Y5/Whats-App-Image-2026-05-29-at-6-51-48-PM-removebg-preview.png" 
               alt="Suryodaya Farms Logo" 
               loading="eager"
               fetchPriority="high"
-              className={`w-auto object-contain transition-all duration-300 filter drop-shadow-2xs group-hover:scale-[1.04] ${
-                isScrolled ? 'h-11 sm:h-13 lg:h-14' : 'h-12 sm:h-14 lg:h-16'
-              }`}
+              className="w-12 h-12 sm:w-12 sm:h-12 md:w-13 md:h-13 lg:w-14 lg:h-14 object-contain transition-all duration-300 filter drop-shadow-2xs group-hover:scale-[1.04] shrink-0"
             />
-            <div className="flex flex-col justify-center items-center text-center space-y-0.5">
-              <span className="font-serif text-base sm:text-lg md:text-xl font-bold tracking-wider text-[#2F2F2F] group-hover:text-[#556B2F] transition-colors duration-300 uppercase leading-none">
+            <div className="flex flex-col justify-center text-left shrink-0 space-y-0.5">
+              <span className="font-serif text-[16px] sm:text-base md:text-lg lg:text-xl font-bold tracking-wider text-[#2F2F2F] group-hover:text-[#556B2F] transition-colors duration-300 uppercase leading-none whitespace-nowrap">
                 SURYODAYA FARMS
               </span>
-              <span className="font-serif text-[10px] sm:text-[11px] font-medium text-stone-600 italic leading-none block text-center mt-0.5">
-                Nature's Superfoods for Modern Living
-              </span>
-              <span className="font-sans text-[7.5px] sm:text-[8.5px] font-bold tracking-widest text-[#556B2F] uppercase leading-none flex items-center justify-center gap-1 mt-0.5">
-                <span>Pure</span>
-                <span className="text-[#C68A2B]">|</span>
-                <span>Natural</span>
-                <span className="text-[#C68A2B]">|</span>
-                <span>Nutritious</span>
+              <span className="font-sans text-[7.5px] sm:text-[8.5px] md:text-[9px] font-bold tracking-wider text-[#556B2F] uppercase leading-none flex items-center gap-0.5 sm:gap-1 mt-0.5 whitespace-nowrap">
+                <span>PURE</span>
+                <span className="text-[#C68A2B]">•</span>
+                <span>NATURAL</span>
+                <span className="text-[#C68A2B]">•</span>
+                <span>NUTRITIOUS</span>
               </span>
             </div>
           </Link>
@@ -163,9 +170,8 @@ const Navbar = memo(function Navbar() {
             ))}
           </div>
 
-          {/* RIGHT: Actions (Wishlist, Account, Cart) */}
+          {/* RIGHT: Actions (Desktop) */}
           <div className="hidden lg:flex items-center gap-3 shrink-0">
-            
             {/* Wishlist Button */}
             <Link
               to="/wishlist"
@@ -207,51 +213,63 @@ const Navbar = memo(function Navbar() {
             </button>
           </div>
 
-          {/* Mobile Actions & Menu Trigger */}
-          <div className="lg:hidden flex items-center gap-1.5 sm:gap-2">
+          {/* Mobile Actions & Menu Trigger: Layout [Wishlist] [Account] [Cart] [☰] */}
+          <div className="lg:hidden flex items-center gap-0.5 xs:gap-1 sm:gap-2 shrink-0 ml-auto pl-1">
+            {/* 1. Wishlist Icon */}
             <Link
               to="/wishlist"
-              className="w-9 h-9 rounded-full flex items-center justify-center text-[#2F2F2F] hover:text-[#556B2F] hover:bg-[#556B2F]/10 transition-colors relative"
+              className="w-8 h-8 xs:w-9 xs:h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-[#2F2F2F] hover:text-[#556B2F] hover:bg-[#556B2F]/10 active:bg-[#556B2F]/20 transition-colors relative cursor-pointer shrink-0"
               title="Wishlist"
+              aria-label="Wishlist"
             >
-              <FiHeart size={20} className="stroke-[2px]" />
+              <FiHeart size={18} className="stroke-[2px]" />
               {wishlistItems.length > 0 && (
-                <span className="absolute top-0.5 right-0.5 bg-[#556B2F] text-white font-sans text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center border border-white">
+                <span className="absolute top-0 right-0 bg-[#556B2F] text-white font-sans text-[8.5px] font-bold w-3.5 h-3.5 xs:w-4 xs:h-4 rounded-full flex items-center justify-center border border-white">
                   {wishlistItems.length}
                 </span>
               )}
             </Link>
 
+            {/* 2. Account Icon */}
             <button
               onClick={handleProfileClick}
-              className="w-9 h-9 rounded-full flex items-center justify-center text-[#2F2F2F] hover:text-[#556B2F] hover:bg-[#556B2F]/10 transition-colors relative cursor-pointer"
-              title={isAuthenticated ? "Dashboard" : "Login"}
+              className="w-8 h-8 xs:w-9 xs:h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-[#2F2F2F] hover:text-[#556B2F] hover:bg-[#556B2F]/10 active:bg-[#556B2F]/20 transition-colors relative cursor-pointer shrink-0"
+              title={isAuthenticated ? "My Account" : "Sign In / Login"}
+              aria-label={isAuthenticated ? "My Account" : "Sign In"}
             >
-              <FiUser size={20} className="stroke-[2px]" />
+              <FiUser size={18} className="stroke-[2px]" />
               {isAuthenticated && (
-                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#556B2F] border border-white" />
+                <span className="absolute top-1 right-1 w-1.5 h-1.5 xs:w-2 xs:h-2 rounded-full bg-[#556B2F] border border-white" />
               )}
             </button>
 
+            {/* 3. Cart Icon */}
             <button
               onClick={() => setIsCartOpen(true)}
-              className="w-9 h-9 rounded-full flex items-center justify-center text-[#2F2F2F] hover:text-[#556B2F] hover:bg-[#556B2F]/10 transition-colors relative cursor-pointer"
-              title="Cart Drawer"
+              className="w-8 h-8 xs:w-9 xs:h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-[#2F2F2F] hover:text-[#556B2F] hover:bg-[#556B2F]/10 active:bg-[#556B2F]/20 transition-colors relative cursor-pointer shrink-0"
+              title="Shopping Cart"
+              aria-label="Shopping Cart"
             >
-              <FiShoppingBag size={20} className="stroke-[2px]" />
+              <FiShoppingBag size={18} className="stroke-[2px]" />
               {totalCartCount > 0 && (
-                <span className="absolute top-0.5 right-0.5 bg-[#556B2F] text-white font-sans text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center border border-white">
+                <span className="absolute top-0 right-0 bg-[#556B2F] text-white font-sans text-[8.5px] font-bold w-3.5 h-3.5 xs:w-4 xs:h-4 rounded-full flex items-center justify-center border border-white">
                   {totalCartCount}
                 </span>
               )}
             </button>
             
+            {/* 4. Hamburger Menu Icon (Clearly Visible 40px-44px Touch Target) */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="w-10 h-10 rounded-full flex items-center justify-center transition-colors text-[#2F2F2F] hover:text-[#556B2F] hover:bg-[#556B2F]/10 cursor-pointer ml-1"
-              title="Toggle Menu"
+              className="w-9.5 h-9.5 xs:w-10 xs:h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center text-[#2F2F2F] hover:text-[#556B2F] bg-[#556B2F]/12 hover:bg-[#556B2F]/22 active:bg-[#556B2F]/30 transition-all cursor-pointer shrink-0 ml-0.5 border border-[#556B2F]/20"
+              title={isMobileMenuOpen ? "Close Menu" : "Open Navigation Menu"}
+              aria-label={isMobileMenuOpen ? "Close Navigation Menu" : "Open Navigation Menu"}
             >
-              {isMobileMenuOpen ? <FiX size={22} className="stroke-[2.5px]" /> : <FiMenu size={22} className="stroke-[2.5px]" />}
+              {isMobileMenuOpen ? (
+                <FiX size={21} className="stroke-[2.5px] text-[#556B2F]" />
+              ) : (
+                <FiMenu size={21} className="stroke-[2.5px] text-[#2F2F2F]" />
+              )}
             </button>
           </div>
 
@@ -260,7 +278,7 @@ const Navbar = memo(function Navbar() {
 
       {/* Cart Drawer Sliding Overlay */}
       <div
-        className={`fixed inset-0 z-40 bg-[#2F2F2F]/45 backdrop-blur-xs transition-opacity duration-350 ${
+        className={`fixed inset-0 z-50 bg-[#2F2F2F]/45 backdrop-blur-xs transition-opacity duration-350 ${
           isCartOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
         onClick={() => setIsCartOpen(false)}
@@ -268,7 +286,7 @@ const Navbar = memo(function Navbar() {
 
       {/* Cart Drawer Panel */}
       <div
-        className={`fixed top-0 right-0 h-full w-[85%] max-w-md z-50 bg-[#FBF9F4] shadow-2xl border-l border-[#E8E3D6] flex flex-col justify-between py-8 px-6 transition-transform duration-350 ease-in-out ${
+        className={`fixed top-0 right-0 h-full w-[85%] max-w-md z-[60] bg-[#FBF9F4] shadow-2xl border-l border-[#E8E3D6] flex flex-col justify-between py-8 px-6 transition-transform duration-350 ease-in-out ${
           isCartOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
@@ -405,72 +423,135 @@ const Navbar = memo(function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Slide-In Nav Menu */}
+      {/* Mobile Slide-In Nav Menu Overlay */}
       <div
-        className={`fixed inset-0 z-40 bg-[#2F2F2F]/45 backdrop-blur-xs transition-opacity duration-350 lg:hidden ${
+        className={`fixed inset-0 z-[60] bg-[#2F2F2F]/50 backdrop-blur-xs transition-opacity duration-300 lg:hidden ${
           isMobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
         onClick={() => setIsMobileMenuOpen(false)}
       />
 
+      {/* Mobile Navigation Drawer Panel */}
       <div
-        className={`fixed top-0 right-0 h-full w-[80%] max-w-sm z-50 bg-[#FBF9F4] shadow-2xl border-l border-[#E8E3D6] flex flex-col justify-between py-8 px-6 transition-transform duration-350 ease-in-out lg:hidden ${
+        className={`fixed top-0 right-0 h-full w-[85%] sm:w-[320px] max-w-sm z-[70] bg-[#FBF9F4] shadow-2xl border-l border-[#E8E3D6] flex flex-col justify-between py-6 px-5 sm:px-6 transition-transform duration-350 ease-in-out lg:hidden overflow-y-auto ${
           isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
-        <div>
-          <div className="flex items-center justify-between border-b border-[#E8E3D6] pb-5 text-left">
-            <div className="flex items-center gap-3">
-              <img 
-                src="https://i.ibb.co/Pz01P9Y5/Whats-App-Image-2026-05-29-at-6-51-48-PM-removebg-preview.png" 
-                alt="Suryodaya Farms Logo" 
-                className="h-11 w-auto object-contain"
-              />
-              <div className="flex flex-col justify-center">
-                <span className="font-serif text-base font-bold text-[#2F2F2F] leading-none">
-                  SURYODAYA
-                </span>
-                <span className="font-sans text-[8px] font-semibold tracking-[0.2em] text-[#C68A2B] mt-0.5">
-                  FARMS
-                </span>
-              </div>
-            </div>
-            <button
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="text-[#2F2F2F] p-1.5 rounded-full bg-[#E8E3D6]/50 hover:bg-[#556B2F]/15 transition-colors cursor-pointer"
-            >
-              <FiX size={19} />
-            </button>
-          </div>
-
-          <div className="flex flex-col gap-1.5 mt-6 text-left">
-            {navItems.map((item) => (
-              <NavLink
-                key={item.path}
-                to={item.path}
+        <div className="flex flex-col h-full justify-between">
+          <div>
+            {/* Drawer Header */}
+            <div className="flex items-center justify-between border-b border-[#E8E3D6] pb-4 text-left">
+              <Link to="/" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3">
+                <img 
+                  src="https://i.ibb.co/Pz01P9Y5/Whats-App-Image-2026-05-29-at-6-51-48-PM-removebg-preview.png" 
+                  alt="Suryodaya Farms Logo" 
+                  className="h-10 w-auto object-contain"
+                />
+                <div className="flex flex-col justify-center">
+                  <span className="font-serif text-base font-bold text-[#2F2F2F] leading-none uppercase tracking-wider">
+                    Suryodaya
+                  </span>
+                  <span className="font-sans text-[8.5px] font-semibold tracking-[0.2em] text-[#C68A2B] mt-0.5 uppercase">
+                    Farms
+                  </span>
+                </div>
+              </Link>
+              <button
                 onClick={() => setIsMobileMenuOpen(false)}
-                className={({ isActive }) => `
-                  flex items-center justify-between font-sans text-xs font-semibold uppercase tracking-wider py-3 px-4 rounded-xl transition-all duration-200
-                  ${isActive
-                    ? 'bg-[#556B2F] text-white shadow-sm font-bold'
-                    : 'text-[#2F2F2F] hover:bg-[#E8E3D6]/40'
-                  }
-                `}
+                className="text-[#2F2F2F] p-2.5 rounded-full bg-[#E8E3D6]/50 hover:bg-[#556B2F]/15 hover:text-[#556B2F] transition-colors cursor-pointer"
+                aria-label="Close navigation menu"
               >
-                <span>{item.label}</span>
-                <FiChevronRight size={14} />
-              </NavLink>
-            ))}
-          </div>
-        </div>
+                <FiX size={20} className="stroke-[2.5px]" />
+              </button>
+            </div>
 
-        <div className="flex flex-col gap-3 mt-6">
-          <button
-            onClick={handleProfileClick}
-            className="w-full font-sans text-xs font-bold tracking-widest uppercase bg-[#C68A2B] text-white py-3.5 rounded-xl hover:bg-[#B8833E] transition-colors shadow-sm cursor-pointer"
-          >
-            {isAuthenticated ? "My Account" : "Sign In / Login"}
-          </button>
+            {/* Navigation Menu Links */}
+            <nav className="flex flex-col gap-1.5 mt-5 text-left">
+              {navItems.map((item) => (
+                <NavLink
+                  key={item.path}
+                  to={item.path}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={({ isActive }) => `
+                    flex items-center justify-between font-sans text-sm font-semibold tracking-wide py-3 px-4 rounded-xl transition-all duration-200
+                    ${isActive
+                      ? 'bg-[#556B2F] text-white shadow-md font-bold'
+                      : 'text-[#2F2F2F] hover:bg-[#556B2F]/10 hover:text-[#556B2F]'
+                    }
+                  `}
+                >
+                  {({ isActive }) => (
+                    <>
+                      <span>{item.label}</span>
+                      <FiChevronRight size={16} className={`transition-transform ${isActive ? 'translate-x-0.5' : 'text-[#2F2F2F]/40'}`} />
+                    </>
+                  )}
+                </NavLink>
+              ))}
+
+              <div className="border-t border-[#E8E3D6] my-2 pt-2 flex flex-col gap-1">
+                <NavLink
+                  to="/wishlist"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={({ isActive }) => `
+                    flex items-center justify-between font-sans text-sm font-semibold tracking-wide py-3 px-4 rounded-xl transition-all duration-200
+                    ${isActive ? 'bg-[#556B2F] text-white font-bold shadow-md' : 'text-[#2F2F2F] hover:bg-[#556B2F]/10 hover:text-[#556B2F]'}
+                  `}
+                >
+                  <span className="flex items-center gap-2.5">
+                    <FiHeart size={16} />
+                    <span>Wishlist</span>
+                  </span>
+                  {wishlistItems.length > 0 && (
+                    <span className="bg-[#556B2F] text-white font-sans text-[10px] font-bold px-2 py-0.5 rounded-full">
+                      {wishlistItems.length}
+                    </span>
+                  )}
+                </NavLink>
+
+                <button
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    setIsCartOpen(true);
+                  }}
+                  className="w-full flex items-center justify-between font-sans text-sm font-semibold tracking-wide py-3 px-4 rounded-xl text-[#2F2F2F] hover:bg-[#556B2F]/10 hover:text-[#556B2F] bg-transparent border-none cursor-pointer text-left"
+                >
+                  <span className="flex items-center gap-2.5">
+                    <FiShoppingBag size={16} className="text-[#556B2F]" />
+                    <span>Cart</span>
+                  </span>
+                  {totalCartCount > 0 && (
+                    <span className="bg-[#556B2F] text-white font-sans text-[10px] font-bold px-2 py-0.5 rounded-full">
+                      {totalCartCount}
+                    </span>
+                  )}
+                </button>
+              </div>
+            </nav>
+          </div>
+
+          {/* Drawer Footer Actions */}
+          <div className="pt-4 border-t border-[#E8E3D6] flex flex-col gap-3 mt-auto">
+            <button
+              onClick={() => {
+                setIsMobileMenuOpen(false);
+                handleProfileClick();
+              }}
+              className="w-full flex items-center justify-center gap-2 font-sans text-xs font-bold tracking-widest uppercase bg-[#C68A2B] hover:bg-[#B8833E] text-white py-3.5 rounded-xl transition-colors shadow-sm cursor-pointer"
+            >
+              <FiUser size={16} />
+              <span>{isAuthenticated ? "My Account / Orders" : "Sign In / Login"}</span>
+            </button>
+            <div className="text-center pt-1">
+              <span className="font-sans text-[7.5px] font-bold tracking-wider text-[#556B2F] uppercase flex items-center justify-center gap-1">
+                <span>PURE</span>
+                <span className="text-[#C68A2B]">•</span>
+                <span>NATURAL</span>
+                <span className="text-[#C68A2B]">•</span>
+                <span>NUTRITIOUS</span>
+              </span>
+            </div>
+          </div>
         </div>
       </div>
     </>

@@ -3399,6 +3399,27 @@ Ensure confidence scores are numbers between 0 and 100. Always reply ONLY with r
     }
   };
 
+  const handleToggleStockAvailability = async (id, isOutOfStock) => {
+    useFeedbackStore.getState().showLoader(isOutOfStock ? 'Marking product Out of Stock...' : 'Marking product In Stock...');
+    try {
+      await api.put(`/admin/products/${id}/stock-availability`, { isOutOfStock });
+      await Promise.all([
+        fetchProducts(),
+        fetchAllAdminProducts(),
+        fetchAnalytics()
+      ]);
+      useFeedbackStore.getState().hideLoader();
+      useFeedbackStore.getState().showToast(
+        isOutOfStock ? '✅ Product marked as Out of Stock' : '✅ Product marked as In Stock',
+        'success'
+      );
+    } catch (err) {
+      useFeedbackStore.getState().hideLoader();
+      useFeedbackStore.getState().showToast(`❌ Failed to update stock status: ${err.message}`, 'error');
+      throw err;
+    }
+  };
+
   const fetchCategoryDetails = async (id) => {
     try {
       const response = await api.get(`/admin/categories/${id}`);
@@ -5683,6 +5704,7 @@ Ensure confidence scores are numbers between 0 and 100. Always reply ONLY with r
                 products={products}
                 categories={categories}
                 handleDeleteProduct={handleDeleteProduct}
+                handleToggleStockAvailability={handleToggleStockAvailability}
                 isLoading={isLoadingData}
               />
             )}

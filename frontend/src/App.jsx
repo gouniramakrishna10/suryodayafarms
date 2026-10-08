@@ -70,6 +70,8 @@ export default function App() {
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/profile" element={<Dashboard />} />
             <Route path="/profile/:tab" element={<Dashboard />} />
+            <Route path="/account" element={<Dashboard />} />
+            <Route path="/account/:tab" element={<Dashboard />} />
             <Route path="/profile/shipments/:orderId" element={<ShipmentDetails />} />
             <Route path="/become-a-partner" element={<Partner />} />
             <Route path="/faq" element={<Faq />} />

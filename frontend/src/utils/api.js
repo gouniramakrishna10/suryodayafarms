@@ -20,16 +20,21 @@ const api = axios.create({
   },
 });
 
-// Request interceptor to attach isolated admin Bearer tokens if present in localStorage
+// Request interceptor to attach isolated admin/user Bearer tokens if present in localStorage
 api.interceptors.request.use(
   (config) => {
     config.metadata = { startTime: Date.now() };
     const adminToken = localStorage.getItem('adminToken');
     const userToken = localStorage.getItem('userToken');
-    if (adminToken) {
+
+    const isAdminRoute = config.url && (config.url.startsWith('/admin') || config.url.includes('/admin/'));
+
+    if (isAdminRoute && adminToken) {
       config.headers.Authorization = `Bearer ${adminToken}`;
     } else if (userToken) {
       config.headers.Authorization = `Bearer ${userToken}`;
+    } else if (adminToken) {
+      config.headers.Authorization = `Bearer ${adminToken}`;
     }
     return config;
   },

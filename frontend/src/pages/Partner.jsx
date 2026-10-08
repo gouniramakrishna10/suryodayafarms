@@ -320,7 +320,7 @@ export default function Partner() {
     <div className="bg-[#F9F6F0] min-h-screen font-sans text-[#2F3B0C] selection:bg-[#4E641A] selection:text-white">
       
       {/* 1. HERO SECTION */}
-      <section className="relative py-12 sm:py-16 lg:py-16 px-4 sm:px-6 lg:px-12 bg-gradient-to-b from-[#F5EFE6] via-[#FAF7F2] to-[#F9F6F0] overflow-hidden border-b border-[#EDE7D9]">
+      <section className="relative pt-3 pb-8 sm:py-16 lg:py-16 px-4 sm:px-6 lg:px-12 bg-gradient-to-b from-[#F5EFE6] via-[#FAF7F2] to-[#F9F6F0] overflow-hidden border-b border-[#EDE7D9]">
         {/* Soft Organic Atmospheric Glows */}
         <div className="absolute -top-48 -left-48 w-[540px] h-[540px] bg-[#4E641A]/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute top-1/2 -right-48 w-[540px] h-[540px] bg-[#B8833E]/10 rounded-full blur-3xl pointer-events-none" />

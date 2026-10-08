@@ -6,14 +6,19 @@ export const useWishlistStore = create((set, get) => ({
   isLoading: false,
   error: null,
 
-  // 1. FETCH USER WISHLIST
-  fetchWishlist: async () => {
+  // 1. FETCH USER WISHLIST WITH DEDUPLICATION
+  fetchWishlist: async (force = false) => {
+    const state = get();
+    if (!force && state.isLoading) return;
+    if (!force && state.lastFetched && (Date.now() - state.lastFetched < 4000)) return;
+
     set({ isLoading: true, error: null });
     try {
       const response = await api.get('/orders/wishlist');
       set({
         wishlistItems: response.wishlist || [],
-        isLoading: false
+        isLoading: false,
+        lastFetched: Date.now()
       });
     } catch (error) {
       set({ error: error.message, isLoading: false });

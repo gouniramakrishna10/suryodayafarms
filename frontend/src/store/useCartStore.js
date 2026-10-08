@@ -20,8 +20,12 @@ export const useCartStore = create((set, get) => ({
     return subtotal;
   },
 
-  // 1. FETCH USER CART WITH LOCAL FALLBACK
-  fetchCart: async () => {
+  // 1. FETCH USER CART WITH LOCAL FALLBACK & DEDUPLICATION
+  fetchCart: async (force = false) => {
+    const state = get();
+    if (!force && state.isLoading) return;
+    if (!force && state.lastFetched && (Date.now() - state.lastFetched < 4000)) return;
+
     set({ isLoading: true, error: null });
     try {
       const response = await api.get('/orders/cart');
@@ -31,7 +35,8 @@ export const useCartStore = create((set, get) => ({
       set({
         cartItems: items,
         subtotal: sub,
-        isLoading: false
+        isLoading: false,
+        lastFetched: Date.now()
       });
     } catch (error) {
       set({ isLoading: false });

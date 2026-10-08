@@ -96,6 +96,13 @@ router.post('/cart', protect, async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'Product not found.' });
     }
 
+    if (product.isOutOfStock || product.inventory <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: `"${product.name}" is currently out of stock and cannot be added to cart.`
+      });
+    }
+
     // Check duplicate item
     const duplicate = await prisma.cartItem.findFirst({
       where: {
@@ -350,6 +357,16 @@ router.post('/checkout', protect, async (req, res, next) => {
 
     if (cartItems.length === 0) {
       return res.status(400).json({ success: false, message: 'Your shopping cart is currently empty.' });
+    }
+
+    // Verify all cart products are available and not manually marked out of stock
+    for (const item of cartItems) {
+      if (item.product && (item.product.isOutOfStock || item.product.inventory <= 0)) {
+        return res.status(400).json({
+          success: false,
+          message: `"${item.product.name}" is currently out of stock and unavailable for purchase.`
+        });
+      }
     }
 
     // Fetch Address details
