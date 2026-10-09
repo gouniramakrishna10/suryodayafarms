@@ -12,6 +12,7 @@ import Home from './pages/Home';
 
 // Lazy-loaded routes for code splitting
 const About = lazy(() => import('./pages/About'));
+const OurTeam = lazy(() => import('./pages/OurTeam'));
 const Products = lazy(() => import('./pages/Products'));
 const Contact = lazy(() => import('./pages/Contact'));
 const Partner = lazy(() => import('./pages/Partner'));
@@ -61,6 +62,7 @@ export default function App() {
           <Route element={<MainLayout />}>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
+            <Route path="/our-team" element={<OurTeam />} />
             <Route path="/products" element={<Products />} />
             <Route path="/products/:slug" element={<ProductDetails />} />
             <Route path="/product/:slug" element={<ProductDetails />} />

@@ -40,6 +40,7 @@ const Footer = memo(function Footer() {
   const quickLinks = [
     { label: 'Home', path: '/' },
     { label: 'About Us', path: '/about' },
+    { label: 'Our Team', path: '/our-team' },
     { label: 'Products', path: '/products' },
     { label: 'Become a Partner', path: '/become-a-partner' },
     { label: 'FAQs', path: '/faq' },

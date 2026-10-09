@@ -88,6 +88,7 @@ const Navbar = memo(function Navbar() {
   const navItems = [
     { label: 'Home', path: '/' },
     { label: 'About Us', path: '/about' },
+    { label: 'Our Team', path: '/our-team' },
     { label: 'Products', path: '/products' },
     { label: 'FAQs', path: '/faq' },
     { label: 'Become a Partner', path: '/become-a-partner' },

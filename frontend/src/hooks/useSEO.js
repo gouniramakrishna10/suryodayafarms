@@ -20,6 +20,10 @@ export const ROUTE_SEO_MAP = {
     title: `About Us | Suryodaya Farms`,
     description: `Learn about Suryodaya Farms, our journey, values, commitment to quality, research-driven approach, and our vision of bringing Pure, Natural and Nutritious superfoods to every family.`
   },
+  '/our-team': {
+    title: `Meet Our Team | Suryodaya Farms`,
+    description: `Meet the founder, leadership, and botanical research team behind Suryodaya Farms. Combining agricultural roots with scientific excellence.`
+  },
   '/products': {
     title: `Our Natural Superfoods | Suryodaya Farms`,
     description: `Explore pure, natural and nutritious superfoods from Suryodaya Farms. Developed with scientific care to support your family's daily wellness.`
